@@ -1,3 +1,5 @@
+TESTS=test/spec/*.js
+
 all: node_modules prod
 
 node_modules: package.json
@@ -10,4 +12,9 @@ build: node_modules
 prod: build
 	./node_modules/.bin/borschik -i src/xblocks.js -o xblocks.min.js
 
-.PHONY: all
+test: node_modules
+	./node_modules/.bin/mocha --reporter dot $(TESTS)
+	./node_modules/.bin/jshint .
+	./node_modules/.bin/jscs .
+
+.PHONY: all test
