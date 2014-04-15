@@ -1,0 +1,31 @@
+{
+    "name": "xblocks-core",
+    "description": "HTML core custom elements",
+    "version": "0.0.1",
+    "keywords": [
+        "x-tags",
+        "React",
+        "html5",
+        "custom elements"
+    ],
+    "homepage": "https://github.com/Katochimoto/xblocks-core/",
+    "author": {
+        "name": "rikishi",
+        "email": "bufpost@yandex.ru"
+    },
+    "bugs": {
+        "email": "bufpost@yandex.ru",
+        "url": "https://github.com/Katochimoto/xblocks-core/issues"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:Katochimoto/xblocks-core.git"
+    },
+    "devDependencies": {
+        "borschik": "1.0.2"
+    },
+    "engines": {
+        "node": "*"
+    }
+}
