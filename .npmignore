@@ -4,3 +4,9 @@
 node_modules
 build
 test
+.gitignore
+.jscs.json
+.jshintignore
+.jshintrc
+.travis.yml
+Makefile
