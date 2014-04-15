@@ -13,9 +13,9 @@ xblocks.dom.attrs.ARRTS_BOOLEAN = [
  * @returns {string|boolean}
  */
 xblocks.dom.attrs.getRealValue = function(name, value) {
-    if (value === 'true'
-        || value === 'false'
-        || (xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1 && name === value)
+    if (value === 'true' ||
+        value === 'false' ||
+        (xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1 && name === value)
     ) {
         return (name === value || value === 'true');
     }

@@ -51,7 +51,7 @@
                 React.unmountComponentAtNode(this._node);
                 this._component.unmountComponent();
                 this._component = null;
-            } catch (e) {
+            } catch(e) {
             }
         }
     };
