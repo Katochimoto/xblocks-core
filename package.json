@@ -3,6 +3,8 @@
   "description": "HTML core custom elements",
   "version": "0.0.5",
   "keywords": [
+    "xblocks",
+    "xblocks-core",
     "x-tags",
     "React",
     "html5",
