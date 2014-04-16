@@ -19,7 +19,8 @@
     "src",
     "**/.*",
     "bower_components",
-    "tests"
+    "tests",
+    "package.json"
   ],
   "devDependencies": {
     "borschik": "1.0.2",
