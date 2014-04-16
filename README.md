@@ -12,3 +12,8 @@ HTML core custom elements
 - [React.js](https://github.com/facebook/react)
 - [X-Tag core](https://github.com/x-tag/core)
 - [es5-shim](https://github.com/es-shims/es5-shim)
+
+##Install
+
+- npm install xblocks-core
+- bower install xblocks-core
