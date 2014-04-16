@@ -1,3 +1,4 @@
+/*jshint -W067 */
 (function() {
     'use strict';
 
@@ -43,9 +44,9 @@ xblocks.dom.attrs.ARRTS_BOOLEAN = [
  * @returns {string|boolean}
  */
 xblocks.dom.attrs.getRealValue = function(name, value) {
-    if (value === 'true'
-        || value === 'false'
-        || (xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1 && name === value)
+    if (value === 'true' ||
+        value === 'false' ||
+        (xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1 && name === value)
     ) {
         return (name === value || value === 'true');
     }
@@ -96,79 +97,36 @@ xblocks.dom.attrs.toObject = function(element) {
     };
 
 }(xblocks, React));
+
 /* xblocks/view.js end */
 
     /* xblocks/block.js begin */
 (function(xtag, xblocks) {
 
-    xblocks.create = function(blockName) {
-        return new XBlock(blockName);
-    };
+    xblocks.create = function(blockName, options) {
+        options = typeof(options) === 'object' ? options : {};
 
-    function XBlock(blockName) {
-        this._name = blockName;
-    }
-
-    XBlock.prototype.register = function() {
-        var accessors = {};
-        var methods = {};
-        var blockName = this._name;
-
-        for (var prop in this) {
-            if (!this.hasOwnProperty(prop)) {
-                continue;
-            }
-
-            if (prop.indexOf('_') === 0) {
-                continue;
-            }
-
-            if (_.isPlainObject(this[prop]) && (_.isFunction(this[prop].get) || _.isFunction(this[prop].set))) {
-                accessors[prop] = _.cloneDeep(this[prop]);
-                continue;
-            }
-
-            if (_.isFunction(this[prop])) {
-                methods[prop] = _.cloneDeep(this[prop]);
-            }
-        }
-
-        xtag.register(blockName, {
-            lifecycle: {
-                created: function() {
-                    this.xblock = xblocks.element.create(this);
-                },
-
-                inserted: function() {
-                },
-
-                removed: function() {
-                    this.xblock.destroy();
-                    delete this.xblock;
-                },
-
-                attributeChanged: function(attrName, oldValue, newValue) {
-                    var props = {};
-                    props[attrName] = xblocks.dom.attrs.getRealValue(attrName, newValue);
-                    this.xblock.update(props);
-                }
+        options.lifecycle = {
+            created: function() {
+                this.xblock = xblocks.element.create(this);
             },
 
-            accessors: accessors,
+            inserted: function() {
+            },
 
-            methods: methods,
+            removed: function() {
+                this.xblock.destroy();
+                delete this.xblock;
+            },
 
-            events: {
-                /*
-                click: function(event) {
-                    if (this.hasAttribute('disabled')) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                }
-                */
+            attributeChanged: function(attrName, oldValue, newValue) {
+                var props = {};
+                props[attrName] = xblocks.dom.attrs.getRealValue(attrName, newValue);
+                this.xblock.update(props);
             }
-        });
+        };
+
+        return xtag.register(blockName, options);
     };
 
 }(xtag, xblocks));
@@ -209,17 +167,36 @@ xblocks.dom.attrs.toObject = function(element) {
             );
         }.bind(this);
 
-        var observerInit = _.debounce(init, 1);
+        var timeoutId;
 
         this._observer = new MutationObserver(function(records) {
             if (records.some(this._checkParentMutation, this) && this._isMountedComponent()) {
                 this.destroy();
-                observerInit();
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(init, 1);
             }
         }.bind(this));
 
         init();
     }
+
+    /**
+     * @type {HTMLElement}
+     * @private
+     */
+    XBElement.prototype._node = null;
+
+    /**
+     * @type {Constructor}
+     * @private
+     */
+    XBElement.prototype._component = null;
+
+    /**
+     * @type {MutationObserver}
+     * @private
+     */
+    XBElement.prototype._observer = null;
 
     XBElement.prototype.destroy = function() {
         this._observer.disconnect();
@@ -229,7 +206,7 @@ xblocks.dom.attrs.toObject = function(element) {
                 React.unmountComponentAtNode(this._node);
                 this._component.unmountComponent();
                 this._component = null;
-            } catch (e) {
+            } catch(e) {
             }
         }
     };
@@ -242,10 +219,15 @@ xblocks.dom.attrs.toObject = function(element) {
             return;
         }
 
-        props = _.isPlainObject(props) ? props : {};
-        props = _.extend(this._getNodeProps(), props);
+        props = typeof(props) === 'object' ? props : {};
 
-        this._component.setProps(props);
+        var installProps = this._getNodeProps();
+
+        Object.keys(props).forEach(function(property) {
+            Object.defineProperty(installProps, property, Object.getOwnPropertyDescriptor(props, property));
+        });
+
+        this._component.setProps(installProps);
     };
 
     /**
