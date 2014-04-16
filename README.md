@@ -15,5 +15,10 @@ HTML core custom elements
 
 ##Install
 
-- npm install xblocks-core
-- bower install xblocks-core
+```
+npm install xblocks-core
+```
+
+```
+bower install xblocks-core
+```
