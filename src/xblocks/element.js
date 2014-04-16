@@ -31,17 +31,36 @@
             );
         }.bind(this);
 
-        var observerInit = _.debounce(init, 1);
+        var timeoutId;
 
         this._observer = new MutationObserver(function(records) {
             if (records.some(this._checkParentMutation, this) && this._isMountedComponent()) {
                 this.destroy();
-                observerInit();
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(init, 1);
             }
         }.bind(this));
 
         init();
     }
+
+    /**
+     * @type {HTMLElement}
+     * @private
+     */
+    XBElement.prototype._node = null;
+
+    /**
+     * @type {React:Constructor}
+     * @private
+     */
+    XBElement.prototype._component = null;
+
+    /**
+     * @type {MutationObserver}
+     * @private
+     */
+    XBElement.prototype._observer = null;
 
     XBElement.prototype.destroy = function() {
         this._observer.disconnect();
@@ -64,10 +83,15 @@
             return;
         }
 
-        props = _.isPlainObject(props) ? props : {};
-        props = _.extend(this._getNodeProps(), props);
+        props = typeof(props) === 'object' ? props : {};
 
-        this._component.setProps(props);
+        var installProps = this._getNodeProps();
+
+        Object.keys(props).forEach(function(property) {
+            Object.defineProperty(installProps, property, Object.getOwnPropertyDescriptor(props, property));
+        });
+
+        this._component.setProps(installProps);
     };
 
     /**

@@ -11,28 +11,26 @@
     XBlock.prototype.register = function() {
         var accessors = {};
         var methods = {};
-        var blockName = this._name;
 
-        for (var prop in this) {
-            if (!this.hasOwnProperty(prop)) {
-                continue;
+        Object.keys(this).filter(function(property) {
+            return property.indexOf('_') !== 0;
+
+        }).forEach(function(property) {
+            var descr = Object.getOwnPropertyDescriptor(this, property);
+            var typeProp = typeof(descr.value);
+
+            if (typeProp === 'object') {
+                if (typeof(descr.value.get) === 'function' || typeof(descr.value.set) === 'function') {
+                    Object.defineProperty(accessors, property, descr);
+                }
+
+            } else if (typeProp === 'function') {
+                Object.defineProperty(methods, property, descr);
             }
 
-            if (prop.indexOf('_') === 0) {
-                continue;
-            }
+        }, this);
 
-            if (_.isPlainObject(this[prop]) && (_.isFunction(this[prop].get) || _.isFunction(this[prop].set))) {
-                accessors[prop] = _.cloneDeep(this[prop]);
-                continue;
-            }
-
-            if (_.isFunction(this[prop])) {
-                methods[prop] = _.cloneDeep(this[prop]);
-            }
-        }
-
-        xtag.register(blockName, {
+        xtag.register(this._name, {
             lifecycle: {
                 created: function() {
                     this.xblock = xblocks.element.create(this);
