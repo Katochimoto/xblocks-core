@@ -20,7 +20,9 @@
             var typeProp = typeof(descr.value);
 
             if (typeProp === 'object') {
-                if (typeof(descr.value.get) === 'function' || typeof(descr.value.set) === 'function') {
+                if (typeof(descr.value.get) === 'function' ||
+                    typeof(descr.value.set) === 'function') {
+
                     Object.defineProperty(accessors, property, descr);
                 }
 

@@ -51,7 +51,7 @@
     XBElement.prototype._node = null;
 
     /**
-     * @type {React:Constructor}
+     * @type {Constructor}
      * @private
      */
     XBElement.prototype._component = null;
