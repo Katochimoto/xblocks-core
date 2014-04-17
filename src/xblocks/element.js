@@ -18,31 +18,19 @@
      * @constructor
      */
     function XBElement(node) {
+        this._name = node.tagName.toLowerCase();
         this._node = node;
         this._component = null;
+        this._observer = new MutationObserver(this._callbackMutation.bind(this));
 
-        var name = node.tagName.toLowerCase();
-
-        var init = function() {
-            this._component = React.renderComponent(
-                xblocks.view.get(name)(this._getNodeProps()),
-                this._node,
-                this._observerBind.bind(this)
-            );
-        }.bind(this);
-
-        var timeoutId;
-
-        this._observer = new MutationObserver(function(records) {
-            if (records.some(this._checkParentMutation, this) && this._isMountedComponent()) {
-                this.destroy();
-                clearTimeout(timeoutId);
-                timeoutId = setTimeout(init, 1);
-            }
-        }.bind(this));
-
-        init();
+        this._init(this._callbackInit);
     }
+
+    /**
+     * @type {string}
+     * @private
+     */
+    XBElement.prototype._name = undefined;
 
     /**
      * @type {HTMLElement}
@@ -62,21 +50,27 @@
      */
     XBElement.prototype._observer = null;
 
-    XBElement.prototype.destroy = function() {
-        this._observer.disconnect();
+    /**
+     * @type {number}
+     * @private
+     */
+    XBElement.prototype._timeoutRepaintId = 0;
 
-        if (this._isMountedComponent()) {
-            try {
+    XBElement.prototype.destroy = function() {
+        try {
+            this._observer.disconnect();
+
+            if (this._isMountedComponent()) {
                 React.unmountComponentAtNode(this._node);
                 this._component.unmountComponent();
                 this._component = null;
-            } catch(e) {
             }
+        } catch(e) {
         }
     };
 
     /**
-     * @param {object} props
+     * @param {object} [props]
      */
     XBElement.prototype.update = function(props) {
         if (!this._isMountedComponent()) {
@@ -92,6 +86,76 @@
         });
 
         this._component.setProps(installProps);
+    };
+
+    /**
+     * @param {function} [callback]
+     * @private
+     */
+    XBElement.prototype._init = function(callback) {
+        this._component = React.renderComponent(
+            xblocks.view.get(this._name)(this._getNodeProps()),
+            this._node,
+            this._callbackRender.bind(this, callback)
+        );
+    };
+
+    /**
+     * @private
+     */
+    XBElement.prototype._repaint = function() {
+        this.destroy();
+        this._init(this._callbackRepaint);
+    };
+
+    /**
+     * @private
+     */
+    XBElement.prototype._callbackInit = function() {
+        xtag.fireEvent(this._node, 'xb-created');
+    };
+
+    /**
+     * @private
+     */
+    XBElement.prototype._callbackRepaint = function() {
+        xtag.fireEvent(this._node, 'xb-repaint');
+    };
+
+    /**
+     * @param {function} [callback]
+     * @private
+     */
+    XBElement.prototype._callbackRender = function(callback) {
+        this._observer.observe(this._node, {
+            attributes: true,
+            childList: true,
+            characterData: true,
+            subtree: false,
+            attributeOldValue: false,
+            characterDataOldValue: false
+        });
+
+        if (callback) {
+            callback.call(this);
+        }
+    };
+
+    /**
+     * @param {MutationRecord[]} records
+     * @private
+     */
+    XBElement.prototype._callbackMutation = function(records) {
+        if (this._isMountedComponent()) {
+            // full repaint
+            if (records.some(this._checkChangeNode, this)) {
+                clearTimeout(this._timeoutRepaintId);
+                this._timeoutRepaintId = setTimeout(this._repaint.bind(this), 1);
+
+            } else if (records.some(this._checkChangeAttributes, this)) {
+                this.update();
+            }
+        }
     };
 
     /**
@@ -115,20 +179,17 @@
      * @returns {boolean}
      * @private
      */
-    XBElement.prototype._checkParentMutation = function(record) {
-        return (record.type === 'childList' && record.target === this._node);
+    XBElement.prototype._checkChangeNode = function(record) {
+        return (record.type === 'childList');
     };
 
     /**
+     * @param {MutationRecord} record
+     * @returns {boolean}
      * @private
      */
-    XBElement.prototype._observerBind = function() {
-        this._observer.disconnect();
-        this._observer.observe(this._node, {
-            childList: true,
-            characterData: true,
-            subtree: true
-        });
+    XBElement.prototype._checkChangeAttributes = function(record) {
+        return (record.type === 'attributes');
     };
 
 }(xtag, xblocks, React));
