@@ -15,7 +15,7 @@ HTML core custom elements
 
 ##Example
 ```js
-// define view
+// define jsx view
 xblocks.view.register('xb-ico', React.createClass({
     displayName: 'xb-ico',
 
