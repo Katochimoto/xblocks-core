@@ -1,7 +1,7 @@
 {
   "name": "xblocks-core",
   "description": "HTML core custom elements",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "keywords": [
     "x-tag",
     "React",
