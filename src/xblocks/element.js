@@ -50,12 +50,6 @@
      */
     XBElement.prototype._observer = null;
 
-    /**
-     * @type {number}
-     * @private
-     */
-    XBElement.prototype._timeoutRepaintId = 0;
-
     XBElement.prototype.destroy = function() {
         try {
             this._observer.disconnect();
@@ -94,7 +88,7 @@
      */
     XBElement.prototype._init = function(callback) {
         this._component = React.renderComponent(
-            xblocks.view.get(this._name)(this._getNodeProps()),
+            xblocks.view.get(this._name)(this._getNodeProps(), this._node.innerHTML),
             this._node,
             this._callbackRender.bind(this, callback)
         );
@@ -149,8 +143,7 @@
         if (this._isMountedComponent()) {
             // full repaint
             if (records.some(this._checkChangeNode, this)) {
-                clearTimeout(this._timeoutRepaintId);
-                this._timeoutRepaintId = setTimeout(this._repaint.bind(this), 1);
+                this._repaint();
 
             } else if (records.some(this._checkChangeAttributes, this)) {
                 this.update();
