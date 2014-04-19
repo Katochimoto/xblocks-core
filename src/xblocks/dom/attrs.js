@@ -4,7 +4,7 @@
 xblocks.dom.attrs = {};
 
 xblocks.dom.attrs.ARRTS_BOOLEAN = [
-    'checked', 'selected', 'disabled', 'readonly', 'multiple', 'ismap', 'defer'
+    'checked', 'selected', 'disabled', 'readonly', 'multiple', 'ismap', 'defer', 'autofocus'
 ];
 
 /**
@@ -15,9 +15,9 @@ xblocks.dom.attrs.ARRTS_BOOLEAN = [
 xblocks.dom.attrs.getRealValue = function(name, value) {
     if (value === 'true' ||
         value === 'false' ||
-        (xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1 && name === value)
+        xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1
     ) {
-        return (name === value || value === 'true');
+        return (value === '' || name === value || value === 'true');
     }
 
     return value;
