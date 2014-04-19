@@ -67,6 +67,11 @@ xblocks.view.register('xb-ico', {
 xblocks.create('xb-ico');
 ```
 
+```html
+<!-- element usage -->
+<xb-ico type="notification">8</xb-ico>
+```
+
 
 ##Install
 
