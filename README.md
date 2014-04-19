@@ -31,7 +31,8 @@ xblocks.view.register('xb-ico', {
 
     getDefaultProps: function() {
         return {
-            'size': 'm'
+            'size': 'm',
+            'children': ' '
         };
     },
 
@@ -54,10 +55,8 @@ xblocks.view.register('xb-ico', {
 
         classes = cx(classes);
 
-        var children = this.props.children || ' ';
-
         return (
-            <span className={classes}>{children}</span>
+            <span className={classes}>{this.props.children}</span>
         );
     }
 });
