@@ -20,6 +20,34 @@
 
     namespace.xblocks = xblocks;
 
+    /* xblocks/utils.js begin */
+(function(xblocks) {
+
+    /**
+     * @param {object} to
+     * @param {object} from
+     * @returns {object}
+     */
+    xblocks.merge = function(to, from) {
+        Object.keys(from).forEach(function(property) {
+            Object.defineProperty(to, property, Object.getOwnPropertyDescriptor(from, property));
+        });
+
+        return to;
+    };
+
+    /**
+     * @param {*} param
+     * @returns {string}
+     */
+    xblocks.type = function(param) {
+        return ({}).toString.call(param).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+    };
+
+}(xblocks));
+
+/* xblocks/utils.js end */
+
     /* xblocks/dom.js begin */
 (function(xblocks) {
 
@@ -83,13 +111,22 @@ xblocks.dom.attrs.toObject = function(element) {
     /* xblocks/view.js begin */
 (function(xblocks, React) {
 
+    var XBView = {};
+
     /**
      * @module xblocks.view
      */
     xblocks.view = {};
 
+    /**
+     * @param {string} blockName
+     * @param {object} component
+     */
     xblocks.view.register = function(blockName, component) {
-        React.DOM[blockName] = component;
+        component.mixins = Array.isArray(component.mixins) ? component.mixins: [];
+        component.mixins.push(XBView);
+
+        return (React.DOM[blockName] = React.createClass(component));
     };
 
     xblocks.view.get = function(blockName) {
@@ -150,7 +187,7 @@ xblocks.dom.attrs.toObject = function(element) {
         this._component = null;
         this._observer = new MutationObserver(this._callbackMutation.bind(this));
 
-        this._init(this._callbackInit);
+        this._init(null, this._callbackInit);
     }
 
     /**
@@ -198,24 +235,27 @@ xblocks.dom.attrs.toObject = function(element) {
             return;
         }
 
-        props = typeof(props) === 'object' ? props : {};
-
-        var installProps = this._getNodeProps();
-
-        Object.keys(props).forEach(function(property) {
-            Object.defineProperty(installProps, property, Object.getOwnPropertyDescriptor(props, property));
-        });
-
-        this._component.setProps(installProps);
+        this._component.setProps(this._getNodeProps(props));
     };
 
     /**
+     * @param {object} [props]
      * @param {function} [callback]
      * @private
      */
-    XBElement.prototype._init = function(callback) {
+    XBElement.prototype._init = function(props, callback) {
+        if (this._isMountedComponent()) {
+            return;
+        }
+
+        var view = xblocks.view.get(this._name);
+
+        // save last children and props after repaint
+        var nextProps = this._getNodeProps(props);
+        var children = this._node.innerHTML || nextProps.children;
+
         this._component = React.renderComponent(
-            xblocks.view.get(this._name)(this._getNodeProps(), this._node.innerHTML),
+            view(nextProps, children),
             this._node,
             this._callbackRender.bind(this, callback)
         );
@@ -225,8 +265,9 @@ xblocks.dom.attrs.toObject = function(element) {
      * @private
      */
     XBElement.prototype._repaint = function() {
+        var lastProps = this._isMountedComponent() ? this._component.props : null;
         this.destroy();
-        this._init(this._callbackRepaint);
+        this._init(lastProps, this._callbackRepaint);
     };
 
     /**
@@ -267,22 +308,31 @@ xblocks.dom.attrs.toObject = function(element) {
      * @private
      */
     XBElement.prototype._callbackMutation = function(records) {
-        if (this._isMountedComponent()) {
-            // full repaint
-            if (records.some(this._checkChangeNode, this)) {
-                this._repaint();
+        if (!this._isMountedComponent()) {
+            return;
+        }
 
-            } else if (records.some(this._checkChangeAttributes, this)) {
-                this.update();
-            }
+        // full repaint
+        if (records.some(this._checkChangeNode, this)) {
+            this._repaint();
+
+        } else if (records.some(this._checkChangeAttributes, this)) {
+            this.update();
         }
     };
 
     /**
+     * @param {object} [props]
      * @returns {object}
      */
-    XBElement.prototype._getNodeProps = function() {
-        return xblocks.dom.attrs.toObject(this._node);
+    XBElement.prototype._getNodeProps = function(props) {
+        var nodeProps = xblocks.dom.attrs.toObject(this._node);
+
+        if (xblocks.type(props) === 'object') {
+            xblocks.merge(nodeProps, props);
+        }
+
+        return nodeProps;
     };
 
     /**

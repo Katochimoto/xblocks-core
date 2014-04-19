@@ -23,7 +23,7 @@
         this._component = null;
         this._observer = new MutationObserver(this._callbackMutation.bind(this));
 
-        this._init(this._callbackInit);
+        this._init(null, this._callbackInit);
     }
 
     /**
@@ -71,24 +71,27 @@
             return;
         }
 
-        props = typeof(props) === 'object' ? props : {};
-
-        var installProps = this._getNodeProps();
-
-        Object.keys(props).forEach(function(property) {
-            Object.defineProperty(installProps, property, Object.getOwnPropertyDescriptor(props, property));
-        });
-
-        this._component.setProps(installProps);
+        this._component.setProps(this._getNodeProps(props));
     };
 
     /**
+     * @param {object} [props]
      * @param {function} [callback]
      * @private
      */
-    XBElement.prototype._init = function(callback) {
+    XBElement.prototype._init = function(props, callback) {
+        if (this._isMountedComponent()) {
+            return;
+        }
+
+        var view = xblocks.view.get(this._name);
+
+        // save last children and props after repaint
+        var nextProps = this._getNodeProps(props);
+        var children = this._node.innerHTML || nextProps.children;
+
         this._component = React.renderComponent(
-            xblocks.view.get(this._name)(this._getNodeProps(), this._node.innerHTML),
+            view(nextProps, children),
             this._node,
             this._callbackRender.bind(this, callback)
         );
@@ -98,8 +101,9 @@
      * @private
      */
     XBElement.prototype._repaint = function() {
+        var lastProps = this._isMountedComponent() ? this._component.props : null;
         this.destroy();
-        this._init(this._callbackRepaint);
+        this._init(lastProps, this._callbackRepaint);
     };
 
     /**
@@ -140,22 +144,31 @@
      * @private
      */
     XBElement.prototype._callbackMutation = function(records) {
-        if (this._isMountedComponent()) {
-            // full repaint
-            if (records.some(this._checkChangeNode, this)) {
-                this._repaint();
+        if (!this._isMountedComponent()) {
+            return;
+        }
 
-            } else if (records.some(this._checkChangeAttributes, this)) {
-                this.update();
-            }
+        // full repaint
+        if (records.some(this._checkChangeNode, this)) {
+            this._repaint();
+
+        } else if (records.some(this._checkChangeAttributes, this)) {
+            this.update();
         }
     };
 
     /**
+     * @param {object} [props]
      * @returns {object}
      */
-    XBElement.prototype._getNodeProps = function() {
-        return xblocks.dom.attrs.toObject(this._node);
+    XBElement.prototype._getNodeProps = function(props) {
+        var nodeProps = xblocks.dom.attrs.toObject(this._node);
+
+        if (xblocks.type(props) === 'object') {
+            xblocks.merge(nodeProps, props);
+        }
+
+        return nodeProps;
     };
 
     /**

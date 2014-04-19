@@ -16,7 +16,7 @@ HTML core custom elements
 ##Example
 ```js
 // define jsx view
-xblocks.view.register('xb-ico', React.createClass({
+xblocks.view.register('xb-ico', {
     displayName: 'xb-ico',
 
     propTypes: {
@@ -54,13 +54,13 @@ xblocks.view.register('xb-ico', React.createClass({
 
         classes = cx(classes);
 
-        var value = this.props.value || ' ';
+        var children = this.props.children || ' ';
 
         return (
-            <span className={classes}>{value}</span>
+            <span className={classes}>{children}</span>
         );
     }
-}));
+});
 ```
 
 ```js
@@ -74,7 +74,6 @@ xblocks.create('xb-ico');
 ```
 npm install xblocks-core
 ```
-
 ```
 bower install xblocks-core
 ```
