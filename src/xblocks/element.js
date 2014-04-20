@@ -70,15 +70,15 @@
     XBElement.prototype._observer = null;
 
     XBElement.prototype.destroy = function() {
-        try {
-            this._observer.disconnect();
+        React.unmountComponentAtNode(this._node);
+        this.unmount();
+    };
 
-            if (this._isMountedComponent()) {
-                React.unmountComponentAtNode(this._node);
-                this._component.unmountComponent();
-                this._component = null;
-            }
-        } catch(e) {
+    XBElement.prototype.unmount = function() {
+        this._observer.disconnect();
+        if (this._isMountedComponent()) {
+            this._component.unmountComponent();
+            this._component = null;
         }
     };
 
