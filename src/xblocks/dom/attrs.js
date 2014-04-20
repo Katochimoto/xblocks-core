@@ -4,7 +4,7 @@
 xblocks.dom.attrs = {};
 
 xblocks.dom.attrs.ARRTS_BOOLEAN = [
-    'checked', 'selected', 'disabled', 'readonly', 'multiple', 'ismap', 'defer', 'autofocus'
+    'checked', 'selected', 'disabled', 'readonly', 'multiple', 'ismap', 'defer', 'autofocus', 'static'
 ];
 
 /**

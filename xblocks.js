@@ -215,7 +215,7 @@
 xblocks.dom.attrs = {};
 
 xblocks.dom.attrs.ARRTS_BOOLEAN = [
-    'checked', 'selected', 'disabled', 'readonly', 'multiple', 'ismap', 'defer', 'autofocus'
+    'checked', 'selected', 'disabled', 'readonly', 'multiple', 'ismap', 'defer', 'autofocus', 'static'
 ];
 
 /**
@@ -350,8 +350,6 @@ xblocks.dom.attrs.toObject = function(element) {
     function XBElement(node) {
         this._name = node.tagName.toLowerCase();
         this._node = node;
-        this._component = null;
-        this._observer = new MutationObserver(this._callbackMutation.bind(this));
 
         this._init(null, this._callbackInit);
     }
@@ -392,7 +390,10 @@ xblocks.dom.attrs.toObject = function(element) {
      * Unmounts a component
      */
     XBElement.prototype.unmount = function() {
-        this._observer.disconnect();
+        if (this._observer) {
+            this._observer.disconnect();
+        }
+
         if (this._isMountedComponent()) {
             this._component.unmountComponent();
             this._component = null;
@@ -409,18 +410,24 @@ xblocks.dom.attrs.toObject = function(element) {
         }
 
         var nextProps = this._getNodeProps(props);
+        var action;
 
         if (Array.isArray(removeProps) && removeProps.length) {
+            action = 'replaceProps';
             var currentProps = this._getCurrentProps();
             nextProps = xblocks.merge(currentProps, nextProps);
             nextProps = xblocks.filterObject(nextProps, function(name) {
                 return removeProps.indexOf(name) === -1;
             });
 
-            this._component.replaceProps(nextProps);
-
         } else {
-            this._component.setProps(nextProps);
+            action = 'setProps';
+        }
+
+        if (nextProps.hasOwnProperty('static')) {
+            this._repaint();
+        } else {
+            this._component[action](nextProps);
         }
     };
 
@@ -440,11 +447,17 @@ xblocks.dom.attrs.toObject = function(element) {
         var nextProps = this._getNodeProps(props);
         var children = this._node.innerHTML || nextProps.children;
 
-        this._component = React.renderComponent(
-            view(nextProps, children),
-            this._node,
-            this._callbackRender.bind(this, callback)
-        );
+        if (nextProps.static) {
+            this.unmount();
+            xtag.innerHTML(this._node, React.renderComponentToString(view(nextProps, children)));
+
+        } else {
+            this._component = React.renderComponent(
+                view(nextProps, children),
+                this._node,
+                this._callbackRender.bind(this, callback)
+            );
+        }
     };
 
     /**
@@ -460,14 +473,23 @@ xblocks.dom.attrs.toObject = function(element) {
      * @private
      */
     XBElement.prototype._callbackInit = function() {
-        xtag.fireEvent(this._node, 'xb-created');
+        xtag.fireEvent(this._node, 'xb-created', {
+            bubbles: false,
+            cancelable: false,
+            detail: {
+                xblock: this
+            }
+        });
     };
 
     /**
      * @private
      */
     XBElement.prototype._callbackRepaint = function() {
-        xtag.fireEvent(this._node, 'xb-repaint');
+        xtag.fireEvent(this._node, 'xb-repaint', {
+            bubbles: false,
+            cancelable: false
+        });
     };
 
     /**
@@ -475,6 +497,10 @@ xblocks.dom.attrs.toObject = function(element) {
      * @private
      */
     XBElement.prototype._callbackRender = function(callback) {
+        if (!this._observer) {
+            this._observer = new MutationObserver(this._callbackMutation.bind(this));
+        }
+
         this._observer.observe(this._node, {
             attributes: true,
             childList: true,
