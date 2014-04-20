@@ -163,11 +163,14 @@
         }
 
         // full repaint
-        if (records.some(this._checkChangeNode, this)) {
+        if (records.some(this._checkNodeChange)) {
             this._repaint();
 
-        } else if (records.some(this._checkAttributesChange, this)) {
-            var removeAttrs = records.filter(this._filterAttributesRemove, this).map(this._mapAttributesName);
+        } else if (records.some(this._checkAttributesChange)) {
+
+            var removeAttrs = records
+                .filter(this._filterAttributesRemove, this)
+                .map(this._mapAttributesName);
 
             this.update(null, removeAttrs);
         }
@@ -205,7 +208,7 @@
      * @returns {boolean}
      * @private
      */
-    XBElement.prototype._checkChangeNode = function(record) {
+    XBElement.prototype._checkNodeChange = function(record) {
         return (record.type === 'childList');
     };
 
