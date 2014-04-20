@@ -24,11 +24,15 @@
 (function(xblocks) {
 
     /**
-     * @param {object} to
+     * @param {?object} to
      * @param {object} from
      * @returns {object}
      */
     xblocks.merge = function(to, from) {
+        if (xblocks.type(to) !== 'object') {
+            to = {};
+        }
+
         Object.keys(from).forEach(function(property) {
             Object.defineProperty(to, property, Object.getOwnPropertyDescriptor(from, property));
         });
@@ -42,6 +46,112 @@
      */
     xblocks.type = function(param) {
         return ({}).toString.call(param).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+    };
+
+    xblocks.noop = function() {};
+
+    /**
+     * @param {*} x
+     * @param {*} y
+     * @returns {boolean}
+     */
+    xblocks.equals = function(x, y) {
+        if (x === y) {
+            return true;
+        }
+
+        if (!(x instanceof Object) || !(y instanceof Object)) {
+            return false;
+        }
+
+        if (x.constructor !== y.constructor) {
+            return false;
+        }
+
+        for (var p in x) {
+            if (!x.hasOwnProperty(p)) {
+                continue;
+            }
+
+            if (!y.hasOwnProperty(p)) {
+                return false;
+            }
+
+            if (x[p] === y[p]) {
+                continue;
+            }
+
+            if (typeof(x[p]) !== 'object') {
+                return false;
+            }
+
+            if (!xblocks.equals(x[p], y[p])) {
+                return false;
+            }
+        }
+
+        for (p in y) {
+            if (y.hasOwnProperty(p) && !x.hasOwnProperty(p)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    /**
+     * @param {*} obj
+     * @returns {boolean}
+     */
+    xblocks.isEmptyObject = function(obj) {
+        if (xblocks.type(obj) !== 'object') {
+            return true;
+        }
+
+        for (var i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    /**
+     * @param {object} from
+     * @param {function} [callback]
+     * @returns {object}
+     */
+    xblocks.filterObject = function(from, callback) {
+        var out = {};
+
+        Object.keys(from).forEach(function(property) {
+            var descr = Object.getOwnPropertyDescriptor(from, property);
+            if (callback && callback(property, descr)) {
+                Object.defineProperty(out, property, descr);
+            }
+        });
+
+        return out;
+    };
+
+    /**
+     * @param {object} from
+     * @param {function} [callback]
+     * @returns {object}
+     */
+    xblocks.mapObject = function(from, callback) {
+        var out = {};
+
+        Object.keys(from).forEach(function(property) {
+            var descr = Object.getOwnPropertyDescriptor(from, property);
+            var map = callback && callback(property, descr);
+            if (xblocks.type(map) === 'object') {
+                Object.defineProperty(out, map.name, map.descr);
+            }
+        });
+
+        return out;
     };
 
 }(xblocks));
@@ -229,13 +339,27 @@ xblocks.dom.attrs.toObject = function(element) {
 
     /**
      * @param {object} [props]
+     * @param {array} [removeProps]
      */
-    XBElement.prototype.update = function(props) {
+    XBElement.prototype.update = function(props, removeProps) {
         if (!this._isMountedComponent()) {
             return;
         }
 
-        this._component.setProps(this._getNodeProps(props));
+        var nextProps = this._getNodeProps(props);
+
+        if (Array.isArray(removeProps) && removeProps.length) {
+            var currentProps = this._getCurrentProps();
+            nextProps = xblocks.merge(currentProps, nextProps);
+            nextProps = xblocks.filterObject(nextProps, function(name) {
+                return removeProps.indexOf(name) === -1;
+            });
+
+            this._component.replaceProps(nextProps);
+
+        } else {
+            this._component.setProps(nextProps);
+        }
     };
 
     /**
@@ -265,9 +389,9 @@ xblocks.dom.attrs.toObject = function(element) {
      * @private
      */
     XBElement.prototype._repaint = function() {
-        var lastProps = this._isMountedComponent() ? this._component.props : null;
+        var currentProps = this._getCurrentProps();
         this.destroy();
-        this._init(lastProps, this._callbackRepaint);
+        this._init(currentProps, this._callbackRepaint);
     };
 
     /**
@@ -316,8 +440,10 @@ xblocks.dom.attrs.toObject = function(element) {
         if (records.some(this._checkChangeNode, this)) {
             this._repaint();
 
-        } else if (records.some(this._checkChangeAttributes, this)) {
-            this.update();
+        } else if (records.some(this._checkAttributesChange, this)) {
+            var removeAttrs = records.filter(this._filterAttributesRemove, this).map(this._mapAttributesName);
+
+            this.update(null, removeAttrs);
         }
     };
 
@@ -344,6 +470,10 @@ xblocks.dom.attrs.toObject = function(element) {
         return (this._component && this._component.isMounted());
     };
 
+    XBElement.prototype._getCurrentProps = function() {
+        return this._isMountedComponent() ? this._component.props : null;
+    };
+
     /**
      * @param {MutationRecord} record
      * @returns {boolean}
@@ -358,8 +488,26 @@ xblocks.dom.attrs.toObject = function(element) {
      * @returns {boolean}
      * @private
      */
-    XBElement.prototype._checkChangeAttributes = function(record) {
+    XBElement.prototype._checkAttributesChange = function(record) {
         return (record.type === 'attributes');
+    };
+
+    /**
+     * @param {MutationRecord} record
+     * @returns {boolean}
+     * @private
+     */
+    XBElement.prototype._filterAttributesRemove = function(record) {
+        return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
+    };
+
+    /**
+     * @param {MutationRecord} record
+     * @returns {string}
+     * @private
+     */
+    XBElement.prototype._mapAttributesName = function(record) {
+        return record.attributeName;
     };
 
 }(xtag, xblocks, React));

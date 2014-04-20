@@ -65,13 +65,27 @@
 
     /**
      * @param {object} [props]
+     * @param {array} [removeProps]
      */
-    XBElement.prototype.update = function(props) {
+    XBElement.prototype.update = function(props, removeProps) {
         if (!this._isMountedComponent()) {
             return;
         }
 
-        this._component.setProps(this._getNodeProps(props));
+        var nextProps = this._getNodeProps(props);
+
+        if (Array.isArray(removeProps) && removeProps.length) {
+            var currentProps = this._getCurrentProps();
+            nextProps = xblocks.merge(currentProps, nextProps);
+            nextProps = xblocks.filterObject(nextProps, function(name) {
+                return removeProps.indexOf(name) === -1;
+            });
+
+            this._component.replaceProps(nextProps);
+
+        } else {
+            this._component.setProps(nextProps);
+        }
     };
 
     /**
@@ -101,9 +115,9 @@
      * @private
      */
     XBElement.prototype._repaint = function() {
-        var lastProps = this._isMountedComponent() ? this._component.props : null;
+        var currentProps = this._getCurrentProps();
         this.destroy();
-        this._init(lastProps, this._callbackRepaint);
+        this._init(currentProps, this._callbackRepaint);
     };
 
     /**
@@ -152,8 +166,10 @@
         if (records.some(this._checkChangeNode, this)) {
             this._repaint();
 
-        } else if (records.some(this._checkChangeAttributes, this)) {
-            this.update();
+        } else if (records.some(this._checkAttributesChange, this)) {
+            var removeAttrs = records.filter(this._filterAttributesRemove, this).map(this._mapAttributesName);
+
+            this.update(null, removeAttrs);
         }
     };
 
@@ -180,6 +196,10 @@
         return (this._component && this._component.isMounted());
     };
 
+    XBElement.prototype._getCurrentProps = function() {
+        return this._isMountedComponent() ? this._component.props : null;
+    };
+
     /**
      * @param {MutationRecord} record
      * @returns {boolean}
@@ -194,8 +214,26 @@
      * @returns {boolean}
      * @private
      */
-    XBElement.prototype._checkChangeAttributes = function(record) {
+    XBElement.prototype._checkAttributesChange = function(record) {
         return (record.type === 'attributes');
+    };
+
+    /**
+     * @param {MutationRecord} record
+     * @returns {boolean}
+     * @private
+     */
+    XBElement.prototype._filterAttributesRemove = function(record) {
+        return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
+    };
+
+    /**
+     * @param {MutationRecord} record
+     * @returns {string}
+     * @private
+     */
+    XBElement.prototype._mapAttributesName = function(record) {
+        return record.attributeName;
     };
 
 }(xtag, xblocks, React));
