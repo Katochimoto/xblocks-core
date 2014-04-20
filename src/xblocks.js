@@ -3,6 +3,21 @@
     'use strict';
 
     /**
+     * MutationObserver provides developers a way to react to changes in a DOM
+     * @typedef {Object} MutationObserver
+     * @property {Function} disconnect
+     * @property {Function} observe
+     */
+
+    /**
+     * MutationRecord is the object that will be passed to the observer's callback
+     * @typedef {Object} MutationRecord
+     * @property {String} attributeName
+     * @property {String} type
+     */
+
+
+    /**
      * @namespace xtag
      */
 

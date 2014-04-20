@@ -1,24 +1,5 @@
 (function(xtag, xblocks, React) {
 
-
-
-
-    /**
-     * MutationObserver provides developers a way to react to changes in a DOM
-     * @typedef {Object} MutationObserver
-     * @property {Function} disconnect
-     * @property {Function} observe
-     */
-
-    /**
-     * MutationRecord is the object that will be passed to the observer's callback
-     * @typedef {Object} MutationRecord
-     * @property {String} attributeName
-     * @property {String} type
-     */
-
-
-
     /**
      * @module xblocks.element
      */
@@ -69,11 +50,17 @@
      */
     XBElement.prototype._observer = null;
 
+    /**
+     * Unmounts a component and removes it from the DOM
+     */
     XBElement.prototype.destroy = function() {
         React.unmountComponentAtNode(this._node);
         this.unmount();
     };
 
+    /**
+     * Unmounts a component
+     */
     XBElement.prototype.unmount = function() {
         this._observer.disconnect();
         if (this._isMountedComponent()) {
