@@ -424,7 +424,7 @@ xblocks.dom.attrs.toObject = function(element) {
             action = 'setProps';
         }
 
-        if (nextProps.hasOwnProperty('static')) {
+        if (nextProps.hasOwnProperty('xb-static')) {
             this._repaint();
         } else {
             this._component[action](nextProps);
@@ -447,7 +447,7 @@ xblocks.dom.attrs.toObject = function(element) {
         var nextProps = this._getNodeProps(props);
         var children = this._node.innerHTML || nextProps.children;
 
-        if (nextProps.static) {
+        if (nextProps.hasOwnProperty('xb-static')) {
             this.unmount();
             xtag.innerHTML(this._node, React.renderComponentToString(view(nextProps, children)));
 
