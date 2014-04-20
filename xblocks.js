@@ -3,7 +3,34 @@
     'use strict';
 
     /**
-     * @module xblocks
+     * @namespace xtag
+     */
+
+    /**
+     * @namespace React
+     * @property {Function} unmountComponentAtNode
+     * @property {Function} renderComponent
+     * @property {Function} createClass
+     */
+
+    /**
+     * @namespace React.DOM
+     */
+
+    /**
+     * React constructor component
+     * @typedef {Function} Constructor
+     * @property {Function} unmountComponent
+     * @property {Function} replaceProps
+     * @property {Function} setProps
+     * @property {Function} isMounted
+     *
+     */
+
+
+
+    /**
+     * @namespace xblocks
      */
     var xblocks = {};
 
@@ -250,14 +277,28 @@ xblocks.dom.attrs.toObject = function(element) {
     /* xblocks/block.js begin */
 (function(xtag, xblocks) {
 
+    /**
+     * @param {String} blockName
+     * @param {Object} options
+     * @returns {HTMLElement}
+     */
     xblocks.create = function(blockName, options) {
         options = typeof(options) === 'object' ? options : {};
 
         options.lifecycle = {
+            /**
+             * @this {HTMLElement}
+             */
             created: function() {
+                /**
+                 * @type {XBElement}
+                 */
                 this.xblock = xblocks.element.create(this);
             },
 
+            /**
+             * @this {HTMLElement}
+             */
             removed: function() {
                 this.xblock.destroy();
                 delete this.xblock;
@@ -273,6 +314,25 @@ xblocks.dom.attrs.toObject = function(element) {
 
     /* xblocks/element.js begin */
 (function(xtag, xblocks, React) {
+
+
+
+
+    /**
+     * MutationObserver provides developers a way to react to changes in a DOM
+     * @typedef {Object} MutationObserver
+     * @property {Function} disconnect
+     * @property {Function} observe
+     */
+
+    /**
+     * MutationRecord is the object that will be passed to the observer's callback
+     * @typedef {Object} MutationRecord
+     * @property {String} attributeName
+     * @property {String} type
+     */
+
+
 
     /**
      * @module xblocks.element
@@ -339,7 +399,7 @@ xblocks.dom.attrs.toObject = function(element) {
 
     /**
      * @param {object} [props]
-     * @param {array} [removeProps]
+     * @param {Array} [removeProps]
      */
     XBElement.prototype.update = function(props, removeProps) {
         if (!this._isMountedComponent()) {
