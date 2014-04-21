@@ -410,8 +410,10 @@ xblocks.dom.attrs.toObject = function(element) {
         }
 
         var nextProps = this._getNodeProps(props);
-        var action;
+        var action = 'setProps';
 
+        // merge of new and current properties
+        // and the exclusion of remote properties
         if (Array.isArray(removeProps) && removeProps.length) {
             action = 'replaceProps';
             var currentProps = this._getCurrentProps();
@@ -419,9 +421,6 @@ xblocks.dom.attrs.toObject = function(element) {
             nextProps = xblocks.filterObject(nextProps, function(name) {
                 return removeProps.indexOf(name) === -1;
             });
-
-        } else {
-            action = 'setProps';
         }
 
         if (nextProps.hasOwnProperty('xb-static')) {
@@ -441,19 +440,22 @@ xblocks.dom.attrs.toObject = function(element) {
             return;
         }
 
-        var view = xblocks.view.get(this._name);
-
         // save last children and props after repaint
         var nextProps = this._getNodeProps(props);
+        // TODO fix the search for static content item
         var children = this._node.innerHTML || nextProps.children;
+        var view = xblocks.view.get(this._name)(nextProps, children);
 
         if (nextProps.hasOwnProperty('xb-static')) {
             this.unmount();
-            xtag.innerHTML(this._node, React.renderComponentToString(view(nextProps, children)));
+            xtag.innerHTML(
+                this._node,
+                React.renderComponentToString(view)
+            );
 
         } else {
             this._component = React.renderComponent(
-                view(nextProps, children),
+                view,
                 this._node,
                 this._callbackRender.bind(this, callback)
             );
@@ -476,9 +478,7 @@ xblocks.dom.attrs.toObject = function(element) {
         xtag.fireEvent(this._node, 'xb-created', {
             bubbles: false,
             cancelable: false,
-            detail: {
-                xblock: this
-            }
+            detail: { xblock: this }
         });
     };
 
