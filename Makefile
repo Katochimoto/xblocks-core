@@ -7,10 +7,10 @@ node_modules: package.json
 	touch node_modules
 
 build: node_modules
-	./node_modules/.bin/borschik -m no -i src/xblocks.js -o xblocks.js
+	./node_modules/.bin/borschik -m no -i src/xblocks.js -o xblocks-core.js
 
 prod: build
-	./node_modules/.bin/borschik -i src/xblocks.js -o xblocks.min.js
+	./node_modules/.bin/borschik -i src/xblocks.js -o xblocks-core.min.js
 
 test: node_modules
 	./node_modules/.bin/mocha --reporter dot $(TESTS)

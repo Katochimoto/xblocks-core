@@ -1,7 +1,7 @@
 {
   "name": "xblocks-core",
   "version": "0.0.13",
-  "main": "xblocks.js",
+  "main": "xblocks-core.js",
   "ignore": [
     ".npmignore",
     ".idea",

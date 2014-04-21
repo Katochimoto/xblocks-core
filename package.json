@@ -32,7 +32,7 @@
   "scripts": {
     "test": "make test"
   },
-  "main": "xblocks.js",
+  "main": "xblocks-core.js",
   "directories": {
     "test": "test"
   }
