@@ -71,9 +71,7 @@
      * @returns {object}
      */
     xblocks.merge = function(to, from) {
-        if (xblocks.type(to) !== 'object') {
-            to = {};
-        }
+        to = (xblocks.type(to) === 'object') ? to : {};
 
         Object.keys(from).forEach(function(property) {
             Object.defineProperty(to, property, Object.getOwnPropertyDescriptor(from, property));
