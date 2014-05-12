@@ -158,7 +158,8 @@
     XBElement.prototype._callbackRepaint = function() {
         xtag.fireEvent(this._node, 'xb-repaint', {
             bubbles: false,
-            cancelable: false
+            cancelable: false,
+            detail: { xblock: this }
         });
     };
 
