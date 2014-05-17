@@ -20,6 +20,8 @@ xblocks.view.register('xb-ico', {
     displayName: 'xb-ico',
 
     propTypes: {
+        '_uid': React.PropTypes.string,
+        
         'id': React.PropTypes.string,
         'class': React.PropTypes.string,
         'alt': React.PropTypes.string,
@@ -56,7 +58,7 @@ xblocks.view.register('xb-ico', {
         classes = cx(classes);
 
         return (
-            <span className={classes}>{this.props.children}</span>
+            <span className={classes} data-xb-content={this.props._uid}>{this.props.children}</span>
         );
     }
 });
