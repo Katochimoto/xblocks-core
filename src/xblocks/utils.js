@@ -7,7 +7,6 @@
         var i = 1;
         var target = arguments[0] || {};
         var deep = false;
-        var options;
 
         if (xblocks.type(target) === 'boolean') {
             deep = target;
@@ -24,22 +23,22 @@
             i--;
         }
 
-        for (; i < length; i++) {
-            options = arguments[i];
-            if (options !== null) {
-                Object.keys(options).forEach(function(property) {
-                    var descr = Object.getOwnPropertyDescriptor(options, property);
+        Array.prototype.slice.call(arguments, i).filter(function(arg) {
+            return arg !== null;
 
-                    if (deep && xblocks.type(descr.value) === 'object') {
-                        var src = target[property];
-                        var clone = src && xblocks.isPlainObject(src) ? src : {};
-                        descr.value = xblocks.merge(deep, clone, descr.value);
-                    }
+        }).forEach(function(options) {
+            Object.keys(options).forEach(function(property) {
+                var descr = Object.getOwnPropertyDescriptor(options, property);
 
-                    Object.defineProperty(target, property, descr);
-                });
-            }
-        }
+                if (deep && xblocks.type(descr.value) === 'object') {
+                    var src = target[property];
+                    var clone = src && xblocks.isPlainObject(src) ? src : {};
+                    descr.value = xblocks.merge(deep, clone, descr.value);
+                }
+
+                Object.defineProperty(target, property, descr);
+            });
+        });
 
         return target;
     };
