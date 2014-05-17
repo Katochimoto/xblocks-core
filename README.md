@@ -33,8 +33,9 @@ xblocks.view.register('xb-ico', {
 
     getDefaultProps: function() {
         return {
+            '_uid': '',
             'size': 'm',
-            'children': ' '
+            'children': String.fromCharCode(160)
         };
     },
 
