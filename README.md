@@ -40,12 +40,10 @@ xblocks.view.register('xb-ico', {
     },
 
     render: function() {
-        var cx = React.addons.classSet;
         var classes = {
             'xb-ico': true,
             'xb-ico_active': this.props.active,
-            'is-disabled': this.props.disabled,
-            '_content': true
+            'is-disabled': this.props.disabled
         };
 
         if (this.props.type) {
@@ -56,7 +54,7 @@ xblocks.view.register('xb-ico', {
             classes['xb-ico_size_' + this.props.size] = true;
         }
 
-        classes = cx(classes);
+        classes = React.addons.classSet(classes);
 
         return (
             <span className={classes} data-xb-content={this.props._uid}>{this.props.children}</span>
