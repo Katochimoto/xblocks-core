@@ -22,7 +22,7 @@
         this._name = node.tagName.toLowerCase();
         this._node = node;
 
-        this._init(null, this._getNodeContent(), this._callbackInit);
+        this._init(this._getNodeProps(), this._getNodeContent(), this._callbackInit);
     }
 
     /**
@@ -86,8 +86,10 @@
             return;
         }
 
-        var nextProps = this._getNodeProps(props);
+        var nextProps = this._getNodeProps();
         var action = 'setProps';
+
+        xblocks.merge(true, nextProps, props);
 
         // merge of new and current properties
         // and the exclusion of remote properties
@@ -102,6 +104,7 @@
 
         if (nextProps.hasOwnProperty('xb-static')) {
             this._repaint();
+
         } else {
             this._component[action](nextProps);
         }
@@ -118,13 +121,11 @@
             return;
         }
 
-        // save last children and props after repaint
-        var nextProps = this._getNodeProps(props);
-        nextProps['_uid'] = this._uid;
+        props['_uid'] = this._uid;
 
-        var view = xblocks.view.get(this._name)(nextProps, children);
+        var view = xblocks.view.get(this._name)(props, children);
 
-        if (nextProps.hasOwnProperty('xb-static')) {
+        if (props.hasOwnProperty('xb-static')) {
             this.unmount();
             xtag.innerHTML(
                 this._node,
@@ -144,10 +145,10 @@
      * @private
      */
     XBElement.prototype._repaint = function() {
-        var currentProps = this._getCurrentProps();
+        var props = xblocks.merge(true, this._getNodeProps(), this._getCurrentProps());
         var children = this._getNodeContent();
         this.destroy();
-        this._init(currentProps, children, this._callbackRepaint);
+        this._init(props, children, this._callbackRepaint);
     };
 
     /**
@@ -219,17 +220,21 @@
     };
 
     /**
-     * @param {object} [props]
      * @returns {object}
      */
-    XBElement.prototype._getNodeProps = function(props) {
-        var nodeProps = xblocks.dom.attrs.toObject(this._node);
+    XBElement.prototype._getNodeProps = function() {
+        return xblocks.dom.attrs.toObject(this._node);
+    };
 
-        if (xblocks.isPlainObject(props)) {
-            xblocks.merge(true, nodeProps, props);
+    /**
+     * @returns {?HTMLElement}
+     * @private
+     */
+    XBElement.prototype._getNodeContentElement = function() {
+        var contents = xtag.query(this._node, '[data-xb-content="' + this._uid + '"]');
+        if (contents.length === 1) {
+            return contents[0];
         }
-
-        return nodeProps;
     };
 
     /**
@@ -241,10 +246,9 @@
             return this._component.props.children;
         }
 
-        var contents = xtag.query(this._node, '[data-xb-content="' + this._uid + '"]');
-
-        if (contents.length === 1) {
-            return contents[0].innerHTML;
+        var contentElement = this._getNodeContentElement();
+        if (contentElement) {
+            return contentElement.innerHTML;
         }
 
         return this._node.innerHTML;
@@ -259,10 +263,9 @@
             this.update({ children: content });
 
         } else {
-            var contents = xtag.query(this._node, '[data-xb-content="' + this._uid + '"]');
-
-            if (contents.length === 1) {
-                xtag.innerHTML(contents[0], content);
+            var contentElement = this._getNodeContentElement();
+            if (contentElement) {
+                xtag.innerHTML(contentElement, content);
             }
         }
     };

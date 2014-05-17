@@ -28,7 +28,7 @@
         }
 
         Array.prototype.slice.call(arguments, i).filter(function(arg) {
-            return arg !== null;
+            return xblocks.type(arg) === 'object';
 
         }).forEach(function(options) {
             Object.keys(options).forEach(function(property) {
