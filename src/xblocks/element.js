@@ -257,10 +257,13 @@
     XBElement.prototype._setNodeContent = function(content) {
         if (this._isMountedComponent()) {
             this.update({ children: content });
+
         } else {
-            xtag.query(this._node, '[data-xb-content="' + this._uid + '"]').forEach(function(element) {
-                xtag.innerHTML(element, content);
-            });
+            var contents = xtag.query(this._node, '[data-xb-content="' + this._uid + '"]');
+
+            if (contents.length === 1) {
+                xtag.innerHTML(contents[0], content);
+            }
         }
     };
 
@@ -273,6 +276,10 @@
         return (this._component && this._component.isMounted());
     };
 
+    /**
+     * @returns {?object}
+     * @private
+     */
     XBElement.prototype._getCurrentProps = function() {
         return this._isMountedComponent() ? this._component.props : null;
     };

@@ -352,7 +352,7 @@ xblocks.dom.attrs.toObject = function(element) {
      * @returns {HTMLElement}
      */
     xblocks.create = function(blockName, options) {
-        options = typeof(options) === 'object' ? options : {};
+        options = xblocks.isPlainObject(options) ? options : {};
 
         xblocks.merge(true, options, {
             lifecycle: {
@@ -675,10 +675,13 @@ xblocks.dom.attrs.toObject = function(element) {
     XBElement.prototype._setNodeContent = function(content) {
         if (this._isMountedComponent()) {
             this.update({ children: content });
+
         } else {
-            xtag.query(this._node, '[data-xb-content="' + this._uid + '"]').forEach(function(element) {
-                xtag.innerHTML(element, content);
-            });
+            var contents = xtag.query(this._node, '[data-xb-content="' + this._uid + '"]');
+
+            if (contents.length === 1) {
+                xtag.innerHTML(contents[0], content);
+            }
         }
     };
 
@@ -691,6 +694,10 @@ xblocks.dom.attrs.toObject = function(element) {
         return (this._component && this._component.isMounted());
     };
 
+    /**
+     * @returns {?object}
+     * @private
+     */
     XBElement.prototype._getCurrentProps = function() {
         return this._isMountedComponent() ? this._component.props : null;
     };
