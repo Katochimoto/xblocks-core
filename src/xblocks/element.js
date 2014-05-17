@@ -18,11 +18,18 @@
      * @constructor
      */
     function XBElement(node) {
+        this._uid = xblocks.uid();
         this._name = node.tagName.toLowerCase();
         this._node = node;
 
-        this._init(null, this._callbackInit);
+        this._init(null, this._getNodeContent(), this._callbackInit);
     }
+
+    /**
+     * @type {string}
+     * @private
+     */
+    XBElement.prototype._uid = undefined;
 
     /**
      * @type {string}
@@ -102,18 +109,19 @@
 
     /**
      * @param {object} [props]
+     * @param {string} [children]
      * @param {function} [callback]
      * @private
      */
-    XBElement.prototype._init = function(props, callback) {
+    XBElement.prototype._init = function(props, children, callback) {
         if (this._isMountedComponent()) {
             return;
         }
 
         // save last children and props after repaint
         var nextProps = this._getNodeProps(props);
-        // TODO fix the search for static content item
-        var children = this._node.innerHTML || nextProps.children;
+        nextProps['_uid'] = this._uid;
+
         var view = xblocks.view.get(this._name)(nextProps, children);
 
         if (nextProps.hasOwnProperty('xb-static')) {
@@ -137,8 +145,9 @@
      */
     XBElement.prototype._repaint = function() {
         var currentProps = this._getCurrentProps();
+        var children = this._getNodeContent();
         this.destroy();
-        this._init(currentProps, this._callbackRepaint);
+        this._init(currentProps, children, this._callbackRepaint);
     };
 
     /**
@@ -221,6 +230,38 @@
         }
 
         return nodeProps;
+    };
+
+    /**
+     * @returns {string}
+     * @private
+     */
+    XBElement.prototype._getNodeContent = function() {
+        if (this._isMountedComponent()) {
+            return this._component.props.children;
+        }
+
+        var contents = xtag.query(this._node, '[data-xb-content="' + this._uid + '"]');
+
+        if (contents.length === 1) {
+            return contents[0].innerHTML;
+        }
+
+        return this._node.innerHTML;
+    };
+
+    /**
+     * @param {string} content
+     * @private
+     */
+    XBElement.prototype._setNodeContent = function(content) {
+        if (this._isMountedComponent()) {
+            this.update({ children: content });
+        } else {
+            xtag.query(this._node, '[data-xb-content="' + this._uid + '"]').forEach(function(element) {
+                xtag.innerHTML(element, content);
+            });
+        }
     };
 
     /**

@@ -65,6 +65,10 @@
     /* xblocks/utils.js begin */
 (function(xblocks) {
 
+    xblocks.uid = function() {
+        return Math.floor((1 + Math.random()) * 0x10000000 + Date.now()).toString(36);
+    };
+
     xblocks.noop = function() {};
 
     xblocks.merge = function() {
@@ -314,14 +318,21 @@ xblocks.dom.attrs.toObject = function(element) {
     xblocks.view = {};
 
     /**
+     * @param {object} component
+     */
+    xblocks.view.create = function(component) {
+        component.mixins = Array.isArray(component.mixins) ? component.mixins: [];
+        component.mixins.push(XBView);
+
+        return React.createClass(component);
+    };
+
+    /**
      * @param {string} blockName
      * @param {object} component
      */
     xblocks.view.register = function(blockName, component) {
-        component.mixins = Array.isArray(component.mixins) ? component.mixins: [];
-        component.mixins.push(XBView);
-
-        return (React.DOM[blockName] = React.createClass(component));
+        return (React.DOM[blockName] = xblocks.view.create(component));
     };
 
     xblocks.view.get = function(blockName) {
@@ -343,25 +354,59 @@ xblocks.dom.attrs.toObject = function(element) {
     xblocks.create = function(blockName, options) {
         options = typeof(options) === 'object' ? options : {};
 
-        options.lifecycle = {
-            /**
-             * @this {HTMLElement}
-             */
-            created: function() {
+        xblocks.merge(true, options, {
+            lifecycle: {
                 /**
-                 * @type {XBElement}
+                 * @this {HTMLElement}
                  */
-                this.xblock = xblocks.element.create(this);
+                created: function() {
+                    /**
+                     * @type {XBElement}
+                     */
+                    this.xblock = xblocks.element.create(this);
+                },
+
+                /**
+                 * @this {HTMLElement}
+                 */
+                removed: function() {
+                    this.xblock.destroy();
+                    delete this.xblock;
+                },
+
+                /**
+                 * @this {HTMLElement}
+                 */
+                attributeChanged: function(attrName, oldValue, newValue) {
+                    if (this.xblock._isMountedComponent()) {
+                        return;
+                    }
+
+                    // removeAttribute('xb-static')
+                    if (attrName === 'xb-static' && newValue === null) {
+                        this.xblock._repaint();
+                    }
+                }
             },
 
-            /**
-             * @this {HTMLElement}
-             */
-            removed: function() {
-                this.xblock.destroy();
-                delete this.xblock;
+            accessors: {
+                content: {
+                    /**
+                     * @this {HTMLElement}
+                     */
+                    get: function() {
+                        return this.xblock._getNodeContent();
+                    },
+
+                    /**
+                     * @this {HTMLElement}
+                     */
+                    set: function(content) {
+                        this.xblock._setNodeContent(content);
+                    }
+                }
             }
-        };
+        });
 
         return xtag.register(blockName, options);
     };
@@ -391,11 +436,18 @@ xblocks.dom.attrs.toObject = function(element) {
      * @constructor
      */
     function XBElement(node) {
+        this._uid = xblocks.uid();
         this._name = node.tagName.toLowerCase();
         this._node = node;
 
-        this._init(null, this._callbackInit);
+        this._init(null, this._getNodeContent(), this._callbackInit);
     }
+
+    /**
+     * @type {string}
+     * @private
+     */
+    XBElement.prototype._uid = undefined;
 
     /**
      * @type {string}
@@ -475,18 +527,19 @@ xblocks.dom.attrs.toObject = function(element) {
 
     /**
      * @param {object} [props]
+     * @param {string} [children]
      * @param {function} [callback]
      * @private
      */
-    XBElement.prototype._init = function(props, callback) {
+    XBElement.prototype._init = function(props, children, callback) {
         if (this._isMountedComponent()) {
             return;
         }
 
         // save last children and props after repaint
         var nextProps = this._getNodeProps(props);
-        // TODO fix the search for static content item
-        var children = this._node.innerHTML || nextProps.children;
+        nextProps['_uid'] = this._uid;
+
         var view = xblocks.view.get(this._name)(nextProps, children);
 
         if (nextProps.hasOwnProperty('xb-static')) {
@@ -510,8 +563,9 @@ xblocks.dom.attrs.toObject = function(element) {
      */
     XBElement.prototype._repaint = function() {
         var currentProps = this._getCurrentProps();
+        var children = this._getNodeContent();
         this.destroy();
-        this._init(currentProps, this._callbackRepaint);
+        this._init(currentProps, children, this._callbackRepaint);
     };
 
     /**
@@ -594,6 +648,38 @@ xblocks.dom.attrs.toObject = function(element) {
         }
 
         return nodeProps;
+    };
+
+    /**
+     * @returns {string}
+     * @private
+     */
+    XBElement.prototype._getNodeContent = function() {
+        if (this._isMountedComponent()) {
+            return this._component.props.children;
+        }
+
+        var contents = xtag.query(this._node, '[data-xb-content="' + this._uid + '"]');
+
+        if (contents.length === 1) {
+            return contents[0].innerHTML;
+        }
+
+        return this._node.innerHTML;
+    };
+
+    /**
+     * @param {string} content
+     * @private
+     */
+    XBElement.prototype._setNodeContent = function(content) {
+        if (this._isMountedComponent()) {
+            this.update({ children: content });
+        } else {
+            xtag.query(this._node, '[data-xb-content="' + this._uid + '"]').forEach(function(element) {
+                xtag.innerHTML(element, content);
+            });
+        }
     };
 
     /**

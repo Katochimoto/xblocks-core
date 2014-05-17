@@ -1,5 +1,9 @@
 (function(xblocks) {
 
+    xblocks.uid = function() {
+        return Math.floor((1 + Math.random()) * 0x10000000 + Date.now()).toString(36);
+    };
+
     xblocks.noop = function() {};
 
     xblocks.merge = function() {
