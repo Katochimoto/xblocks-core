@@ -87,7 +87,7 @@
         if (Array.isArray(removeProps) && removeProps.length) {
             action = 'replaceProps';
             var currentProps = this._getCurrentProps();
-            nextProps = xblocks.merge(currentProps, nextProps);
+            nextProps = xblocks.merge(true, currentProps, nextProps);
             nextProps = xblocks.filterObject(nextProps, function(name) {
                 return removeProps.indexOf(name) === -1;
             });
@@ -216,8 +216,8 @@
     XBElement.prototype._getNodeProps = function(props) {
         var nodeProps = xblocks.dom.attrs.toObject(this._node);
 
-        if (xblocks.type(props) === 'object') {
-            xblocks.merge(nodeProps, props);
+        if (xblocks.isPlainObject(props)) {
+            xblocks.merge(true, nodeProps, props);
         }
 
         return nodeProps;

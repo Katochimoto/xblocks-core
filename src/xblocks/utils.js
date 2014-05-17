@@ -1,18 +1,47 @@
 (function(xblocks) {
 
-    /**
-     * @param {?object} to
-     * @param {object} from
-     * @returns {object}
-     */
-    xblocks.merge = function(to, from) {
-        to = (xblocks.type(to) === 'object') ? to : {};
+    xblocks.noop = function() {};
 
-        Object.keys(from).forEach(function(property) {
-            Object.defineProperty(to, property, Object.getOwnPropertyDescriptor(from, property));
-        });
+    xblocks.merge = function() {
+        var length = arguments.length;
+        var i = 1;
+        var target = arguments[0] || {};
+        var deep = false;
+        var options;
 
-        return to;
+        if (xblocks.type(target) === 'boolean') {
+            deep = target;
+            target = arguments[i] || {};
+            i++;
+        }
+
+        if (xblocks.type(target) !== 'object' && xblocks.type(target) !== 'function') {
+            target = {};
+        }
+
+        if (i === length) {
+            target = this;
+            i--;
+        }
+
+        for (; i < length; i++) {
+            options = arguments[i];
+            if (options !== null) {
+                Object.keys(options).forEach(function(property) {
+                    var descr = Object.getOwnPropertyDescriptor(options, property);
+
+                    if (deep && xblocks.type(descr.value) === 'object') {
+                        var src = target[property];
+                        var clone = src && xblocks.isPlainObject(src) ? src : {};
+                        descr.value = xblocks.merge(deep, clone, descr.value);
+                    }
+
+                    Object.defineProperty(target, property, descr);
+                });
+            }
+        }
+
+        return target;
     };
 
     /**
@@ -23,7 +52,25 @@
         return ({}).toString.call(param).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
     };
 
-    xblocks.noop = function() {};
+    /**
+     * @param {*} obj
+     * @returns {boolean}
+     */
+    xblocks.isPlainObject = function(obj) {
+        if (xblocks.type(obj) !== 'object' || obj.nodeType || xblocks.isWindow(obj)) {
+            return false;
+        }
+
+        if (obj.constructor && !obj.constructor.prototype.hasOwnProperty('isPrototypeOf')) {
+            return false;
+        }
+
+        return true;
+    };
+
+    xblocks.isWindow = function(obj) {
+        return obj != null && obj === obj.window;
+    };
 
     /**
      * @param {*} x
@@ -83,10 +130,9 @@
             return true;
         }
 
-        for (var i in obj) {
-            if (obj.hasOwnProperty(i)) {
-                return false;
-            }
+        var name;
+        for (name in obj) {
+            return false;
         }
 
         return true;
