@@ -6,7 +6,7 @@
      * @returns {HTMLElement}
      */
     xblocks.create = function(blockName, options) {
-        options = typeof(options) === 'object' ? options : {};
+        options = xblocks.isPlainObject(options) ? options : {};
 
         xblocks.merge(true, options, {
             lifecycle: {
