@@ -179,6 +179,10 @@
      * @private
      */
     XBElement.prototype._callbackRender = function(callback) {
+        if (window.CustomElements) {
+            CustomElements.upgradeAll(this._node);
+        }
+
         if (!this._observer) {
             this._observer = new MutationObserver(this._callbackMutation.bind(this));
         }
@@ -191,10 +195,6 @@
             attributeOldValue: false,
             characterDataOldValue: false
         });
-
-        if (window.CustomElements) {
-            CustomElements.upgradeAll(this._node);
-        }
 
         if (callback) {
             callback.call(this);
