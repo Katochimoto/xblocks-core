@@ -57,7 +57,8 @@ xblocks.view.register('xb-ico', {
         classes = React.addons.classSet(classes);
 
         return (
-            <span className={classes} data-xb-content={this.props._uid}>{this.props.children}</span>
+            <span className={classes}
+                data-xb-content={this.props._uid}>{this.props.children}</span>
         );
     }
 });
