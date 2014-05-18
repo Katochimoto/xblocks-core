@@ -5,6 +5,8 @@
      */
     xblocks.utils = {};
 
+    xblocks.utils.REG_TYPE_EXTRACT = /\s([a-zA-Z]+)/;
+
     /**
      * Generate unique string
      * @returns {string}
@@ -62,7 +64,7 @@
      * @returns {string}
      */
     xblocks.utils.type = function(param) {
-        return ({}).toString.call(param).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+        return ({}).toString.call(param).match(xblocks.utils.REG_TYPE_EXTRACT)[1].toLowerCase();
     };
 
     /**

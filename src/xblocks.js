@@ -39,10 +39,7 @@
      * @property {Function} replaceProps
      * @property {Function} setProps
      * @property {Function} isMounted
-     *
      */
-
-
 
     /**
      * @namespace xblocks

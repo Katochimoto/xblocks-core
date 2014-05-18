@@ -10,7 +10,8 @@
         "it": false,
         "describe": false,
         "xtag": false,
-        "React": false
+        "React": false,
+        "CustomElements": false
     },
 
     "bitwise": true,

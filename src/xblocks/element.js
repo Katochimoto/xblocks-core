@@ -107,6 +107,7 @@
 
         } else {
             this._component[action](nextProps);
+            // TODO may want to call the method CustomElements.upgradeAll
         }
     };
 
@@ -190,6 +191,10 @@
             attributeOldValue: false,
             characterDataOldValue: false
         });
+
+        if (window.CustomElements) {
+            CustomElements.upgradeAll(this._node);
+        }
 
         if (callback) {
             callback.call(this);
