@@ -65,25 +65,35 @@
     /* xblocks/utils.js begin */
 (function(xblocks) {
 
-    xblocks.uid = function() {
+    /**
+     * @namespace
+     */
+    xblocks.utils = {};
+
+    /**
+     * Generate unique string
+     * @returns {string}
+     */
+    xblocks.utils.uid = function() {
         return Math.floor((1 + Math.random()) * 0x10000000 + Date.now()).toString(36);
     };
 
-    xblocks.noop = function() {};
-
-    xblocks.merge = function() {
+    /**
+     * @returns {object}
+     */
+    xblocks.utils.merge = function() {
         var length = arguments.length;
         var i = 1;
         var target = arguments[0] || {};
         var deep = false;
 
-        if (xblocks.type(target) === 'boolean') {
+        if (xblocks.utils.type(target) === 'boolean') {
             deep = target;
             target = arguments[i] || {};
             i++;
         }
 
-        if (xblocks.type(target) !== 'object' && xblocks.type(target) !== 'function') {
+        if (xblocks.utils.type(target) !== 'object' && xblocks.utils.type(target) !== 'function') {
             target = {};
         }
 
@@ -93,16 +103,16 @@
         }
 
         Array.prototype.slice.call(arguments, i).filter(function(arg) {
-            return xblocks.type(arg) === 'object';
+            return xblocks.utils.type(arg) === 'object';
 
         }).forEach(function(options) {
             Object.keys(options).forEach(function(property) {
                 var descr = Object.getOwnPropertyDescriptor(options, property);
 
-                if (deep && xblocks.type(descr.value) === 'object') {
+                if (deep && xblocks.utils.type(descr.value) === 'object') {
                     var src = target[property];
-                    var clone = src && xblocks.isPlainObject(src) ? src : {};
-                    descr.value = xblocks.merge(deep, clone, descr.value);
+                    var clone = src && xblocks.utils.isPlainObject(src) ? src : {};
+                    descr.value = xblocks.utils.merge(deep, clone, descr.value);
                 }
 
                 Object.defineProperty(target, property, descr);
@@ -116,7 +126,7 @@
      * @param {*} param
      * @returns {string}
      */
-    xblocks.type = function(param) {
+    xblocks.utils.type = function(param) {
         return ({}).toString.call(param).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
     };
 
@@ -124,8 +134,8 @@
      * @param {*} obj
      * @returns {boolean}
      */
-    xblocks.isPlainObject = function(obj) {
-        if (xblocks.type(obj) !== 'object' || obj.nodeType || xblocks.isWindow(obj)) {
+    xblocks.utils.isPlainObject = function(obj) {
+        if (xblocks.utils.type(obj) !== 'object' || obj.nodeType || xblocks.utils.isWindow(obj)) {
             return false;
         }
 
@@ -136,7 +146,7 @@
         return true;
     };
 
-    xblocks.isWindow = function(obj) {
+    xblocks.utils.isWindow = function(obj) {
         return obj != null && obj === obj.window;
     };
 
@@ -145,7 +155,7 @@
      * @param {*} y
      * @returns {boolean}
      */
-    xblocks.equals = function(x, y) {
+    xblocks.utils.equals = function(x, y) {
         if (x === y) {
             return true;
         }
@@ -175,7 +185,7 @@
                 return false;
             }
 
-            if (!xblocks.equals(x[p], y[p])) {
+            if (!xblocks.utils.equals(x[p], y[p])) {
                 return false;
             }
         }
@@ -193,8 +203,8 @@
      * @param {*} obj
      * @returns {boolean}
      */
-    xblocks.isEmptyObject = function(obj) {
-        if (xblocks.type(obj) !== 'object') {
+    xblocks.utils.isEmptyObject = function(obj) {
+        if (xblocks.utils.type(obj) !== 'object') {
             return true;
         }
 
@@ -211,7 +221,7 @@
      * @param {function} [callback]
      * @returns {object}
      */
-    xblocks.filterObject = function(from, callback) {
+    xblocks.utils.filterObject = function(from, callback) {
         var out = {};
 
         Object.keys(from).forEach(function(property) {
@@ -229,13 +239,13 @@
      * @param {function} [callback]
      * @returns {object}
      */
-    xblocks.mapObject = function(from, callback) {
+    xblocks.utils.mapObject = function(from, callback) {
         var out = {};
 
         Object.keys(from).forEach(function(property) {
             var descr = Object.getOwnPropertyDescriptor(from, property);
             var map = callback && callback(property, descr);
-            if (xblocks.type(map) === 'object') {
+            if (xblocks.utils.type(map) === 'object') {
                 Object.defineProperty(out, map.name, map.descr);
             }
         });
@@ -251,18 +261,29 @@
 (function(xblocks) {
 
     /**
-     * @module xblocks.dom
+     * @namespace
      */
     xblocks.dom = {};
 
     /* xblocks/dom/attrs.js begin */
 /**
- * @module xblocks.dom.attrs
+ * @namespace
  */
 xblocks.dom.attrs = {};
 
+/**
+ * @type {string[]}
+ */
 xblocks.dom.attrs.ARRTS_BOOLEAN = [
-    'checked', 'selected', 'disabled', 'readonly', 'multiple', 'ismap', 'defer', 'autofocus', 'xb-static'
+    'autofocus',
+    'checked',
+    'defer',
+    'disabled',
+    'ismap',
+    'multiple',
+    'readonly',
+    'selected',
+    'xb-static'
 ];
 
 /**
@@ -330,11 +351,21 @@ xblocks.dom.attrs.toObject = function(element) {
     /**
      * @param {string} blockName
      * @param {object} component
+     * @throws
      */
     xblocks.view.register = function(blockName, component) {
-        return (React.DOM[blockName] = xblocks.view.create(component));
+        if (React.DOM.hasOwnProperty(blockName)) {
+            throw 'Specified item "' + blockName + '" is already defined';
+        }
+
+        React.DOM[blockName] = xblocks.view.create(component);
+        return React.DOM[blockName];
     };
 
+    /**
+     * @param {string} blockName
+     * @returns {*}
+     */
     xblocks.view.get = function(blockName) {
         return React.DOM[blockName];
     };
@@ -348,13 +379,13 @@ xblocks.dom.attrs.toObject = function(element) {
 
     /**
      * @param {String} blockName
-     * @param {Object} options
+     * @param {?Object} options
      * @returns {HTMLElement}
      */
     xblocks.create = function(blockName, options) {
-        options = xblocks.isPlainObject(options) ? options : {};
+        options = xblocks.utils.isPlainObject(options) ? options : {};
 
-        xblocks.merge(true, options, {
+        xblocks.utils.merge(true, options, {
             lifecycle: {
                 /**
                  * @this {HTMLElement}
@@ -436,7 +467,7 @@ xblocks.dom.attrs.toObject = function(element) {
      * @constructor
      */
     function XBElement(node) {
-        this._uid = xblocks.uid();
+        this._uid = xblocks.utils.uid();
         this._name = node.tagName.toLowerCase();
         this._node = node;
 
@@ -507,15 +538,15 @@ xblocks.dom.attrs.toObject = function(element) {
         var nextProps = this._getNodeProps();
         var action = 'setProps';
 
-        xblocks.merge(true, nextProps, props);
+        xblocks.utils.merge(true, nextProps, props);
 
         // merge of new and current properties
         // and the exclusion of remote properties
         if (Array.isArray(removeProps) && removeProps.length) {
             action = 'replaceProps';
             var currentProps = this._getCurrentProps();
-            nextProps = xblocks.merge(true, currentProps, nextProps);
-            nextProps = xblocks.filterObject(nextProps, function(name) {
+            nextProps = xblocks.utils.merge(true, currentProps, nextProps);
+            nextProps = xblocks.utils.filterObject(nextProps, function(name) {
                 return removeProps.indexOf(name) === -1;
             });
         }
@@ -563,7 +594,7 @@ xblocks.dom.attrs.toObject = function(element) {
      * @private
      */
     XBElement.prototype._repaint = function() {
-        var props = xblocks.merge(true, this._getNodeProps(), this._getCurrentProps());
+        var props = xblocks.utils.merge(true, this._getNodeProps(), this._getCurrentProps());
         var children = this._getNodeContent();
         this.destroy();
         this._init(props, children, this._callbackRepaint);

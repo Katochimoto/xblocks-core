@@ -1,7 +1,7 @@
 (function(xblocks) {
 
     /**
-     * @module xblocks.dom
+     * @namespace
      */
     xblocks.dom = {};
 

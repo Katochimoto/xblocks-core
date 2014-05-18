@@ -2,13 +2,13 @@
 
     /**
      * @param {String} blockName
-     * @param {Object} options
+     * @param {?Object} options
      * @returns {HTMLElement}
      */
     xblocks.create = function(blockName, options) {
-        options = xblocks.isPlainObject(options) ? options : {};
+        options = xblocks.utils.isPlainObject(options) ? options : {};
 
-        xblocks.merge(true, options, {
+        xblocks.utils.merge(true, options, {
             lifecycle: {
                 /**
                  * @this {HTMLElement}

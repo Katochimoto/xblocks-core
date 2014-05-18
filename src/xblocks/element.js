@@ -18,7 +18,7 @@
      * @constructor
      */
     function XBElement(node) {
-        this._uid = xblocks.uid();
+        this._uid = xblocks.utils.uid();
         this._name = node.tagName.toLowerCase();
         this._node = node;
 
@@ -89,15 +89,15 @@
         var nextProps = this._getNodeProps();
         var action = 'setProps';
 
-        xblocks.merge(true, nextProps, props);
+        xblocks.utils.merge(true, nextProps, props);
 
         // merge of new and current properties
         // and the exclusion of remote properties
         if (Array.isArray(removeProps) && removeProps.length) {
             action = 'replaceProps';
             var currentProps = this._getCurrentProps();
-            nextProps = xblocks.merge(true, currentProps, nextProps);
-            nextProps = xblocks.filterObject(nextProps, function(name) {
+            nextProps = xblocks.utils.merge(true, currentProps, nextProps);
+            nextProps = xblocks.utils.filterObject(nextProps, function(name) {
                 return removeProps.indexOf(name) === -1;
             });
         }
@@ -145,7 +145,7 @@
      * @private
      */
     XBElement.prototype._repaint = function() {
-        var props = xblocks.merge(true, this._getNodeProps(), this._getCurrentProps());
+        var props = xblocks.utils.merge(true, this._getNodeProps(), this._getCurrentProps());
         var children = this._getNodeContent();
         this.destroy();
         this._init(props, children, this._callbackRepaint);

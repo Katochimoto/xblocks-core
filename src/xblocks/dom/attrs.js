@@ -1,10 +1,21 @@
 /**
- * @module xblocks.dom.attrs
+ * @namespace
  */
 xblocks.dom.attrs = {};
 
+/**
+ * @type {string[]}
+ */
 xblocks.dom.attrs.ARRTS_BOOLEAN = [
-    'checked', 'selected', 'disabled', 'readonly', 'multiple', 'ismap', 'defer', 'autofocus', 'xb-static'
+    'autofocus',
+    'checked',
+    'defer',
+    'disabled',
+    'ismap',
+    'multiple',
+    'readonly',
+    'selected',
+    'xb-static'
 ];
 
 /**

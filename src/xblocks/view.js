@@ -20,11 +20,21 @@
     /**
      * @param {string} blockName
      * @param {object} component
+     * @throws
      */
     xblocks.view.register = function(blockName, component) {
-        return (React.DOM[blockName] = xblocks.view.create(component));
+        if (React.DOM.hasOwnProperty(blockName)) {
+            throw 'Specified item "' + blockName + '" is already defined';
+        }
+
+        React.DOM[blockName] = xblocks.view.create(component);
+        return React.DOM[blockName];
     };
 
+    /**
+     * @param {string} blockName
+     * @returns {*}
+     */
     xblocks.view.get = function(blockName) {
         return React.DOM[blockName];
     };

@@ -1,24 +1,34 @@
 (function(xblocks) {
 
-    xblocks.uid = function() {
+    /**
+     * @namespace
+     */
+    xblocks.utils = {};
+
+    /**
+     * Generate unique string
+     * @returns {string}
+     */
+    xblocks.utils.uid = function() {
         return Math.floor((1 + Math.random()) * 0x10000000 + Date.now()).toString(36);
     };
 
-    xblocks.noop = function() {};
-
-    xblocks.merge = function() {
+    /**
+     * @returns {object}
+     */
+    xblocks.utils.merge = function() {
         var length = arguments.length;
         var i = 1;
         var target = arguments[0] || {};
         var deep = false;
 
-        if (xblocks.type(target) === 'boolean') {
+        if (xblocks.utils.type(target) === 'boolean') {
             deep = target;
             target = arguments[i] || {};
             i++;
         }
 
-        if (xblocks.type(target) !== 'object' && xblocks.type(target) !== 'function') {
+        if (xblocks.utils.type(target) !== 'object' && xblocks.utils.type(target) !== 'function') {
             target = {};
         }
 
@@ -28,16 +38,16 @@
         }
 
         Array.prototype.slice.call(arguments, i).filter(function(arg) {
-            return xblocks.type(arg) === 'object';
+            return xblocks.utils.type(arg) === 'object';
 
         }).forEach(function(options) {
             Object.keys(options).forEach(function(property) {
                 var descr = Object.getOwnPropertyDescriptor(options, property);
 
-                if (deep && xblocks.type(descr.value) === 'object') {
+                if (deep && xblocks.utils.type(descr.value) === 'object') {
                     var src = target[property];
-                    var clone = src && xblocks.isPlainObject(src) ? src : {};
-                    descr.value = xblocks.merge(deep, clone, descr.value);
+                    var clone = src && xblocks.utils.isPlainObject(src) ? src : {};
+                    descr.value = xblocks.utils.merge(deep, clone, descr.value);
                 }
 
                 Object.defineProperty(target, property, descr);
@@ -51,7 +61,7 @@
      * @param {*} param
      * @returns {string}
      */
-    xblocks.type = function(param) {
+    xblocks.utils.type = function(param) {
         return ({}).toString.call(param).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
     };
 
@@ -59,8 +69,8 @@
      * @param {*} obj
      * @returns {boolean}
      */
-    xblocks.isPlainObject = function(obj) {
-        if (xblocks.type(obj) !== 'object' || obj.nodeType || xblocks.isWindow(obj)) {
+    xblocks.utils.isPlainObject = function(obj) {
+        if (xblocks.utils.type(obj) !== 'object' || obj.nodeType || xblocks.utils.isWindow(obj)) {
             return false;
         }
 
@@ -71,7 +81,7 @@
         return true;
     };
 
-    xblocks.isWindow = function(obj) {
+    xblocks.utils.isWindow = function(obj) {
         return obj != null && obj === obj.window;
     };
 
@@ -80,7 +90,7 @@
      * @param {*} y
      * @returns {boolean}
      */
-    xblocks.equals = function(x, y) {
+    xblocks.utils.equals = function(x, y) {
         if (x === y) {
             return true;
         }
@@ -110,7 +120,7 @@
                 return false;
             }
 
-            if (!xblocks.equals(x[p], y[p])) {
+            if (!xblocks.utils.equals(x[p], y[p])) {
                 return false;
             }
         }
@@ -128,8 +138,8 @@
      * @param {*} obj
      * @returns {boolean}
      */
-    xblocks.isEmptyObject = function(obj) {
-        if (xblocks.type(obj) !== 'object') {
+    xblocks.utils.isEmptyObject = function(obj) {
+        if (xblocks.utils.type(obj) !== 'object') {
             return true;
         }
 
@@ -146,7 +156,7 @@
      * @param {function} [callback]
      * @returns {object}
      */
-    xblocks.filterObject = function(from, callback) {
+    xblocks.utils.filterObject = function(from, callback) {
         var out = {};
 
         Object.keys(from).forEach(function(property) {
@@ -164,13 +174,13 @@
      * @param {function} [callback]
      * @returns {object}
      */
-    xblocks.mapObject = function(from, callback) {
+    xblocks.utils.mapObject = function(from, callback) {
         var out = {};
 
         Object.keys(from).forEach(function(property) {
             var descr = Object.getOwnPropertyDescriptor(from, property);
             var map = callback && callback(property, descr);
-            if (xblocks.type(map) === 'object') {
+            if (xblocks.utils.type(map) === 'object') {
                 Object.defineProperty(out, map.name, map.descr);
             }
         });
