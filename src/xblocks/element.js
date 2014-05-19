@@ -107,7 +107,7 @@
 
         } else {
             this._component[action](nextProps);
-            // TODO may want to call the method CustomElements.upgradeAll
+            this._upgradeNode();
         }
     };
 
@@ -179,9 +179,7 @@
      * @private
      */
     XBElement.prototype._callbackRender = function(callback) {
-        if (window.CustomElements) {
-            CustomElements.upgradeAll(this._node);
-        }
+        this._upgradeNode();
 
         if (!this._observer) {
             this._observer = new MutationObserver(this._callbackMutation.bind(this));
@@ -221,6 +219,12 @@
                 .map(this._mapAttributesName);
 
             this.update(null, removeAttrs);
+        }
+    };
+
+    XBElement.prototype._upgradeNode = function() {
+        if (window.CustomElements) {
+            CustomElements.upgradeAll(this._node);
         }
     };
 
