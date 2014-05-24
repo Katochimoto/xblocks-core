@@ -23,9 +23,9 @@
     "package.json"
   ],
   "devDependencies": {
-      "borschik": "1.0.5",
-      "jscs": "1.0.x",
-      "jshint": "~2.5.0",
+      "borschik": "0.4.1",
+      "jscs": "1.0.8",
+      "jshint": "2.3.0",
       "mocha": "~1.17.0",
       "expect.js": "0.3.1"
   },
