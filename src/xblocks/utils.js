@@ -7,6 +7,10 @@
 
     xblocks.utils.REG_TYPE_EXTRACT = /\s([a-zA-Z]+)/;
 
+    xblocks.utils.support = {
+        template: ('content' in document.createElement('template'))
+    };
+
     /**
      * Generate unique string
      * @returns {string}

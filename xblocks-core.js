@@ -69,6 +69,10 @@
 
     xblocks.utils.REG_TYPE_EXTRACT = /\s([a-zA-Z]+)/;
 
+    xblocks.utils.support = {
+        template: ('content' in document.createElement('template'))
+    };
+
     /**
      * Generate unique string
      * @returns {string}
@@ -692,9 +696,28 @@ xblocks.dom.attrs.toObject = function(element) {
      * @private
      */
     XBElement.prototype._getNodeContentElement = function() {
+        if (!this._node.childNodes.length) {
+            return;
+        }
+
         var contents = xtag.query(this._node, '[data-xb-content="' + this._uid + '"]');
         if (contents.length === 1) {
             return contents[0];
+        }
+
+        var script = xtag.queryChildren(this._node, 'script[type="text/template"]');
+        if (script.length === 1) {
+            return script[0];
+        }
+
+        if (xblocks.utils.support.template) {
+            var template = xtag.queryChildren(this._node, 'template');
+            if (template.length === 1) {
+                // FIXME temporarily, until the implementation of the DocumentFragment
+                var tmp = document.createElement('div');
+                tmp.appendChild(document.importNode(template[0].content, true));
+                return tmp;
+            }
         }
     };
 
