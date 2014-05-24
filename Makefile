@@ -12,9 +12,9 @@ build: node_modules
 prod: build
 	./node_modules/.bin/borschik -i src/xblocks.js -o xblocks-core.min.js
 
-test: node_modules
-	./node_modules/.bin/mocha --reporter dot $(TESTS)
-	./node_modules/.bin/jshint .
-	./node_modules/.bin/jscs .
+#test: node_modules
+#	./node_modules/.bin/mocha --reporter dot $(TESTS)
+#	./node_modules/.bin/jshint .
+#	./node_modules/.bin/jscs .
 
 .PHONY: all test

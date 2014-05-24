@@ -23,11 +23,7 @@
     "package.json"
   ],
   "devDependencies": {
-      "borschik": "0.4.1",
-      "jscs": "1.0.8",
-      "jshint": "2.1.x",
-      "mocha": "~1.17.0",
-      "expect.js": "0.3.1"
+      "borschik": "0.4.1"
   },
   "homepage": "https://github.com/Katochimoto/xblocks-core",
   "authors": [
