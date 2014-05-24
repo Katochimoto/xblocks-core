@@ -274,6 +274,7 @@ xblocks.dom.attrs = {};
  * @type {string[]}
  */
 xblocks.dom.attrs.ARRTS_BOOLEAN = [
+    'active',
     'autofocus',
     'checked',
     'defer',
@@ -343,6 +344,9 @@ xblocks.dom.attrs.toObject = function(element) {
     xblocks.view.create = function(component) {
         component.mixins = Array.isArray(component.mixins) ? component.mixins: [];
         component.mixins.push(XBView);
+
+        component.propTypes = xblocks.utils.isPlainObject(component.propTypes) ? component.propTypes : {};
+        component.propTypes._uid = React.PropTypes.string;
 
         return React.createClass(component);
     };

@@ -7,6 +7,7 @@ xblocks.dom.attrs = {};
  * @type {string[]}
  */
 xblocks.dom.attrs.ARRTS_BOOLEAN = [
+    'active',
     'autofocus',
     'checked',
     'defer',
