@@ -9,7 +9,11 @@
     "custom elements"
   ],
   "homepage": "https://github.com/Katochimoto/xblocks-core/",
-  "author": "rikishi <bufpost@yandex.ru>",
+  "author": {
+      "name": "Rikishi",
+      "email": "bufpost@yandex.ru",
+      "url": "https://github.com/Katochimoto"
+  },
   "bugs": {
     "url": "https://github.com/Katochimoto/xblocks-core/issues",
     "email": "bufpost@yandex.ru"
@@ -21,14 +25,13 @@
   },
   "devDependencies": {
     "borschik": "1.0.5",
-    "jscs": "1.4.5",
-    "jshint": "2.5.1",
-    "mocha": "1.19.0",
+    "jscs": "1.0.x",
+    "jshint": "~2.5.0",
+    "mocha": "~1.17.0",
     "expect.js": "0.3.1"
   },
   "engines": {
-    "node": ">=0.8.0",
-    "npm" : ">=1.3.0"
+    "node": "*"
   },
   "scripts": {
     "test": "make test"
