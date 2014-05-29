@@ -85,42 +85,56 @@
      * @returns {object}
      */
     xblocks.utils.merge = function() {
-        var length = arguments.length;
-        var i = 1;
-        var target = arguments[0] || {};
-        var deep = false;
+        var options, name, src, copy, copyIsArray, clone,
+            target = arguments[0] || {},
+            i = 1,
+            length = arguments.length,
+            deep = false;
 
-        if (xblocks.utils.type(target) === 'boolean') {
+        if ( typeof target === 'boolean' ) {
             deep = target;
-            target = arguments[i] || {};
+
+            target = arguments[ i ] || {};
             i++;
         }
 
-        if (xblocks.utils.type(target) !== 'object' && xblocks.utils.type(target) !== 'function') {
+        if ( typeof target !== 'object' && xblocks.utils.type(target) !== 'function' ) {
             target = {};
         }
 
-        if (i === length) {
+        if ( i === length ) {
             target = this;
             i--;
         }
 
-        Array.prototype.slice.call(arguments, i).filter(function(arg) {
-            return xblocks.utils.type(arg) === 'object';
+        for ( ; i < length; i++ ) {
+            if ( (options = arguments[ i ]) != null ) {
+                // Extend the base object
+                for ( name in options ) {
+                    src = target[ name ];
+                    copy = options[ name ];
 
-        }).forEach(function(options) {
-            Object.keys(options).forEach(function(property) {
-                var descr = Object.getOwnPropertyDescriptor(options, property);
+                    if ( target === copy ) {
+                        continue;
+                    }
 
-                if (deep && xblocks.utils.type(descr.value) === 'object') {
-                    var src = target[property];
-                    var clone = src && xblocks.utils.isPlainObject(src) ? src : {};
-                    descr.value = xblocks.utils.merge(deep, clone, descr.value);
+                    if ( deep && copy && ( xblocks.utils.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)) ) ) {
+                        if ( copyIsArray ) {
+                            copyIsArray = false;
+                            clone = src && Array.isArray(src) ? src : [];
+
+                        } else {
+                            clone = src && xblocks.utils.isPlainObject(src) ? src : {};
+                        }
+
+                        target[ name ] = xblocks.utils.merge( deep, clone, copy );
+
+                    } else if ( copy !== undefined ) {
+                        target[ name ] = copy;
+                    }
                 }
-
-                Object.defineProperty(target, property, descr);
-            });
-        });
+            }
+        }
 
         return target;
     };
