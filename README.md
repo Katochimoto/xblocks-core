@@ -20,8 +20,6 @@ xblocks.view.register('xb-ico', {
     displayName: 'xb-ico',
 
     propTypes: {
-        '_uid': React.PropTypes.string,
-        
         'id': React.PropTypes.string,
         'class': React.PropTypes.string,
         'alt': React.PropTypes.string,
@@ -33,7 +31,6 @@ xblocks.view.register('xb-ico', {
 
     getDefaultProps: function() {
         return {
-            '_uid': '',
             'size': 'm',
             'children': String.fromCharCode(160)
         };
