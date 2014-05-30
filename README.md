@@ -39,16 +39,16 @@ xblocks.view.register('xb-ico', {
     render: function() {
         var classes = {
             'xb-ico': true,
-            'xb-ico_active': this.props.active,
-            'is-disabled': this.props.disabled
+            '_active': this.props.active,
+            '_disabled': this.props.disabled
         };
 
         if (this.props.type) {
-            classes['xb-ico_type_' + this.props.type] = true;
+            classes['_type-' + this.props.type] = true;
         }
 
         if (this.props.size) {
-            classes['xb-ico_size_' + this.props.size] = true;
+            classes['_size-' + this.props.size] = true;
         }
 
         classes = React.addons.classSet(classes);
