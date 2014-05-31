@@ -11,10 +11,16 @@
      * @param {object} component
      */
     xblocks.view.create = function(component) {
-        component.mixins = Array.isArray(component.mixins) ? component.mixins: [];
+        if (!Array.isArray(component.mixins)) {
+            component.mixins = [];
+        }
+
         component.mixins.push(XBView);
 
-        component.propTypes = xblocks.utils.isPlainObject(component.propTypes) ? component.propTypes : {};
+        if (!xblocks.utils.isPlainObject(component.propTypes)) {
+            component.propTypes = {};
+        }
+
         component.propTypes._uid = React.PropTypes.string;
 
         return React.createClass(component);

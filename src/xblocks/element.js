@@ -130,7 +130,7 @@
             this.unmount();
             xtag.innerHTML(
                 this._node,
-                React.renderComponentToString(view)
+                React.renderComponentToStaticMarkup(view) //React.renderComponentToString(view)
             );
 
         } else {

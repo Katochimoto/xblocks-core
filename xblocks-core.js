@@ -360,10 +360,16 @@ xblocks.dom.attrs.toObject = function(element) {
      * @param {object} component
      */
     xblocks.view.create = function(component) {
-        component.mixins = Array.isArray(component.mixins) ? component.mixins: [];
+        if (!Array.isArray(component.mixins)) {
+            component.mixins = [];
+        }
+
         component.mixins.push(XBView);
 
-        component.propTypes = xblocks.utils.isPlainObject(component.propTypes) ? component.propTypes : {};
+        if (!xblocks.utils.isPlainObject(component.propTypes)) {
+            component.propTypes = {};
+        }
+
         component.propTypes._uid = React.PropTypes.string;
 
         return React.createClass(component);
@@ -445,12 +451,14 @@ xblocks.dom.attrs.toObject = function(element) {
                 content: {
                     /**
                      * @this {HTMLElement}
+                     * @return {string}
                      */
                     get: function() {
                         return this.xblock._getNodeContent();
                     },
 
                     /**
+                     * @param {string} content
                      * @this {HTMLElement}
                      */
                     set: function(content) {
@@ -600,7 +608,7 @@ xblocks.dom.attrs.toObject = function(element) {
             this.unmount();
             xtag.innerHTML(
                 this._node,
-                React.renderComponentToString(view)
+                React.renderComponentToStaticMarkup(view) //React.renderComponentToString(view)
             );
 
         } else {

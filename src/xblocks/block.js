@@ -47,12 +47,14 @@
                 content: {
                     /**
                      * @this {HTMLElement}
+                     * @return {string}
                      */
                     get: function() {
                         return this.xblock._getNodeContent();
                     },
 
                     /**
+                     * @param {string} content
                      * @this {HTMLElement}
                      */
                     set: function(content) {
