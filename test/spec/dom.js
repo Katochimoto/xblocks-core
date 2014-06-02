@@ -2,19 +2,19 @@ describe('xblocks.dom', function() {
     describe('xblocks.dom.attrs', function() {
         describe('#getRealValue', function() {
             xblocks.dom.attrs.ARRTS_BOOLEAN.forEach(function(attrName) {
-                it('Должен вернуть true для boolean атрибута, имеющего пустое значение', function() {
+                it('Должен вернуть true для boolean атрибута \'' + attrName + '\', имеющего пустое значение', function() {
                     expect(xblocks.dom.attrs.getRealValue(attrName, '')).to.be.ok();
                 });
 
-                it('Должен вернуть true для boolean атрибута, имеющего значение, равное названию', function() {
+                it('Должен вернуть true для boolean атрибута \'' + attrName + '\', имеющего значение, равное названию', function() {
                     expect(xblocks.dom.attrs.getRealValue(attrName, attrName)).to.be.ok();
                 });
 
-                it('Должен вернуть true для boolean атрибута, имеющего значение true', function() {
+                it('Должен вернуть true для boolean атрибута \'' + attrName + '\', имеющего значение true', function() {
                     expect(xblocks.dom.attrs.getRealValue(attrName, 'true')).to.be.ok();
                 });
 
-                it('Должен вернуть false для boolean атрибута, имеющего значение false', function() {
+                it('Должен вернуть false для boolean атрибута \'' + attrName + '\', имеющего значение false', function() {
                     expect(xblocks.dom.attrs.getRealValue(attrName, 'false')).to.not.ok();
                 });
             });
