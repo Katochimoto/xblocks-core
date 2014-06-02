@@ -37,7 +37,7 @@
                     }
 
                     // removeAttribute('xb-static')
-                    if (attrName === 'xb-static' && newValue === null) {
+                    if (attrName === xblocks.dom.attrs.XB_ATTRS.STATIC && newValue === null) {
                         this.xblock._repaint();
                     }
                 }

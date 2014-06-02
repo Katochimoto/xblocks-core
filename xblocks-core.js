@@ -305,6 +305,13 @@ xblocks.dom.attrs.ARRTS_BOOLEAN = [
 ];
 
 /**
+ * @type {string[]}
+ */
+xblocks.dom.attrs.XB_ATTRS = {
+    'STATIC': 'xb-static'
+};
+
+/**
  * @param {string} name
  * @param {string} value
  * @returns {string|boolean}
@@ -441,7 +448,7 @@ xblocks.dom.attrs.toObject = function(element) {
                     }
 
                     // removeAttribute('xb-static')
-                    if (attrName === 'xb-static' && newValue === null) {
+                    if (attrName === xblocks.dom.attrs.XB_ATTRS.STATIC && newValue === null) {
                         this.xblock._repaint();
                     }
                 }
@@ -580,7 +587,7 @@ xblocks.dom.attrs.toObject = function(element) {
             });
         }
 
-        if (nextProps.hasOwnProperty('xb-static')) {
+        if (nextProps.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
             this._repaint();
 
         } else {
@@ -604,7 +611,7 @@ xblocks.dom.attrs.toObject = function(element) {
 
         var view = xblocks.view.get(this._name)(props, children);
 
-        if (props.hasOwnProperty('xb-static')) {
+        if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
             this.unmount();
             xtag.innerHTML(
                 this._node,

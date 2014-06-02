@@ -102,7 +102,7 @@
             });
         }
 
-        if (nextProps.hasOwnProperty('xb-static')) {
+        if (nextProps.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
             this._repaint();
 
         } else {
@@ -126,7 +126,7 @@
 
         var view = xblocks.view.get(this._name)(props, children);
 
-        if (props.hasOwnProperty('xb-static')) {
+        if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
             this.unmount();
             xtag.innerHTML(
                 this._node,

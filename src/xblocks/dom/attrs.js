@@ -20,6 +20,13 @@ xblocks.dom.attrs.ARRTS_BOOLEAN = [
 ];
 
 /**
+ * @type {string[]}
+ */
+xblocks.dom.attrs.XB_ATTRS = {
+    'STATIC': 'xb-static'
+};
+
+/**
  * @param {string} name
  * @param {string} value
  * @returns {string|boolean}
