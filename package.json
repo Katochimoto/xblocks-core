@@ -1,39 +1,53 @@
 {
-  "name": "xblocks-core",
-  "description": "HTML core custom elements",
-  "version": "0.0.19",
-  "keywords": [
-    "x-tag",
-    "react",
-    "html5",
-    "custom elements"
-  ],
-  "homepage": "https://github.com/Katochimoto/xblocks-core/",
-  "author": {
-      "name": "Rikishi",
-      "email": "bufpost@yandex.ru",
-      "url": "https://github.com/Katochimoto"
-  },
-  "bugs": {
-    "url": "https://github.com/Katochimoto/xblocks-core/issues",
-    "email": "bufpost@yandex.ru"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:Katochimoto/xblocks-core.git"
-  },
-  "devDependencies": {
-      "borschik": "0.4.1"
-  },
-  "engines": {
-     "node": ">=0.6.0"
-  },
-  "scripts": {
-    "test": "make test"
-  },
-  "main": "xblocks-core.js",
-  "directories": {
-    "test": "test"
-  }
+    "name": "xblocks-core",
+    "description": "HTML core custom elements",
+    "version": "0.0.19",
+    "keywords": [
+        "x-tag",
+        "react",
+        "html5",
+        "xblocks",
+        "custom elements"
+    ],
+    "homepage": "https://github.com/Katochimoto/xblocks-core/",
+    "author": {
+        "name": "Rikishi",
+        "email": "bufpost@yandex.ru",
+        "url": "https://github.com/Katochimoto"
+    },
+    "bugs": {
+        "url": "https://github.com/Katochimoto/xblocks-core/issues",
+        "email": "bufpost@yandex.ru"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:Katochimoto/xblocks-core.git"
+    },
+    "devDependencies": {
+        "borschik": "0.4.1",
+
+        "mocha": "~1.17.0",
+        "expect.js": "*",
+        "sinon": "*",
+
+        "karma": "~0.12.x",
+        "karma-mocha": "~0.1.x",
+        "karma-sinon-expect": "~0.1.x",
+        "karma-borschik-preprocessor": "~0.1.x",
+        "karma-react-jsx-preprocessor": "~0.1.x",
+        "karma-yate-preprocessor": "~0.1.x",
+        "karma-phantomjs-launcher": "~0.1.x",
+        "karma-firefox-launcher": "~0.1.x"
+    },
+    "engines": {
+        "node": ">=0.6.0"
+    },
+    "scripts": {
+        "test": "make test"
+    },
+    "main": "xblocks-core.js",
+    "directories": {
+        "test": "test"
+    }
 }

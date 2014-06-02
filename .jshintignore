@@ -1,3 +1,4 @@
 node_modules
+bower_components
 xblocks-core.js
 xblocks-core.min.js
