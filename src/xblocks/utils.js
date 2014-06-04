@@ -217,6 +217,7 @@
     xblocks.utils.lazyCall = function(callback, timeout, args) {
         if (callback._timer) {
             clearTimeout(callback._timer);
+            callback._timer = 0;
         }
 
         callback._args = (callback._args || []).concat(args);
