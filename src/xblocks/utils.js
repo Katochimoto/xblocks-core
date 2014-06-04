@@ -208,4 +208,30 @@
         return out;
     };
 
+    /**
+     * @param {function} callback
+     * @param {number} timeout
+     * @param {*} args
+     * @returns {function}
+     */
+    xblocks.utils.lazyCall = function(callback, timeout, args) {
+        if (callback._timer) {
+            clearTimeout(callback._timer);
+        }
+
+        callback._args = (callback._args || []).concat(args);
+        var l = callback._args.length;
+
+        if (l > 100) {
+            callback(callback._args.splice(0, l));
+
+        } else {
+            callback._timer = setTimeout(function() {
+                callback(callback._args.splice(0, callback._args.length));
+            }, timeout);
+        }
+
+        return callback;
+    };
+
 }(xblocks));

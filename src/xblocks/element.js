@@ -128,10 +128,11 @@
 
         if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
             this.unmount();
-            xtag.innerHTML(
-                this._node,
-                React.renderComponentToStaticMarkup(view) //React.renderComponentToString(view)
-            );
+            xtag.innerHTML(this._node, React.renderComponentToStaticMarkup(view));
+
+            if (callback) {
+                callback.call(this);
+            }
 
         } else {
             this._component = React.renderComponent(
@@ -161,6 +162,8 @@
             cancelable: false,
             detail: { xblock: this }
         });
+
+        xblocks.utils.lazyCall(_globalInitEvent, 16, this._node);
     };
 
     /**
@@ -172,6 +175,8 @@
             cancelable: false,
             detail: { xblock: this }
         });
+
+        xblocks.utils.lazyCall(_globalRepaintEvent, 16, this._node);
     };
 
     /**
@@ -349,5 +354,29 @@
     XBElement.prototype._mapAttributesName = function(record) {
         return record.attributeName;
     };
+
+    /**
+     * @param {array} records
+     * @private
+     */
+    function _globalInitEvent(records) {
+        xtag.fireEvent(window, 'xb-created', {
+            bubbles: false,
+            cancelable: false,
+            detail: { records: records }
+        });
+    }
+
+    /**
+     * @param {array} records
+     * @private
+     */
+    function _globalRepaintEvent(records) {
+        xtag.fireEvent(window, 'xb-repaint', {
+            bubbles: false,
+            cancelable: false,
+            detail: { records: records }
+        });
+    }
 
 }(xtag, xblocks, React));

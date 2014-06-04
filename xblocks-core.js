@@ -270,6 +270,32 @@
         return out;
     };
 
+    /**
+     * @param {function} callback
+     * @param {number} timeout
+     * @param {*} args
+     * @returns {function}
+     */
+    xblocks.utils.lazyCall = function(callback, timeout, args) {
+        if (callback._timer) {
+            clearTimeout(callback._timer);
+        }
+
+        callback._args = (callback._args || []).concat(args);
+        var l = callback._args.length;
+
+        if (l > 100) {
+            callback(callback._args.splice(0, l));
+
+        } else {
+            callback._timer = setTimeout(function() {
+                callback(callback._args.splice(0, callback._args.length));
+            }, timeout);
+        }
+
+        return callback;
+    };
+
 }(xblocks));
 
 /* xblocks/utils.js end */
@@ -613,10 +639,11 @@ xblocks.dom.attrs.toObject = function(element) {
 
         if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
             this.unmount();
-            xtag.innerHTML(
-                this._node,
-                React.renderComponentToStaticMarkup(view) //React.renderComponentToString(view)
-            );
+            xtag.innerHTML(this._node, React.renderComponentToStaticMarkup(view));
+
+            if (callback) {
+                callback.call(this);
+            }
 
         } else {
             this._component = React.renderComponent(
@@ -646,6 +673,8 @@ xblocks.dom.attrs.toObject = function(element) {
             cancelable: false,
             detail: { xblock: this }
         });
+
+        xblocks.utils.lazyCall(_globalInitEvent, 16, this._node);
     };
 
     /**
@@ -657,6 +686,8 @@ xblocks.dom.attrs.toObject = function(element) {
             cancelable: false,
             detail: { xblock: this }
         });
+
+        xblocks.utils.lazyCall(_globalRepaintEvent, 16, this._node);
     };
 
     /**
@@ -834,6 +865,30 @@ xblocks.dom.attrs.toObject = function(element) {
     XBElement.prototype._mapAttributesName = function(record) {
         return record.attributeName;
     };
+
+    /**
+     * @param {array} records
+     * @private
+     */
+    function _globalInitEvent(records) {
+        xtag.fireEvent(window, 'xb-created', {
+            bubbles: false,
+            cancelable: false,
+            detail: { records: records }
+        });
+    }
+
+    /**
+     * @param {array} records
+     * @private
+     */
+    function _globalRepaintEvent(records) {
+        xtag.fireEvent(window, 'xb-repaint', {
+            bubbles: false,
+            cancelable: false,
+            detail: { records: records }
+        });
+    }
 
 }(xtag, xblocks, React));
 
