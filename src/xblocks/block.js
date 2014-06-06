@@ -1,4 +1,6 @@
-(function(xtag, xblocks) {
+/* global xblocks, global */
+(function(global, xblocks) {
+    'use strict';
 
     /**
      * @param {String} blockName
@@ -18,6 +20,10 @@
                      * @type {XBElement}
                      */
                     this.xblock = xblocks.element.create(this);
+                },
+
+                inserted: function() {
+
                 },
 
                 /**
@@ -64,7 +70,7 @@
             }
         });
 
-        return xtag.register(blockName, options);
+        return global.xtag.register(blockName, options);
     };
 
-}(xtag, xblocks));
+}(global, xblocks));

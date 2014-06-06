@@ -1,4 +1,6 @@
-(function(xblocks) {
+/* global xblocks, global */
+(function(global, xblocks, undefined) {
+    'use strict';
 
     /**
      * @namespace
@@ -8,7 +10,7 @@
     xblocks.utils.REG_TYPE_EXTRACT = /\s([a-zA-Z]+)/;
 
     xblocks.utils.support = {
-        template: ('content' in document.createElement('template'))
+        template: ('content' in global.document.createElement('template'))
     };
 
     /**
@@ -45,14 +47,14 @@
             i--;
         }
 
-        for ( ; i < length; i++ ) {
-            if ( (options = arguments[ i ]) != null ) {
+        for (; i < length; i++) {
+            if ((options = arguments[i]) !== null) {
                 // Extend the base object
-                for ( name in options ) {
-                    src = target[ name ];
-                    copy = options[ name ];
+                for (name in options) {
+                    src = target[name];
+                    copy = options[name];
 
-                    if ( target === copy ) {
+                    if (target === copy) {
                         continue;
                     }
 
@@ -65,10 +67,10 @@
                             clone = src && xblocks.utils.isPlainObject(src) ? src : {};
                         }
 
-                        target[ name ] = xblocks.utils.merge( deep, clone, copy );
+                        target[name] = xblocks.utils.merge( deep, clone, copy );
 
-                    } else if ( copy !== undefined ) {
-                        target[ name ] = copy;
+                    } else if (copy !== undefined) {
+                        target[name] = copy;
                     }
                 }
             }
@@ -82,7 +84,7 @@
      * @returns {string}
      */
     xblocks.utils.type = function(param) {
-        return ({}).toString.call(param).match(xblocks.utils.REG_TYPE_EXTRACT)[1].toLowerCase();
+        return Object.prototype.toString.call(param).match(xblocks.utils.REG_TYPE_EXTRACT)[1].toLowerCase();
     };
 
     /**
@@ -102,7 +104,7 @@
     };
 
     xblocks.utils.isWindow = function(obj) {
-        return obj != null && obj === obj.window;
+        return obj !== null && obj === obj.window;
     };
 
     /**
@@ -123,25 +125,24 @@
             return false;
         }
 
-        for (var p in x) {
-            if (!x.hasOwnProperty(p)) {
-                continue;
-            }
+        var p;
+        for (p in x) {
+            if (x.hasOwnProperty(p)) {
+                if (!y.hasOwnProperty(p)) {
+                    return false;
+                }
 
-            if (!y.hasOwnProperty(p)) {
-                return false;
-            }
+                if (x[p] === y[p]) {
+                    continue;
+                }
 
-            if (x[p] === y[p]) {
-                continue;
-            }
+                if (typeof(x[p]) !== 'object') {
+                    return false;
+                }
 
-            if (typeof(x[p]) !== 'object') {
-                return false;
-            }
-
-            if (!xblocks.utils.equals(x[p], y[p])) {
-                return false;
+                if (!xblocks.utils.equals(x[p], y[p])) {
+                    return false;
+                }
             }
         }
 
@@ -159,13 +160,10 @@
      * @returns {boolean}
      */
     xblocks.utils.isEmptyObject = function(obj) {
-        if (xblocks.utils.type(obj) !== 'object') {
-            return true;
-        }
-
-        var name;
-        for (name in obj) {
-            return false;
+        if (xblocks.utils.type(obj) === 'object') {
+            for (var name in obj) {
+                return false;
+            }
         }
 
         return true;
@@ -210,29 +208,20 @@
 
     /**
      * @param {function} callback
-     * @param {number} timeout
      * @param {*} args
      * @returns {function}
      */
-    xblocks.utils.lazyCall = function(callback, timeout, args) {
-        if (callback._timer) {
-            clearTimeout(callback._timer);
-            callback._timer = 0;
-        }
-
+    xblocks.utils.lazyCall = function(callback, args) {
         callback._args = (callback._args || []).concat(args);
-        var l = callback._args.length;
 
-        if (l > 100) {
-            callback(callback._args.splice(0, l));
-
-        } else {
-            callback._timer = setTimeout(function() {
+        if (!callback._timer) {
+            callback._timer = global.setImmediate(function() {
+                callback._timer = 0;
                 callback(callback._args.splice(0, callback._args.length));
-            }, timeout);
+            });
         }
 
         return callback;
     };
 
-}(xblocks));
+}(global, xblocks));

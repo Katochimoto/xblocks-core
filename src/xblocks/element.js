@@ -1,4 +1,6 @@
-(function(xtag, xblocks, React) {
+/* global xblocks, global */
+(function(global, xblocks, undefined) {
+    'use strict';
 
     /**
      * @module xblocks.element
@@ -59,7 +61,7 @@
      * Unmounts a component and removes it from the DOM
      */
     XBElement.prototype.destroy = function() {
-        React.unmountComponentAtNode(this._node);
+        global.React.unmountComponentAtNode(this._node);
         this.unmount();
     };
 
@@ -122,20 +124,21 @@
             return;
         }
 
-        props['_uid'] = this._uid;
+        props._uid = this._uid;
 
         var view = xblocks.view.get(this._name)(props, children);
 
         if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
             this.unmount();
-            xtag.innerHTML(this._node, React.renderComponentToStaticMarkup(view));
+            this._node.innerHTML = global.React.renderComponentToStaticMarkup(view);
+            this._upgradeNode();
 
             if (callback) {
                 callback.call(this);
             }
 
         } else {
-            this._component = React.renderComponent(
+            this._component = global.React.renderComponent(
                 view,
                 this._node,
                 this._callbackRender.bind(this, callback)
@@ -157,26 +160,20 @@
      * @private
      */
     XBElement.prototype._callbackInit = function() {
-        xtag.fireEvent(this._node, 'xb-created', {
-            bubbles: false,
-            cancelable: false,
-            detail: { xblock: this }
-        });
+        var event = new global.CustomEvent('xb-created', { detail: { xblock: this } });
+        this._node.dispatchEvent(event);
 
-        xblocks.utils.lazyCall(_globalInitEvent, 16, this._node);
+        xblocks.utils.lazyCall(_globalInitEvent, this._node);
     };
 
     /**
      * @private
      */
     XBElement.prototype._callbackRepaint = function() {
-        xtag.fireEvent(this._node, 'xb-repaint', {
-            bubbles: false,
-            cancelable: false,
-            detail: { xblock: this }
-        });
+        var event = new global.CustomEvent('xb-repaint', { detail: { xblock: this } });
+        this._node.dispatchEvent(event);
 
-        xblocks.utils.lazyCall(_globalRepaintEvent, 16, this._node);
+        xblocks.utils.lazyCall(_globalRepaintEvent, this._node);
     };
 
     /**
@@ -228,8 +225,8 @@
     };
 
     XBElement.prototype._upgradeNode = function() {
-        if (window.CustomElements) {
-            CustomElements.upgradeAll(this._node);
+        if (global.CustomElements) {
+            global.CustomElements.upgradeAll(this._node);
         }
     };
 
@@ -259,8 +256,8 @@
 
                 if (element && element.parentNode === this._node) {
                     // FIXME temporarily, until the implementation of the DocumentFragment
-                    var tmp = document.createElement('div');
-                    tmp.appendChild(document.importNode(element.content, true));
+                    var tmp = global.document.createElement('div');
+                    tmp.appendChild(global.document.importNode(element.content, true));
                     element = tmp;
                 }
             }
@@ -297,7 +294,8 @@
         } else {
             var contentElement = this._getNodeContentElement();
             if (contentElement) {
-                xtag.innerHTML(contentElement, content);
+                contentElement.innerHTML = content;
+                this._upgradeNode();
             }
         }
     };
@@ -360,11 +358,7 @@
      * @private
      */
     function _globalInitEvent(records) {
-        xtag.fireEvent(window, 'xb-created', {
-            bubbles: false,
-            cancelable: false,
-            detail: { records: records }
-        });
+        global.dispatchEvent(new global.CustomEvent('xb-created', { detail: { records: records } }));
     }
 
     /**
@@ -372,11 +366,7 @@
      * @private
      */
     function _globalRepaintEvent(records) {
-        xtag.fireEvent(window, 'xb-repaint', {
-            bubbles: false,
-            cancelable: false,
-            detail: { records: records }
-        });
+        global.dispatchEvent(new global.CustomEvent('xb-repaint', { detail: { records: records } }));
     }
 
-}(xtag, xblocks, React));
+}(global, xblocks));

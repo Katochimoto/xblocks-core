@@ -3,6 +3,7 @@
     "devel": true,
     "jquery": true,
     "globals": {
+        "console": false,
         "require": false,
         "xblocks": false,
         "module": false,

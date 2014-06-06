@@ -46,19 +46,15 @@
      */
     var xblocks = {};
 
-    var namespace;
+    var global = (function() {
+        return this || (1, eval)('this');
+    }());
 
-    if (typeof module !== 'undefined') {
-        namespace = module.exports = xblocks;
+    global.xblocks = xblocks;
 
-    } else {
-        namespace = (function() {
-            return this || (1, eval)('this');
-        }());
-    }
 
-    namespace.xblocks = xblocks;
-
+    /*! borschik:include:../node_modules/setimmediate/setImmediate.js */
+    /*! borschik:include:xblocks/customevent.js */
     /*! borschik:include:xblocks/utils.js */
     /*! borschik:include:xblocks/dom.js */
     /*! borschik:include:xblocks/view.js */
