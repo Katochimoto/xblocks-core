@@ -1,8 +1,6 @@
 /* global xblocks, global */
-(function(global, xblocks) {
+(function(global, React, xblocks) {
     'use strict';
-
-    var React = global.React;
 
     var XBView = {};
 
@@ -52,4 +50,4 @@
         return React.DOM[blockName];
     };
 
-}(global, xblocks));
+}(global, global.React, xblocks));
