@@ -1,7 +1,7 @@
 {
     "name": "xblocks-core",
     "description": "HTML core custom elements",
-    "version": "0.0.20",
+    "version": "0.0.21",
     "keywords": [
         "x-tag",
         "react",
@@ -29,8 +29,8 @@
         "setimmediate": "1.0.2",
 
         "mocha": "~1.17.0",
-        "expect.js": "*",
-        "sinon": "*",
+        "expect.js": "0.3.1",
+        "sinon": "1.10.2",
 
         "karma": "~0.12.x",
         "karma-mocha": "~0.1.x",
@@ -39,7 +39,8 @@
         "karma-react-jsx-preprocessor": "~0.1.x",
         "karma-yate-preprocessor": "~0.1.x",
         "karma-phantomjs-launcher": "~0.1.x",
-        "karma-firefox-launcher": "~0.1.x"
+        "karma-firefox-launcher": "~0.1.x",
+        "karma-chrome-launcher": "~0.1.x"
     },
     "engines": {
         "node": ">=0.6.0"
