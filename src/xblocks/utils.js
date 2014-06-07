@@ -215,6 +215,7 @@
         callback._args = (callback._args || []).concat(args);
 
         if (!callback._timer) {
+            // setImmediate bad work in IE 10
             callback._timer = global.setTimeout(function() {
                 callback._timer = 0;
                 callback(callback._args.splice(0, callback._args.length));
