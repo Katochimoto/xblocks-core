@@ -1,5 +1,5 @@
 /* global xblocks, global */
-(function(global, xtag, xblocks) {
+(function(global, xblocks) {
     'use strict';
 
     /**
@@ -56,7 +56,7 @@
             }
         });
 
-        return xtag.register(blockName, options);
+        return global.xtag.register(blockName, options);
     };
 
-}(global, global.xtag, xblocks));
+}(global, xblocks));

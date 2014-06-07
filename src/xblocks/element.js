@@ -1,5 +1,5 @@
 /* global xblocks, global */
-(function(global, React, xblocks, undefined) {
+(function(global, xblocks, undefined) {
     'use strict';
 
     /**
@@ -61,7 +61,7 @@
      * Unmounts a component and removes it from the DOM
      */
     XBElement.prototype.destroy = function() {
-        React.unmountComponentAtNode(this._node);
+        global.React.unmountComponentAtNode(this._node);
         this.unmount();
     };
 
@@ -130,7 +130,7 @@
 
         if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
             this.unmount();
-            this._node.innerHTML = React.renderComponentToStaticMarkup(view);
+            this._node.innerHTML = global.React.renderComponentToStaticMarkup(view);
             this._upgradeNode();
 
             if (callback) {
@@ -138,7 +138,7 @@
             }
 
         } else {
-            this._component = React.renderComponent(
+            this._component = global.React.renderComponent(
                 view,
                 this._node,
                 this._callbackRender.bind(this, callback)
@@ -369,4 +369,4 @@
         global.dispatchEvent(new global.CustomEvent('xb-repaint', { detail: { records: records } }));
     }
 
-}(global, global.React, xblocks));
+}(global, xblocks));

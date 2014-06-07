@@ -570,7 +570,7 @@
 
     /* xblocks/view.js begin */
 /* global xblocks, global */
-(function(global, React, xblocks) {
+(function(global, xblocks) {
     'use strict';
 
     var XBView = {};
@@ -594,9 +594,9 @@
             component.propTypes = {};
         }
 
-        component.propTypes._uid = React.PropTypes.string;
+        component.propTypes._uid = global.React.PropTypes.string;
 
-        return React.createClass(component);
+        return global.React.createClass(component);
     };
 
     /**
@@ -605,12 +605,12 @@
      * @throws
      */
     xblocks.view.register = function(blockName, component) {
-        if (React.DOM.hasOwnProperty(blockName)) {
+        if (global.React.DOM.hasOwnProperty(blockName)) {
             throw 'Specified item "' + blockName + '" is already defined';
         }
 
-        React.DOM[blockName] = xblocks.view.create(component);
-        return React.DOM[blockName];
+        global.React.DOM[blockName] = xblocks.view.create(component);
+        return global.React.DOM[blockName];
     };
 
     /**
@@ -618,16 +618,16 @@
      * @returns {*}
      */
     xblocks.view.get = function(blockName) {
-        return React.DOM[blockName];
+        return global.React.DOM[blockName];
     };
 
-}(global, global.React, xblocks));
+}(global, xblocks));
 
 /* xblocks/view.js end */
 
     /* xblocks/block.js begin */
 /* global xblocks, global */
-(function(global, xtag, xblocks) {
+(function(global, xblocks) {
     'use strict';
 
     /**
@@ -684,16 +684,16 @@
             }
         });
 
-        return xtag.register(blockName, options);
+        return global.xtag.register(blockName, options);
     };
 
-}(global, global.xtag, xblocks));
+}(global, xblocks));
 
 /* xblocks/block.js end */
 
     /* xblocks/element.js begin */
 /* global xblocks, global */
-(function(global, React, xblocks, undefined) {
+(function(global, xblocks, undefined) {
     'use strict';
 
     /**
@@ -755,7 +755,7 @@
      * Unmounts a component and removes it from the DOM
      */
     XBElement.prototype.destroy = function() {
-        React.unmountComponentAtNode(this._node);
+        global.React.unmountComponentAtNode(this._node);
         this.unmount();
     };
 
@@ -824,7 +824,7 @@
 
         if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
             this.unmount();
-            this._node.innerHTML = React.renderComponentToStaticMarkup(view);
+            this._node.innerHTML = global.React.renderComponentToStaticMarkup(view);
             this._upgradeNode();
 
             if (callback) {
@@ -832,7 +832,7 @@
             }
 
         } else {
-            this._component = React.renderComponent(
+            this._component = global.React.renderComponent(
                 view,
                 this._node,
                 this._callbackRender.bind(this, callback)
@@ -1063,7 +1063,7 @@
         global.dispatchEvent(new global.CustomEvent('xb-repaint', { detail: { records: records } }));
     }
 
-}(global, global.React, xblocks));
+}(global, xblocks));
 
 /* xblocks/element.js end */
 

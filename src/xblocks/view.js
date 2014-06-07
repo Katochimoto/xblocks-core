@@ -1,5 +1,5 @@
 /* global xblocks, global */
-(function(global, React, xblocks) {
+(function(global, xblocks) {
     'use strict';
 
     var XBView = {};
@@ -23,9 +23,9 @@
             component.propTypes = {};
         }
 
-        component.propTypes._uid = React.PropTypes.string;
+        component.propTypes._uid = global.React.PropTypes.string;
 
-        return React.createClass(component);
+        return global.React.createClass(component);
     };
 
     /**
@@ -34,12 +34,12 @@
      * @throws
      */
     xblocks.view.register = function(blockName, component) {
-        if (React.DOM.hasOwnProperty(blockName)) {
+        if (global.React.DOM.hasOwnProperty(blockName)) {
             throw 'Specified item "' + blockName + '" is already defined';
         }
 
-        React.DOM[blockName] = xblocks.view.create(component);
-        return React.DOM[blockName];
+        global.React.DOM[blockName] = xblocks.view.create(component);
+        return global.React.DOM[blockName];
     };
 
     /**
@@ -47,7 +47,7 @@
      * @returns {*}
      */
     xblocks.view.get = function(blockName) {
-        return React.DOM[blockName];
+        return global.React.DOM[blockName];
     };
 
-}(global, global.React, xblocks));
+}(global, xblocks));
