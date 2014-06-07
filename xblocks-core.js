@@ -640,13 +640,7 @@
 
         xblocks.utils.merge(true, options, {
             lifecycle: {
-                /**
-                 * @this {HTMLElement}
-                 */
                 created: function() {
-                    /**
-                     * @type {XBElement}
-                     */
                     this.xblock = xblocks.element.create(this);
                 },
 
@@ -654,17 +648,11 @@
 
                 },
 
-                /**
-                 * @this {HTMLElement}
-                 */
                 removed: function() {
                     this.xblock.destroy();
                     delete this.xblock;
                 },
 
-                /**
-                 * @this {HTMLElement}
-                 */
                 attributeChanged: function(attrName, oldValue, newValue) {
                     if (this.xblock._isMountedComponent()) {
                         return;
@@ -680,7 +668,6 @@
             accessors: {
                 content: {
                     /**
-                     * @this {HTMLElement}
                      * @return {string}
                      */
                     get: function() {
@@ -689,7 +676,6 @@
 
                     /**
                      * @param {string} content
-                     * @this {HTMLElement}
                      */
                     set: function(content) {
                         this.xblock._setNodeContent(content);
