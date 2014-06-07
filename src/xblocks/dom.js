@@ -52,7 +52,6 @@
     };
 
     /**
-     * Выделение атрибутов элемента в плоском представлении
      * @param {HTMLElement} element
      * @return {object}
      */
