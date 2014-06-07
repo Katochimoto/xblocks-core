@@ -25,10 +25,9 @@
         "url": "git@github.com:Katochimoto/xblocks-core.git"
     },
     "devDependencies": {
-        "borschik": "0.4.1",
-        "setimmediate": "1.0.2",
+        "borschik": "1.0.5",
 
-        "mocha": "~1.17.0",
+        "mocha": "1.20.1",
         "expect.js": "0.3.1",
         "sinon": "1.10.2",
 
