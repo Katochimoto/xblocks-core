@@ -25,6 +25,13 @@
         "url": "git@github.com:Katochimoto/xblocks-core.git"
     },
     "devDependencies": {
+        "CustomElements": "Polymer/CustomElements.git#0.3.1",
+        "MutationObservers": "Polymer/MutationObservers.git#0.3.1",
+        "WeakMap": "Polymer/WeakMap.git#0.3.1",
+        "HTMLImports": "Polymer/HTMLImports.git#0.3.1",
+        "dom-token-list-polyfill": "pennyfx/dom-token-list.git#0.0.2",
+        "x-tag-core": "x-tag/core.git#0.9.7",
+
         "borschik": "0.4.1",
         "setimmediate": "1.0.2",
 
