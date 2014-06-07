@@ -160,9 +160,7 @@
      * @private
      */
     XBElement.prototype._callbackInit = function() {
-        var event = new xblocks.utils.CustomEvent('xb-created', { detail: { xblock: this } });
-        this._node.dispatchEvent(event);
-
+        xblocks.utils.dispatchEvent(this._node, 'xb-created', { detail: { xblock: this } });
         xblocks.utils.lazyCall(_globalInitEvent, this._node);
     };
 
@@ -170,9 +168,7 @@
      * @private
      */
     XBElement.prototype._callbackRepaint = function() {
-        var event = new xblocks.utils.CustomEvent('xb-repaint', { detail: { xblock: this } });
-        this._node.dispatchEvent(event);
-
+        xblocks.utils.dispatchEvent(this._node, 'xb-repaint', { detail: { xblock: this } });
         xblocks.utils.lazyCall(_globalRepaintEvent, this._node);
     };
 
@@ -358,7 +354,7 @@
      * @private
      */
     function _globalInitEvent(records) {
-        global.dispatchEvent(new xblocks.utils.CustomEvent('xb-created', { detail: { records: records } }));
+        xblocks.utils.dispatchEvent(global, 'xb-created', { detail: { records: records } });
     }
 
     /**
@@ -366,7 +362,7 @@
      * @private
      */
     function _globalRepaintEvent(records) {
-        global.dispatchEvent(new xblocks.utils.CustomEvent('xb-repaint', { detail: { records: records } }));
+        xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
     }
 
 }(global, xblocks));

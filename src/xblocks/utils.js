@@ -25,20 +25,25 @@
      * @returns {object}
      */
     xblocks.utils.merge = function() {
-        var options, name, src, copy, copyIsArray, clone,
-            target = arguments[0] || {},
-            i = 1,
-            length = arguments.length,
-            deep = false;
+        var options;
+        var name;
+        var src;
+        var copy;
+        var copyIsArray;
+        var clone;
+        var target = arguments[0] || {};
+        var i = 1;
+        var length = arguments.length;
+        var deep = false;
 
-        if ( typeof target === 'boolean' ) {
+        if (typeof target === 'boolean') {
             deep = target;
 
-            target = arguments[ i ] || {};
+            target = arguments[i] || {};
             i++;
         }
 
-        if ( typeof target !== 'object' && xblocks.utils.type(target) !== 'function' ) {
+        if (typeof target !== 'object' && xblocks.utils.type(target) !== 'function') {
             target = {};
         }
 
@@ -161,7 +166,8 @@
      */
     xblocks.utils.isEmptyObject = function(obj) {
         if (xblocks.utils.type(obj) === 'object') {
-            for (var name in obj) {
+            var name;
+            for (name in obj) {
                 return false;
             }
         }
@@ -285,5 +291,9 @@
             return global.CustomEvent;
         }
     }());
+
+    xblocks.utils.dispatchEvent = function(element, name, params) {
+        element.dispatchEvent(new xblocks.utils.CustomEvent(name, params));
+    };
 
 }(global, xblocks));

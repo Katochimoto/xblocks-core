@@ -80,20 +80,25 @@
      * @returns {object}
      */
     xblocks.utils.merge = function() {
-        var options, name, src, copy, copyIsArray, clone,
-            target = arguments[0] || {},
-            i = 1,
-            length = arguments.length,
-            deep = false;
+        var options;
+        var name;
+        var src;
+        var copy;
+        var copyIsArray;
+        var clone;
+        var target = arguments[0] || {};
+        var i = 1;
+        var length = arguments.length;
+        var deep = false;
 
-        if ( typeof target === 'boolean' ) {
+        if (typeof target === 'boolean') {
             deep = target;
 
-            target = arguments[ i ] || {};
+            target = arguments[i] || {};
             i++;
         }
 
-        if ( typeof target !== 'object' && xblocks.utils.type(target) !== 'function' ) {
+        if (typeof target !== 'object' && xblocks.utils.type(target) !== 'function') {
             target = {};
         }
 
@@ -216,7 +221,8 @@
      */
     xblocks.utils.isEmptyObject = function(obj) {
         if (xblocks.utils.type(obj) === 'object') {
-            for (var name in obj) {
+            var name;
+            for (name in obj) {
                 return false;
             }
         }
@@ -341,6 +347,10 @@
         }
     }());
 
+    xblocks.utils.dispatchEvent = function(element, name, params) {
+        element.dispatchEvent(new xblocks.utils.CustomEvent(name, params));
+    };
+
 }(global, xblocks));
 
 /* xblocks/utils.js end */
@@ -400,7 +410,6 @@
     };
 
     /**
-     * Выделение атрибутов элемента в плоском представлении
      * @param {HTMLElement} element
      * @return {object}
      */
@@ -708,9 +717,7 @@
      * @private
      */
     XBElement.prototype._callbackInit = function() {
-        var event = new xblocks.utils.CustomEvent('xb-created', { detail: { xblock: this } });
-        this._node.dispatchEvent(event);
-
+        xblocks.utils.dispatchEvent(this._node, 'xb-created', { detail: { xblock: this } });
         xblocks.utils.lazyCall(_globalInitEvent, this._node);
     };
 
@@ -718,9 +725,7 @@
      * @private
      */
     XBElement.prototype._callbackRepaint = function() {
-        var event = new xblocks.utils.CustomEvent('xb-repaint', { detail: { xblock: this } });
-        this._node.dispatchEvent(event);
-
+        xblocks.utils.dispatchEvent(this._node, 'xb-repaint', { detail: { xblock: this } });
         xblocks.utils.lazyCall(_globalRepaintEvent, this._node);
     };
 
@@ -906,7 +911,7 @@
      * @private
      */
     function _globalInitEvent(records) {
-        global.dispatchEvent(new xblocks.utils.CustomEvent('xb-created', { detail: { records: records } }));
+        xblocks.utils.dispatchEvent(global, 'xb-created', { detail: { records: records } });
     }
 
     /**
@@ -914,7 +919,7 @@
      * @private
      */
     function _globalRepaintEvent(records) {
-        global.dispatchEvent(new xblocks.utils.CustomEvent('xb-repaint', { detail: { records: records } }));
+        xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
     }
 
 }(global, xblocks));
