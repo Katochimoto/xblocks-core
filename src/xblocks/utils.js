@@ -215,13 +215,74 @@
         callback._args = (callback._args || []).concat(args);
 
         if (!callback._timer) {
-            callback._timer = global.setTimeout(function() {
+            callback._timer = global.setImmediate(function() {
                 callback._timer = 0;
                 callback(callback._args.splice(0, callback._args.length));
-            }, 0);
+            });
         }
 
         return callback;
     };
+
+    /**
+     * @param {string} methodName
+     * @returns {boolean}
+     */
+    xblocks.utils.pristine = function(methodName) {
+        var method = global[methodName];
+
+        if (!methodName || !method) {
+            return false;
+        }
+
+        if (!(new RegExp("^[\\$_a-z][\\$\\w]*$",'i')).test(methodName)) {
+            return false;
+        }
+
+        if (typeof method !== 'function' && typeof method !== 'object') {
+            return false;
+        }
+
+        var re = new RegExp("function\\s+" + methodName + "\\(\\s*\\)\\s*{\\s*\\[native code\\]\\s*}");
+
+        if (!re.test(method)) {
+            return false;
+        }
+
+        if (typeof method === 'function') {
+            if (!method.valueOf || method.valueOf() !== method) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    /**
+     * @constructor
+     */
+    xblocks.utils.CustomEvent = (function() {
+        if (!xblocks.utils.pristine('CustomEvent')) {
+            var CustomEvent = function(event, params) {
+                params = xblocks.utils.merge({
+                    bubbles: false,
+                    cancelable: false,
+                    detail: undefined
+
+                }, params || {});
+
+                var evt = document.createEvent('CustomEvent');
+                evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+                return evt;
+            };
+
+            CustomEvent.prototype = global.Event.prototype;
+
+            return CustomEvent;
+
+        } else {
+            return global.CustomEvent;
+        }
+    }());
 
 }(global, xblocks));

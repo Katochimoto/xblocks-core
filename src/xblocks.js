@@ -52,7 +52,8 @@
 
     global.xblocks = xblocks;
 
-    /*! borschik:include:xblocks/customevent.js */
+    /*! borschik:include:../node_modules/setimmediate/setImmediate.js */
+
     /*! borschik:include:xblocks/utils.js */
     /*! borschik:include:xblocks/dom.js */
     /*! borschik:include:xblocks/view.js */
