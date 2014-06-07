@@ -10,7 +10,7 @@
     xblocks.create = function(blockName, options) {
         options = xblocks.utils.isPlainObject(options) ? options : {};
 
-        xblocks.utils.merge(true, options, {
+        xblocks.utils.extend(true, options, {
             lifecycle: {
                 created: function() {
                     this.xblock = xblocks.element.create(this);

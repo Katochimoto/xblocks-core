@@ -24,7 +24,7 @@
     /**
      * @returns {object}
      */
-    xblocks.utils.merge = function() {
+    xblocks.utils.extend = function() {
         var options;
         var name;
         var src;
@@ -72,7 +72,7 @@
                             clone = src && xblocks.utils.isPlainObject(src) ? src : {};
                         }
 
-                        target[name] = xblocks.utils.merge( deep, clone, copy );
+                        target[name] = xblocks.utils.extend( deep, clone, copy );
 
                     } else if (copy !== undefined) {
                         target[name] = copy;
@@ -271,7 +271,7 @@
     xblocks.utils.CustomEvent = (function() {
         if (!xblocks.utils.pristine('CustomEvent')) {
             var CustomEvent = function(event, params) {
-                params = xblocks.utils.merge({
+                params = xblocks.utils.extend({
                     bubbles: false,
                     cancelable: false,
                     detail: undefined
