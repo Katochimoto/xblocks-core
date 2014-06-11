@@ -4,64 +4,51 @@
 (function() {
 
     /**
-     * @module xblocks.element
-     */
-    xblocks.element = {};
-
-    /**
-     * @param {HTMLElement} node
-     * @return {XBElement}
-     */
-    xblocks.element.create = function(node) {
-        return new XBElement(node);
-    };
-
-    /**
      * @param {HTMLElement} node
      * @constructor
      */
-    function XBElement(node) {
+    xblocks.element = function(node) {
         this._uid = xblocks.utils.uid();
         this._name = node.tagName.toLowerCase();
         this._node = node;
 
         this._init(this._getNodeProps(), this._getNodeContent(), this._callbackInit);
-    }
+    };
 
     /**
      * @type {string}
      * @private
      */
-    XBElement.prototype._uid = undefined;
+    xblocks.element.prototype._uid = undefined;
 
     /**
      * @type {string}
      * @private
      */
-    XBElement.prototype._name = undefined;
+    xblocks.element.prototype._name = undefined;
 
     /**
      * @type {HTMLElement}
      * @private
      */
-    XBElement.prototype._node = null;
+    xblocks.element.prototype._node = null;
 
     /**
      * @type {Constructor}
      * @private
      */
-    XBElement.prototype._component = null;
+    xblocks.element.prototype._component = null;
 
     /**
      * @type {MutationObserver}
      * @private
      */
-    XBElement.prototype._observer = null;
+    xblocks.element.prototype._observer = null;
 
     /**
      * Unmounts a component and removes it from the DOM
      */
-    XBElement.prototype.destroy = function() {
+    xblocks.element.prototype.destroy = function() {
         React.unmountComponentAtNode(this._node);
         this.unmount();
     };
@@ -69,7 +56,7 @@
     /**
      * Unmounts a component
      */
-    XBElement.prototype.unmount = function() {
+    xblocks.element.prototype.unmount = function() {
         if (this._observer) {
             this._observer.disconnect();
         }
@@ -84,7 +71,7 @@
      * @param {object} [props]
      * @param {Array} [removeProps]
      */
-    XBElement.prototype.update = function(props, removeProps) {
+    xblocks.element.prototype.update = function(props, removeProps) {
         if (!this._isMountedComponent()) {
             return;
         }
@@ -120,7 +107,7 @@
      * @param {function} [callback]
      * @private
      */
-    XBElement.prototype._init = function(props, children, callback) {
+    xblocks.element.prototype._init = function(props, children, callback) {
         if (this._isMountedComponent()) {
             return;
         }
@@ -150,7 +137,7 @@
     /**
      * @private
      */
-    XBElement.prototype._repaint = function() {
+    xblocks.element.prototype._repaint = function() {
         var props = xblocks.utils.merge(true, this._getNodeProps(), this._getCurrentProps());
         var children = this._getNodeContent();
         this.destroy();
@@ -160,7 +147,7 @@
     /**
      * @private
      */
-    XBElement.prototype._callbackInit = function() {
+    xblocks.element.prototype._callbackInit = function() {
         xblocks.utils.dispatchEvent(this._node, 'xb-created', { detail: { xblock: this } });
         xblocks.utils.lazy(_globalInitEvent, this._node);
     };
@@ -168,7 +155,7 @@
     /**
      * @private
      */
-    XBElement.prototype._callbackRepaint = function() {
+    xblocks.element.prototype._callbackRepaint = function() {
         xblocks.utils.dispatchEvent(this._node, 'xb-repaint', { detail: { xblock: this } });
         xblocks.utils.lazy(_globalRepaintEvent, this._node);
     };
@@ -177,7 +164,7 @@
      * @param {function} [callback]
      * @private
      */
-    XBElement.prototype._callbackRender = function(callback) {
+    xblocks.element.prototype._callbackRender = function(callback) {
         this._upgradeNode();
 
         if (!this._observer) {
@@ -202,7 +189,7 @@
      * @param {MutationRecord[]} records
      * @private
      */
-    XBElement.prototype._callbackMutation = function(records) {
+    xblocks.element.prototype._callbackMutation = function(records) {
         if (!this._isMountedComponent()) {
             return;
         }
@@ -221,7 +208,7 @@
         }
     };
 
-    XBElement.prototype._upgradeNode = function() {
+    xblocks.element.prototype._upgradeNode = function() {
         if (global.CustomElements) {
             global.CustomElements.upgradeAll(this._node);
         }
@@ -230,7 +217,7 @@
     /**
      * @returns {object}
      */
-    XBElement.prototype._getNodeProps = function() {
+    xblocks.element.prototype._getNodeProps = function() {
         return xblocks.dom.attrs.toObject(this._node);
     };
 
@@ -238,7 +225,7 @@
      * @returns {?HTMLElement}
      * @private
      */
-    XBElement.prototype._getNodeContentElement = function() {
+    xblocks.element.prototype._getNodeContentElement = function() {
         if (!this._node.childNodes.length) {
             return null;
         }
@@ -248,7 +235,7 @@
         if (!element) {
             element = this._node.querySelector('script[type="text/template"]');
 
-            if (!element || element.parentNode !== this._node) {
+            if (xblocks.utils.support.template && (!element || element.parentNode !== this._node)) {
                 element = this._node.querySelector('template');
 
                 if (element && element.parentNode === this._node) {
@@ -267,7 +254,7 @@
      * @returns {string}
      * @private
      */
-    XBElement.prototype._getNodeContent = function() {
+    xblocks.element.prototype._getNodeContent = function() {
         if (this._isMountedComponent()) {
             return this._component.props.children;
         }
@@ -284,7 +271,7 @@
      * @param {string} content
      * @private
      */
-    XBElement.prototype._setNodeContent = function(content) {
+    xblocks.element.prototype._setNodeContent = function(content) {
         if (this._isMountedComponent()) {
             this.update({ children: content });
 
@@ -302,7 +289,7 @@
      * @returns {boolean}
      * @private
      */
-    XBElement.prototype._isMountedComponent = function() {
+    xblocks.element.prototype._isMountedComponent = function() {
         return (this._component && this._component.isMounted());
     };
 
@@ -310,7 +297,7 @@
      * @returns {?object}
      * @private
      */
-    XBElement.prototype._getCurrentProps = function() {
+    xblocks.element.prototype._getCurrentProps = function() {
         return this._isMountedComponent() ? this._component.props : null;
     };
 
@@ -319,7 +306,7 @@
      * @returns {boolean}
      * @private
      */
-    XBElement.prototype._checkNodeChange = function(record) {
+    xblocks.element.prototype._checkNodeChange = function(record) {
         return (record.type === 'childList');
     };
 
@@ -328,7 +315,7 @@
      * @returns {boolean}
      * @private
      */
-    XBElement.prototype._checkAttributesChange = function(record) {
+    xblocks.element.prototype._checkAttributesChange = function(record) {
         return (record.type === 'attributes');
     };
 
@@ -337,7 +324,7 @@
      * @returns {boolean}
      * @private
      */
-    XBElement.prototype._filterAttributesRemove = function(record) {
+    xblocks.element.prototype._filterAttributesRemove = function(record) {
         return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
     };
 
@@ -346,7 +333,7 @@
      * @returns {string}
      * @private
      */
-    XBElement.prototype._mapAttributesName = function(record) {
+    xblocks.element.prototype._mapAttributesName = function(record) {
         return record.attributeName;
     };
 

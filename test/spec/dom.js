@@ -1,3 +1,6 @@
+/* global describe, it, expect, xblocks */
+/* jshint strict: false */
+
 describe('xblocks.dom', function() {
     describe('xblocks.dom.attrs', function() {
         describe('#getRealValue', function() {
@@ -43,13 +46,13 @@ describe('xblocks.dom', function() {
                 });
 
                 element.setAttribute('testboolean1', 'true');
-                expectAttrs['testboolean1'] = true;
+                expectAttrs.testboolean1 = true;
 
                 element.setAttribute('testboolean2', 'false');
-                expectAttrs['testboolean2'] = false;
+                expectAttrs.testboolean2 = false;
 
                 element.setAttribute('testattr', 'testValue');
-                expectAttrs['testattr'] = 'testValue';
+                expectAttrs.testattr = 'testValue';
 
                 expect(xblocks.dom.attrs.toObject(element)).to.be.eql(expectAttrs);
             });
