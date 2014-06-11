@@ -79,7 +79,7 @@
     /**
      * @returns {object}
      */
-    xblocks.utils.extend = function() {
+    xblocks.utils.merge = function() {
         var options;
         var name;
         var src;
@@ -127,7 +127,7 @@
                             clone = src && xblocks.utils.isPlainObject(src) ? src : {};
                         }
 
-                        target[name] = xblocks.utils.extend( deep, clone, copy );
+                        target[name] = xblocks.utils.merge( deep, clone, copy );
 
                     } else if (copy !== undefined) {
                         target[name] = copy;
@@ -326,7 +326,7 @@
     xblocks.utils.CustomEvent = (function() {
         if (!xblocks.utils.pristine('CustomEvent')) {
             var CustomEvent = function(event, params) {
-                params = xblocks.utils.extend({
+                params = xblocks.utils.merge({
                     bubbles: false,
                     cancelable: false,
                     detail: undefined
@@ -501,7 +501,7 @@
     xblocks.create = function(blockName, options) {
         options = xblocks.utils.isPlainObject(options) ? options : {};
 
-        xblocks.utils.extend(true, options, {
+        xblocks.utils.merge(true, options, {
             lifecycle: {
                 created: function() {
                     this.xblock = xblocks.element.create(this);
@@ -648,14 +648,14 @@
         var nextProps = this._getNodeProps();
         var action = 'setProps';
 
-        xblocks.utils.extend(true, nextProps, props);
+        xblocks.utils.merge(true, nextProps, props);
 
         // merge of new and current properties
         // and the exclusion of remote properties
         if (Array.isArray(removeProps) && removeProps.length) {
             action = 'replaceProps';
             var currentProps = this._getCurrentProps();
-            nextProps = xblocks.utils.extend(true, currentProps, nextProps);
+            nextProps = xblocks.utils.merge(true, currentProps, nextProps);
             nextProps = xblocks.utils.filterObject(nextProps, function(name) {
                 return removeProps.indexOf(name) === -1;
             });
@@ -707,7 +707,7 @@
      * @private
      */
     XBElement.prototype._repaint = function() {
-        var props = xblocks.utils.extend(true, this._getNodeProps(), this._getCurrentProps());
+        var props = xblocks.utils.merge(true, this._getNodeProps(), this._getCurrentProps());
         var children = this._getNodeContent();
         this.destroy();
         this._init(props, children, this._callbackRepaint);

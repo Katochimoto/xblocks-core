@@ -91,14 +91,14 @@
         var nextProps = this._getNodeProps();
         var action = 'setProps';
 
-        xblocks.utils.extend(true, nextProps, props);
+        xblocks.utils.merge(true, nextProps, props);
 
         // merge of new and current properties
         // and the exclusion of remote properties
         if (Array.isArray(removeProps) && removeProps.length) {
             action = 'replaceProps';
             var currentProps = this._getCurrentProps();
-            nextProps = xblocks.utils.extend(true, currentProps, nextProps);
+            nextProps = xblocks.utils.merge(true, currentProps, nextProps);
             nextProps = xblocks.utils.filterObject(nextProps, function(name) {
                 return removeProps.indexOf(name) === -1;
             });
@@ -150,7 +150,7 @@
      * @private
      */
     XBElement.prototype._repaint = function() {
-        var props = xblocks.utils.extend(true, this._getNodeProps(), this._getCurrentProps());
+        var props = xblocks.utils.merge(true, this._getNodeProps(), this._getCurrentProps());
         var children = this._getNodeContent();
         this.destroy();
         this._init(props, children, this._callbackRepaint);
