@@ -1,6 +1,7 @@
-/* global xblocks, global */
-(function(global, xblocks, undefined) {
-    'use strict';
+/* global xblocks, global, React */
+/* jshint strict: false */
+
+(function() {
 
     /**
      * @module xblocks.element
@@ -61,7 +62,7 @@
      * Unmounts a component and removes it from the DOM
      */
     XBElement.prototype.destroy = function() {
-        global.React.unmountComponentAtNode(this._node);
+        React.unmountComponentAtNode(this._node);
         this.unmount();
     };
 
@@ -130,7 +131,7 @@
 
         if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
             this.unmount();
-            this._node.innerHTML = global.React.renderComponentToStaticMarkup(view);
+            this._node.innerHTML = React.renderComponentToStaticMarkup(view);
             this._upgradeNode();
 
             if (callback) {
@@ -138,7 +139,7 @@
             }
 
         } else {
-            this._component = global.React.renderComponent(
+            this._component = React.renderComponent(
                 view,
                 this._node,
                 this._callbackRender.bind(this, callback)
@@ -161,7 +162,7 @@
      */
     XBElement.prototype._callbackInit = function() {
         xblocks.utils.dispatchEvent(this._node, 'xb-created', { detail: { xblock: this } });
-        xblocks.utils.lazyCall(_globalInitEvent, this._node);
+        xblocks.utils.lazy(_globalInitEvent, this._node);
     };
 
     /**
@@ -169,7 +170,7 @@
      */
     XBElement.prototype._callbackRepaint = function() {
         xblocks.utils.dispatchEvent(this._node, 'xb-repaint', { detail: { xblock: this } });
-        xblocks.utils.lazyCall(_globalRepaintEvent, this._node);
+        xblocks.utils.lazy(_globalRepaintEvent, this._node);
     };
 
     /**
@@ -365,4 +366,4 @@
         xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
     }
 
-}(global, xblocks));
+}());

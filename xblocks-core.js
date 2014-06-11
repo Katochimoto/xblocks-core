@@ -1,5 +1,185 @@
+/* ../node_modules/setimmediate/setImmediate.js begin */
+(function (global, undefined) {
+    "use strict";
+
+    if (global.setImmediate) {
+        return;
+    }
+
+    var nextHandle = 1; // Spec says greater than zero
+    var tasksByHandle = {};
+    var currentlyRunningATask = false;
+    var doc = global.document;
+    var setImmediate;
+
+    function addFromSetImmediateArguments(args) {
+        tasksByHandle[nextHandle] = partiallyApplied.apply(undefined, args);
+        return nextHandle++;
+    }
+
+    // This function accepts the same arguments as setImmediate, but
+    // returns a function that requires no arguments.
+    function partiallyApplied(handler) {
+        var args = [].slice.call(arguments, 1);
+        return function() {
+            if (typeof handler === "function") {
+                handler.apply(undefined, args);
+            } else {
+                (new Function("" + handler))();
+            }
+        };
+    }
+
+    function runIfPresent(handle) {
+        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+        // So if we're currently running a task, we'll need to delay this invocation.
+        if (currentlyRunningATask) {
+            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+            // "too much recursion" error.
+            setTimeout(partiallyApplied(runIfPresent, handle), 0);
+        } else {
+            var task = tasksByHandle[handle];
+            if (task) {
+                currentlyRunningATask = true;
+                try {
+                    task();
+                } finally {
+                    clearImmediate(handle);
+                    currentlyRunningATask = false;
+                }
+            }
+        }
+    }
+
+    function clearImmediate(handle) {
+        delete tasksByHandle[handle];
+    }
+
+    function installNextTickImplementation() {
+        setImmediate = function() {
+            var handle = addFromSetImmediateArguments(arguments);
+            process.nextTick(partiallyApplied(runIfPresent, handle));
+            return handle;
+        };
+    }
+
+    function canUsePostMessage() {
+        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+        // where `global.postMessage` means something completely different and can't be used for this purpose.
+        if (global.postMessage && !global.importScripts) {
+            var postMessageIsAsynchronous = true;
+            var oldOnMessage = global.onmessage;
+            global.onmessage = function() {
+                postMessageIsAsynchronous = false;
+            };
+            global.postMessage("", "*");
+            global.onmessage = oldOnMessage;
+            return postMessageIsAsynchronous;
+        }
+    }
+
+    function installPostMessageImplementation() {
+        // Installs an event handler on `global` for the `message` event: see
+        // * https://developer.mozilla.org/en/DOM/window.postMessage
+        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+        var messagePrefix = "setImmediate$" + Math.random() + "$";
+        var onGlobalMessage = function(event) {
+            if (event.source === global &&
+                typeof event.data === "string" &&
+                event.data.indexOf(messagePrefix) === 0) {
+                runIfPresent(+event.data.slice(messagePrefix.length));
+            }
+        };
+
+        if (global.addEventListener) {
+            global.addEventListener("message", onGlobalMessage, false);
+        } else {
+            global.attachEvent("onmessage", onGlobalMessage);
+        }
+
+        setImmediate = function() {
+            var handle = addFromSetImmediateArguments(arguments);
+            global.postMessage(messagePrefix + handle, "*");
+            return handle;
+        };
+    }
+
+    function installMessageChannelImplementation() {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = function(event) {
+            var handle = event.data;
+            runIfPresent(handle);
+        };
+
+        setImmediate = function() {
+            var handle = addFromSetImmediateArguments(arguments);
+            channel.port2.postMessage(handle);
+            return handle;
+        };
+    }
+
+    function installReadyStateChangeImplementation() {
+        var html = doc.documentElement;
+        setImmediate = function() {
+            var handle = addFromSetImmediateArguments(arguments);
+            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+            var script = doc.createElement("script");
+            script.onreadystatechange = function () {
+                runIfPresent(handle);
+                script.onreadystatechange = null;
+                html.removeChild(script);
+                script = null;
+            };
+            html.appendChild(script);
+            return handle;
+        };
+    }
+
+    function installSetTimeoutImplementation() {
+        setImmediate = function() {
+            var handle = addFromSetImmediateArguments(arguments);
+            setTimeout(partiallyApplied(runIfPresent, handle), 0);
+            return handle;
+        };
+    }
+
+    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+
+    // Don't get fooled by e.g. browserify environments.
+    if ({}.toString.call(global.process) === "[object process]") {
+        // For Node.js before 0.9
+        installNextTickImplementation();
+
+    } else if (canUsePostMessage()) {
+        // For non-IE10 modern browsers
+        installPostMessageImplementation();
+
+    } else if (global.MessageChannel) {
+        // For web workers, where supported
+        installMessageChannelImplementation();
+
+    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+        // For IE 6–8
+        installReadyStateChangeImplementation();
+
+    } else {
+        // For older browsers
+        installSetTimeoutImplementation();
+    }
+
+    attachTo.setImmediate = setImmediate;
+    attachTo.clearImmediate = clearImmediate;
+}(new Function("return this")()));
+
+/* ../node_modules/setimmediate/setImmediate.js end */
+
+
 /*jshint -W067 */
-(function() {
+(function(global, undefined) {
     'use strict';
 
     /**
@@ -42,522 +222,630 @@
      */
 
     /**
+     * @namespace React
+     */
+    var React = global.React;
+
+    /**
+     * @namespace xtag
+     */
+    var xtag = global.xtag;
+
+    /**
      * @namespace xblocks
      */
-    var xblocks = {};
-
-    var global = (function() {
-        return this || (1, eval)('this');
-    }());
-
-    global.xblocks = xblocks;
+    var xblocks = global.xblocks = {};
 
     /* xblocks/utils.js begin */
+/* global xblocks */
+/* jshint strict: false */
+
+/**
+ * @namespace
+ */
+xblocks.utils = {};
+
+xblocks.utils.REG_TYPE_EXTRACT = /\s([a-zA-Z]+)/;
+xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
+
+/* xblocks/utils/support.js begin */
 /* global xblocks, global */
-(function(global, xblocks, undefined) {
-    'use strict';
+/* jshint strict: false */
 
-    /**
-     * @namespace
-     */
-    xblocks.utils = {};
+xblocks.utils.support = {};
 
-    xblocks.utils.REG_TYPE_EXTRACT = /\s([a-zA-Z]+)/;
+xblocks.utils.support.template = ('content' in global.document.createElement('template'));
 
-    xblocks.utils.support = {
-        template: ('content' in global.document.createElement('template'))
-    };
+xblocks.utils.support.msie = (function() {
+    var ua = global.navigator.userAgent.toLowerCase();
+    var match = /(msie) ([\w.]+)/.exec(ua) || [];
 
-    /**
-     * Generate unique string
-     * @returns {string}
-     */
-    xblocks.utils.uid = function() {
-        return Math.floor((1 + Math.random()) * 0x10000000 + Date.now()).toString(36);
-    };
+    if (match[1]) {
+        return match[2] || '0';
+    }
 
-    /**
-     * @returns {object}
-     */
-    xblocks.utils.merge = function() {
-        var options;
+    return false;
+}());
+
+/* xblocks/utils/support.js end */
+
+/* xblocks/utils/uid.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * Generate unique string
+ * @returns {string}
+ */
+xblocks.utils.uid = function() {
+    return Math.floor((1 + Math.random()) * 0x10000000 + Date.now()).toString(36);
+};
+
+/* xblocks/utils/uid.js end */
+
+/* xblocks/utils/type.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @param {*} param
+ * @returns {string}
+ */
+xblocks.utils.type = function(param) {
+    return Object.prototype.toString.call(param).match(xblocks.utils.REG_TYPE_EXTRACT)[1].toLowerCase();
+};
+
+/* xblocks/utils/type.js end */
+
+/* xblocks/utils/isEmptyObject.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @param {*} obj
+ * @returns {boolean}
+ */
+xblocks.utils.isEmptyObject = function(obj) {
+    if (xblocks.utils.type(obj) === 'object') {
         var name;
-        var src;
-        var copy;
-        var copyIsArray;
-        var clone;
-        var target = arguments[0] || {};
-        var i = 1;
-        var length = arguments.length;
-        var deep = false;
-
-        if (typeof target === 'boolean') {
-            deep = target;
-
-            target = arguments[i] || {};
-            i++;
-        }
-
-        if (typeof target !== 'object' && xblocks.utils.type(target) !== 'function') {
-            target = {};
-        }
-
-        if ( i === length ) {
-            target = this;
-            i--;
-        }
-
-        for (; i < length; i++) {
-            if ((options = arguments[i]) !== null) {
-                // Extend the base object
-                for (name in options) {
-                    src = target[name];
-                    copy = options[name];
-
-                    if (target === copy) {
-                        continue;
-                    }
-
-                    if ( deep && copy && ( xblocks.utils.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)) ) ) {
-                        if ( copyIsArray ) {
-                            copyIsArray = false;
-                            clone = src && Array.isArray(src) ? src : [];
-
-                        } else {
-                            clone = src && xblocks.utils.isPlainObject(src) ? src : {};
-                        }
-
-                        target[name] = xblocks.utils.merge( deep, clone, copy );
-
-                    } else if (copy !== undefined) {
-                        target[name] = copy;
-                    }
-                }
-            }
-        }
-
-        return target;
-    };
-
-    /**
-     * @param {*} param
-     * @returns {string}
-     */
-    xblocks.utils.type = function(param) {
-        return Object.prototype.toString.call(param).match(xblocks.utils.REG_TYPE_EXTRACT)[1].toLowerCase();
-    };
-
-    /**
-     * @param {*} obj
-     * @returns {boolean}
-     */
-    xblocks.utils.isPlainObject = function(obj) {
-        if (xblocks.utils.type(obj) !== 'object' || obj.nodeType || xblocks.utils.isWindow(obj)) {
+        for (name in obj) {
             return false;
         }
+    }
 
-        if (obj.constructor && !obj.constructor.prototype.hasOwnProperty('isPrototypeOf')) {
+    return true;
+};
+
+/* xblocks/utils/isEmptyObject.js end */
+
+/* xblocks/utils/isWindow.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @param {*} obj
+ * @returns {boolean}
+ */
+xblocks.utils.isWindow = function(obj) {
+    return obj !== null && obj === obj.window;
+};
+
+/* xblocks/utils/isWindow.js end */
+
+/* xblocks/utils/isPlainObject.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @param {*} obj
+ * @returns {boolean}
+ */
+xblocks.utils.isPlainObject = function(obj) {
+    if (xblocks.utils.type(obj) !== 'object' || obj.nodeType || xblocks.utils.isWindow(obj)) {
+        return false;
+    }
+
+    if (obj.constructor && !obj.constructor.prototype.hasOwnProperty('isPrototypeOf')) {
+        return false;
+    }
+
+    return true;
+};
+
+/* xblocks/utils/isPlainObject.js end */
+
+/* xblocks/utils/pristine.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @param {string} methodName
+ * @returns {boolean}
+ */
+xblocks.utils.pristine = function(methodName) {
+    var method = global[methodName];
+
+    if (!methodName || !method) {
+        return false;
+    }
+
+    if (!xblocks.utils.REG_PRISTINE.test(methodName)) {
+        return false;
+    }
+
+    var type = typeof(method);
+
+    if (type !== 'function' && type !== 'object') {
+        return false;
+    }
+
+    var re = new RegExp("function\\s+" + methodName + "\\(\\s*\\)\\s*{\\s*\\[native code\\]\\s*}");
+
+    if (!re.test(method)) {
+        return false;
+    }
+
+    if (type === 'function') {
+        if (!method.valueOf || method.valueOf() !== method) {
             return false;
         }
+    }
 
-        return true;
-    };
+    return true;
+};
 
-    xblocks.utils.isWindow = function(obj) {
-        return obj !== null && obj === obj.window;
-    };
+/* xblocks/utils/pristine.js end */
 
-    /**
-     * @param {*} x
-     * @param {*} y
-     * @returns {boolean}
-     */
-    xblocks.utils.equals = function(x, y) {
-        if (x === y) {
-            return true;
-        }
+/* xblocks/utils/merge.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
 
-        if (!(x instanceof Object) || !(y instanceof Object)) {
-            return false;
-        }
+/**
+ * @returns {object}
+ */
+xblocks.utils.merge = function() {
+    var options;
+    var name;
+    var src;
+    var copy;
+    var copyIsArray;
+    var clone;
+    var target = arguments[0] || {};
+    var i = 1;
+    var length = arguments.length;
+    var deep = false;
+    var type = xblocks.utils.type(target);
 
-        if (x.constructor !== y.constructor) {
-            return false;
-        }
+    if (type === 'boolean') {
+        deep = target;
+        target = arguments[i] || {};
+        i++;
+    }
 
-        var p;
-        for (p in x) {
-            if (x.hasOwnProperty(p)) {
-                if (!y.hasOwnProperty(p)) {
-                    return false;
-                }
+    type = xblocks.utils.type(target);
 
-                if (x[p] === y[p]) {
+    if (type !== 'object' && type !== 'function') {
+        target = {};
+    }
+
+    if (i === length) {
+        target = this;
+        i--;
+    }
+
+    for (; i < length; i++) {
+        if ((options = arguments[i]) !== null) {
+            // Extend the base object
+            for (name in options) {
+                src = target[name];
+                copy = options[name];
+
+                if (target === copy) {
                     continue;
                 }
 
-                if (typeof(x[p]) !== 'object') {
-                    return false;
+                if ( deep && copy && ( xblocks.utils.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)) ) ) {
+                    if ( copyIsArray ) {
+                        copyIsArray = false;
+                        clone = src && Array.isArray(src) ? src : [];
+
+                    } else {
+                        clone = src && xblocks.utils.isPlainObject(src) ? src : {};
+                    }
+
+                    target[name] = xblocks.utils.merge( deep, clone, copy );
+
+                } else if (copy !== undefined) {
+                    target[name] = copy;
                 }
-
-                if (!xblocks.utils.equals(x[p], y[p])) {
-                    return false;
-                }
             }
         }
+    }
 
-        for (p in y) {
-            if (y.hasOwnProperty(p) && !x.hasOwnProperty(p)) {
-                return false;
-            }
-        }
+    return target;
+};
 
-        return true;
-    };
+/* xblocks/utils/merge.js end */
 
-    /**
-     * @param {*} obj
-     * @returns {boolean}
-     */
-    xblocks.utils.isEmptyObject = function(obj) {
-        if (xblocks.utils.type(obj) === 'object') {
-            var name;
-            for (name in obj) {
-                return false;
-            }
-        }
+/* xblocks/utils/lazy.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
 
-        return true;
-    };
+/**
+ * @function
+ * @private
+ */
+xblocks.utils._lazy = (function() {
+    // setImmediate bad work in IE 10
+    if (typeof(global.setImmediate) === 'function' && !xblocks.utils.support.msie) {
+        return global.setImmediate;
 
-    /**
-     * @param {object} from
-     * @param {function} [callback]
-     * @returns {object}
-     */
-    xblocks.utils.filterObject = function(from, callback) {
-        var out = {};
+    } else {
+        return function(callback) {
+            return global.setTimeout(callback, 0);
+        };
+    }
+}());
 
-        Object.keys(from).forEach(function(property) {
-            var descr = Object.getOwnPropertyDescriptor(from, property);
-            if (callback && callback(property, descr)) {
-                Object.defineProperty(out, property, descr);
-            }
+/**
+ * @param {function} callback
+ * @param {*} args
+ * @returns {function}
+ */
+xblocks.utils.lazy = function(callback, args) {
+    callback._args = (callback._args || []).concat(args);
+
+    if (!callback._timer) {
+        callback._timer = xblocks.utils._lazy(function() {
+            callback._timer = 0;
+            callback(callback._args.splice(0, callback._args.length));
         });
+    }
 
-        return out;
-    };
+    return callback;
+};
 
-    /**
-     * @param {object} from
-     * @param {function} [callback]
-     * @returns {object}
-     */
-    xblocks.utils.mapObject = function(from, callback) {
-        var out = {};
+/* xblocks/utils/lazy.js end */
 
-        Object.keys(from).forEach(function(property) {
-            var descr = Object.getOwnPropertyDescriptor(from, property);
-            var map = callback && callback(property, descr);
-            if (xblocks.utils.type(map) === 'object') {
-                Object.defineProperty(out, map.name, map.descr);
+/* xblocks/utils/event.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @constructor
+ */
+xblocks.utils.CustomEvent = (function() {
+    if (!xblocks.utils.pristine('CustomEvent')) {
+        var CustomEvent = function(event, params) {
+            params = xblocks.utils.merge({
+                bubbles: false,
+                cancelable: false,
+                detail: undefined
+
+            }, params || {});
+
+            var evt = document.createEvent('CustomEvent');
+            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+            return evt;
+        };
+
+        CustomEvent.prototype = global.Event.prototype;
+
+        return CustomEvent;
+
+    } else {
+        return global.CustomEvent;
+    }
+}());
+
+/**
+ * @param {HTMLElement} element
+ * @param {string} name
+ * @param {object} params
+ */
+xblocks.utils.dispatchEvent = function(element, name, params) {
+    element.dispatchEvent(new xblocks.utils.CustomEvent(name, params));
+};
+
+/* xblocks/utils/event.js end */
+
+/* xblocks/utils/equals.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @param {*} x
+ * @param {*} y
+ * @returns {boolean}
+ */
+xblocks.utils.equals = function(x, y) {
+    if (x === y) {
+        return true;
+    }
+
+    if (!(x instanceof Object) || !(y instanceof Object)) {
+        return false;
+    }
+
+    if (x.constructor !== y.constructor) {
+        return false;
+    }
+
+    var p;
+    for (p in x) {
+        if (x.hasOwnProperty(p)) {
+            if (!y.hasOwnProperty(p)) {
+                return false;
             }
-        });
 
-        return out;
-    };
+            if (x[p] === y[p]) {
+                continue;
+            }
 
-    /**
-     * @param {function} callback
-     * @param {*} args
-     * @returns {function}
-     */
-    xblocks.utils.lazyCall = function(callback, args) {
-        callback._args = (callback._args || []).concat(args);
+            if (typeof(x[p]) !== 'object') {
+                return false;
+            }
 
-        if (!callback._timer) {
-            // setImmediate bad work in IE 10
-            callback._timer = global.setTimeout(function() {
-                callback._timer = 0;
-                callback(callback._args.splice(0, callback._args.length));
-            }, 0);
-        }
-
-        return callback;
-    };
-
-    /**
-     * @param {string} methodName
-     * @returns {boolean}
-     */
-    xblocks.utils.pristine = function(methodName) {
-        var method = global[methodName];
-
-        if (!methodName || !method) {
-            return false;
-        }
-
-        if (!(new RegExp("^[\\$_a-z][\\$\\w]*$",'i')).test(methodName)) {
-            return false;
-        }
-
-        if (typeof method !== 'function' && typeof method !== 'object') {
-            return false;
-        }
-
-        var re = new RegExp("function\\s+" + methodName + "\\(\\s*\\)\\s*{\\s*\\[native code\\]\\s*}");
-
-        if (!re.test(method)) {
-            return false;
-        }
-
-        if (typeof method === 'function') {
-            if (!method.valueOf || method.valueOf() !== method) {
+            if (!xblocks.utils.equals(x[p], y[p])) {
                 return false;
             }
         }
+    }
 
-        return true;
-    };
-
-    /**
-     * @constructor
-     */
-    xblocks.utils.CustomEvent = (function() {
-        if (!xblocks.utils.pristine('CustomEvent')) {
-            var CustomEvent = function(event, params) {
-                params = xblocks.utils.merge({
-                    bubbles: false,
-                    cancelable: false,
-                    detail: undefined
-
-                }, params || {});
-
-                var evt = document.createEvent('CustomEvent');
-                evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-                return evt;
-            };
-
-            CustomEvent.prototype = global.Event.prototype;
-
-            return CustomEvent;
-
-        } else {
-            return global.CustomEvent;
+    for (p in y) {
+        if (y.hasOwnProperty(p) && !x.hasOwnProperty(p)) {
+            return false;
         }
-    }());
+    }
 
-    xblocks.utils.dispatchEvent = function(element, name, params) {
-        element.dispatchEvent(new xblocks.utils.CustomEvent(name, params));
-    };
+    return true;
+};
 
-}(global, xblocks));
+/* xblocks/utils/equals.js end */
+
+/* xblocks/utils/filterObject.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @param {object} from
+ * @param {function} [callback]
+ * @returns {object}
+ */
+xblocks.utils.filterObject = function(from, callback) {
+    var out = {};
+
+    Object.keys(from).forEach(function(property) {
+        var descr = Object.getOwnPropertyDescriptor(from, property);
+        if (callback && callback(property, descr)) {
+            Object.defineProperty(out, property, descr);
+        }
+    });
+
+    return out;
+};
+
+/* xblocks/utils/filterObject.js end */
+
+/* xblocks/utils/mapObject.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @param {object} from
+ * @param {function} [callback]
+ * @returns {object}
+ */
+xblocks.utils.mapObject = function(from, callback) {
+    var out = {};
+
+    Object.keys(from).forEach(function(property) {
+        var descr = Object.getOwnPropertyDescriptor(from, property);
+        var map = callback && callback(property, descr);
+        if (xblocks.utils.type(map) === 'object') {
+            Object.defineProperty(out, map.name, map.descr);
+        }
+    });
+
+    return out;
+};
+
+/* xblocks/utils/mapObject.js end */
+
 
 /* xblocks/utils.js end */
 
     /* xblocks/dom.js begin */
 /* global xblocks */
-(function(xblocks) {
-    'use strict';
+/* jshint strict: false */
 
-    /**
-     * @namespace
-     */
-    xblocks.dom = {};
+/**
+ * @namespace
+ */
+xblocks.dom = {
+    attrs: {
+        /**
+         * @type {string[]}
+         */
+        ARRTS_BOOLEAN: [
+            'active',
+            'autofocus',
+            'checked',
+            'defer',
+            'disabled',
+            'ismap',
+            'multiple',
+            'readonly',
+            'selected',
+            'xb-static'
+        ],
 
-    /**
-     * @namespace
-     */
-    xblocks.dom.attrs = {};
-
-    /**
-     * @type {string[]}
-     */
-    xblocks.dom.attrs.ARRTS_BOOLEAN = [
-        'active',
-        'autofocus',
-        'checked',
-        'defer',
-        'disabled',
-        'ismap',
-        'multiple',
-        'readonly',
-        'selected',
-        'xb-static'
-    ];
-
-    /**
-     * @type {string[]}
-     */
-    xblocks.dom.attrs.XB_ATTRS = {
-        'STATIC': 'xb-static'
-    };
-
-    /**
-     * @param {string} name
-     * @param {string} value
-     * @returns {string|boolean}
-     */
-    xblocks.dom.attrs.getRealValue = function(name, value) {
-        if (value === 'true' ||
-            value === 'false' ||
-            xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1
-            ) {
-            return (value === '' || name === value || value === 'true');
+        /**
+         * @type {object}
+         */
+        XB_ATTRS: {
+            'STATIC': 'xb-static'
         }
+    }
+};
 
-        return value;
-    };
+/**
+ * @param {string} name
+ * @param {string} value
+ * @returns {string|boolean}
+ */
+xblocks.dom.attrs.getRealValue = function(name, value) {
+    if (value === 'true' ||
+        value === 'false' ||
+        xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1
+        ) {
 
-    /**
-     * @param {HTMLElement} element
-     * @return {object}
-     */
-    xblocks.dom.attrs.toObject = function(element) {
-        if (element.nodeType !== 1) {
-            return {};
-        }
+        return (value === '' || name === value || value === 'true');
+    }
 
-        var attrs = {};
+    return value;
+};
 
+/**
+ * @param {HTMLElement} element
+ * @return {object}
+ */
+xblocks.dom.attrs.toObject = function(element) {
+    var attrs = {};
+
+    if (element.nodeType === 1) {
         Array.prototype.forEach.call(element.attributes, function(attr) {
             attrs[attr.nodeName] = xblocks.dom.attrs.getRealValue(attr.nodeName, attr.value);
         });
+    }
 
-        return attrs;
-    };
-
-}(xblocks));
+    return attrs;
+};
 
 /* xblocks/dom.js end */
 
     /* xblocks/view.js begin */
-/* global xblocks, global */
-(function(global, xblocks) {
-    'use strict';
+/* global xblocks, global, React */
+/* jshint strict: false */
 
-    var XBView = {};
+/**
+ * @module xblocks.view
+ */
+xblocks.view = {};
 
-    /**
-     * @module xblocks.view
-     */
-    xblocks.view = {};
+/**
+ * @param {object} component
+ */
+xblocks.view.create = function(component) {
+    /*
+    if (!Array.isArray(component.mixins)) {
+        component.mixins = [];
+    }
 
-    /**
-     * @param {object} component
-     */
-    xblocks.view.create = function(component) {
-        if (!Array.isArray(component.mixins)) {
-            component.mixins = [];
-        }
+    component.mixins.push({});
+    */
 
-        component.mixins.push(XBView);
+    if (!xblocks.utils.isPlainObject(component.propTypes)) {
+        component.propTypes = {};
+    }
 
-        if (!xblocks.utils.isPlainObject(component.propTypes)) {
-            component.propTypes = {};
-        }
+    component.propTypes._uid = React.PropTypes.string;
 
-        component.propTypes._uid = global.React.PropTypes.string;
+    return React.createClass(component);
+};
 
-        return global.React.createClass(component);
-    };
+/**
+ * @param {string} blockName
+ * @param {object} component
+ * @throws
+ */
+xblocks.view.register = function(blockName, component) {
+    if (React.DOM.hasOwnProperty(blockName)) {
+        throw 'Specified item "' + blockName + '" is already defined';
+    }
 
-    /**
-     * @param {string} blockName
-     * @param {object} component
-     * @throws
-     */
-    xblocks.view.register = function(blockName, component) {
-        if (global.React.DOM.hasOwnProperty(blockName)) {
-            throw 'Specified item "' + blockName + '" is already defined';
-        }
+    React.DOM[blockName] = xblocks.view.create(component);
+    return React.DOM[blockName];
+};
 
-        global.React.DOM[blockName] = xblocks.view.create(component);
-        return global.React.DOM[blockName];
-    };
-
-    /**
-     * @param {string} blockName
-     * @returns {*}
-     */
-    xblocks.view.get = function(blockName) {
-        return global.React.DOM[blockName];
-    };
-
-}(global, xblocks));
+/**
+ * @param {string} blockName
+ * @returns {*}
+ */
+xblocks.view.get = function(blockName) {
+    return React.DOM[blockName];
+};
 
 /* xblocks/view.js end */
 
     /* xblocks/block.js begin */
-/* global xblocks, global */
-(function(global, xblocks) {
-    'use strict';
+/* global xblocks, global, xtag */
+/* jshint strict: false */
 
-    /**
-     * @param {String} blockName
-     * @param {?Object} options
-     * @returns {HTMLElement}
-     */
-    xblocks.create = function(blockName, options) {
-        options = xblocks.utils.isPlainObject(options) ? options : {};
+/**
+ * @param {string} blockName
+ * @param {?object} options
+ * @returns {HTMLElement}
+ */
+xblocks.create = function(blockName, options) {
+    options = xblocks.utils.isPlainObject(options) ? options : {};
 
-        xblocks.utils.merge(true, options, {
-            lifecycle: {
-                created: function() {
-                    this.xblock = xblocks.element.create(this);
-                },
-
-                inserted: function() {
-
-                },
-
-                removed: function() {
-                    this.xblock.destroy();
-                    delete this.xblock;
-                },
-
-                attributeChanged: function(attrName, oldValue, newValue) {
-                    if (this.xblock._isMountedComponent()) {
-                        return;
-                    }
-
-                    // removeAttribute('xb-static')
-                    if (attrName === xblocks.dom.attrs.XB_ATTRS.STATIC && newValue === null) {
-                        this.xblock._repaint();
-                    }
-                }
+    xblocks.utils.merge(true, options, {
+        lifecycle: {
+            created: function() {
+                this.xblock = xblocks.element.create(this);
             },
 
-            accessors: {
-                content: {
-                    /**
-                     * @return {string}
-                     */
-                    get: function() {
-                        return this.xblock._getNodeContent();
-                    },
+            inserted: function() {
 
-                    /**
-                     * @param {string} content
-                     */
-                    set: function(content) {
-                        this.xblock._setNodeContent(content);
-                    }
+            },
+
+            removed: function() {
+                this.xblock.destroy();
+                delete this.xblock;
+            },
+
+            attributeChanged: function(attrName, oldValue, newValue) {
+                if (this.xblock._isMountedComponent()) {
+                    return;
+                }
+
+                // removeAttribute('xb-static')
+                if (attrName === xblocks.dom.attrs.XB_ATTRS.STATIC && newValue === null) {
+                    this.xblock._repaint();
                 }
             }
-        });
+        },
 
-        return global.xtag.register(blockName, options);
-    };
+        accessors: {
+            content: {
+                /**
+                 * @return {string}
+                 */
+                get: function() {
+                    return this.xblock._getNodeContent();
+                },
 
-}(global, xblocks));
+                /**
+                 * @param {string} content
+                 */
+                set: function(content) {
+                    this.xblock._setNodeContent(content);
+                }
+            }
+        }
+    });
+
+    return xtag.register(blockName, options);
+};
 
 /* xblocks/block.js end */
 
     /* xblocks/element.js begin */
-/* global xblocks, global */
-(function(global, xblocks, undefined) {
-    'use strict';
+/* global xblocks, global, React */
+/* jshint strict: false */
+
+(function() {
 
     /**
      * @module xblocks.element
@@ -618,7 +906,7 @@
      * Unmounts a component and removes it from the DOM
      */
     XBElement.prototype.destroy = function() {
-        global.React.unmountComponentAtNode(this._node);
+        React.unmountComponentAtNode(this._node);
         this.unmount();
     };
 
@@ -687,7 +975,7 @@
 
         if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
             this.unmount();
-            this._node.innerHTML = global.React.renderComponentToStaticMarkup(view);
+            this._node.innerHTML = React.renderComponentToStaticMarkup(view);
             this._upgradeNode();
 
             if (callback) {
@@ -695,7 +983,7 @@
             }
 
         } else {
-            this._component = global.React.renderComponent(
+            this._component = React.renderComponent(
                 view,
                 this._node,
                 this._callbackRender.bind(this, callback)
@@ -718,7 +1006,7 @@
      */
     XBElement.prototype._callbackInit = function() {
         xblocks.utils.dispatchEvent(this._node, 'xb-created', { detail: { xblock: this } });
-        xblocks.utils.lazyCall(_globalInitEvent, this._node);
+        xblocks.utils.lazy(_globalInitEvent, this._node);
     };
 
     /**
@@ -726,7 +1014,7 @@
      */
     XBElement.prototype._callbackRepaint = function() {
         xblocks.utils.dispatchEvent(this._node, 'xb-repaint', { detail: { xblock: this } });
-        xblocks.utils.lazyCall(_globalRepaintEvent, this._node);
+        xblocks.utils.lazy(_globalRepaintEvent, this._node);
     };
 
     /**
@@ -922,9 +1210,11 @@
         xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
     }
 
-}(global, xblocks));
+}());
 
 /* xblocks/element.js end */
 
 
-}());
+}(function() {
+    return this || (1, eval)('this');
+}()));

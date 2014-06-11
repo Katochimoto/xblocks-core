@@ -1,72 +1,65 @@
 /* global xblocks */
-(function(xblocks) {
-    'use strict';
+/* jshint strict: false */
 
-    /**
-     * @namespace
-     */
-    xblocks.dom = {};
+/**
+ * @namespace
+ */
+xblocks.dom = {
+    attrs: {
+        /**
+         * @type {string[]}
+         */
+        ARRTS_BOOLEAN: [
+            'active',
+            'autofocus',
+            'checked',
+            'defer',
+            'disabled',
+            'ismap',
+            'multiple',
+            'readonly',
+            'selected',
+            'xb-static'
+        ],
 
-    /**
-     * @namespace
-     */
-    xblocks.dom.attrs = {};
-
-    /**
-     * @type {string[]}
-     */
-    xblocks.dom.attrs.ARRTS_BOOLEAN = [
-        'active',
-        'autofocus',
-        'checked',
-        'defer',
-        'disabled',
-        'ismap',
-        'multiple',
-        'readonly',
-        'selected',
-        'xb-static'
-    ];
-
-    /**
-     * @type {string[]}
-     */
-    xblocks.dom.attrs.XB_ATTRS = {
-        'STATIC': 'xb-static'
-    };
-
-    /**
-     * @param {string} name
-     * @param {string} value
-     * @returns {string|boolean}
-     */
-    xblocks.dom.attrs.getRealValue = function(name, value) {
-        if (value === 'true' ||
-            value === 'false' ||
-            xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1
-            ) {
-            return (value === '' || name === value || value === 'true');
+        /**
+         * @type {object}
+         */
+        XB_ATTRS: {
+            'STATIC': 'xb-static'
         }
+    }
+};
 
-        return value;
-    };
+/**
+ * @param {string} name
+ * @param {string} value
+ * @returns {string|boolean}
+ */
+xblocks.dom.attrs.getRealValue = function(name, value) {
+    if (value === 'true' ||
+        value === 'false' ||
+        xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1
+        ) {
 
-    /**
-     * @param {HTMLElement} element
-     * @return {object}
-     */
-    xblocks.dom.attrs.toObject = function(element) {
-        if (element.nodeType !== 1) {
-            return {};
-        }
+        return (value === '' || name === value || value === 'true');
+    }
 
-        var attrs = {};
+    return value;
+};
 
+/**
+ * @param {HTMLElement} element
+ * @return {object}
+ */
+xblocks.dom.attrs.toObject = function(element) {
+    var attrs = {};
+
+    if (element.nodeType === 1) {
         Array.prototype.forEach.call(element.attributes, function(attr) {
             attrs[attr.nodeName] = xblocks.dom.attrs.getRealValue(attr.nodeName, attr.value);
         });
+    }
 
-        return attrs;
-    };
-
-}(xblocks));
+    return attrs;
+};

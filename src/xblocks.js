@@ -1,5 +1,7 @@
+/*! borschik:include:../node_modules/setimmediate/setImmediate.js */
+
 /*jshint -W067 */
-(function() {
+(function(global, undefined) {
     'use strict';
 
     /**
@@ -42,15 +44,19 @@
      */
 
     /**
+     * @namespace React
+     */
+    var React = global.React;
+
+    /**
+     * @namespace xtag
+     */
+    var xtag = global.xtag;
+
+    /**
      * @namespace xblocks
      */
-    var xblocks = {};
-
-    var global = (function() {
-        return this || (1, eval)('this');
-    }());
-
-    global.xblocks = xblocks;
+    var xblocks = global.xblocks = {};
 
     /*! borschik:include:xblocks/utils.js */
     /*! borschik:include:xblocks/dom.js */
@@ -58,4 +64,6 @@
     /*! borschik:include:xblocks/block.js */
     /*! borschik:include:xblocks/element.js */
 
-}());
+}(function() {
+    return this || (1, eval)('this');
+}()));
