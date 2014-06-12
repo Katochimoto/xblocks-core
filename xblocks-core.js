@@ -267,6 +267,11 @@ xblocks.utils.support.msie = (function() {
     return false;
 }());
 
+xblocks.utils.support.upgradeelements = Boolean(
+    global.CustomElements &&
+    typeof(global.CustomElements.upgradeAll) === 'function'
+);
+
 /* xblocks/utils/support.js end */
 
 /* xblocks/utils/uid.js begin */
@@ -659,6 +664,20 @@ xblocks.utils.mapObject = function(from, callback) {
 };
 
 /* xblocks/utils/mapObject.js end */
+
+/* xblocks/utils/upgradeElements.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+xblocks.utils.upgradeElements = (function() {
+    if (xblocks.utils.support.upgradeelements) {
+        return global.CustomElements.upgradeAll;
+    } else {
+        return function() {};
+    }
+}());
+
+/* xblocks/utils/upgradeElements.js end */
 
 
 /* xblocks/utils.js end */
@@ -1060,10 +1079,11 @@ xblocks.create = function(blockName, options) {
         }
     };
 
+    /**
+     * @private
+     */
     xblocks.element.prototype._upgradeNode = function() {
-        if (global.CustomElements) {
-            global.CustomElements.upgradeAll(this._node);
-        }
+        xblocks.utils.upgradeElements(this._node);
     };
 
     /**

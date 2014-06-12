@@ -15,3 +15,8 @@ xblocks.utils.support.msie = (function() {
 
     return false;
 }());
+
+xblocks.utils.support.upgradeelements = Boolean(
+    global.CustomElements &&
+    typeof(global.CustomElements.upgradeAll) === 'function'
+);

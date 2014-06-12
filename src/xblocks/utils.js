@@ -22,3 +22,4 @@ xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
 /*! borschik:include:utils/equals.js */
 /*! borschik:include:utils/filterObject.js */
 /*! borschik:include:utils/mapObject.js */
+/*! borschik:include:utils/upgradeElements.js */

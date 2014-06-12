@@ -208,10 +208,11 @@
         }
     };
 
+    /**
+     * @private
+     */
     xblocks.element.prototype._upgradeNode = function() {
-        if (global.CustomElements) {
-            global.CustomElements.upgradeAll(this._node);
-        }
+        xblocks.utils.upgradeElements(this._node);
     };
 
     /**
