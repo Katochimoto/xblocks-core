@@ -16,6 +16,14 @@
     };
 
     /**
+     * @param {HTMLElement} node
+     * @returns {xblocks.element}
+     */
+    xblocks.element.create = function(node) {
+        return new xblocks.element(node);
+    };
+
+    /**
      * @type {string}
      * @private
      */

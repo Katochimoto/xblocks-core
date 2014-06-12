@@ -820,7 +820,7 @@ xblocks.create = function(blockName, options) {
     xblocks.utils.merge(true, options, {
         lifecycle: {
             created: function() {
-                this.xblock = new xblocks.element(this);
+                this.xblock = xblocks.element.create(this);
             },
 
             inserted: function() {
@@ -884,6 +884,14 @@ xblocks.create = function(blockName, options) {
         this._node = node;
 
         this._init(this._getNodeProps(), this._getNodeContent(), this._callbackInit);
+    };
+
+    /**
+     * @param {HTMLElement} node
+     * @returns {xblocks.element}
+     */
+    xblocks.element.create = function(node) {
+        return new xblocks.element(node);
     };
 
     /**

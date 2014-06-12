@@ -12,7 +12,7 @@ xblocks.create = function(blockName, options) {
     xblocks.utils.merge(true, options, {
         lifecycle: {
             created: function() {
-                this.xblock = new xblocks.element(this);
+                this.xblock = xblocks.element.create(this);
             },
 
             inserted: function() {
