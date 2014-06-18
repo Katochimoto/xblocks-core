@@ -4,10 +4,10 @@
     "version": "0.0.26",
     "keywords": [
         "x-tag",
+        "x-tags",
         "react",
         "html5",
-        "xblocks",
-        "custom elements"
+        "xblocks"
     ],
     "homepage": "https://github.com/Katochimoto/xblocks-core/",
     "author": {

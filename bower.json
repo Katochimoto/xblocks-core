@@ -27,8 +27,10 @@
     ],
     "keywords": [
         "x-tag",
+        "x-tags",
         "react",
-        "html5"
+        "html5",
+        "xblocks"
     ],
     "license": "MIT"
 }
