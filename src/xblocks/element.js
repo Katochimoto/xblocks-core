@@ -102,6 +102,7 @@ xblocks.element.prototype.update = function(props, removeProps) {
         this._repaint();
 
     } else {
+        // TODO type conversion
         this._component[action](nextProps);
         this._upgradeNode();
     }
@@ -120,6 +121,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
 
     props._uid = this._uid;
 
+    // TODO type conversion
     var view = xblocks.view.get(this._name)(props, children);
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
