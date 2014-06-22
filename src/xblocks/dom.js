@@ -18,6 +18,7 @@ xblocks.dom = {
             'ismap',
             'multiple',
             'readonly',
+            'required',
             'selected',
             'xb-static'
         ],
