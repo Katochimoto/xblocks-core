@@ -1,4 +1,4 @@
-/* global xblocks */
+/* global xblocks, React */
 /* jshint strict: false */
 
 /**
@@ -27,26 +27,9 @@ xblocks.dom = {
          * @type {object}
          */
         XB_ATTRS: {
-            'STATIC': 'xb-static'
+            STATIC: 'xb-static'
         }
     }
-};
-
-/**
- * @param {string} name
- * @param {string} value
- * @returns {string|boolean}
- */
-xblocks.dom.attrs.getRealValue = function(name, value) {
-    if (value === 'true' ||
-        value === 'false' ||
-        xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1
-        ) {
-
-        return (value === '' || name === value || value === 'true');
-    }
-
-    return value;
 };
 
 /**
@@ -58,9 +41,51 @@ xblocks.dom.attrs.toObject = function(element) {
 
     if (element.nodeType === 1) {
         Array.prototype.forEach.call(element.attributes, function(attr) {
-            attrs[attr.nodeName] = xblocks.dom.attrs.getRealValue(attr.nodeName, attr.value);
+            attrs[attr.nodeName] = attr.value;
         });
     }
 
     return attrs;
+};
+
+/**
+ * @param {string} prop
+ * @param {*} value
+ * @param {function} [type]
+ * @returns {*}
+ */
+xblocks.dom.attrs.valueConversion = function(prop, value, type) {
+    if (!type) {
+        if (value === 'true' || value === 'false' || xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(prop) !== -1) {
+            type = React.PropTypes.bool;
+        }
+    }
+
+    switch (type) {
+        case React.PropTypes.bool:
+            return (value === '' || prop === value || value === 'true');
+        case React.PropTypes.string:
+            return String(value);
+        case React.PropTypes.number:
+            return Number(value);
+        default:
+            return value;
+    }
+};
+
+/**
+ * @param {object} props
+ * @param {object} [propTypes]
+ * @returns {object}
+ */
+xblocks.dom.attrs.typeConversion = function(props, propTypes) {
+    propTypes = typeof(propTypes) === 'object' ? propTypes : {};
+
+    for (var prop in props) {
+        if (props.hasOwnProperty(prop)) {
+            props[prop] = xblocks.dom.attrs.valueConversion(prop, props[prop], propTypes[prop]);
+        }
+    }
+
+    return props;
 };

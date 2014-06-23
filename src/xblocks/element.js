@@ -102,7 +102,9 @@ xblocks.element.prototype.update = function(props, removeProps) {
         this._repaint();
 
     } else {
-        // TODO type conversion
+        var propTypes = this._component.constructor && this._component.constructor.propTypes;
+        xblocks.dom.attrs.typeConversion(nextProps, propTypes);
+
         this._component[action](nextProps);
         this._upgradeNode();
     }
@@ -121,12 +123,16 @@ xblocks.element.prototype._init = function(props, children, callback) {
 
     props._uid = this._uid;
 
-    // TODO type conversion
-    var view = xblocks.view.get(this._name)(props, children);
+    var Constructor = xblocks.view.get(this._name);
+    var propTypes = Constructor.originalSpec && Constructor.originalSpec.propTypes;
+
+    xblocks.dom.attrs.typeConversion(props, propTypes);
+
+    var proxyConstructor = Constructor(props, children);
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();
-        this._node.innerHTML = React.renderComponentToStaticMarkup(view);
+        this._node.innerHTML = React.renderComponentToStaticMarkup(proxyConstructor);
         this._upgradeNode();
 
         if (callback) {
@@ -135,7 +141,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
 
     } else {
         this._component = React.renderComponent(
-            view,
+            proxyConstructor,
             this._node,
             this._callbackRender.bind(this, callback)
         );

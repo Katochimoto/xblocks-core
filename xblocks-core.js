@@ -683,7 +683,7 @@ xblocks.utils.upgradeElements = (function() {
 /* xblocks/utils.js end */
 
     /* xblocks/dom.js begin */
-/* global xblocks */
+/* global xblocks, React */
 /* jshint strict: false */
 
 /**
@@ -712,26 +712,9 @@ xblocks.dom = {
          * @type {object}
          */
         XB_ATTRS: {
-            'STATIC': 'xb-static'
+            STATIC: 'xb-static'
         }
     }
-};
-
-/**
- * @param {string} name
- * @param {string} value
- * @returns {string|boolean}
- */
-xblocks.dom.attrs.getRealValue = function(name, value) {
-    if (value === 'true' ||
-        value === 'false' ||
-        xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(name) !== -1
-        ) {
-
-        return (value === '' || name === value || value === 'true');
-    }
-
-    return value;
 };
 
 /**
@@ -743,11 +726,53 @@ xblocks.dom.attrs.toObject = function(element) {
 
     if (element.nodeType === 1) {
         Array.prototype.forEach.call(element.attributes, function(attr) {
-            attrs[attr.nodeName] = xblocks.dom.attrs.getRealValue(attr.nodeName, attr.value);
+            attrs[attr.nodeName] = attr.value;
         });
     }
 
     return attrs;
+};
+
+/**
+ * @param {string} prop
+ * @param {*} value
+ * @param {function} [type]
+ * @returns {*}
+ */
+xblocks.dom.attrs.valueConversion = function(prop, value, type) {
+    if (!type) {
+        if (value === 'true' || value === 'false' || xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(prop) !== -1) {
+            type = React.PropTypes.bool;
+        }
+    }
+
+    switch (type) {
+        case React.PropTypes.bool:
+            return (value === '' || prop === value || value === 'true');
+        case React.PropTypes.string:
+            return String(value);
+        case React.PropTypes.number:
+            return Number(value);
+        default:
+            return value;
+    }
+};
+
+/**
+ * @param {object} props
+ * @param {object} [propTypes]
+ * @returns {object}
+ */
+xblocks.dom.attrs.typeConversion = function(props, propTypes) {
+    propTypes = typeof(propTypes) === 'object' ? propTypes : {};
+
+    for (var prop in props) {
+        if (props.hasOwnProperty(prop)) {
+            props[prop] = xblocks.dom.attrs.valueConversion(prop, props[prop], propTypes[prop]);
+        }
+    }
+
+    return props;
 };
 
 /* xblocks/dom.js end */
@@ -974,6 +999,9 @@ xblocks.element.prototype.update = function(props, removeProps) {
         this._repaint();
 
     } else {
+        var propTypes = this._component.constructor && this._component.constructor.propTypes;
+        xblocks.dom.attrs.typeConversion(nextProps, propTypes);
+
         this._component[action](nextProps);
         this._upgradeNode();
     }
@@ -992,11 +1020,16 @@ xblocks.element.prototype._init = function(props, children, callback) {
 
     props._uid = this._uid;
 
-    var view = xblocks.view.get(this._name)(props, children);
+    var Constructor = xblocks.view.get(this._name);
+    var propTypes = Constructor.originalSpec && Constructor.originalSpec.propTypes;
+
+    xblocks.dom.attrs.typeConversion(props, propTypes);
+
+    var proxyConstructor = Constructor(props, children);
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();
-        this._node.innerHTML = React.renderComponentToStaticMarkup(view);
+        this._node.innerHTML = React.renderComponentToStaticMarkup(proxyConstructor);
         this._upgradeNode();
 
         if (callback) {
@@ -1005,7 +1038,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
 
     } else {
         this._component = React.renderComponent(
-            view,
+            proxyConstructor,
             this._node,
             this._callbackRender.bind(this, callback)
         );
