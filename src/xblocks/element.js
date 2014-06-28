@@ -102,6 +102,7 @@ xblocks.element.prototype.update = function(props, removeProps) {
         this._repaint();
 
     } else {
+        // TODO bad way to get property types
         var propTypes = this._component.constructor && this._component.constructor.propTypes;
         xblocks.dom.attrs.typeConversion(nextProps, propTypes);
 
@@ -124,6 +125,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     props._uid = this._uid;
 
     var constructor = xblocks.view.get(this._name);
+    // TODO bad way to get property types
     var propTypes = constructor.originalSpec && constructor.originalSpec.propTypes;
 
     xblocks.dom.attrs.typeConversion(props, propTypes);

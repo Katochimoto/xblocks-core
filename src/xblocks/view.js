@@ -10,21 +10,15 @@ xblocks.view = {};
  * @param {object} component
  */
 xblocks.view.create = function(component) {
-    /*
-    if (!Array.isArray(component.mixins)) {
-        component.mixins = [];
-    }
+    component = Array.isArray(component) ? component : [component];
+    component.unshift(true);
+    component.push({
+        propTypes: {
+            _uid: React.PropTypes.string
+        }
+    });
 
-    component.mixins.push({});
-    */
-
-    if (!xblocks.utils.isPlainObject(component.propTypes)) {
-        component.propTypes = {};
-    }
-
-    component.propTypes._uid = React.PropTypes.string;
-
-    return React.createClass(component);
+    return React.createClass(xblocks.utils.merge.apply(xblocks.utils, component));
 };
 
 /**
