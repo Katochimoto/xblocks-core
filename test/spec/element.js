@@ -3,7 +3,7 @@
 
 describe('xblocks.element', function() {
 
-    describe.only('Инициализация', function() {
+    describe('Инициализация', function() {
         it('', function() {
             sinon.stub(xblocks.element.prototype, '_init');
             var node = document.createElement('DIV');
