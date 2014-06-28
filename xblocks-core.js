@@ -841,9 +841,9 @@ xblocks.view.get = function(blockName) {
  * @returns {HTMLElement}
  */
 xblocks.create = function(blockName, options) {
-    options = xblocks.utils.isPlainObject(options) ? options : {};
-
-    xblocks.utils.merge(true, options, {
+    options = Array.isArray(options) ? options : [options];
+    options.unshift(true);
+    options.push({
         lifecycle: {
             created: function() {
                 this.xblock = xblocks.element.create(this);
@@ -889,7 +889,7 @@ xblocks.create = function(blockName, options) {
         }
     });
 
-    return xtag.register(blockName, options);
+    return xtag.register(blockName, xblocks.utils.merge.apply(xblocks.utils, options));
 };
 
 /* xblocks/block.js end */
@@ -1020,12 +1020,12 @@ xblocks.element.prototype._init = function(props, children, callback) {
 
     props._uid = this._uid;
 
-    var Constructor = xblocks.view.get(this._name);
-    var propTypes = Constructor.originalSpec && Constructor.originalSpec.propTypes;
+    var constructor = xblocks.view.get(this._name);
+    var propTypes = constructor.originalSpec && constructor.originalSpec.propTypes;
 
     xblocks.dom.attrs.typeConversion(props, propTypes);
 
-    var proxyConstructor = Constructor(props, children);
+    var proxyConstructor = constructor(props, children);
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();

@@ -123,12 +123,12 @@ xblocks.element.prototype._init = function(props, children, callback) {
 
     props._uid = this._uid;
 
-    var Constructor = xblocks.view.get(this._name);
-    var propTypes = Constructor.originalSpec && Constructor.originalSpec.propTypes;
+    var constructor = xblocks.view.get(this._name);
+    var propTypes = constructor.originalSpec && constructor.originalSpec.propTypes;
 
     xblocks.dom.attrs.typeConversion(props, propTypes);
 
-    var proxyConstructor = Constructor(props, children);
+    var proxyConstructor = constructor(props, children);
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();

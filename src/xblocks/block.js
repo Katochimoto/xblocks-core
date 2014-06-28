@@ -7,9 +7,9 @@
  * @returns {HTMLElement}
  */
 xblocks.create = function(blockName, options) {
-    options = xblocks.utils.isPlainObject(options) ? options : {};
-
-    xblocks.utils.merge(true, options, {
+    options = Array.isArray(options) ? options : [options];
+    options.unshift(true);
+    options.push({
         lifecycle: {
             created: function() {
                 this.xblock = xblocks.element.create(this);
@@ -55,5 +55,5 @@ xblocks.create = function(blockName, options) {
         }
     });
 
-    return xtag.register(blockName, options);
+    return xtag.register(blockName, xblocks.utils.merge.apply(xblocks.utils, options));
 };
