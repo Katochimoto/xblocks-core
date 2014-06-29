@@ -102,6 +102,10 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
     if (nextProps.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this._repaint();
 
+        if (callback) {
+            callback.call(this);
+        }
+
     } else {
         // TODO bad way to get property types
         var propTypes = this._component.constructor && this._component.constructor.propTypes;
