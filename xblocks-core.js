@@ -748,7 +748,7 @@ xblocks.dom.attrs.valueConversion = function(prop, value, type) {
 
     switch (type) {
         case React.PropTypes.bool:
-            return (value === '' || prop === value || value === 'true');
+            return (value === true || value === '' || prop === value || value === 'true');
         case React.PropTypes.string:
             return String(value);
         case React.PropTypes.number:
@@ -966,9 +966,10 @@ xblocks.element.prototype.unmount = function() {
 
 /**
  * @param {object} [props]
- * @param {Array} [removeProps]
+ * @param {array} [removeProps]
+ * @param {function} [callback]
  */
-xblocks.element.prototype.update = function(props, removeProps) {
+xblocks.element.prototype.update = function(props, removeProps, callback) {
     if (!this._isMountedComponent()) {
         return;
     }
@@ -997,8 +998,7 @@ xblocks.element.prototype.update = function(props, removeProps) {
         var propTypes = this._component.constructor && this._component.constructor.propTypes;
         xblocks.dom.attrs.typeConversion(nextProps, propTypes);
 
-        this._component[action](nextProps);
-        this._upgradeNode();
+        this._component[action](nextProps, this._callbackUpdate.bind(this, callback));
     }
 };
 
@@ -1112,6 +1112,17 @@ xblocks.element.prototype._callbackMutation = function(records) {
             .map(this._mapAttributesName);
 
         this.update(null, removeAttrs);
+    }
+};
+
+/**
+ * @param {function} [callback]
+ * @private
+ */
+xblocks.element.prototype._callbackUpdate = function(callback) {
+    this._upgradeNode();
+    if (callback) {
+        callback.call(this);
     }
 };
 

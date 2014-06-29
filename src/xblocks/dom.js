@@ -63,7 +63,7 @@ xblocks.dom.attrs.valueConversion = function(prop, value, type) {
 
     switch (type) {
         case React.PropTypes.bool:
-            return (value === '' || prop === value || value === 'true');
+            return (value === true || value === '' || prop === value || value === 'true');
         case React.PropTypes.string:
             return String(value);
         case React.PropTypes.number:
