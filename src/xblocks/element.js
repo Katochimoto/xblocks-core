@@ -151,6 +151,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
 };
 
 /**
+ * @param {function} [callback]
  * @private
  */
 xblocks.element.prototype._repaint = function(callback) {
