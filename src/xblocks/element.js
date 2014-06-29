@@ -75,7 +75,7 @@ xblocks.element.prototype.unmount = function() {
 
 /**
  * @param {object} [props]
- * @param {array} [removeProps]
+ * @param {Array} [removeProps]
  * @param {function} [callback]
  */
 xblocks.element.prototype.update = function(props, removeProps, callback) {
