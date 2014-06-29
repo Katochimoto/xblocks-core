@@ -100,11 +100,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
     }
 
     if (nextProps.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
-        this._repaint();
-
-        if (callback) {
-            callback.call(this);
-        }
+        this._repaint(callback);
 
     } else {
         // TODO bad way to get property types
@@ -157,11 +153,11 @@ xblocks.element.prototype._init = function(props, children, callback) {
 /**
  * @private
  */
-xblocks.element.prototype._repaint = function() {
+xblocks.element.prototype._repaint = function(callback) {
     var props = xblocks.utils.merge(true, this._getNodeProps(), this._getCurrentProps());
     var children = this._getNodeContent();
     this.destroy();
-    this._init(props, children, this._callbackRepaint);
+    this._init(props, children, this._callbackRepaint.bind(this, callback));
 };
 
 /**
@@ -173,11 +169,16 @@ xblocks.element.prototype._callbackInit = function() {
 };
 
 /**
+ * @param {function} [callback]
  * @private
  */
-xblocks.element.prototype._callbackRepaint = function() {
+xblocks.element.prototype._callbackRepaint = function(callback) {
     xblocks.utils.dispatchEvent(this._node, 'xb-repaint', { detail: { xblock: this } });
     xblocks.utils.lazy(_globalRepaintEvent, this._node);
+
+    if (callback) {
+        callback.call(this);
+    }
 };
 
 /**
