@@ -1,4 +1,4 @@
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -6,7 +6,7 @@
  * @returns {boolean}
  */
 xblocks.utils.isPlainObject = function(obj) {
-    if (xblocks.utils.type(obj) !== 'object' || obj.nodeType || xblocks.utils.isWindow(obj)) {
+    if (xblocks.utils.type(obj) !== 'object') {
         return false;
     }
 
