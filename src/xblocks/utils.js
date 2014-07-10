@@ -11,6 +11,7 @@ xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
 
 /*! borschik:include:utils/support.js */
 /*! borschik:include:utils/uid.js */
+/*! borschik:include:utils/seq.js */
 /*! borschik:include:utils/type.js */
 /*! borschik:include:utils/isEmptyObject.js */
 /*! borschik:include:utils/isWindow.js */

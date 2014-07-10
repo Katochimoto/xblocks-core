@@ -6,11 +6,9 @@
  * @constructor
  */
 xblocks.element = function(node) {
-    this._uid = xblocks.utils.uid();
     this._name = node.tagName.toLowerCase();
     this._node = node;
-
-    this._init(this._getNodeProps(), this._getNodeContent(), this._callbackInit);
+    this._init(node.attrs, node.content, this._callbackInit);
 };
 
 /**
@@ -20,12 +18,6 @@ xblocks.element = function(node) {
 xblocks.element.create = function(node) {
     return new xblocks.element(node);
 };
-
-/**
- * @type {string}
- * @private
- */
-xblocks.element.prototype._uid = undefined;
 
 /**
  * @type {string}
@@ -83,7 +75,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
         return;
     }
 
-    var nextProps = this._getNodeProps();
+    var nextProps = this._node.attrs;
     var action = 'setProps';
 
     xblocks.utils.merge(true, nextProps, props);
@@ -122,7 +114,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
         return;
     }
 
-    props._uid = this._uid;
+    props._uid = this._node.xuid;
 
     var constructor = xblocks.view.get(this._name);
     // TODO bad way to get property types
@@ -135,7 +127,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();
         this._node.innerHTML = React.renderComponentToStaticMarkup(proxyConstructor);
-        this._upgradeNode();
+        this._node.upgrade();
 
         if (callback) {
             callback.call(this);
@@ -155,8 +147,8 @@ xblocks.element.prototype._init = function(props, children, callback) {
  * @private
  */
 xblocks.element.prototype._repaint = function(callback) {
-    var props = xblocks.utils.merge(true, this._getNodeProps(), this._getCurrentProps());
-    var children = this._getNodeContent();
+    var props = xblocks.utils.merge(true, this._node.attrs, this._getCurrentProps());
+    var children = this._node.content;
     this.destroy();
     this._init(props, children, this._callbackRepaint.bind(this, callback));
 };
@@ -187,7 +179,7 @@ xblocks.element.prototype._callbackRepaint = function(callback) {
  * @private
  */
 xblocks.element.prototype._callbackRender = function(callback) {
-    this._upgradeNode();
+    this._node.upgrade();
 
     if (!this._observer) {
         this._observer = new MutationObserver(this._callbackMutation.bind(this));
@@ -235,86 +227,9 @@ xblocks.element.prototype._callbackMutation = function(records) {
  * @private
  */
 xblocks.element.prototype._callbackUpdate = function(callback) {
-    this._upgradeNode();
+    this._node.upgrade();
     if (callback) {
         callback.call(this);
-    }
-};
-
-/**
- * @private
- */
-xblocks.element.prototype._upgradeNode = function() {
-    xblocks.utils.upgradeElements(this._node);
-};
-
-/**
- * @returns {object}
- */
-xblocks.element.prototype._getNodeProps = function() {
-    return xblocks.dom.attrs.toObject(this._node);
-};
-
-/**
- * @returns {?HTMLElement}
- * @private
- */
-xblocks.element.prototype._getNodeContentElement = function() {
-    if (!this._node.childNodes.length) {
-        return null;
-    }
-
-    var element = this._node.querySelector('[data-xb-content="' + this._uid + '"]');
-
-    if (!element) {
-        element = this._node.querySelector('script[type="text/template"]');
-
-        if (xblocks.utils.support.template && (!element || element.parentNode !== this._node)) {
-            element = this._node.querySelector('template');
-
-            if (element && element.parentNode === this._node) {
-                // FIXME temporarily, until the implementation of the DocumentFragment
-                var tmp = global.document.createElement('div');
-                tmp.appendChild(global.document.importNode(element.content, true));
-                element = tmp;
-            }
-        }
-    }
-
-    return element;
-};
-
-/**
- * @returns {string}
- * @private
- */
-xblocks.element.prototype._getNodeContent = function() {
-    if (this._isMountedComponent()) {
-        return this._component.props.children;
-    }
-
-    var contentElement = this._getNodeContentElement();
-    if (contentElement) {
-        return contentElement.innerHTML;
-    }
-
-    return this._node.innerHTML;
-};
-
-/**
- * @param {string} content
- * @private
- */
-xblocks.element.prototype._setNodeContent = function(content) {
-    if (this._isMountedComponent()) {
-        this.update({ children: content });
-
-    } else {
-        var contentElement = this._getNodeContentElement();
-        if (contentElement) {
-            contentElement.innerHTML = content;
-            this._upgradeNode();
-        }
     }
 };
 
