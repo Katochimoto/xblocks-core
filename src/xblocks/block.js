@@ -8,7 +8,7 @@
  */
 xblocks.create = function(blockName, options) {
     options = Array.isArray(options) ? options : [options];
-    options.unshift(true);
+    options.unshift(true, {});
     options.push({
         lifecycle: {
             created: function() {
@@ -38,7 +38,7 @@ xblocks.create = function(blockName, options) {
                 if (attrName === xblocks.dom.attrs.XB_ATTRS.STATIC &&
                     newValue === null &&
                     this.xblock &&
-                    !this.xblock._isMountedComponent()) {
+                    !this.mounted) {
 
                     this.xblock._repaint();
                 }
@@ -46,31 +46,28 @@ xblocks.create = function(blockName, options) {
         },
 
         accessors: {
-            content: {
-                /**
-                 * @return {string}
-                 */
+            mounted: {
                 get: function() {
-                    // FIXME
-                    if (this.xblock && this.xblock._isMountedComponent()) {
+                    return (this.xblock && this.xblock._isMountedComponent());
+                }
+            },
+
+            content: {
+                get: function() {
+                    if (this.mounted) {
+                        // FIXME bad way to get children
                         return this.xblock._component.props.children;
                     }
 
-                    var contentElement = findNodeContentElement(this);
-                    return contentElement.innerHTML;
+                    return xblocks.utils.contentNode(this).innerHTML;
                 },
 
-                /**
-                 * @param {string} content
-                 */
                 set: function(content) {
-                    // FIXME
-                    if (this.xblock && this.xblock._isMountedComponent()) {
+                    if (this.mounted) {
                         this.xblock.update({ children: content });
 
                     } else {
-                        var contentElement = findNodeContentElement(this);
-                        contentElement.innerHTML = content;
+                        xblocks.utils.contentNode(this).innerHTML = content;
                         this.upgrade();
                     }
                 }
@@ -89,7 +86,7 @@ xblocks.create = function(blockName, options) {
             },
 
             cloneNode: function(deep) {
-                // don`t clone content nodes
+                // not to clone the contents
                 var node = Node.prototype.cloneNode.call(this, false);
 
                 if (deep) {
@@ -101,30 +98,5 @@ xblocks.create = function(blockName, options) {
         }
     });
 
-    function findNodeContentElement(node) {
-        if (!node.firstChild) {
-            return node;
-        }
-
-        var element = node.querySelector('[data-xb-content="' + node.xuid + '"]');
-
-        if (!element) {
-            element = node.querySelector('script[type="text/template"]');
-
-            if (xblocks.utils.support.template && (!element || element.parentNode !== node)) {
-                element = node.querySelector('template');
-
-                if (element && element.parentNode === node) {
-                    // FIXME temporarily, until the implementation of the DocumentFragment
-                    var tmp = global.document.createElement('div');
-                    tmp.appendChild(global.document.importNode(element.content, true));
-                    element = tmp;
-                }
-            }
-        }
-
-        return element || node;
-    }
-
-    return xtag.register(blockName, xblocks.utils.merge.apply(xblocks.utils, options));
+    return xtag.register(blockName, xblocks.utils.merge.apply({}, options));
 };

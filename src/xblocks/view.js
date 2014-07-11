@@ -11,14 +11,15 @@ xblocks.view = {};
  */
 xblocks.view.create = function(component) {
     component = Array.isArray(component) ? component : [component];
-    component.unshift(true);
+    component.unshift(true, {});
     component.push({
-        propTypes: {
-            _uid: React.PropTypes.string
+        'propTypes': {
+            '_uid': React.PropTypes.string,
+            'xb-static': React.PropTypes.bool
         }
     });
 
-    return React.createClass(xblocks.utils.merge.apply(xblocks.utils, component));
+    return React.createClass(xblocks.utils.merge.apply({}, component));
 };
 
 /**

@@ -299,7 +299,7 @@ xblocks.utils.uid = function() {
 xblocks.utils.seq = (function() {
     var i = 0;
     return function() {
-        return i++;
+        return ++i;
     };
 }());
 
@@ -696,6 +696,55 @@ xblocks.utils.upgradeElements = (function() {
 
 /* xblocks/utils/upgradeElements.js end */
 
+/* xblocks/utils/contentNode.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @param {HTMLElement} node
+ * @returns {HTMLElement}
+ */
+xblocks.utils.contentNode = function(node) {
+    var element;
+
+    if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
+        element = node.querySelector('[data-xb-content="' + node.xuid + '"]');
+
+        if (!element) {
+            element = node.querySelector('script[type="text/template"]');
+
+            if (xblocks.utils.support.template && (!element || element.parentNode !== node)) {
+                element = node.getElementsByTagName('template')[0];
+
+                if (element && element.parentNode === node) {
+                    // FIXME temporarily, until the implementation of the DocumentFragment
+                    var tmp = global.document.createElement('div');
+                    tmp.appendChild(global.document.importNode(element.content, true));
+                    element = tmp;
+                }
+            }
+        }
+    }
+
+    return element || node;
+};
+
+/* xblocks/utils/contentNode.js end */
+
+/* xblocks/utils/propTypes.js begin */
+/* global xblocks */
+/* jshint strict: false */
+
+/**
+ * @param {string} tagName
+ * @returns {object}
+ */
+xblocks.utils.propTypes = function(tagName) {
+    return xblocks.view.get(tagName).originalSpec.propTypes || {};
+};
+
+/* xblocks/utils/propTypes.js end */
+
 
 /* xblocks/utils.js end */
 
@@ -808,14 +857,15 @@ xblocks.view = {};
  */
 xblocks.view.create = function(component) {
     component = Array.isArray(component) ? component : [component];
-    component.unshift(true);
+    component.unshift(true, {});
     component.push({
-        propTypes: {
-            _uid: React.PropTypes.string
+        'propTypes': {
+            '_uid': React.PropTypes.string,
+            'xb-static': React.PropTypes.bool
         }
     });
 
-    return React.createClass(xblocks.utils.merge.apply(xblocks.utils, component));
+    return React.createClass(xblocks.utils.merge.apply({}, component));
 };
 
 /**
@@ -853,7 +903,7 @@ xblocks.view.get = function(blockName) {
  */
 xblocks.create = function(blockName, options) {
     options = Array.isArray(options) ? options : [options];
-    options.unshift(true);
+    options.unshift(true, {});
     options.push({
         lifecycle: {
             created: function() {
@@ -883,7 +933,7 @@ xblocks.create = function(blockName, options) {
                 if (attrName === xblocks.dom.attrs.XB_ATTRS.STATIC &&
                     newValue === null &&
                     this.xblock &&
-                    !this.xblock._isMountedComponent()) {
+                    !this.mounted) {
 
                     this.xblock._repaint();
                 }
@@ -891,31 +941,28 @@ xblocks.create = function(blockName, options) {
         },
 
         accessors: {
-            content: {
-                /**
-                 * @return {string}
-                 */
+            mounted: {
                 get: function() {
-                    // FIXME
-                    if (this.xblock && this.xblock._isMountedComponent()) {
+                    return (this.xblock && this.xblock._isMountedComponent());
+                }
+            },
+
+            content: {
+                get: function() {
+                    if (this.mounted) {
+                        // FIXME bad way to get children
                         return this.xblock._component.props.children;
                     }
 
-                    var contentElement = findNodeContentElement(this);
-                    return contentElement.innerHTML;
+                    return xblocks.utils.contentNode(this).innerHTML;
                 },
 
-                /**
-                 * @param {string} content
-                 */
                 set: function(content) {
-                    // FIXME
-                    if (this.xblock && this.xblock._isMountedComponent()) {
+                    if (this.mounted) {
                         this.xblock.update({ children: content });
 
                     } else {
-                        var contentElement = findNodeContentElement(this);
-                        contentElement.innerHTML = content;
+                        xblocks.utils.contentNode(this).innerHTML = content;
                         this.upgrade();
                     }
                 }
@@ -934,7 +981,7 @@ xblocks.create = function(blockName, options) {
             },
 
             cloneNode: function(deep) {
-                // don`t clone content nodes
+                // not to clone the contents
                 var node = Node.prototype.cloneNode.call(this, false);
 
                 if (deep) {
@@ -946,32 +993,7 @@ xblocks.create = function(blockName, options) {
         }
     });
 
-    function findNodeContentElement(node) {
-        if (!node.firstChild) {
-            return node;
-        }
-
-        var element = node.querySelector('[data-xb-content="' + node.xuid + '"]');
-
-        if (!element) {
-            element = node.querySelector('script[type="text/template"]');
-
-            if (xblocks.utils.support.template && (!element || element.parentNode !== node)) {
-                element = node.querySelector('template');
-
-                if (element && element.parentNode === node) {
-                    // FIXME temporarily, until the implementation of the DocumentFragment
-                    var tmp = global.document.createElement('div');
-                    tmp.appendChild(global.document.importNode(element.content, true));
-                    element = tmp;
-                }
-            }
-        }
-
-        return element || node;
-    }
-
-    return xtag.register(blockName, xblocks.utils.merge.apply(xblocks.utils, options));
+    return xtag.register(blockName, xblocks.utils.merge.apply({}, options));
 };
 
 /* xblocks/block.js end */
@@ -987,6 +1009,7 @@ xblocks.create = function(blockName, options) {
 xblocks.element = function(node) {
     this._name = node.tagName.toLowerCase();
     this._node = node;
+    this._propTypes = xblocks.utils.propTypes(this._name);
     this._init(node.attrs, node.content, this._callbackInit);
 };
 
@@ -1021,6 +1044,12 @@ xblocks.element.prototype._component = null;
  * @private
  */
 xblocks.element.prototype._observer = null;
+
+/**
+ * @type {object}
+ * @private
+ */
+xblocks.element.prototype._propTypes = undefined;
 
 /**
  * Unmounts a component and removes it from the DOM
@@ -1066,7 +1095,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
         var currentProps = this._getCurrentProps();
         nextProps = xblocks.utils.merge(true, currentProps, nextProps);
         nextProps = xblocks.utils.filterObject(nextProps, function(name) {
-            return removeProps.indexOf(name) === -1;
+            return (removeProps.indexOf(name) === -1);
         });
     }
 
@@ -1074,10 +1103,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
         this._repaint(callback);
 
     } else {
-        // TODO bad way to get property types
-        var propTypes = this._component.constructor && this._component.constructor.propTypes;
-        xblocks.dom.attrs.typeConversion(nextProps, propTypes);
-
+        xblocks.dom.attrs.typeConversion(nextProps, this._propTypes);
         this._component[action](nextProps, this._callbackUpdate.bind(this, callback));
     }
 };
@@ -1094,14 +1120,9 @@ xblocks.element.prototype._init = function(props, children, callback) {
     }
 
     props._uid = this._node.xuid;
+    xblocks.dom.attrs.typeConversion(props, this._propTypes);
 
-    var constructor = xblocks.view.get(this._name);
-    // TODO bad way to get property types
-    var propTypes = constructor.originalSpec && constructor.originalSpec.propTypes;
-
-    xblocks.dom.attrs.typeConversion(props, propTypes);
-
-    var proxyConstructor = constructor(props, children);
+    var proxyConstructor = xblocks.view.get(this._name)(props, children);
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();
@@ -1191,7 +1212,7 @@ xblocks.element.prototype._callbackMutation = function(records) {
     if (records.some(this._checkNodeChange)) {
         this._repaint();
 
-    } else if (records.some(this._checkAttributesChange)) {
+    } else if (records.some(this._checkAttributesChange, this)) {
 
         var removeAttrs = records
             .filter(this._filterAttributesRemove, this)
@@ -1244,7 +1265,7 @@ xblocks.element.prototype._checkNodeChange = function(record) {
  * @private
  */
 xblocks.element.prototype._checkAttributesChange = function(record) {
-    return (record.type === 'attributes');
+    return (record.type === 'attributes' && this._propTypes.hasOwnProperty(record.attributeName));
 };
 
 /**
