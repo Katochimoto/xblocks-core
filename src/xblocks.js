@@ -58,6 +58,16 @@
      */
     var xblocks = global.xblocks = {};
 
+    (function() {
+        var define = function(ctor) {
+            xblocks.tmpl = ctor();
+        };
+
+        define.amd = true;
+
+        /*! borschik:include:../node_modules/dot/doT.js */
+    }());
+
     /*! borschik:include:xblocks/utils.js */
     /*! borschik:include:xblocks/dom.js */
     /*! borschik:include:xblocks/view.js */

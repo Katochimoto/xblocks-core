@@ -13,9 +13,26 @@ xblocks.view.create = function(component) {
     component = Array.isArray(component) ? component : [component];
     component.unshift(true, {});
     component.push({
-        'propTypes': {
+        propTypes: {
             '_uid': React.PropTypes.string,
+            'children': React.PropTypes.renderable,
             'xb-static': React.PropTypes.bool
+        },
+
+        template: function(ref, props) {
+            var rootNode = React.__internals.Mount.findReactContainerForID(this._rootNodeID);
+            var templates = rootNode && rootNode.xuid && rootNode.templates;
+
+            if (templates && templates.hasOwnProperty(ref)) {
+                props = props || {};
+                props.dangerouslySetInnerHTML = {
+                    __html: templates[ref](this.props)
+                };
+
+                return React.DOM.div(props);
+            }
+
+            return null;
         }
     });
 

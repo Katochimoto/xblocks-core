@@ -157,7 +157,7 @@ xblocks.element.prototype._repaint = function(callback) {
  */
 xblocks.element.prototype._callbackInit = function() {
     xblocks.utils.dispatchEvent(this._node, 'xb-created', { detail: { xblock: this } });
-    xblocks.utils.lazy(_globalInitEvent, this._node);
+    xblocks.utils.lazy(_elementGlobalInitEvent, this._node);
 };
 
 /**
@@ -166,7 +166,7 @@ xblocks.element.prototype._callbackInit = function() {
  */
 xblocks.element.prototype._callbackRepaint = function(callback) {
     xblocks.utils.dispatchEvent(this._node, 'xb-repaint', { detail: { xblock: this } });
-    xblocks.utils.lazy(_globalRepaintEvent, this._node);
+    xblocks.utils.lazy(_elementGlobalRepaintEvent, this._node);
 
     if (callback) {
         callback.call(this);
@@ -289,7 +289,7 @@ xblocks.element.prototype._mapAttributesName = function(record) {
  * @param {array} records
  * @private
  */
-function _globalInitEvent(records) {
+function _elementGlobalInitEvent(records) {
     xblocks.utils.dispatchEvent(global, 'xb-created', { detail: { records: records } });
 }
 
@@ -297,6 +297,6 @@ function _globalInitEvent(records) {
  * @param {array} records
  * @private
  */
-function _globalRepaintEvent(records) {
+function _elementGlobalRepaintEvent(records) {
     xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
 }

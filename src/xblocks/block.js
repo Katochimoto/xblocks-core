@@ -12,11 +12,19 @@ xblocks.create = function(blockName, options) {
     options.push({
         lifecycle: {
             created: function() {
+                this.templates = {};
                 this.xuid = xblocks.utils.seq();
-                this.xblock = xblocks.element.create(this);
+
+                if (this.getElementsByTagName('script').length) {
+                    xblocks.utils.lazy(_blockLazyInstantiation, this);
+
+                } else {
+                    _blockInstantiation(this);
+                }
             },
 
             inserted: function() {
+                // rebuilding after deleting
                 if (this.xblock === null) {
                     this.xblock = xblocks.element.create(this);
                 }
@@ -27,10 +35,12 @@ xblocks.create = function(blockName, options) {
                 // fix:
                 // element.parentNode.removeChild(element);
                 // document.body.appendChild(element);
-                var content = this.content;
-                this.xblock.destroy();
-                this.xblock = null;
-                this.content = content;
+                if (this.xblock) {
+                    var content = this.content;
+                    this.xblock.destroy();
+                    this.xblock = null;
+                    this.content = content;
+                }
             },
 
             attributeChanged: function(attrName, oldValue, newValue) {
@@ -88,6 +98,7 @@ xblocks.create = function(blockName, options) {
             cloneNode: function(deep) {
                 // not to clone the contents
                 var node = Node.prototype.cloneNode.call(this, false);
+                node.templates = this.templates;
 
                 if (deep) {
                     node.content = this.content;
@@ -100,3 +111,23 @@ xblocks.create = function(blockName, options) {
 
     return xtag.register(blockName, xblocks.utils.merge.apply({}, options));
 };
+
+function _blockTmplCompile(tmplElement) {
+    this.templates[tmplElement.getAttribute('ref')] = xblocks.tmpl.compile(tmplElement.innerHTML);
+}
+
+function _blockInstantiation(element) {
+    if (element.hasChildNodes()) {
+        Array.prototype.forEach.call(
+            element.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
+            _blockTmplCompile,
+            element
+        );
+    }
+
+    element.xblock = xblocks.element.create(element);
+}
+
+function _blockLazyInstantiation(elements) {
+    elements.forEach(_blockInstantiation);
+}
