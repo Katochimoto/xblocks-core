@@ -6,13 +6,25 @@
  * @returns {string}
  */
 xblocks.utils.type = function(param) {
+    if (param === undefined) {
+        return 'undefined';
+    }
+
     if (param === null) {
         return 'null';
     }
 
-    if (typeof(param) === 'undefined') {
-        return 'undefined';
-    }
+    var type = typeof(param);
 
-    return Object.prototype.toString.call(param).match(xblocks.utils.REG_TYPE_EXTRACT)[1].toLowerCase();
+    if (type === 'object') {
+		type = Object.prototype.toString.call(param)
+            .match(xblocks.utils.REG_TYPE_EXTRACT)[1]
+            .toLowerCase();
+	}
+
+    if (type === 'number') {
+        type = param.toString().indexOf('.') === -1 ? 'integer' : 'float';
+	}
+
+	return type;
 };

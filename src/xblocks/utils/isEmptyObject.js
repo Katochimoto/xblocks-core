@@ -7,9 +7,10 @@
  */
 xblocks.utils.isEmptyObject = function(obj) {
     if (xblocks.utils.type(obj) === 'object') {
-        var name;
-        for (name in obj) {
-            return false;
+        for (var key in obj) {
+            if (global.hasOwnProperty.call(obj, key)) {
+                return false;
+            }
         }
     }
 

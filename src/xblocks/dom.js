@@ -39,10 +39,8 @@ xblocks.dom = {
 xblocks.dom.attrs.toObject = function(element) {
     var attrs = {};
 
-    if (element.nodeType === 1) {
-        Array.prototype.forEach.call(element.attributes, function(attr) {
-            attrs[attr.nodeName] = attr.value;
-        });
+    if (element.nodeType === 1 && element.attributes.length) {
+        Array.prototype.forEach.call(element.attributes, _domAttrsToObject, attrs);
     }
 
     return attrs;
@@ -89,3 +87,7 @@ xblocks.dom.attrs.typeConversion = function(props, propTypes) {
 
     return props;
 };
+
+function _domAttrsToObject(attr) {
+    this[attr.nodeName] = attr.value;
+}

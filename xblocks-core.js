@@ -462,15 +462,27 @@ xblocks.utils.seq = (function() {
  * @returns {string}
  */
 xblocks.utils.type = function(param) {
+    if (param === undefined) {
+        return 'undefined';
+    }
+
     if (param === null) {
         return 'null';
     }
 
-    if (typeof(param) === 'undefined') {
-        return 'undefined';
-    }
+    var type = typeof(param);
 
-    return Object.prototype.toString.call(param).match(xblocks.utils.REG_TYPE_EXTRACT)[1].toLowerCase();
+    if (type === 'object') {
+		type = Object.prototype.toString.call(param)
+            .match(xblocks.utils.REG_TYPE_EXTRACT)[1]
+            .toLowerCase();
+	}
+
+    if (type === 'number') {
+        type = param.toString().indexOf('.') === -1 ? 'integer' : 'float';
+	}
+
+	return type;
 };
 
 /* xblocks/utils/type.js end */
@@ -485,9 +497,10 @@ xblocks.utils.type = function(param) {
  */
 xblocks.utils.isEmptyObject = function(obj) {
     if (xblocks.utils.type(obj) === 'object') {
-        var name;
-        for (name in obj) {
-            return false;
+        for (var key in obj) {
+            if (global.hasOwnProperty.call(obj, key)) {
+                return false;
+            }
         }
     }
 
@@ -927,10 +940,8 @@ xblocks.dom = {
 xblocks.dom.attrs.toObject = function(element) {
     var attrs = {};
 
-    if (element.nodeType === 1) {
-        Array.prototype.forEach.call(element.attributes, function(attr) {
-            attrs[attr.nodeName] = attr.value;
-        });
+    if (element.nodeType === 1 && element.attributes.length) {
+        Array.prototype.forEach.call(element.attributes, _domAttrsToObject, attrs);
     }
 
     return attrs;
@@ -978,6 +989,10 @@ xblocks.dom.attrs.typeConversion = function(props, propTypes) {
     return props;
 };
 
+function _domAttrsToObject(attr) {
+    this[attr.nodeName] = attr.value;
+}
+
 /* xblocks/dom.js end */
 
     /* xblocks/view.js begin */
@@ -1004,12 +1019,12 @@ xblocks.view.create = function(component) {
 
         template: function(ref, props) {
             var rootNode = React.__internals.Mount.findReactContainerForID(this._rootNodeID);
-            var templates = rootNode && rootNode.xuid && rootNode.templates;
+            var xtmpl = rootNode && rootNode.xuid && rootNode.xtmpl;
 
-            if (templates && templates.hasOwnProperty(ref)) {
+            if (xtmpl && xtmpl.hasOwnProperty(ref)) {
                 props = props || {};
                 props.dangerouslySetInnerHTML = {
-                    __html: templates[ref](this.props)
+                    __html: xtmpl[ref](this.props)
                 };
 
                 return React.DOM.div(props);
@@ -1061,9 +1076,11 @@ xblocks.create = function(blockName, options) {
     options.push({
         lifecycle: {
             created: function() {
-                this.templates = {};
+                this.xtmpl = {};
                 this.xuid = xblocks.utils.seq();
 
+                // asynchronous read content
+                // <xb-test><script>...</script><div>not found</div></xb-test>
                 if (this.getElementsByTagName('script').length) {
                     xblocks.utils.lazy(_blockLazyInstantiation, this);
 
@@ -1075,7 +1092,7 @@ xblocks.create = function(blockName, options) {
             inserted: function() {
                 // rebuilding after deleting
                 if (this.xblock === null) {
-                    this.xblock = xblocks.element.create(this);
+                    _blockInstantiation(this);
                 }
             },
 
@@ -1105,6 +1122,7 @@ xblocks.create = function(blockName, options) {
         },
 
         accessors: {
+            // check mounted react
             mounted: {
                 get: function() {
                     return (this.xblock && this.xblock._isMountedComponent());
@@ -1132,6 +1150,7 @@ xblocks.create = function(blockName, options) {
                 }
             },
 
+            // getting object attributes
             attrs: {
                 get: function() {
                     return xblocks.dom.attrs.toObject(this);
@@ -1147,7 +1166,7 @@ xblocks.create = function(blockName, options) {
             cloneNode: function(deep) {
                 // not to clone the contents
                 var node = Node.prototype.cloneNode.call(this, false);
-                node.templates = this.templates;
+                node.xtmpl = this.xtmpl;
 
                 if (deep) {
                     node.content = this.content;
@@ -1162,7 +1181,7 @@ xblocks.create = function(blockName, options) {
 };
 
 function _blockTmplCompile(tmplElement) {
-    this.templates[tmplElement.getAttribute('ref')] = xblocks.tmpl.compile(tmplElement.innerHTML);
+    this.xtmpl[tmplElement.getAttribute('ref')] = xblocks.tmpl.compile(tmplElement.innerHTML);
 }
 
 function _blockInstantiation(element) {

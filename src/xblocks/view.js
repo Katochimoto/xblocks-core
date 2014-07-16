@@ -21,12 +21,12 @@ xblocks.view.create = function(component) {
 
         template: function(ref, props) {
             var rootNode = React.__internals.Mount.findReactContainerForID(this._rootNodeID);
-            var templates = rootNode && rootNode.xuid && rootNode.templates;
+            var xtmpl = rootNode && rootNode.xuid && rootNode.xtmpl;
 
-            if (templates && templates.hasOwnProperty(ref)) {
+            if (xtmpl && xtmpl.hasOwnProperty(ref)) {
                 props = props || {};
                 props.dangerouslySetInnerHTML = {
-                    __html: templates[ref](this.props)
+                    __html: xtmpl[ref](this.props)
                 };
 
                 return React.DOM.div(props);

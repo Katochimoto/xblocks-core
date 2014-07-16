@@ -12,9 +12,11 @@ xblocks.create = function(blockName, options) {
     options.push({
         lifecycle: {
             created: function() {
-                this.templates = {};
+                this.xtmpl = {};
                 this.xuid = xblocks.utils.seq();
 
+                // asynchronous read content
+                // <xb-test><script>...</script><div>not found</div></xb-test>
                 if (this.getElementsByTagName('script').length) {
                     xblocks.utils.lazy(_blockLazyInstantiation, this);
 
@@ -26,7 +28,7 @@ xblocks.create = function(blockName, options) {
             inserted: function() {
                 // rebuilding after deleting
                 if (this.xblock === null) {
-                    this.xblock = xblocks.element.create(this);
+                    _blockInstantiation(this);
                 }
             },
 
@@ -56,6 +58,7 @@ xblocks.create = function(blockName, options) {
         },
 
         accessors: {
+            // check mounted react
             mounted: {
                 get: function() {
                     return (this.xblock && this.xblock._isMountedComponent());
@@ -83,6 +86,7 @@ xblocks.create = function(blockName, options) {
                 }
             },
 
+            // getting object attributes
             attrs: {
                 get: function() {
                     return xblocks.dom.attrs.toObject(this);
@@ -98,7 +102,7 @@ xblocks.create = function(blockName, options) {
             cloneNode: function(deep) {
                 // not to clone the contents
                 var node = Node.prototype.cloneNode.call(this, false);
-                node.templates = this.templates;
+                node.xtmpl = this.xtmpl;
 
                 if (deep) {
                     node.content = this.content;
@@ -113,7 +117,7 @@ xblocks.create = function(blockName, options) {
 };
 
 function _blockTmplCompile(tmplElement) {
-    this.templates[tmplElement.getAttribute('ref')] = xblocks.tmpl.compile(tmplElement.innerHTML);
+    this.xtmpl[tmplElement.getAttribute('ref')] = xblocks.tmpl.compile(tmplElement.innerHTML);
 }
 
 function _blockInstantiation(element) {
