@@ -8,7 +8,7 @@
  */
 
 xblocks.utils._equal = {
-    array: function(x, y) {
+    'array': function(x, y) {
         if (x === y) {
             return true;
         }
@@ -29,7 +29,7 @@ xblocks.utils._equal = {
 	    return true;
     },
 
-    object: function(x, y) {
+    'object': function(x, y) {
         if (x === y) {
 		    return true;
         }
@@ -54,11 +54,15 @@ xblocks.utils._equal = {
     	return true;
     },
 
-    date: function(x, y) {
+    'date': function(x, y) {
         return x.getTime() === y.getTime();
     },
 
-    regexp: function(x, y) {
+    'regexp': function(x, y) {
+        return x.toString() === y.toString();
+    },
+
+    'function': function(x, y) {
         return x.toString() === y.toString();
     }
 };

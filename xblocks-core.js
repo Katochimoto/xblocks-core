@@ -473,16 +473,22 @@ xblocks.utils.type = function(param) {
     var type = typeof(param);
 
     if (type === 'object') {
-		type = Object.prototype.toString.call(param)
+        type = Object.prototype.toString.call(param)
             .match(xblocks.utils.REG_TYPE_EXTRACT)[1]
             .toLowerCase();
-	}
+    }
 
     if (type === 'number') {
-        type = param.toString().indexOf('.') === -1 ? 'integer' : 'float';
-	}
+        var paramStr = param.toString();
+        if (paramStr === 'NaN') {
+            type = 'nan';
 
-	return type;
+        } else {
+            type = paramStr.indexOf('.') === -1 ? 'integer' : 'float';
+        }
+    }
+
+    return type;
 };
 
 /* xblocks/utils/type.js end */
@@ -751,7 +757,7 @@ xblocks.utils.dispatchEvent = function(element, name, params) {
  */
 
 xblocks.utils._equal = {
-    array: function(x, y) {
+    'array': function(x, y) {
         if (x === y) {
             return true;
         }
@@ -772,7 +778,7 @@ xblocks.utils._equal = {
 	    return true;
     },
 
-    object: function(x, y) {
+    'object': function(x, y) {
         if (x === y) {
 		    return true;
         }
@@ -797,11 +803,15 @@ xblocks.utils._equal = {
     	return true;
     },
 
-    date: function(x, y) {
+    'date': function(x, y) {
         return x.getTime() === y.getTime();
     },
 
-    regexp: function(x, y) {
+    'regexp': function(x, y) {
+        return x.toString() === y.toString();
+    },
+
+    'function': function(x, y) {
         return x.toString() === y.toString();
     }
 };
@@ -921,7 +931,8 @@ xblocks.utils.contentNode = function(node) {
  * @returns {object}
  */
 xblocks.utils.propTypes = function(tagName) {
-    return xblocks.view.get(tagName).originalSpec.propTypes || {};
+    var view = xblocks.view.get(tagName);
+    return view && view.originalSpec && view.originalSpec.propTypes || {};
 };
 
 /* xblocks/utils/propTypes.js end */

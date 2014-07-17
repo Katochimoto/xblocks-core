@@ -23,7 +23,13 @@ xblocks.utils.type = function(param) {
     }
 
     if (type === 'number') {
-        type = param.toString().indexOf('.') === -1 ? 'integer' : 'float';
+        var paramStr = param.toString();
+        if (paramStr === 'NaN') {
+            type = 'nan';
+
+        } else {
+            type = paramStr.indexOf('.') === -1 ? 'integer' : 'float';
+        }
     }
 
     return type;

@@ -28,7 +28,7 @@ describe('xblocks.utils.equals', function() {
         expect(xblocks.utils.equals(test, test)).to.be.ok();
     });
 
-    it('Функции эквивалентны всегда', function() {
+    it('Функции ставнивает по содержимому toString', function() {
         expect(xblocks.utils.equals(function() {}, function() {})).to.be.ok();
     });
 

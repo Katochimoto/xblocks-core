@@ -6,5 +6,6 @@
  * @returns {object}
  */
 xblocks.utils.propTypes = function(tagName) {
-    return xblocks.view.get(tagName).originalSpec.propTypes || {};
+    var view = xblocks.view.get(tagName);
+    return view && view.originalSpec && view.originalSpec.propTypes || {};
 };
