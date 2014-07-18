@@ -1317,7 +1317,7 @@ xblocks.element.prototype._callbackMutation = function(records) {
     if (records.some(this._checkNodeChange)) {
         this._repaint();
 
-    } else if (records.some(this._checkAttributesChange, this)) {
+    } else if (records.some(this._checkAttributesChange)) {
 
         var removeAttrs = records
             .filter(this._filterAttributesRemove, this)
@@ -1370,7 +1370,7 @@ xblocks.element.prototype._checkNodeChange = function(record) {
  * @private
  */
 xblocks.element.prototype._checkAttributesChange = function(record) {
-    return (record.type === 'attributes' && this._propTypes.hasOwnProperty(record.attributeName));
+    return (record.type === 'attributes');
 };
 
 /**
