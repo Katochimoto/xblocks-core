@@ -117,7 +117,7 @@ xblocks.create = function(blockName, options) {
 };
 
 function _blockTmplCompile(tmplElement) {
-    this.xtmpl[tmplElement.getAttribute('ref')] = xblocks.tmpl.compile(tmplElement.innerHTML);
+    this.xtmpl[tmplElement.getAttribute('ref')] = tmplElement.innerHTML;
 }
 
 function _blockInstantiation(element) {

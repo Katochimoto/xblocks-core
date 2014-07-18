@@ -11,7 +11,13 @@ xblocks.view = {};
  */
 xblocks.view.create = function(component) {
     component = Array.isArray(component) ? component : [component];
-    component.unshift(true, {});
+
+    component.unshift(true, {
+        _templatePrepare: function(tmplString) {
+            return tmplString;
+        }
+    });
+
     component.push({
         propTypes: {
             '_uid': React.PropTypes.string,
@@ -26,7 +32,7 @@ xblocks.view.create = function(component) {
             if (xtmpl && xtmpl.hasOwnProperty(ref)) {
                 props = props || {};
                 props.dangerouslySetInnerHTML = {
-                    __html: xtmpl[ref](this.props)
+                    __html: this._templatePrepare(xtmpl[ref])
                 };
 
                 return React.DOM.div(props);
