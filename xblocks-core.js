@@ -784,7 +784,7 @@ xblocks.utils.contentNode = function(node) {
  */
 xblocks.utils.propTypes = function(tagName) {
     var view = xblocks.view.get(tagName);
-    return view && view.originalSpec && view.originalSpec.propTypes || {};
+    return (view && (view.propTypes || (view.originalSpec && view.originalSpec.propTypes))) || {};
 };
 
 /* xblocks/utils/propTypes.js end */
@@ -890,7 +890,7 @@ function _domAttrsToObject(attr) {
 /* xblocks/dom.js end */
 
     /* xblocks/view.js begin */
-/* global xblocks, global, React */
+/* global xblocks, React */
 /* jshint strict: false */
 
 /**
@@ -912,7 +912,7 @@ xblocks.view.create = function(component) {
 
     component.push({
         propTypes: {
-            '_uid': React.PropTypes.string,
+            '_uid': React.PropTypes.renderable,
             'children': React.PropTypes.renderable,
             'xb-static': React.PropTypes.bool
         },

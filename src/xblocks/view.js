@@ -1,4 +1,4 @@
-/* global xblocks, global, React */
+/* global xblocks, React */
 /* jshint strict: false */
 
 /**
@@ -20,7 +20,7 @@ xblocks.view.create = function(component) {
 
     component.push({
         propTypes: {
-            '_uid': React.PropTypes.string,
+            '_uid': React.PropTypes.renderable,
             'children': React.PropTypes.renderable,
             'xb-static': React.PropTypes.bool
         },
