@@ -25,7 +25,7 @@ xblocks.utils.type = function(param) {
     if (type === 'number') {
         var paramStr = param.toString();
         if (paramStr === 'NaN') {
-            type = 'nan';
+            type = 'NaN';
 
         } else {
             type = paramStr.indexOf('.') === -1 ? 'integer' : 'float';
