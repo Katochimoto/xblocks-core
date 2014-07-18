@@ -1295,7 +1295,8 @@ xblocks.element.prototype._callbackRender = function(callback) {
         characterData: true,
         subtree: false,
         attributeOldValue: false,
-        characterDataOldValue: false
+        characterDataOldValue: false,
+        attributeFilter: Object.keys(this._propTypes)
     });
 
     if (callback) {
