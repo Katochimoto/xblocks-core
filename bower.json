@@ -1,6 +1,6 @@
 {
     "name": "xblocks-core",
-    "version": "0.0.30",
+    "version": "0.0.31",
     "main": "xblocks-core.js",
     "ignore": [
         "**/.*",
@@ -14,7 +14,7 @@
     ],
     "dependencies": {
         "x-tag-core": "0.9.7",
-        "es5-shim": "3.4.0",
+        "es5-shim": "4.0.0",
         "react": "0.11.0"
     },
     "homepage": "https://github.com/Katochimoto/xblocks-core",
