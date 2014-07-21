@@ -833,7 +833,7 @@ xblocks.dom = {
  * @return {object}
  */
 xblocks.dom.attrs.get = function(element, attrs) {
-    if (element.nodeType !== 1 || !element.attributes.length) {
+    if (element.nodeType !== 1 || !element.hasAttributes()) {
         return attrs;
     }
 
@@ -862,7 +862,7 @@ xblocks.dom.attrs.get = function(element, attrs) {
 xblocks.dom.attrs.toObject = function(element) {
     var attrs = {};
 
-    if (element.nodeType === 1 && element.attributes.length) {
+    if (element.nodeType === 1 && element.hasAttributes()) {
         Array.prototype.forEach.call(element.attributes, _domAttrsToObject, attrs);
     }
 
