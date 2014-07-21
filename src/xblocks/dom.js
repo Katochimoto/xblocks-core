@@ -34,6 +34,34 @@ xblocks.dom = {
 
 /**
  * @param {HTMLElement} element
+ * @param {object} attrs
+ * @return {object}
+ */
+xblocks.dom.attrs.get = function(element, attrs) {
+    if (element.nodeType !== 1 || !element.attributes.length) {
+        return attrs;
+    }
+
+    for (var attrName in attrs) {
+        if (attrs.hasOwnProperty(attrName) && element.hasAttribute(attrName)) {
+            if (typeof(attrs[attrName]) === 'boolean') {
+                attrs[attrName] = xblocks.dom.attrs.valueConversion(
+                    attrName,
+                    element.getAttribute(attrName),
+                    React.PropTypes.bool
+                );
+
+            } else {
+                attrs[attrName] = element.getAttribute(attrName);
+            }
+        }
+    }
+
+    return attrs;
+};
+
+/**
+ * @param {HTMLElement} element
  * @return {object}
  */
 xblocks.dom.attrs.toObject = function(element) {
