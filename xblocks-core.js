@@ -1006,6 +1006,14 @@ xblocks.create = function(blockName, options) {
             created: function() {
                 this.xtmpl = {};
                 this.xuid = xblocks.utils.seq();
+            },
+
+            inserted: function() {
+                if (this._inserted) {
+                    return;
+                }
+
+                this._inserted = true;
 
                 // asynchronous read content
                 // <xb-test><script>...</script><div>not found</div></xb-test>
@@ -1017,14 +1025,9 @@ xblocks.create = function(blockName, options) {
                 }
             },
 
-            inserted: function() {
-                // rebuilding after deleting
-                if (this.xblock === null) {
-                    _blockInstantiation(this);
-                }
-            },
-
             removed: function() {
+                this._inserted = false;
+
                 // replace initial content after destroy react component
                 // fix:
                 // element.parentNode.removeChild(element);
