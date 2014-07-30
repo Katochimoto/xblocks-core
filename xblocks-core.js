@@ -1056,7 +1056,7 @@ xblocks.create = function(blockName, options) {
             // check mounted react
             mounted: {
                 get: function() {
-                    return (this.xblock && this.xblock._isMountedComponent());
+                    return Boolean(this.xblock && this.xblock._isMountedComponent());
                 }
             },
 
