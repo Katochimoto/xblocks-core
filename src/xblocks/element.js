@@ -6,10 +6,9 @@
  * @constructor
  */
 xblocks.element = function(node) {
-    this._name = node.tagName.toLowerCase();
     this._node = node;
-    this._propTypes = xblocks.utils.propTypes(this._name);
-    this._init(node.attrs, node.content, this._callbackInit);
+    this._propTypes = xblocks.utils.propTypes(node.xtagName);
+    this._init(node.state, node.content, this._callbackInit);
 };
 
 /**
@@ -19,12 +18,6 @@ xblocks.element = function(node) {
 xblocks.element.create = function(node) {
     return new xblocks.element(node);
 };
-
-/**
- * @type {string}
- * @private
- */
-xblocks.element.prototype._name = undefined;
 
 /**
  * @type {HTMLElement}
@@ -82,7 +75,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
         return;
     }
 
-    var nextProps = this._node.attrs;
+    var nextProps = this._node.state;
     var action = 'setProps';
 
     xblocks.utils.merge(true, nextProps, props);
@@ -121,7 +114,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     props._uid = this._node.xuid;
     xblocks.dom.attrs.typeConversion(props, this._propTypes);
 
-    var proxyConstructor = xblocks.view.get(this._name)(props, children);
+    var proxyConstructor = xblocks.view.get(this._node.xtagName)(props, children);
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();
@@ -146,7 +139,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
  * @private
  */
 xblocks.element.prototype._repaint = function(callback) {
-    var props = xblocks.utils.merge(true, this._node.attrs, this._getCurrentProps());
+    var props = xblocks.utils.merge(true, this._node.state, this._getCurrentProps());
     var children = this._node.content;
     this.destroy();
     this._init(props, children, this._callbackRepaint.bind(this, callback));

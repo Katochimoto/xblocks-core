@@ -993,6 +993,141 @@ xblocks.view.get = function(blockName) {
 /* global xblocks, global, xtag */
 /* jshint strict: false */
 
+var _blockCommon = {
+    lifecycle: {
+        created: function() {
+            this.xtagName = this.tagName.toLowerCase();
+            this.xtmpl = {};
+            this.xuid = xblocks.utils.seq();
+
+            console.log('created', this.xtagName, this.xuid);
+        },
+
+        inserted: function() {
+            console.log('inserted', this.xtagName, this.xuid, this._inserted);
+
+            if (this._inserted) {
+                return;
+            }
+
+            this._inserted = true;
+
+            // asynchronous read content
+            // <xb-test><script>...</script><div>not found</div></xb-test>
+            if (this.getElementsByTagName('script').length) {
+                xblocks.utils.lazy(_blockLazyInstantiation, this);
+
+            } else {
+                _blockInstantiation(this);
+            }
+        },
+
+        removed: function() {
+            console.log('removed', this.xtagName, this.xuid, this._inserted);
+
+            this._inserted = false;
+
+            // replace initial content after destroy react component
+            // fix:
+            // element.parentNode.removeChild(element);
+            // document.body.appendChild(element);
+            if (this.xblock) {
+                var content = this.content;
+                this.xblock.destroy();
+                this.xblock = null;
+                this.content = content;
+            }
+        },
+
+        attributeChanged: function(attrName, oldValue, newValue) {
+            console.log('attributeChanged', this.xtagName, this.xuid, attrName, oldValue, newValue);
+
+            // removeAttribute('xb-static')
+            if (attrName === xblocks.dom.attrs.XB_ATTRS.STATIC &&
+                newValue === null &&
+                this.xblock &&
+                !this.mounted) {
+
+                this.xblock._repaint();
+            }
+        }
+    },
+
+    accessors: {
+        // check mounted react
+        mounted: {
+            get: function() {
+                return Boolean(this.xblock && this.xblock._isMountedComponent());
+            }
+        },
+
+        content: {
+            get: function() {
+                if (this.mounted) {
+                    // FIXME bad way to get children
+                    return this.xblock._component.props.children;
+                }
+
+                return xblocks.utils.contentNode(this).innerHTML;
+            },
+
+            set: function(content) {
+                if (this.mounted) {
+                    this.xblock.update({ 'children': content });
+
+                } else {
+                    xblocks.utils.contentNode(this).innerHTML = content;
+                    this.upgrade();
+                }
+            }
+        },
+
+        // getting object attributes
+        attrs: {
+            get: function() {
+                return xblocks.dom.attrs.toObject(this);
+            }
+        },
+
+        state: {
+            get: function() {
+                var props = {};
+                var viewProps = xblocks.utils.propTypes(this.xtagName);
+                var elementProps = xtag.tags[this.xtagName].accessors;
+
+                for (var prop in elementProps) {
+                    if (viewProps.hasOwnProperty(prop) &&
+                        elementProps.hasOwnProperty(prop) &&
+                        !_blockCommon.accessors.hasOwnProperty(prop)) {
+
+                        props[prop] = this[prop];
+                    }
+                }
+
+                return xblocks.utils.merge({}, xblocks.dom.attrs.toObject(this), props);
+            }
+        }
+    },
+
+    methods: {
+        upgrade: function() {
+            xblocks.utils.upgradeElements(this);
+        },
+
+        cloneNode: function(deep) {
+            // not to clone the contents
+            var node = Node.prototype.cloneNode.call(this, false);
+            node.xtmpl = this.xtmpl;
+
+            if (deep) {
+                node.content = this.content;
+            }
+
+            return node;
+        }
+    }
+};
+
 /**
  * @param {string} blockName
  * @param {?object} options
@@ -1001,113 +1136,7 @@ xblocks.view.get = function(blockName) {
 xblocks.create = function(blockName, options) {
     options = Array.isArray(options) ? options : [options];
     options.unshift(true, {});
-    options.push({
-        lifecycle: {
-            created: function() {
-                this.xtmpl = {};
-                this.xuid = xblocks.utils.seq();
-            },
-
-            inserted: function() {
-                if (this._inserted) {
-                    return;
-                }
-
-                this._inserted = true;
-
-                // asynchronous read content
-                // <xb-test><script>...</script><div>not found</div></xb-test>
-                if (this.getElementsByTagName('script').length) {
-                    xblocks.utils.lazy(_blockLazyInstantiation, this);
-
-                } else {
-                    _blockInstantiation(this);
-                }
-            },
-
-            removed: function() {
-                this._inserted = false;
-
-                // replace initial content after destroy react component
-                // fix:
-                // element.parentNode.removeChild(element);
-                // document.body.appendChild(element);
-                if (this.xblock) {
-                    var content = this.content;
-                    this.xblock.destroy();
-                    this.xblock = null;
-                    this.content = content;
-                }
-            },
-
-            attributeChanged: function(attrName, oldValue, newValue) {
-                // removeAttribute('xb-static')
-                if (attrName === xblocks.dom.attrs.XB_ATTRS.STATIC &&
-                    newValue === null &&
-                    this.xblock &&
-                    !this.mounted) {
-
-                    this.xblock._repaint();
-                }
-            }
-        },
-
-        accessors: {
-            // check mounted react
-            mounted: {
-                get: function() {
-                    return Boolean(this.xblock && this.xblock._isMountedComponent());
-                }
-            },
-
-            content: {
-                get: function() {
-                    if (this.mounted) {
-                        // FIXME bad way to get children
-                        return this.xblock._component.props.children;
-                    }
-
-                    return xblocks.utils.contentNode(this).innerHTML;
-                },
-
-                set: function(content) {
-                    if (this.mounted) {
-                        this.xblock.update({ children: content });
-
-                    } else {
-                        xblocks.utils.contentNode(this).innerHTML = content;
-                        this.upgrade();
-                    }
-                }
-            },
-
-            // getting object attributes
-            attrs: {
-                get: function() {
-                    return xblocks.dom.attrs.toObject(this);
-                }
-            }
-        },
-
-        methods: {
-            upgrade: function() {
-                xblocks.utils.upgradeElements(this);
-            },
-
-            cloneNode: function(deep) {
-                // not to clone the contents
-                var node = Node.prototype.cloneNode.call(this, false);
-                node.xtmpl = this.xtmpl;
-
-                if (deep) {
-                    node.content = this.content;
-                }
-
-                return node;
-            }
-        }
-    });
-
+    options.push(_blockCommon);
     return xtag.register(blockName, xblocks.utils.merge.apply({}, options));
 };
 
@@ -1142,10 +1171,9 @@ function _blockLazyInstantiation(elements) {
  * @constructor
  */
 xblocks.element = function(node) {
-    this._name = node.tagName.toLowerCase();
     this._node = node;
-    this._propTypes = xblocks.utils.propTypes(this._name);
-    this._init(node.attrs, node.content, this._callbackInit);
+    this._propTypes = xblocks.utils.propTypes(node.xtagName);
+    this._init(node.state, node.content, this._callbackInit);
 };
 
 /**
@@ -1155,12 +1183,6 @@ xblocks.element = function(node) {
 xblocks.element.create = function(node) {
     return new xblocks.element(node);
 };
-
-/**
- * @type {string}
- * @private
- */
-xblocks.element.prototype._name = undefined;
 
 /**
  * @type {HTMLElement}
@@ -1218,7 +1240,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
         return;
     }
 
-    var nextProps = this._node.attrs;
+    var nextProps = this._node.state;
     var action = 'setProps';
 
     xblocks.utils.merge(true, nextProps, props);
@@ -1257,7 +1279,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     props._uid = this._node.xuid;
     xblocks.dom.attrs.typeConversion(props, this._propTypes);
 
-    var proxyConstructor = xblocks.view.get(this._name)(props, children);
+    var proxyConstructor = xblocks.view.get(this._node.xtagName)(props, children);
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();
@@ -1282,7 +1304,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
  * @private
  */
 xblocks.element.prototype._repaint = function(callback) {
-    var props = xblocks.utils.merge(true, this._node.attrs, this._getCurrentProps());
+    var props = xblocks.utils.merge(true, this._node.state, this._getCurrentProps());
     var children = this._node.content;
     this.destroy();
     this._init(props, children, this._callbackRepaint.bind(this, callback));
