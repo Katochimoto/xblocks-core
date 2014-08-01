@@ -1130,18 +1130,6 @@ var _blockCommon = {
     }
 };
 
-/**
- * @param {string} blockName
- * @param {?object} options
- * @returns {HTMLElement}
- */
-xblocks.create = function(blockName, options) {
-    options = Array.isArray(options) ? options : [options];
-    options.unshift(true, {});
-    options.push(_blockCommon);
-    return xtag.register(blockName, xblocks.utils.merge.apply({}, options));
-};
-
 function _blockTmplCompile(tmplElement) {
     this.xtmpl[tmplElement.getAttribute('ref')] = tmplElement.innerHTML;
 }
@@ -1161,6 +1149,18 @@ function _blockInstantiation(element) {
 function _blockLazyInstantiation(elements) {
     elements.forEach(_blockInstantiation);
 }
+
+/**
+ * @param {string} blockName
+ * @param {?object} options
+ * @returns {HTMLElement}
+ */
+xblocks.create = function(blockName, options) {
+    options = Array.isArray(options) ? options : [options];
+    options.unshift(true, {});
+    options.push(_blockCommon);
+    return xtag.register(blockName, xblocks.utils.merge.apply({}, options));
+};
 
 /* xblocks/block.js end */
 
