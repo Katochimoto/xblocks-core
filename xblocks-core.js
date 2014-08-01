@@ -999,6 +999,7 @@ var _blockCommon = {
             this.xtagName = this.tagName.toLowerCase();
             this.xtmpl = {};
             this.xuid = xblocks.utils.seq();
+            this.xprops = xblocks.utils.propTypes(this.xtagName);
 
             console.log('created', this.xtagName, this.xuid);
         },
@@ -1092,11 +1093,10 @@ var _blockCommon = {
         state: {
             get: function() {
                 var props = {};
-                var viewProps = xblocks.utils.propTypes(this.xtagName);
                 var elementProps = xtag.tags[this.xtagName].accessors;
 
                 for (var prop in elementProps) {
-                    if (viewProps.hasOwnProperty(prop) &&
+                    if (this.xprops.hasOwnProperty(prop) &&
                         elementProps.hasOwnProperty(prop) &&
                         !_blockCommon.accessors.hasOwnProperty(prop)) {
 
@@ -1104,7 +1104,9 @@ var _blockCommon = {
                     }
                 }
 
-                return xblocks.utils.merge({}, xblocks.dom.attrs.toObject(this), props);
+                props = xblocks.utils.merge({}, xblocks.dom.attrs.toObject(this), props);
+                xblocks.dom.attrs.typeConversion(props, this.xprops);
+                return props;
             }
         }
     },
@@ -1172,7 +1174,6 @@ function _blockLazyInstantiation(elements) {
  */
 xblocks.element = function(node) {
     this._node = node;
-    this._propTypes = xblocks.utils.propTypes(node.xtagName);
     this._init(node.state, node.content, this._callbackInit);
 };
 
@@ -1201,12 +1202,6 @@ xblocks.element.prototype._component = null;
  * @private
  */
 xblocks.element.prototype._observer = null;
-
-/**
- * @type {object}
- * @private
- */
-xblocks.element.prototype._propTypes = undefined;
 
 /**
  * Unmounts a component and removes it from the DOM
@@ -1260,7 +1255,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
         this._repaint(callback);
 
     } else {
-        xblocks.dom.attrs.typeConversion(nextProps, this._propTypes);
+        xblocks.dom.attrs.typeConversion(nextProps, this._node.xprops);
         this._component[action](nextProps, this._callbackUpdate.bind(this, callback));
     }
 };
@@ -1277,7 +1272,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     }
 
     props._uid = this._node.xuid;
-    xblocks.dom.attrs.typeConversion(props, this._propTypes);
+    xblocks.dom.attrs.typeConversion(props, this._node.xprops);
 
     var proxyConstructor = xblocks.view.get(this._node.xtagName)(props, children);
 
@@ -1349,7 +1344,7 @@ xblocks.element.prototype._callbackRender = function(callback) {
         subtree: false,
         attributeOldValue: false,
         characterDataOldValue: false,
-        attributeFilter: Object.keys(this._propTypes)
+        attributeFilter: Object.keys(this._node.xprops)
     });
 
     if (callback) {

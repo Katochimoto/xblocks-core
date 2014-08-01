@@ -7,7 +7,6 @@
  */
 xblocks.element = function(node) {
     this._node = node;
-    this._propTypes = xblocks.utils.propTypes(node.xtagName);
     this._init(node.state, node.content, this._callbackInit);
 };
 
@@ -36,12 +35,6 @@ xblocks.element.prototype._component = null;
  * @private
  */
 xblocks.element.prototype._observer = null;
-
-/**
- * @type {object}
- * @private
- */
-xblocks.element.prototype._propTypes = undefined;
 
 /**
  * Unmounts a component and removes it from the DOM
@@ -95,7 +88,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
         this._repaint(callback);
 
     } else {
-        xblocks.dom.attrs.typeConversion(nextProps, this._propTypes);
+        xblocks.dom.attrs.typeConversion(nextProps, this._node.xprops);
         this._component[action](nextProps, this._callbackUpdate.bind(this, callback));
     }
 };
@@ -112,7 +105,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     }
 
     props._uid = this._node.xuid;
-    xblocks.dom.attrs.typeConversion(props, this._propTypes);
+    xblocks.dom.attrs.typeConversion(props, this._node.xprops);
 
     var proxyConstructor = xblocks.view.get(this._node.xtagName)(props, children);
 
@@ -184,7 +177,7 @@ xblocks.element.prototype._callbackRender = function(callback) {
         subtree: false,
         attributeOldValue: false,
         characterDataOldValue: false,
-        attributeFilter: Object.keys(this._propTypes)
+        attributeFilter: Object.keys(this._node.xprops)
     });
 
     if (callback) {

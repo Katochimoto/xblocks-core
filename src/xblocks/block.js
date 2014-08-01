@@ -7,6 +7,7 @@ var _blockCommon = {
             this.xtagName = this.tagName.toLowerCase();
             this.xtmpl = {};
             this.xuid = xblocks.utils.seq();
+            this.xprops = xblocks.utils.propTypes(this.xtagName);
 
             console.log('created', this.xtagName, this.xuid);
         },
@@ -100,11 +101,10 @@ var _blockCommon = {
         state: {
             get: function() {
                 var props = {};
-                var viewProps = xblocks.utils.propTypes(this.xtagName);
                 var elementProps = xtag.tags[this.xtagName].accessors;
 
                 for (var prop in elementProps) {
-                    if (viewProps.hasOwnProperty(prop) &&
+                    if (this.xprops.hasOwnProperty(prop) &&
                         elementProps.hasOwnProperty(prop) &&
                         !_blockCommon.accessors.hasOwnProperty(prop)) {
 
@@ -112,7 +112,9 @@ var _blockCommon = {
                     }
                 }
 
-                return xblocks.utils.merge({}, xblocks.dom.attrs.toObject(this), props);
+                props = xblocks.utils.merge({}, xblocks.dom.attrs.toObject(this), props);
+                xblocks.dom.attrs.typeConversion(props, this.xprops);
+                return props;
             }
         }
     },
