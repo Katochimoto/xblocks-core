@@ -1362,14 +1362,14 @@ xblocks.element.prototype._callbackMutation = function(records) {
     }
 
     // full repaint
-    if (records.some(this._checkNodeChange)) {
+    if (records.some(_elementCheckNodeChange)) {
         this._repaint();
 
-    } else if (records.some(this._checkAttributesChange)) {
+    } else if (records.some(_elementCheckAttributesChange)) {
 
         var removeAttrs = records
-            .filter(this._filterAttributesRemove, this)
-            .map(this._mapAttributesName);
+            .filter(_elementFilterAttributesRemove, this)
+            .map(_elementMapAttributesName);
 
         this.update(null, removeAttrs);
     }
@@ -1408,36 +1408,36 @@ xblocks.element.prototype._getCurrentProps = function() {
  * @returns {boolean}
  * @private
  */
-xblocks.element.prototype._checkNodeChange = function(record) {
+function _elementCheckNodeChange(record) {
     return (record.type === 'childList');
-};
+}
 
 /**
  * @param {MutationRecord} record
  * @returns {boolean}
  * @private
  */
-xblocks.element.prototype._checkAttributesChange = function(record) {
+function _elementCheckAttributesChange(record) {
     return (record.type === 'attributes');
-};
+}
 
 /**
  * @param {MutationRecord} record
  * @returns {boolean}
  * @private
  */
-xblocks.element.prototype._filterAttributesRemove = function(record) {
+function _elementFilterAttributesRemove(record) {
     return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
-};
+}
 
 /**
  * @param {MutationRecord} record
  * @returns {string}
  * @private
  */
-xblocks.element.prototype._mapAttributesName = function(record) {
+function _elementMapAttributesName(record) {
     return record.attributeName;
-};
+}
 
 /**
  * @param {array} records
