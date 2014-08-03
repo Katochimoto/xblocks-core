@@ -7,15 +7,9 @@
 xblocks.utils.CustomEvent = (function() {
     if (!xblocks.utils.pristine('CustomEvent')) {
         var CustomEvent = function(event, params) {
-            params = xblocks.utils.merge({
-                bubbles: false,
-                cancelable: false,
-                detail: undefined
-
-            }, params || {});
-
+            params = params || {};
             var evt = document.createEvent('CustomEvent');
-            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+            evt.initCustomEvent(event, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
             return evt;
         };
 
