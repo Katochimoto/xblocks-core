@@ -1000,13 +1000,9 @@ var _blockCommon = {
             this.xtmpl = {};
             this.xuid = xblocks.utils.seq();
             this.xprops = xblocks.utils.propTypes(this.xtagName);
-
-            console.log('created', this.xtagName, this.xuid);
         },
 
         inserted: function() {
-            console.log('inserted', this.xtagName, this.xuid, this._inserted);
-
             if (this._inserted) {
                 return;
             }
@@ -1024,8 +1020,6 @@ var _blockCommon = {
         },
 
         removed: function() {
-            console.log('removed', this.xtagName, this.xuid, this._inserted);
-
             this._inserted = false;
 
             // replace initial content after destroy react component
@@ -1041,8 +1035,6 @@ var _blockCommon = {
         },
 
         attributeChanged: function(attrName, oldValue, newValue) {
-            console.log('attributeChanged', this.xtagName, this.xuid, attrName, oldValue, newValue);
-
             // removeAttribute('xb-static')
             if (attrName === xblocks.dom.attrs.XB_ATTRS.STATIC &&
                 newValue === null &&
