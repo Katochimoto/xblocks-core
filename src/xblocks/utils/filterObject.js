@@ -7,14 +7,21 @@
  * @returns {object}
  */
 xblocks.utils.filterObject = function(from, callback) {
-    var out = {};
+    var obj = {};
+    var props = {};
+    var fill = false;
 
     Object.keys(from).forEach(function(property) {
         var descr = Object.getOwnPropertyDescriptor(from, property);
         if (callback && callback(property, descr)) {
-            Object.defineProperty(out, property, descr);
+            props[property] = descr;
+            fill = true;
         }
     });
 
-    return out;
+    if (fill) {
+        Object.defineProperties(obj, props);
+    }
+
+    return obj;
 };

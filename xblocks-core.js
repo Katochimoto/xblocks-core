@@ -493,8 +493,8 @@ xblocks.utils.merge = function() {
                     continue;
                 }
 
-                if ( deep && copy && ( xblocks.utils.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)) ) ) {
-                    if ( copyIsArray ) {
+                if (deep && copy && (xblocks.utils.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
+                    if (copyIsArray) {
                         copyIsArray = false;
                         clone = src && Array.isArray(src) ? src : [];
 
@@ -566,15 +566,9 @@ xblocks.utils.lazy = function(callback, args) {
 xblocks.utils.CustomEvent = (function() {
     if (!xblocks.utils.pristine('CustomEvent')) {
         var CustomEvent = function(event, params) {
-            params = xblocks.utils.merge({
-                bubbles: false,
-                cancelable: false,
-                detail: undefined
-
-            }, params || {});
-
+            params = params || {};
             var evt = document.createEvent('CustomEvent');
-            evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+            evt.initCustomEvent(event, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
             return evt;
         };
 
@@ -697,16 +691,23 @@ xblocks.utils.equals = function(x, y) {
  * @returns {object}
  */
 xblocks.utils.filterObject = function(from, callback) {
-    var out = {};
+    var obj = {};
+    var props = {};
+    var fill = false;
 
     Object.keys(from).forEach(function(property) {
         var descr = Object.getOwnPropertyDescriptor(from, property);
         if (callback && callback(property, descr)) {
-            Object.defineProperty(out, property, descr);
+            props[property] = descr;
+            fill = true;
         }
     });
 
-    return out;
+    if (fill) {
+        Object.defineProperties(obj, props);
+    }
+
+    return obj;
 };
 
 /* xblocks/utils/filterObject.js end */
@@ -721,17 +722,24 @@ xblocks.utils.filterObject = function(from, callback) {
  * @returns {object}
  */
 xblocks.utils.mapObject = function(from, callback) {
-    var out = {};
+    var obj = {};
+    var props = {};
+    var fill = false;
 
     Object.keys(from).forEach(function(property) {
         var descr = Object.getOwnPropertyDescriptor(from, property);
         var map = callback && callback(property, descr);
         if (xblocks.utils.type(map) === 'object') {
-            Object.defineProperty(out, map.name, map.descr);
+            props[map.name] = map.descr;
+            fill = true;
         }
     });
 
-    return out;
+    if (fill) {
+        Object.defineProperties(obj, props);
+    }
+
+    return obj;
 };
 
 /* xblocks/utils/mapObject.js end */

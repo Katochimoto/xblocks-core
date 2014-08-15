@@ -45,8 +45,8 @@ xblocks.utils.merge = function() {
                     continue;
                 }
 
-                if ( deep && copy && ( xblocks.utils.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)) ) ) {
-                    if ( copyIsArray ) {
+                if (deep && copy && (xblocks.utils.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
+                    if (copyIsArray) {
                         copyIsArray = false;
                         clone = src && Array.isArray(src) ? src : [];
 

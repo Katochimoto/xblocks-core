@@ -7,15 +7,22 @@
  * @returns {object}
  */
 xblocks.utils.mapObject = function(from, callback) {
-    var out = {};
+    var obj = {};
+    var props = {};
+    var fill = false;
 
     Object.keys(from).forEach(function(property) {
         var descr = Object.getOwnPropertyDescriptor(from, property);
         var map = callback && callback(property, descr);
         if (xblocks.utils.type(map) === 'object') {
-            Object.defineProperty(out, map.name, map.descr);
+            props[map.name] = map.descr;
+            fill = true;
         }
     });
 
-    return out;
+    if (fill) {
+        Object.defineProperties(obj, props);
+    }
+
+    return obj;
 };
