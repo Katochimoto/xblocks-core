@@ -797,6 +797,40 @@ xblocks.utils.propTypes = function(tagName) {
 
 /* xblocks/utils/propTypes.js end */
 
+/* xblocks/utils/tmpl.js begin */
+/* global xblocks */
+/* jshint strict: false */
+
+(function() {
+    var cache = {};
+
+    /**
+     * @param {string} str
+     * @param {object} param
+     * @returns {string}
+     */
+    xblocks.utils.tmpl = function(str, data) {
+        if (!cache.hasOwnProperty(str)) {
+            cache[str] = new Function('obj',
+               "var p=[],print=function(){p.push.apply(p,arguments);};" +
+               "with(obj){p.push('" +
+               str.replace(/[\r\t\n]/g, " ")
+                   .split("<%").join("\t")
+                   .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+                   .replace(/\t=(.*?)%>/g, "',$1,'")
+                   .split("\t").join("');")
+                   .split("%>").join("p.push('")
+                   .split("\r").join("\\'")
+               + "');}return p.join('');");
+        }
+
+        return data ? cache[str](data) : cache[str];
+    };
+
+}());
+
+/* xblocks/utils/tmpl.js end */
+
 
 /* xblocks/utils.js end */
 
