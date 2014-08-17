@@ -1177,6 +1177,7 @@ var _blockCommon = {
             // not to clone the contents
             var node = Node.prototype.cloneNode.call(this, false);
             node.xtmpl = this.xtmpl;
+            node._inserted = false;
 
             if (deep) {
                 node.content = this.content;
