@@ -8,6 +8,7 @@
      * @param {string} str
      * @param {object} param
      * @returns {string}
+     * @see http://ejohn.org/blog/javascript-micro-templating/
      */
     xblocks.utils.tmpl = function(str, data) {
         if (!cache.hasOwnProperty(str)) {
