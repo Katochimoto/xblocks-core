@@ -1440,6 +1440,10 @@ xblocks.element.prototype._callbackMutation = function(records) {
  */
 xblocks.element.prototype._callbackUpdate = function(callback) {
     this._node.upgrade();
+
+    xblocks.utils.dispatchEvent(this._node, 'xb-update', { detail: { xblock: this } });
+    xblocks.utils.lazy(_elementGlobalUpdateEvent, this._node);
+
     if (callback) {
         callback.call(this);
     }
@@ -1512,6 +1516,14 @@ function _elementGlobalInitEvent(records) {
  */
 function _elementGlobalRepaintEvent(records) {
     xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
+}
+
+/**
+ * @param {array} records
+ * @private
+ */
+function _elementGlobalUpdateEvent(records) {
+    xblocks.utils.dispatchEvent(global, 'xb-update', { detail: { records: records } });
 }
 
 /* xblocks/element.js end */
