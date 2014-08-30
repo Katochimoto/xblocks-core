@@ -1,5 +1,3 @@
-TESTS=test/spec/*.js
-
 all: node_modules bower_components prod
 
 node_modules: package.json
