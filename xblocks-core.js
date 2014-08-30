@@ -178,9 +178,12 @@
 /* ../node_modules/setimmediate/setImmediate.js end */
 
 
-/*jshint -W067 */
+/* jshint -W067 */
+/* jshint unused: false */
 (function(global, undefined) {
     'use strict';
+
+
 
     /**
      * MutationObserver provides developers a way to react to changes in a DOM
@@ -275,7 +278,7 @@ xblocks.utils.support.upgradeelements = Boolean(
 /* xblocks/utils/support.js end */
 
 /* xblocks/utils/uid.js begin */
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -293,8 +296,7 @@ xblocks.utils.uid = function() {
 /* jshint strict: false */
 
 /**
- * @param {*} param
- * @returns {string}
+ * @returns {number}
  */
 xblocks.utils.seq = (function() {
     var i = 0;
@@ -306,7 +308,7 @@ xblocks.utils.seq = (function() {
 /* xblocks/utils/seq.js end */
 
 /* xblocks/utils/type.js begin */
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -368,7 +370,7 @@ xblocks.utils.isEmptyObject = function(obj) {
 /* xblocks/utils/isEmptyObject.js end */
 
 /* xblocks/utils/isWindow.js begin */
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -446,7 +448,7 @@ xblocks.utils.pristine = function(methodName) {
 /* xblocks/utils/pristine.js end */
 
 /* xblocks/utils/merge.js begin */
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -598,7 +600,7 @@ xblocks.utils.dispatchEvent = function(element, name, params) {
  * @param {function} callback
  */
 xblocks.utils.event.mouseEnterFilter = function(element, event, callback) {
-    var toElement = event.relatedTarget || event.srcElement;;
+    var toElement = event.relatedTarget || event.srcElement;
 
     while (toElement && toElement !== element) {
         toElement = toElement.parentNode;
@@ -616,7 +618,7 @@ xblocks.utils.event.mouseLeaveFilter = xblocks.utils.event.mouseEnterFilter;
 /* xblocks/utils/event.js end */
 
 /* xblocks/utils/equals.js begin */
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -652,7 +654,9 @@ xblocks.utils._equal = {
 		    return true;
         }
 
-    	for (var i in x) {
+        var i;
+
+        for (i in x) {
     		if (y.hasOwnProperty(i)) {
     			if (!xblocks.utils.equals(x[i], y[i])) {
                     return false;
@@ -663,7 +667,7 @@ xblocks.utils._equal = {
     		}
     	}
 
-    	for (var i in y) {
+        for (i in y) {
     		if (!x.hasOwnProperty(i)) {
     			return false;
     		}
@@ -705,7 +709,7 @@ xblocks.utils.equals = function(x, y) {
 /* xblocks/utils/equals.js end */
 
 /* xblocks/utils/filterObject.js begin */
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -736,7 +740,7 @@ xblocks.utils.filterObject = function(from, callback) {
 /* xblocks/utils/filterObject.js end */
 
 /* xblocks/utils/mapObject.js begin */
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -782,7 +786,7 @@ xblocks.utils.upgradeElements = (function() {
 /* xblocks/utils/upgradeElements.js end */
 
 /* xblocks/utils/contentNode.js begin */
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -829,12 +833,13 @@ xblocks.utils.propTypes = function(tagName) {
 
     /**
      * @param {string} str
-     * @param {object} param
+     * @param {object} data
      * @returns {string}
      * @see http://ejohn.org/blog/javascript-micro-templating/
      */
     xblocks.utils.tmpl = function(str, data) {
         if (!cache.hasOwnProperty(str)) {
+            /* jshint -W054 */
             cache[str] = new Function('obj',
                "var p=[],print=function(){p.push.apply(p,arguments);};" +
                "with(obj){p.push('" +
@@ -844,8 +849,8 @@ xblocks.utils.propTypes = function(tagName) {
                    .replace(/\t=(.*?)%>/g, "',$1,'")
                    .split("\t").join("');")
                    .split("%>").join("p.push('")
-                   .split("\r").join("\\'")
-               + "');}return p.join('');");
+                   .split("\r").join("\\'") +
+                   "');}return p.join('');");
         }
 
         return data ? cache[str](data) : cache[str];
@@ -1056,7 +1061,7 @@ xblocks.view.get = function(blockName) {
 /* xblocks/view.js end */
 
     /* xblocks/block.js begin */
-/* global xblocks, global, xtag */
+/* global xblocks, xtag */
 /* jshint strict: false */
 
 var _blockCommon = {
