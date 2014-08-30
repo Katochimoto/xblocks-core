@@ -2,8 +2,7 @@
 /* jshint strict: false */
 
 /**
- * @param {*} param
- * @returns {string}
+ * @returns {number}
  */
 xblocks.utils.seq = (function() {
     var i = 0;

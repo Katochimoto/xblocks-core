@@ -28,6 +28,9 @@
         "borschik": "1.0.5",
         "setimmediate": "1.0.2",
 
+        "jshint": "*",
+        "jscs": "*",
+
         "mocha": "1.20.1",
         "expect.js": "0.3.1",
         "sinon": "1.10.2",
@@ -37,10 +40,7 @@
         "karma-sinon-expect": "~0.1.x",
         "karma-borschik-preprocessor": "~0.1.x",
         "karma-react-jsx-preprocessor": "~0.1.x",
-        "karma-yate-preprocessor": "~0.1.x",
-        "karma-phantomjs-launcher": "~0.1.x",
-        "karma-firefox-launcher": "~0.1.x",
-        "karma-chrome-launcher": "~0.1.x"
+        "karma-phantomjs-launcher": "~0.1.x"
     },
     "engines": {
         "node": ">=0.6.0"

@@ -21,38 +21,22 @@
     "requireSpacesInFunctionExpression": { "beforeOpeningCurlyBrace": true },
     "disallowSpacesInFunctionExpression": { "beforeOpeningRoundBrace": true },
 
+    "disallowSpacesInFunctionDeclaration": {
+        "beforeOpeningRoundBrace": true
+    },
 
     "disallowMultipleVarDecl": true,
-    "disallowLeftStickedOperators": [
-        "?",
-        "=",
-        "==",
-        "===",
-        "!=",
-        "!==",
-        ">",
-        ">=",
-        "<",
-        "<="
-    ],
-    "disallowRightStickedOperators": [
-        "?",
-        ":",
-        "=",
-        "==",
-        "===",
-        "!=",
-        "!==",
-        ">",
-        ">=",
-        "<",
-        "<="
-    ],
+    "requireBlocksOnNewline": true,
+    "disallowEmptyBlocks": true,
+
+    "requireSpacesInConditionalExpression": {
+        "afterTest": true,
+        "beforeConsequent": true,
+        "afterConsequent": true,
+        "beforeAlternate": true
+    },
     "requireSpaceAfterBinaryOperators": [ "+", "-", "/", "*" ],
     "requireSpaceBeforeBinaryOperators": [ "+", "-", "/", "*" ],
-
-    "requireRightStickedOperators": ["!"],
-    "requireLeftStickedOperators": [","],
 
     "disallowImplicitTypeConversion": ["numeric", "binary", "string"],
 
@@ -71,6 +55,7 @@
         "bower_components",
         "test",
         "xblocks-core.js",
-        "xblocks-core.min.js"
+        "xblocks-core.min.js",
+        "karma.conf.js"
     ]
 }

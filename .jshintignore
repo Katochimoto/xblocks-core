@@ -1,4 +1,5 @@
 node_modules
 bower_components
+test
 xblocks-core.js
 xblocks-core.min.js

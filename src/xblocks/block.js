@@ -1,4 +1,4 @@
-/* global xblocks, global, xtag */
+/* global xblocks, xtag */
 /* jshint strict: false */
 
 var _blockCommon = {

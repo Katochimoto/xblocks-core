@@ -39,7 +39,7 @@ xblocks.utils.dispatchEvent = function(element, name, params) {
  * @param {function} callback
  */
 xblocks.utils.event.mouseEnterFilter = function(element, event, callback) {
-    var toElement = event.relatedTarget || event.srcElement;;
+    var toElement = event.relatedTarget || event.srcElement;
 
     while (toElement && toElement !== element) {
         toElement = toElement.parentNode;

@@ -1,8 +1,11 @@
 /*! borschik:include:../node_modules/setimmediate/setImmediate.js */
 
-/*jshint -W067 */
+/* jshint -W067 */
+/* jshint unused: false */
 (function(global, undefined) {
     'use strict';
+
+
 
     /**
      * MutationObserver provides developers a way to react to changes in a DOM

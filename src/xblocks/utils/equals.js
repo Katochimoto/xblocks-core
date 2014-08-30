@@ -1,4 +1,4 @@
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -34,7 +34,9 @@ xblocks.utils._equal = {
 		    return true;
         }
 
-    	for (var i in x) {
+        var i;
+
+        for (i in x) {
     		if (y.hasOwnProperty(i)) {
     			if (!xblocks.utils.equals(x[i], y[i])) {
                     return false;
@@ -45,7 +47,7 @@ xblocks.utils._equal = {
     		}
     	}
 
-    	for (var i in y) {
+        for (i in y) {
     		if (!x.hasOwnProperty(i)) {
     			return false;
     		}

@@ -6,12 +6,13 @@
 
     /**
      * @param {string} str
-     * @param {object} param
+     * @param {object} data
      * @returns {string}
      * @see http://ejohn.org/blog/javascript-micro-templating/
      */
     xblocks.utils.tmpl = function(str, data) {
         if (!cache.hasOwnProperty(str)) {
+            /* jshint -W054 */
             cache[str] = new Function('obj',
                "var p=[],print=function(){p.push.apply(p,arguments);};" +
                "with(obj){p.push('" +
@@ -21,8 +22,8 @@
                    .replace(/\t=(.*?)%>/g, "',$1,'")
                    .split("\t").join("');")
                    .split("%>").join("p.push('")
-                   .split("\r").join("\\'")
-               + "');}return p.join('');");
+                   .split("\r").join("\\'") +
+                   "');}return p.join('');");
         }
 
         return data ? cache[str](data) : cache[str];

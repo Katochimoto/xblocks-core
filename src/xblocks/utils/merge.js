@@ -1,4 +1,4 @@
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
