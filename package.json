@@ -28,8 +28,8 @@
         "borschik": "1.0.5",
         "setimmediate": "1.0.2",
 
-        "jshint": "*",
-        "jscs": "*",
+        "jshint": "2.5.5",
+        "jscs": "1.6.0",
 
         "mocha": "1.20.1",
         "expect.js": "0.3.1",
