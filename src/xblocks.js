@@ -1,5 +1,7 @@
 /*! borschik:include:../node_modules/setimmediate/setImmediate.js */
 
+/*! borschik:include:xblocks/tag.js */
+
 /* jshint -W067 */
 /* jshint unused: false */
 (function(global, undefined) {

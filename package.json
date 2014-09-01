@@ -40,7 +40,14 @@
         "karma-sinon-expect": "~0.1.x",
         "karma-borschik-preprocessor": "~0.1.x",
         "karma-react-jsx-preprocessor": "~0.1.x",
-        "karma-phantomjs-launcher": "~0.1.x"
+        "karma-phantomjs-launcher": "~0.1.x",
+
+        "CustomElements": "Polymer/CustomElements.git#0.4.0",
+        "MutationObservers": "Polymer/MutationObservers.git#0.4.0",
+        "WeakMap": "Polymer/WeakMap.git#0.4.0",
+        "HTMLImports": "Polymer/HTMLImports.git#0.4.0",
+        "dom-token-list-polyfill": "pennyfx/dom-token-list.git#0.0.2",
+        "x-tag-core": "x-tag/core.git#0.9.7"
     },
     "engines": {
         "node": ">=0.6.0"
