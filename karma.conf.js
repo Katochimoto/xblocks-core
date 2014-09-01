@@ -17,7 +17,6 @@ module.exports = function(config) {
         files: [
             'bower_components/es5-shim/es5-shim.js',
             'bower_components/react/react-with-addons.js',
-            'bower_components/x-tag-core/dist/x-tag-core.js',
             'src/xblocks.js',
             'test/spec/**/*.js'
         ],

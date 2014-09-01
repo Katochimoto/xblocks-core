@@ -1,3 +1,5 @@
+/* jshint unused: false */
+
 window.Platform = {};
 var logFlags = {};
 
