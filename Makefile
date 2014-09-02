@@ -3,7 +3,9 @@ all: node_modules \
     xblocks-core.js \
     xblocks-core.min.js \
     xblocks-core-full.js \
-    xblocks-core-full.min.js
+    xblocks-core-full.min.js \
+    x-tag-core.js \
+    x-tag-core.min.js
 
 node_modules: package.json
 	npm install
@@ -18,6 +20,8 @@ clean:
 	rm -f xblocks-core.min.js
 	rm -f xblocks-core-full.js
 	rm -f xblocks-core-full.min.js
+	rm -f x-tag-core.js
+	rm -f x-tag-core.min.js
 
 xblocks-core.js: node_modules src/*.js
 	cat node_modules/setimmediate/setImmediate.js > xblocks-core.js
@@ -33,6 +37,12 @@ xblocks-core-full.js: node_modules src/*.js
 
 xblocks-core-full.min.js: xblocks-core-full.js
 	./node_modules/.bin/borschik -i xblocks-core-full.js -o xblocks-core-full.min.js
+
+x-tag-core.js: node_modules src/xtag.js
+	./node_modules/.bin/borschik -m no -i src/xtag.js > x-tag-core.js
+
+x-tag-core.min.js: x-tag-core.js
+	./node_modules/.bin/borschik -i x-tag-core.js -o x-tag-core.min.js
 
 test: node_modules bower_components
 	./node_modules/.bin/jshint .
