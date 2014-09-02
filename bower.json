@@ -1,7 +1,12 @@
 {
     "name": "xblocks-core",
     "version": "0.1.1",
-    "main": "xblocks-core.js",
+    "main": [
+        "xblocks-core.js",
+        "xblocks-core.min.js",
+        "xblocks-core-full.js",
+        "xblocks-core-full.min.js"
+    ],
     "ignore": [
         "**/.*",
         "node_modules",

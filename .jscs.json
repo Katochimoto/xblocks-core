@@ -56,6 +56,8 @@
         "test",
         "xblocks-core.js",
         "xblocks-core.min.js",
+        "xblocks-core-full.js",
+        "xblocks-core-full.min.js",
         "karma.conf.js"
     ]
 }
