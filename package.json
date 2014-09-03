@@ -1,7 +1,7 @@
 {
     "name": "xblocks-core",
     "description": "HTML core custom elements",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "keywords": [
         "x-tag",
         "x-tags",
@@ -47,7 +47,7 @@
         "WeakMap": "Polymer/WeakMap.git#0.4.0",
         "HTMLImports": "Polymer/HTMLImports.git#0.4.0",
         "dom-token-list-polyfill": "pennyfx/dom-token-list.git#0.0.2",
-        "x-tag-core": "x-tag/core.git#0.9.7"
+        "x-tag-core": "x-tag/core.git"
     },
     "engines": {
         "node": ">=0.6.0"
