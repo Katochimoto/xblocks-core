@@ -77,9 +77,16 @@ describe('xblocks', function() {
         it('свойство xblock отсутствует на момент создания элемента', function() {
             expect(xElement.xblock).to.be.a('undefined');
         });
+
+        it('свойство _inserted', function() {
+            expect(xElement._inserted).to.be.a('boolean');
+            expect(xElement._inserted).to.be(false);
+        });
     });
 
     describe('Вставка в DOM', function() {
+
+        
 
     });
 

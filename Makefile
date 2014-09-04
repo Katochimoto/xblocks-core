@@ -1,3 +1,5 @@
+src_js := $(shell find src -type f -name "*.js")
+
 all: node_modules \
     bower_components \
     xblocks-core.js \
@@ -24,14 +26,14 @@ clean:
 	rm -f x-tag-core.js
 	rm -f x-tag-core.min.js
 
-xblocks-core.js: node_modules src/*.js
+xblocks-core.js: node_modules $(src_js)
 	cat node_modules/setimmediate/setImmediate.js > xblocks-core.js
 	./node_modules/.bin/borschik -m no -i src/xblocks.js >> xblocks-core.js
 
 xblocks-core.min.js: xblocks-core.js
 	./node_modules/.bin/borschik -i xblocks-core.js -o xblocks-core.min.js
 
-xblocks-core-full.js: node_modules src/*.js
+xblocks-core-full.js: node_modules $(src_js)
 	cat node_modules/setimmediate/setImmediate.js > xblocks-core-full.js
 	./node_modules/.bin/borschik -m no -i src/xtag.js >> xblocks-core-full.js
 	./node_modules/.bin/borschik -m no -i src/xblocks.js >> xblocks-core-full.js

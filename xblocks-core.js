@@ -1031,6 +1031,7 @@ var _blockCommon = {
             this.xtmpl = {};
             this.xuid = xblocks.utils.seq();
             this.xprops = xblocks.utils.propTypes(this.xtagName);
+            this._inserted = false;
         },
 
         inserted: function() {
@@ -1060,7 +1061,7 @@ var _blockCommon = {
             if (this.xblock) {
                 var content = this.content;
                 this.xblock.destroy();
-                this.xblock = null;
+                this.xblock = undefined;
                 this.content = content;
             }
         },
