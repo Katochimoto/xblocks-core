@@ -1,4 +1,4 @@
-/* global xblocks, xtag */
+/* global xblocks */
 /* jshint strict: false */
 
 var _blockCommon = {
@@ -93,7 +93,7 @@ var _blockCommon = {
         state: {
             get: function() {
                 var props = {};
-                var elementProps = xtag.tags[this.xtagName].accessors;
+                var elementProps = xblocks.tag.tags[this.xtagName].accessors;
 
                 for (var prop in elementProps) {
                     if (this.xprops.hasOwnProperty(prop) &&
@@ -160,5 +160,5 @@ xblocks.create = function(blockName, options) {
     options = Array.isArray(options) ? options : [options];
     options.unshift(true, {});
     options.push(_blockCommon);
-    return xtag.register(blockName, xblocks.utils.merge.apply({}, options));
+    return xblocks.tag.register(blockName, xblocks.utils.merge.apply({}, options));
 };

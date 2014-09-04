@@ -4,7 +4,7 @@
 describe('xblocks.create', function() {
 
     describe('Элемент можно определить в виде массива объектов', function() {
-        sinon.stub(xtag, 'register', function(name, params) {
+        sinon.stub(xblocks.tag, 'register', function(name, params) {
             expect(name).to.be('xb-test1');
             expect(params.methods).to.have.keys('test1', 'test2');
         });
@@ -19,7 +19,7 @@ describe('xblocks.create', function() {
             }
         }]);
 
-        xtag.register.restore();
+        xblocks.tag.register.restore();
     });
 
     describe('События жизненного цикла (lifecycle) переопределить нельзя', function() {
@@ -28,7 +28,7 @@ describe('xblocks.create', function() {
         var removed = function() {};
         var attributeChanged = function() {};
 
-        sinon.stub(xtag, 'register', function(name, params) {
+        sinon.stub(xblocks.tag, 'register', function(name, params) {
             expect(name).to.be('xb-test2');
             expect(params.lifecycle.created).not.to.be(created);
             expect(params.lifecycle.inserted).not.to.be(inserted);
@@ -45,6 +45,6 @@ describe('xblocks.create', function() {
             }
         });
 
-        xtag.register.restore();
+        xblocks.tag.register.restore();
     });
 });

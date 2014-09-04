@@ -173,65 +173,15 @@
     attachTo.setImmediate = setImmediate;
     attachTo.clearImmediate = clearImmediate;
 }(new Function("return this")()));
-/**
- *
- */
-
 /* jshint -W067 */
 /* jshint unused: false */
 (function(global, undefined) {
     'use strict';
 
-
-
-    /**
-     * MutationObserver provides developers a way to react to changes in a DOM
-     * @typedef {Object} MutationObserver
-     * @property {Function} disconnect
-     * @property {Function} observe
-     */
-
-    /**
-     * MutationRecord is the object that will be passed to the observer's callback
-     * @typedef {Object} MutationRecord
-     * @property {String} attributeName
-     * @property {String} type
-     */
-
-
-    /**
-     * @namespace xtag
-     */
-
-    /**
-     * @namespace React
-     * @property {Function} unmountComponentAtNode
-     * @property {Function} renderComponent
-     * @property {Function} createClass
-     */
-
-    /**
-     * @namespace React.DOM
-     */
-
-    /**
-     * React constructor component
-     * @typedef {Function} Constructor
-     * @property {Function} unmountComponent
-     * @property {Function} replaceProps
-     * @property {Function} setProps
-     * @property {Function} isMounted
-     */
-
     /**
      * @namespace React
      */
     var React = global.React;
-
-    /**
-     * @namespace xtag
-     */
-    var xtag = global.xtag;
 
     /**
      * @namespace xblocks
@@ -987,6 +937,17 @@ function _domAttrsToObject(attr) {
 
 /* xblocks/dom.js end */
 
+    /* xblocks/tag.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @namespace
+ */
+xblocks.tag = global.xtag;
+
+/* xblocks/tag.js end */
+
     /* xblocks/view.js begin */
 /* global xblocks, React */
 /* jshint strict: false */
@@ -1060,7 +1021,7 @@ xblocks.view.get = function(blockName) {
 /* xblocks/view.js end */
 
     /* xblocks/block.js begin */
-/* global xblocks, xtag */
+/* global xblocks */
 /* jshint strict: false */
 
 var _blockCommon = {
@@ -1155,7 +1116,7 @@ var _blockCommon = {
         state: {
             get: function() {
                 var props = {};
-                var elementProps = xtag.tags[this.xtagName].accessors;
+                var elementProps = xblocks.tag.tags[this.xtagName].accessors;
 
                 for (var prop in elementProps) {
                     if (this.xprops.hasOwnProperty(prop) &&
@@ -1222,7 +1183,7 @@ xblocks.create = function(blockName, options) {
     options = Array.isArray(options) ? options : [options];
     options.unshift(true, {});
     options.push(_blockCommon);
-    return xtag.register(blockName, xblocks.utils.merge.apply({}, options));
+    return xblocks.tag.register(blockName, xblocks.utils.merge.apply({}, options));
 };
 
 /* xblocks/block.js end */
