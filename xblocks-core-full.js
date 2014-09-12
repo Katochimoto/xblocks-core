@@ -4666,7 +4666,6 @@ var _blockCommon = {
         },
 
         inserted: function() {
-            console.log(2);
             if (this._inserted) {
                 return;
             }
