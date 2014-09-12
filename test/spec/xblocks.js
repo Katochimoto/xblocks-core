@@ -215,6 +215,7 @@ describe('xblocks', function() {
 
     });
 
+    /*
     describe('Вставка в DOM', function() {
         afterEach(function() {
             document.body.removeChild(this.xElement);
@@ -232,6 +233,7 @@ describe('xblocks', function() {
             document.body.appendChild(this.xElement);
         });
     });
+    */
 
     /*
     describe('Удаление из DOM', function() {
