@@ -15,6 +15,7 @@ module.exports = function(config) {
 
         // list of files / patterns to load in the browser
         files: [
+            'bower_components/vow/vow.min.js',
             'bower_components/es5-shim/es5-shim.js',
             'bower_components/react/react-with-addons.js',
             'src/xtag.js',
@@ -62,7 +63,7 @@ module.exports = function(config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['PhantomJS'],
+        browsers: [ 'PhantomJS', 'ChromeCanary' ],
 
 
         // Continuous Integration mode

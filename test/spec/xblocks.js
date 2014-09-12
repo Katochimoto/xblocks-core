@@ -1,21 +1,22 @@
-/* global describe, it, expect, xblocks, sinon, beforeEach */
+/* global describe, it, expect, xblocks, beforeEach, afterEach */
 /* jshint strict: false */
 
 describe('xblocks', function() {
 
     xblocks.view.register('x-element', {
         propTypes: {
-            'bool-attr': React.PropTypes.bool
+            'bool-attr': React.PropTypes.bool,
+            'number-attr': React.PropTypes.number
         },
 
         render: function() {
-            return null;
+            return React.DOM.div({});
         }
     });
 
     xblocks.create('x-element');
 
-    beforeEach(function () {
+    beforeEach(function() {
         this.xElement = document.createElement('x-element');
     });
 
@@ -109,48 +110,49 @@ describe('xblocks', function() {
             expect(this.xElement.state['test']).to.be('123');
         });
 
-        xblocks.dom.attrs.ARRTS_BOOLEAN.forEach(function(attrName) {
-            describe('boolean атрибут "' + attrName + '" приводится к типу в объекте state', function() {
-                it('state: строка "true" приводится к true', function() {
+
+        describe('приведение к типу boolean атрибутов', function() {
+            xblocks.dom.attrs.ARRTS_BOOLEAN.forEach(function(attrName) {
+                it.call(this, attrName + 'checked - state: строка "true" приводится к true', function() {
                     this.xElement.setAttribute(attrName, 'true');
                     expect(this.xElement.state[attrName]).to.be(true);
                 });
 
-                it('state: строка "false" приводится к false', function() {
+                it.call(this, attrName + ' - state: строка "false" приводится к false', function() {
                     this.xElement.setAttribute(attrName, 'false');
                     expect(this.xElement.state[attrName]).to.be(false);
                 });
 
-                it('state: пустая строка приводится к true', function() {
+                it.call(this, attrName + ' - state: пустая строка приводится к true', function() {
                     this.xElement.setAttribute(attrName, '');
                     expect(this.xElement.state[attrName]).to.be(true);
                 });
 
-                it('state: значение, равное названию, приводится к true', function() {
+                it.call(this, attrName + ' - state: значение, равное названию, приводится к true', function() {
                     this.xElement.setAttribute(attrName, attrName);
                     expect(this.xElement.state[attrName]).to.be(true);
                 });
 
-                it('attrs: строка "true" не изменяет значения', function() {
+                it.call(this, attrName + ' - attrs: строка "true" не изменяет значения', function() {
                     this.xElement.setAttribute(attrName, 'true');
                     expect(this.xElement.attrs[attrName]).to.be('true');
                 });
 
-                it('attrs: строка "false" не изменяет значения', function() {
+                it.call(this, attrName + ' - attrs: строка "false" не изменяет значения', function() {
                     this.xElement.setAttribute(attrName, 'false');
                     expect(this.xElement.attrs[attrName]).to.be('false');
                 });
 
-                it('attrs: пустая строка не изменяет значения', function() {
+                it.call(this, attrName + ' - attrs: пустая строка не изменяет значения', function() {
                     this.xElement.setAttribute(attrName, '');
                     expect(this.xElement.attrs[attrName]).to.be('');
                 });
 
-                it('attrs: значение, равное названию, не изменяет значения', function() {
+                it.call(this, attrName + ' - attrs: значение, равное названию, не изменяет значения', function() {
                     this.xElement.setAttribute(attrName, attrName);
                     expect(this.xElement.attrs[attrName]).to.be(attrName);
                 });
-            });
+            }, this);
         });
 
         describe('атрибуты приводятся к типу, указанному в объекте propTypes вида', function() {
@@ -188,16 +190,50 @@ describe('xblocks', function() {
                 expect(this.xElement.attrs['bool-attr']).to.be('on');
                 expect(this.xElement.state['bool-attr']).to.be(false);
             });
+
+            it('числовое значение приводится к числу в state и остаетя строкой в attrs', function() {
+                this.xElement.setAttribute('number-attr', '100500');
+                expect(this.xElement.getAttribute('number-attr')).to.be('100500');
+                expect(this.xElement.attrs['number-attr']).to.be('100500');
+                expect(this.xElement.state['number-attr']).to.be(100500);
+            });
+
+            it('числовое значение приводится к числу в state и остаетя строкой в attrs (отрицательное значение)', function() {
+                this.xElement.setAttribute('number-attr', '-100500');
+                expect(this.xElement.getAttribute('number-attr')).to.be('-100500');
+                expect(this.xElement.attrs['number-attr']).to.be('-100500');
+                expect(this.xElement.state['number-attr']).to.be(-100500);
+            });
+
+            it('числовое значение приводится к числу в state и остаетя строкой в attrs (дробное значение)', function() {
+                this.xElement.setAttribute('number-attr', '100.500');
+                expect(this.xElement.getAttribute('number-attr')).to.be('100.500');
+                expect(this.xElement.attrs['number-attr']).to.be('100.500');
+                expect(this.xElement.state['number-attr']).to.be(100.5);
+            });
         });
 
     });
 
     describe('Вставка в DOM', function() {
+        afterEach(function() {
+            document.body.removeChild(this.xElement);
+            delete this.xElement;
+        });
 
+        it('Инициализация xblocks выполняется после вставки в DOM', function(done) {
+            this.xElement.addEventListener('xb-created', function() {
+                expect(this.xblock).to.be.a(xblocks.element);
+                expect(this.mounted).to.be(true);
+                expect(this._inserted).to.be(true);
+                done();
+            }, false);
 
-
+            document.body.appendChild(this.xElement);
+        });
     });
 
+    /*
     describe('Удаление из DOM', function() {
 
     });
@@ -211,6 +247,7 @@ describe('xblocks', function() {
     describe('Изменение содержимого', function() {
 
     });
+    */
 
 
 

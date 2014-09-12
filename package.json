@@ -41,6 +41,7 @@
         "karma-borschik-preprocessor": "~0.1.x",
         "karma-react-jsx-preprocessor": "~0.1.x",
         "karma-phantomjs-launcher": "~0.1.x",
+        "karma-chrome-launcher": "~0.1.x",
 
         "CustomElements": "Polymer/CustomElements.git#0.4.0",
         "MutationObservers": "Polymer/MutationObservers.git#0.4.0",

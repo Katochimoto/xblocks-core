@@ -6,6 +6,7 @@
  * @constructor
  */
 xblocks.element = function(node) {
+    node.xblock = this;
     this._node = node;
     this._init(node.state, node.content, this._callbackInit);
 };
@@ -119,10 +120,14 @@ xblocks.element.prototype._init = function(props, children, callback) {
         }
 
     } else {
+        var that = this;
         this._component = React.renderComponent(
             proxyConstructor,
             this._node,
-            this._callbackRender.bind(this, callback)
+            function() {
+                that._component = this;
+                that._callbackRender(callback);
+            }
         );
     }
 };
@@ -142,7 +147,7 @@ xblocks.element.prototype._repaint = function(callback) {
  * @private
  */
 xblocks.element.prototype._callbackInit = function() {
-    xblocks.utils.dispatchEvent(this._node, 'xb-created', { detail: { xblock: this } });
+    xblocks.utils.dispatchEvent(this._node, 'xb-created');
     xblocks.utils.lazy(_elementGlobalInitEvent, this._node);
 };
 
@@ -151,7 +156,7 @@ xblocks.element.prototype._callbackInit = function() {
  * @private
  */
 xblocks.element.prototype._callbackRepaint = function(callback) {
-    xblocks.utils.dispatchEvent(this._node, 'xb-repaint', { detail: { xblock: this } });
+    xblocks.utils.dispatchEvent(this._node, 'xb-repaint');
     xblocks.utils.lazy(_elementGlobalRepaintEvent, this._node);
 
     if (callback) {
@@ -215,7 +220,7 @@ xblocks.element.prototype._callbackMutation = function(records) {
 xblocks.element.prototype._callbackUpdate = function(callback) {
     this._node.upgrade();
 
-    xblocks.utils.dispatchEvent(this._node, 'xb-update', { detail: { xblock: this } });
+    xblocks.utils.dispatchEvent(this._node, 'xb-update');
     xblocks.utils.lazy(_elementGlobalUpdateEvent, this._node);
 
     if (callback) {
@@ -229,7 +234,7 @@ xblocks.element.prototype._callbackUpdate = function(callback) {
  * @private
  */
 xblocks.element.prototype._isMountedComponent = function() {
-    return (this._component && this._component.isMounted());
+    return Boolean(this._component && this._component.isMounted());
 };
 
 /**
