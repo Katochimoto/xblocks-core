@@ -24,75 +24,7 @@ describe('xblocks', function() {
         delete this.xElement;
     });
 
-    describe('Создание', function() {
 
-        it('свойство xtagName', function() {
-            expect(this.xElement.xtagName).to.be('x-element');
-        });
-
-        it('свойство xtmpl', function() {
-            expect(this.xElement.xtmpl).to.be.an('object');
-        });
-
-        it('свойство xuid', function() {
-            expect(this.xElement.xuid).to.be.a('number');
-            expect(this.xElement.xuid).to.be.above(0);
-        });
-
-        it('свойство xprops', function() {
-            expect(this.xElement.xprops).to.be.an('object');
-            expect(this.xElement.xprops).to.have.keys([ '_uid', 'children', 'xb-static' ]);
-        });
-
-        it('свойство mounted', function() {
-            expect(this.xElement.mounted).to.be.a('boolean');
-            expect(this.xElement.mounted).to.be(false);
-        });
-
-        it('свойство content', function() {
-            expect(this.xElement.content).to.be.a('string');
-            expect(this.xElement.content).to.be('');
-        });
-
-        it('свойство innerHTML', function() {
-            expect(this.xElement.innerHTML).to.be.a('string');
-            expect(this.xElement.innerHTML).to.be('');
-        });
-
-        it('свойство outerHTML', function() {
-            expect(this.xElement.outerHTML).to.be.a('string');
-            expect(this.xElement.outerHTML).to.be('<x-element></x-element>');
-        });
-
-        it('свойство attrs', function() {
-            expect(this.xElement.attrs).to.be.an('object');
-        });
-
-        it('свойство state', function() {
-            expect(this.xElement.state).to.be.an('object');
-        });
-
-        it('метод upgrade', function() {
-            expect(this.xElement.upgrade).to.be.an('function');
-        });
-
-        it('метод cloneNode', function() {
-            expect(this.xElement.cloneNode).to.be.an('function');
-        });
-
-        it('является потомком HTMLElement', function() {
-            expect(this.xElement instanceof HTMLElement).to.be.ok();
-        });
-
-        it('свойство xblock отсутствует на момент создания элемента', function() {
-            expect(this.xElement.xblock).to.be.a('undefined');
-        });
-
-        it('свойство _inserted', function() {
-            expect(this.xElement._inserted).to.be.a('boolean');
-            expect(this.xElement._inserted).to.be(false);
-        });
-    });
 
     describe('Работа с атрибутами', function() {
         it('при добавлении атрибута, он должен быть доступен при вызове getAttribute', function() {
@@ -215,25 +147,7 @@ describe('xblocks', function() {
 
     });
 
-    /*
-    describe('Вставка в DOM', function() {
-        afterEach(function() {
-            document.body.removeChild(this.xElement);
-            delete this.xElement;
-        });
 
-        it('Инициализация xblocks выполняется после вставки в DOM', function(done) {
-            this.xElement.addEventListener('xb-created', function() {
-                expect(this.xblock).to.be.a(xblocks.element);
-                expect(this.mounted).to.be(true);
-                expect(this._inserted).to.be(true);
-                done();
-            }, false);
-
-            document.body.appendChild(this.xElement);
-        });
-    });
-    */
 
     /*
     describe('Удаление из DOM', function() {
