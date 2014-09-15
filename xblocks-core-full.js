@@ -4440,6 +4440,20 @@ xblocks.utils.propTypes = function(tagName) {
 
 /* xblocks/utils/tmpl.js end */
 
+/* xblocks/utils/findReactContainerForID.js begin */
+/* global xblocks, React */
+/* jshint strict: false */
+
+/**
+ * @param {String} rootNodeID
+ * @returns {HTMLElement}
+ */
+xblocks.utils.findReactContainerForID = function(rootNodeID) {
+    return React.__internals.Mount.findReactContainerForID(rootNodeID);
+};
+
+/* xblocks/utils/findReactContainerForID.js end */
+
 
 /* xblocks/utils.js end */
 
@@ -4608,7 +4622,7 @@ xblocks.view.create = function(component) {
         },
 
         template: function(ref, props) {
-            var rootNode = React.__internals.Mount.findReactContainerForID(this._rootNodeID);
+            var rootNode = xblocks.utils.findReactContainerForID(this._rootNodeID);
             var xtmpl = rootNode && rootNode.xuid && rootNode.xtmpl;
 
             if (xtmpl && xtmpl.hasOwnProperty(ref)) {

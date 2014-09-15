@@ -26,7 +26,7 @@ xblocks.view.create = function(component) {
         },
 
         template: function(ref, props) {
-            var rootNode = React.__internals.Mount.findReactContainerForID(this._rootNodeID);
+            var rootNode = xblocks.utils.findReactContainerForID(this._rootNodeID);
             var xtmpl = rootNode && rootNode.xuid && rootNode.xtmpl;
 
             if (xtmpl && xtmpl.hasOwnProperty(ref)) {

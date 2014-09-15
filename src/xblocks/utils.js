@@ -27,3 +27,4 @@ xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
 /*! borschik:include:utils/contentNode.js */
 /*! borschik:include:utils/propTypes.js */
 /*! borschik:include:utils/tmpl.js */
+/*! borschik:include:utils/findReactContainerForID.js */
