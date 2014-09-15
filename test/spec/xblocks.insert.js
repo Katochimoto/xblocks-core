@@ -2,7 +2,7 @@
 /* jshint strict: false */
 
 describe('xblocks - Вставка в DOM', function() {
-
+/*
     xblocks.view.register('x-element-insert', {
         propTypes: {
             'bool-attr': React.PropTypes.bool,
@@ -37,4 +37,5 @@ describe('xblocks - Вставка в DOM', function() {
 
         document.body.appendChild(this.xElement);
     });
+    */
 });
