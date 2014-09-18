@@ -39,15 +39,13 @@ window.Platform.endOfMicrotask = (function(scope) {
     /*! borschik:include:../node_modules/CustomElements/src/boot.js */
 }());
 
-/*
 (function() {
-    include:../node_modules/HTMLImports/src/scope.js
-    include:../node_modules/HTMLImports/src/Loader.js
-    include:../node_modules/HTMLImports/src/Parser.js
-    include:../node_modules/HTMLImports/src/HTMLImports.js
-    include:../node_modules/HTMLImports/src/Observer.js
-    include:../node_modules/HTMLImports/src/boot.js
+    /*! borschik:include:../node_modules/HTMLImports/src/scope.js */
+    /*! borschik:include:../node_modules/HTMLImports/src/Loader.js */
+    /*! borschik:include:../node_modules/HTMLImports/src/Parser.js */
+    /*! borschik:include:../node_modules/HTMLImports/src/HTMLImports.js */
+    /*! borschik:include:../node_modules/HTMLImports/src/Observer.js */
+    /*! borschik:include:../node_modules/HTMLImports/src/boot.js */
 }());
-*/
 
 /*! borschik:include:../node_modules/x-tag-core/src/core.js */
