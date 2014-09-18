@@ -3,7 +3,7 @@
 
 describe('xblocks', function() {
 
-    
+
 
 
 
@@ -11,12 +11,6 @@ describe('xblocks', function() {
     describe('Удаление из DOM', function() {
 
     });
-
-    describe('Клонирование', function() {
-
-    });
-
-
 
     describe('Изменение содержимого', function() {
 

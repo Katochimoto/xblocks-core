@@ -46,7 +46,6 @@
         "CustomElements": "Polymer/CustomElements.git#0.4.0",
         "HTMLImports": "Polymer/HTMLImports.git#0.4.0",
 
-        "document-register-element": "0.1.2",
         "MutationObservers": "Polymer/MutationObservers.git#0.4.0",
         "WeakMap": "Polymer/WeakMap.git#0.4.0",
         "dom-token-list-polyfill": "pennyfx/dom-token-list.git#0.0.2",
