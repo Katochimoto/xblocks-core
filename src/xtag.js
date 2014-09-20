@@ -10,7 +10,7 @@ var logFlags = {
 /*! borschik:include:../node_modules/WeakMap/weakmap.js */
 /*! borschik:include:../node_modules/MutationObservers/MutationObserver.js */
 
-window.Platform.endOfMicrotask = (function(scope) {
+window.Platform.endOfMicrotask = (function() {
     var iterations = 0;
     var callbacks = [];
     var twiddle = document.createTextNode('');
