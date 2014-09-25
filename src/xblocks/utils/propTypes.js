@@ -7,5 +7,18 @@
  */
 xblocks.utils.propTypes = function(tagName) {
     var view = xblocks.view.get(tagName);
-    return (view && (view.propTypes || (view.originalSpec && view.originalSpec.propTypes))) || {};
+
+    if (!view) {
+        return {};
+    }
+
+    if (view.propTypes) {
+        return view.propTypes;
+    }
+
+    if (view.originalSpec && view.originalSpec.propTypes) {
+        return view.originalSpec.propTypes;
+    }
+
+    return {};
 };

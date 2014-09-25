@@ -4306,9 +4306,11 @@ xblocks.utils.equals = function(x, y) {
         return false;
     }
 
-    return xblocks.utils._equal.hasOwnProperty(xType) ?
-        xblocks.utils._equal[xType](x, y) :
-        x == y;
+    if (xblocks.utils._equal.hasOwnProperty(xType)) {
+        return xblocks.utils._equal[xType](x, y);
+    }
+
+    return x == y;
 };
 
 /* xblocks/utils/equals.js end */
@@ -4424,7 +4426,20 @@ xblocks.utils.contentNode = function(node) {
  */
 xblocks.utils.propTypes = function(tagName) {
     var view = xblocks.view.get(tagName);
-    return (view && (view.propTypes || (view.originalSpec && view.originalSpec.propTypes))) || {};
+
+    if (!view) {
+        return {};
+    }
+
+    if (view.propTypes) {
+        return view.propTypes;
+    }
+
+    if (view.originalSpec && view.originalSpec.propTypes) {
+        return view.originalSpec.propTypes;
+    }
+
+    return {};
 };
 
 /* xblocks/utils/propTypes.js end */
