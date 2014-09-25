@@ -1067,7 +1067,6 @@ function _inserted(element) {
       if (element.__inserted < 1) {
         element.__inserted = 1;
       }
-
       // if we are 'over inserted', squelch the callback
       if (element.__inserted > 1) {
         logFlags.dom && console.warn('inserted:', element.localName,
@@ -1224,14 +1223,34 @@ function upgradeDocument(doc) {
   logFlags.dom && console.groupEnd();
 }
 
+/*
+This method is intended to be called when the document tree (including imports)
+has pending custom elements to upgrade. It can be called multiple times and 
+should do nothing if no elements are in need of upgrade.
+
+Note that the import tree can consume itself and therefore special care
+must be taken to avoid recursion.
+*/
+var upgradedDocuments;
 function upgradeDocumentTree(doc) {
+  upgradedDocuments = [];
+  _upgradeDocumentTree(doc);
+  upgradedDocuments = null;
+}
+
+
+function _upgradeDocumentTree(doc) {
   doc = wrapIfNeeded(doc);
+  if (upgradedDocuments.indexOf(doc) >= 0) {
+    return;
+  }
+  upgradedDocuments.push(doc);
   //console.log('upgradeDocumentTree: ', (doc.baseURI).split('/').pop());
   // upgrade contained imported documents
   var imports = doc.querySelectorAll('link[rel=' + IMPORT_LINK_TYPE + ']');
   for (var i=0, l=imports.length, n; (i<l) && (n=imports[i]); i++) {
     if (n.import && n.import.__parsed) {
-      upgradeDocumentTree(n.import);
+      _upgradeDocumentTree(n.import);
     }
   }
   upgradeDocument(doc);
@@ -2295,10 +2314,14 @@ var importParser = {
   },
   // determine the next element in the tree which should be parsed
   nextToParse: function() {
+    this._mayParse = [];
     return !this.parsingElement && this.nextToParseInDoc(mainDoc);
   },
   nextToParseInDoc: function(doc, link) {
-    if (doc) {
+    // use `marParse` list to avoid looping into the same document again
+    // since it could cause an iloop.
+    if (doc && this._mayParse.indexOf(doc) < 0) {
+      this._mayParse.push(doc);
       var nodes = doc.querySelectorAll(this.parseSelectorsForNode(doc));
       for (var i=0, l=nodes.length, p=0, n; (i<l) && (n=nodes[i]); i++) {
         if (!this.isParsed(n)) {
