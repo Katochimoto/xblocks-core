@@ -868,7 +868,7 @@ if (typeof WeakMap === 'undefined') {
 /* ../node_modules/MutationObservers/MutationObserver.js end */
 
 
-window.Platform.endOfMicrotask = (function(scope) {
+window.Platform.endOfMicrotask = (function() {
     var iterations = 0;
     var callbacks = [];
     var twiddle = document.createTextNode('');
