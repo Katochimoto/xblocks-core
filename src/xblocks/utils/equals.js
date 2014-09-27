@@ -82,7 +82,7 @@ xblocks.utils.equals = function(x, y) {
     }
 
     if (xblocks.utils._equal.hasOwnProperty(xType)) {
-        return xblocks.utils._equal[xType](x, y);
+        return xblocks.utils._equal[ xType ](x, y);
     }
 
     return x == y;

@@ -655,7 +655,7 @@ xblocks.utils.equals = function(x, y) {
     }
 
     if (xblocks.utils._equal.hasOwnProperty(xType)) {
-        return xblocks.utils._equal[xType](x, y);
+        return xblocks.utils._equal[ xType ](x, y);
     }
 
     return x == y;
@@ -1399,7 +1399,7 @@ xblocks.element.prototype._callbackRender = function(callback) {
     this._node.upgrade();
 
     if (!this._observer) {
-        this._observer = new MutationObserver(this._callbackMutation.bind(this));
+        this._observer = new global.MutationObserver(this._callbackMutation.bind(this));
     }
 
     this._observer.observe(this._node, {
