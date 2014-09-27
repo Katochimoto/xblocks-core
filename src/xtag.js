@@ -29,7 +29,7 @@ window.Platform.endOfMicrotask = (function() {
         twiddle.textContent = iterations++;
         callbacks.push(callback);
     };
-})();
+}());
 
 (function() {
     /*! borschik:include:../node_modules/CustomElements/src/scope.js */

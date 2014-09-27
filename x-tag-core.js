@@ -712,7 +712,7 @@ window.Platform.endOfMicrotask = (function() {
         twiddle.textContent = iterations++;
         callbacks.push(callback);
     };
-})();
+}());
 
 (function() {
     /* ../node_modules/CustomElements/src/scope.js begin */

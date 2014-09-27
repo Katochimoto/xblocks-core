@@ -887,7 +887,7 @@ window.Platform.endOfMicrotask = (function() {
         twiddle.textContent = iterations++;
         callbacks.push(callback);
     };
-})();
+}());
 
 (function() {
     /* ../node_modules/CustomElements/src/scope.js begin */
@@ -4641,41 +4641,43 @@ xblocks.tag = global.xtag;
  */
 xblocks.view = {};
 
+var _viewCommon = {
+    propTypes: {
+        '_uid': React.PropTypes.renderable,
+        'children': React.PropTypes.renderable,
+        'xb-static': React.PropTypes.bool
+    },
+
+    template: function(ref, props) {
+        var rootNode = xblocks.utils.findReactContainerForID(this._rootNodeID);
+        var xtmpl = rootNode && rootNode.xtmpl;
+
+        if (typeof(xtmpl) === 'object' && xtmpl.hasOwnProperty(ref)) {
+            props = props || {};
+            props.dangerouslySetInnerHTML = {
+                '__html': this._templatePrepare(xtmpl[ref])
+            };
+
+            return React.DOM.div(props);
+        }
+
+        return null;
+    }
+};
+
+var _viewCommonUser = {
+    _templatePrepare: function(tmplString) {
+        return tmplString;
+    }
+};
+
 /**
  * @param {object} component
  */
 xblocks.view.create = function(component) {
-    component = Array.isArray(component) ? component : [component];
-
-    component.unshift(true, {
-        _templatePrepare: function(tmplString) {
-            return tmplString;
-        }
-    });
-
-    component.push({
-        propTypes: {
-            '_uid': React.PropTypes.renderable,
-            'children': React.PropTypes.renderable,
-            'xb-static': React.PropTypes.bool
-        },
-
-        template: function(ref, props) {
-            var rootNode = xblocks.utils.findReactContainerForID(this._rootNodeID);
-            var xtmpl = rootNode && rootNode.xuid && rootNode.xtmpl;
-
-            if (xtmpl && xtmpl.hasOwnProperty(ref)) {
-                props = props || {};
-                props.dangerouslySetInnerHTML = {
-                    __html: this._templatePrepare(xtmpl[ref])
-                };
-
-                return React.DOM.div(props);
-            }
-
-            return null;
-        }
-    });
+    component = Array.isArray(component) ? component : [ component ];
+    component.unshift(true, {}, _viewCommonUser);
+    component.push(_viewCommon);
 
     return React.createClass(xblocks.utils.merge.apply({}, component));
 };
@@ -4690,8 +4692,8 @@ xblocks.view.register = function(blockName, component) {
         throw 'Specified item "' + blockName + '" is already defined';
     }
 
-    React.DOM[blockName] = xblocks.view.create(component);
-    return React.DOM[blockName];
+    React.DOM[ blockName ] = xblocks.view.create(component);
+    return React.DOM[ blockName ];
 };
 
 /**
@@ -4699,7 +4701,7 @@ xblocks.view.register = function(blockName, component) {
  * @returns {*}
  */
 xblocks.view.get = function(blockName) {
-    return React.DOM[blockName];
+    return React.DOM[ blockName ];
 };
 
 /* xblocks/view.js end */
@@ -4840,7 +4842,7 @@ var _blockCommon = {
 };
 
 function _blockTmplCompile(tmplElement) {
-    this.xtmpl[tmplElement.getAttribute('ref')] = tmplElement.innerHTML;
+    this.xtmpl[ tmplElement.getAttribute('ref') ] = tmplElement.innerHTML;
 }
 
 function _blockInstantiation(element) {
@@ -4865,7 +4867,7 @@ function _blockLazyInstantiation(elements) {
  * @returns {HTMLElement}
  */
 xblocks.create = function(blockName, options) {
-    options = Array.isArray(options) ? options : [options];
+    options = Array.isArray(options) ? options : [ options ];
     options.unshift(true, {});
     options.push(_blockCommon);
     return xblocks.tag.register(blockName, xblocks.utils.merge.apply({}, options));
