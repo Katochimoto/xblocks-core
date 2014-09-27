@@ -493,7 +493,11 @@ xblocks.utils._lazy = (function() {
  * @returns {function}
  */
 xblocks.utils.lazy = function(callback, args) {
-    callback._args = (callback._args || []).concat(args);
+    if (!callback._args) {
+        callback._args = [];
+    }
+
+    callback._args.push(args);
 
     if (!callback._timer) {
         callback._timer = xblocks.utils._lazy(function() {
