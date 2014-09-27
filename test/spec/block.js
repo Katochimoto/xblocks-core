@@ -1,9 +1,9 @@
-/* global describe, it, expect, xblocks, sinon, beforeEach */
+/* global describe, it, expect, xblocks, sinon */
 /* jshint strict: false */
 
 describe('xblocks.create', function() {
 
-    describe('Элемент можно определить в виде массива объектов', function() {
+    it('Элемент можно определить в виде массива объектов', function() {
         sinon.stub(xblocks.tag, 'register', function(name, params) {
             expect(name).to.be('xb-test1');
             expect(params.methods).to.have.keys('test1', 'test2');
@@ -22,7 +22,7 @@ describe('xblocks.create', function() {
         xblocks.tag.register.restore();
     });
 
-    describe('События жизненного цикла (lifecycle) переопределить нельзя', function() {
+    it('События жизненного цикла (lifecycle) переопределить нельзя', function() {
         var created = function() {};
         var inserted = function() {};
         var removed = function() {};
