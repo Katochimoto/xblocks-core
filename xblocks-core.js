@@ -947,7 +947,7 @@ xblocks.utils.findReactContainerForID = function(rootNodeID) {
 /* xblocks/utils.js end */
 
     /* xblocks/dom.js begin */
-/* global xblocks, React */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -980,6 +980,10 @@ xblocks.dom = {
         }
     }
 };
+
+/* xblocks/dom/attrs.js begin */
+/* global xblocks, React */
+/* jshint strict: false */
 
 /**
  * @param {HTMLElement} element
@@ -1072,6 +1076,82 @@ xblocks.dom.attrs.typeConversion = function(props, propTypes) {
 
     return props;
 };
+
+/* xblocks/dom/attrs.js end */
+
+/* xblocks/dom/index.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+xblocks.dom.index = function(selector, element, context) {
+    return Array.prototype.indexOf.call((context || global.document).querySelectorAll(selector), element);
+};
+
+/* xblocks/dom/index.js end */
+
+/* xblocks/dom/isParent.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+xblocks.dom.isParent = (function() {
+    var root = global.document.documentElement;
+
+    if ('compareDocumentPosition' in root) {
+        return function(container, element) {
+            /*jshint -W016 */
+            return (container.compareDocumentPosition(element) & 16) == 16;
+        };
+
+    } else if ('contains' in root) {
+        return function(container, element) {
+            return container !== element && container.contains(element);
+        };
+
+    } else {
+        return function(container, element) {
+            while ((element = element.parentNode)) {
+                if (element === container) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+    }
+}());
+
+/* xblocks/dom/isParent.js end */
+
+/* xblocks/dom/matchesSelector.js begin */
+/* global xblocks */
+/* jshint strict: false */
+
+xblocks.dom.matchesSelector = (function() {
+    var ElementPrototype = Element.prototype;
+    var matches = ElementPrototype.matches ||
+        ElementPrototype.matchesSelector ||
+        ElementPrototype.webkitMatchesSelector ||
+        ElementPrototype.mozMatchesSelector ||
+        ElementPrototype.msMatchesSelector ||
+        ElementPrototype.oMatchesSelector ||
+        function(selector) {
+            var nodes = (this.parentNode || this.document).querySelectorAll(selector);
+            var i = -1;
+            while (nodes[++i] && nodes[i] !== this) {
+                continue;
+            }
+            /* jshint: -W035 */
+            return Boolean(nodes[i]);
+        };
+
+    return function(element, selector) {
+        return (element.nodeType === 1 ? matches.call(element, selector) : false);
+    };
+
+}());
+
+/* xblocks/dom/matchesSelector.js end */
+
 
 /* xblocks/dom.js end */
 
