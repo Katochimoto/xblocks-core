@@ -1,7 +1,7 @@
 {
     "name": "xblocks-core",
     "description": "HTML core custom elements",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "keywords": [
         "x-tag",
         "x-tags",
@@ -43,11 +43,11 @@
         "karma-phantomjs-launcher": "~0.1.x",
         "karma-chrome-launcher": "~0.1.x",
 
-        "CustomElements": "Polymer/CustomElements.git#0.4.1",
-        "HTMLImports": "Polymer/HTMLImports.git#0.4.1",
+        "CustomElements": "Polymer/CustomElements.git#0.4.2",
+        "HTMLImports": "Polymer/HTMLImports.git#0.4.2",
 
-        "MutationObservers": "Polymer/MutationObservers.git#0.4.1",
-        "WeakMap": "Polymer/WeakMap.git#0.4.1",
+        "MutationObservers": "Polymer/MutationObservers.git#0.4.2",
+        "WeakMap": "Polymer/WeakMap.git#0.4.2",
         "dom-token-list-polyfill": "pennyfx/dom-token-list.git#0.0.2",
         "x-tag-core": "x-tag/core.git"
     },

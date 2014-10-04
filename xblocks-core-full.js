@@ -291,6 +291,7 @@ if (typeof WeakMap === 'undefined') {
           entry[1] = value;
         else
           defineProperty(key, this.name, {value: [key, value], writable: true});
+        return this;
       },
       get: function(key) {
         var entry;
@@ -1151,10 +1152,7 @@ function watchShadow(node) {
 }
 
 function watchRoot(root) {
-  if (!root.__watched) {
-    observe(root);
-    root.__watched = true;
-  }
+  observe(root);
 }
 
 function handler(mutations) {
@@ -1199,18 +1197,32 @@ function handler(mutations) {
   logFlags.dom && console.groupEnd();
 };
 
-var observer = new MutationObserver(handler);
+function takeRecords(node) {
+  // If the optional node is not supplied, assume we mean the whole document.
+  if (!node) node = wrapIfNeeded(document);
 
-function takeRecords() {
-  // TODO(sjmiles): ask Raf why we have to call handler ourselves
-  handler(observer.takeRecords());
-  takeMutations();
+  // Find the root of the tree, which will be an Document or ShadowRoot.
+  while (node.parentNode) {
+    node = node.parentNode;
+  }
+
+  var observer = node.__observer;
+  if (observer) {
+    handler(observer.takeRecords());
+    takeMutations();
+  }
 }
 
 var forEach = Array.prototype.forEach.call.bind(Array.prototype.forEach);
 
 function observe(inRoot) {
+  if (inRoot.__observer) return;
+
+  // For each ShadowRoot, we create a new MutationObserver, so the root can be
+  // garbage collected once all references to the `inRoot` node are gone.
+  var observer = new MutationObserver(handler);
   observer.observe(inRoot, {childList: true, subtree: true});
+  inRoot.__observer = observer;
 }
 
 function observeDocument(doc) {
@@ -1943,6 +1955,7 @@ window.HTMLImports = window.HTMLImports || {flags:{}};
   };
 
   Loader.prototype = {
+
     addNodes: function(nodes) {
       // number of transactions to complete
       this.inflight += nodes.length;
@@ -1953,6 +1966,7 @@ window.HTMLImports = window.HTMLImports || {flags:{}};
       // anything to do?
       this.checkDone();
     },
+
     addNode: function(node) {
       // number of transactions to complete
       this.inflight++;
@@ -1961,6 +1975,7 @@ window.HTMLImports = window.HTMLImports || {flags:{}};
       // anything to do?
       this.checkDone();
     },
+
     require: function(elt) {
       var url = elt.src || elt.href;
       // ensure we have a standard url that can be used
@@ -1973,6 +1988,7 @@ window.HTMLImports = window.HTMLImports || {flags:{}};
         this.fetch(url, elt);
       }
     },
+
     dedupe: function(url, elt) {
       if (this.pending[url]) {
         // add to list of nodes waiting for inUrl
@@ -1993,6 +2009,7 @@ window.HTMLImports = window.HTMLImports || {flags:{}};
       // need fetch (not a dupe)
       return false;
     },
+
     fetch: function(url, elt) {
       flags.load && console.log('fetch', url, elt);
       if (url.match(/^data:/)) {
@@ -2028,6 +2045,7 @@ window.HTMLImports = window.HTMLImports || {flags:{}};
         */
       }
     },
+
     receive: function(url, elt, err, resource, redirectedUrl) {
       this.cache[url] = resource;
       var $p = this.pending[url];
@@ -2039,24 +2057,29 @@ window.HTMLImports = window.HTMLImports || {flags:{}};
       }
       this.pending[url] = null;
     },
+
     tail: function() {
       --this.inflight;
       this.checkDone();
     },
+
     checkDone: function() {
       if (!this.inflight) {
         this.oncomplete();
       }
     }
+
   };
 
   xhr = xhr || {
     async: true,
+
     ok: function(request) {
       return (request.status >= 200 && request.status < 300)
           || (request.status === 304)
           || (request.status === 0);
     },
+
     load: function(url, next, nextContext) {
       var request = new XMLHttpRequest();
       if (scope.flags.debug || scope.flags.bust) {
@@ -2081,9 +2104,11 @@ window.HTMLImports = window.HTMLImports || {flags:{}};
       request.send();
       return request;
     },
+
     loadDocument: function(url, next, nextContext) {
       this.load(url, next, nextContext).responseType = 'document';
     }
+    
   };
 
   // exports
@@ -2105,12 +2130,11 @@ window.HTMLImports = window.HTMLImports || {flags:{}};
  */
 (function(scope) {
 
-var IMPORT_LINK_TYPE = 'import';
+// imports
+var rootDocument = scope.rootDocument;
 var flags = scope.flags;
 var isIE = scope.isIE;
-// TODO(sorvell): SD polyfill intrusion
-var mainDoc = window.ShadowDOMPolyfill ? 
-    window.ShadowDOMPolyfill.wrapIfNeeded(document) : document;
+var IMPORT_LINK_TYPE = scope.IMPORT_LINK_TYPE;
 
 // importParser
 // highlander object to manage parsing of imports
@@ -2121,8 +2145,10 @@ var mainDoc = window.ShadowDOMPolyfill ?
 
 // highlander object for parsing a document tree
 var importParser = {
+
   // parse selectors for main document elements
   documentSelectors: 'link[rel=' + IMPORT_LINK_TYPE + ']',
+
   // parse selectors for import document elements
   importsSelectors: [
     'link[rel=' + IMPORT_LINK_TYPE + ']',
@@ -2131,11 +2157,15 @@ var importParser = {
     'script:not([type])',
     'script[type="text/javascript"]'
   ].join(','),
+
   map: {
     link: 'parseLink',
     script: 'parseScript',
     style: 'parseStyle'
   },
+
+  dynamicElements: [],
+
   // try to parse the next import in the tree
   parseNext: function() {
     var next = this.nextToParse();
@@ -2143,6 +2173,7 @@ var importParser = {
       this.parse(next);
     }
   },
+
   parse: function(elt) {
     if (this.isParsed(elt)) {
       flags.parse && console.log('[%s] is already parsed', elt.localName);
@@ -2154,6 +2185,14 @@ var importParser = {
       fn.call(this, elt);
     }
   },
+
+  parseDynamic: function(elt, quiet) {
+    this.dynamicElements.push(elt);
+    if (!quiet) {
+      this.parseNext();
+    }
+  },
+
   // only 1 element may be parsed at a time; parsing is async so each
   // parsing implementation must inform the system that parsing is complete
   // via markParsingComplete.
@@ -2166,29 +2205,25 @@ var importParser = {
     flags.parse && console.log('parsing', elt);
     this.parsingElement = elt;
   },
+
   markParsingComplete: function(elt) {
     elt.__importParsed = true;
+    this.markDynamicParsingComplete(elt);
     if (elt.__importElement) {
       elt.__importElement.__importParsed = true;
+      this.markDynamicParsingComplete(elt.__importElement);
     }
     this.parsingElement = null;
     flags.parse && console.log('completed', elt);
   },
-  invalidateParse: function(doc) {
-    if (doc && doc.__importLink) {
-      doc.__importParsed = doc.__importLink.__importParsed = false;
-      this.parseSoon();
+
+  markDynamicParsingComplete: function(elt) {
+    var i = this.dynamicElements.indexOf(elt);
+    if (i >= 0) {
+      this.dynamicElements.splice(i, 1);
     }
   },
-  parseSoon: function() {
-    if (this._parseSoon) {
-      cancelAnimationFrame(this._parseDelay);
-    }
-    var parser = this;
-    this._parseSoon = requestAnimationFrame(function() {
-      parser.parseNext();
-    });
-  },
+
   parseImport: function(elt) {
     // TODO(sorvell): consider if there's a better way to do this;
     // expose an imports parsing hook; this is needed, for example, by the
@@ -2219,6 +2254,7 @@ var importParser = {
     }
     this.parseNext();
   },
+
   parseLink: function(linkElt) {
     if (nodeIsImport(linkElt)) {
       this.parseImport(linkElt);
@@ -2228,6 +2264,7 @@ var importParser = {
       this.parseGeneric(linkElt);
     }
   },
+
   parseStyle: function(elt) {
     // TODO(sorvell): style element load event can just not fire so clone styles
     var src = elt;
@@ -2235,10 +2272,12 @@ var importParser = {
     elt.__importElement = src;
     this.parseGeneric(elt);
   },
+
   parseGeneric: function(elt) {
     this.trackElement(elt);
     this.addElementToDocument(elt);
   },
+
   rootImportForElement: function(elt) {
     var n = elt;
     while (n.ownerDocument.__importLink) {
@@ -2246,6 +2285,7 @@ var importParser = {
     }
     return n;
   },
+
   addElementToDocument: function(elt) {
     var port = this.rootImportForElement(elt.__importElement || elt);
     var l = port.__insertedElements = port.__insertedElements || 0;
@@ -2255,6 +2295,7 @@ var importParser = {
     }
     port.parentNode.insertBefore(elt, refNode);
   },
+
   // tracks when a loadable element has loaded
   trackElement: function(elt, callback) {
     var self = this;
@@ -2294,6 +2335,7 @@ var importParser = {
       }
     }
   },
+
   // NOTE: execute scripts by injecting them and watching for the load/error
   // event. Inline scripts are handled via dataURL's because browsers tend to
   // provide correct parsing errors in this case. If this has any compatibility
@@ -2312,11 +2354,14 @@ var importParser = {
     });
     this.addElementToDocument(script);
   },
+
   // determine the next element in the tree which should be parsed
   nextToParse: function() {
     this._mayParse = [];
-    return !this.parsingElement && this.nextToParseInDoc(mainDoc);
+    return !this.parsingElement && (this.nextToParseInDoc(rootDocument) || 
+        this.nextToParseDynamic());
   },
+
   nextToParseInDoc: function(doc, link) {
     // use `marParse` list to avoid looping into the same document again
     // since it could cause an iloop.
@@ -2336,20 +2381,33 @@ var importParser = {
     // all nodes have been parsed, ready to parse import, if any
     return link;
   },
+
+  nextToParseDynamic: function() {
+    return this.dynamicElements[0];
+  },
+
   // return the set of parse selectors relevant for this node.
   parseSelectorsForNode: function(node) {
     var doc = node.ownerDocument || node;
-    return doc === mainDoc ? this.documentSelectors : this.importsSelectors;
+    return doc === rootDocument ? this.documentSelectors :
+        this.importsSelectors;
   },
+
   isParsed: function(node) {
     return node.__importParsed;
   },
+
+  needsDynamicParsing: function(elt) {
+    return (this.dynamicElements.indexOf(elt) >= 0);
+  },
+
   hasResource: function(node) {
     if (nodeIsImport(node) && (node.import === undefined)) {
       return false;
     }
     return true;
   }
+
 };
 
 function nodeIsImport(elt) {
@@ -2399,17 +2457,20 @@ var CSS_URL_REGEXP = /(url\()([^)]*)(\))/g;
 var CSS_IMPORT_REGEXP = /(@import[\s]+(?!url\())([^;]*)(;)/g;
 
 var path = {
+
   resolveUrlsInStyle: function(style) {
     var doc = style.ownerDocument;
     var resolver = doc.createElement('a');
     style.textContent = this.resolveUrlsInCssText(style.textContent, resolver);
     return style;  
   },
+
   resolveUrlsInCssText: function(cssText, urlObj) {
     var r = this.replaceUrls(cssText, urlObj, CSS_URL_REGEXP);
     r = this.replaceUrls(r, urlObj, CSS_IMPORT_REGEXP);
     return r;
   },
+
   replaceUrls: function(text, urlObj, regexp) {
     return text.replace(regexp, function(m, pre, url, post) {
       var urlPath = url.replace(/["']/g, '');
@@ -2418,7 +2479,8 @@ var path = {
       return pre + '\'' + urlPath + '\'' + post;
     });    
   }
-}
+
+};
 
 // exports
 scope.parser = importParser;
@@ -2439,17 +2501,15 @@ scope.path = path;
  */
  (function(scope) {
 
+// imports
 var useNative = scope.useNative;
 var flags = scope.flags;
-var IMPORT_LINK_TYPE = 'import';
-
-// TODO(sorvell): SD polyfill intrusion
-var mainDoc = window.ShadowDOMPolyfill ? 
-    ShadowDOMPolyfill.wrapIfNeeded(document) : document;
+var IMPORT_LINK_TYPE = scope.IMPORT_LINK_TYPE;
 
 if (!useNative) {
 
   // imports
+  var rootDocument = scope.rootDocument;
   var xhr = scope.xhr;
   var Loader = scope.Loader;
   var parser = scope.parser;
@@ -2461,32 +2521,40 @@ if (!useNative) {
   // - loads any linked import documents (with deduping)
 
   var importer = {
+
     documents: {},
+    
     // nodes to load in the mian document
     documentPreloadSelectors: 'link[rel=' + IMPORT_LINK_TYPE + ']',
+    
     // nodes to load in imports
     importsPreloadSelectors: [
       'link[rel=' + IMPORT_LINK_TYPE + ']'
     ].join(','),
+    
     loadNode: function(node) {
       importLoader.addNode(node);
     },
+    
     // load all loadable elements within the parent element
     loadSubtree: function(parent) {
       var nodes = this.marshalNodes(parent);
       // add these nodes to loader's queue
       importLoader.addNodes(nodes);
     },
+    
     marshalNodes: function(parent) {
       // all preloadable nodes in inDocument
       return parent.querySelectorAll(this.loadSelectorsForNode(parent));
     },
+    
     // find the proper set of load selectors for a given node
     loadSelectorsForNode: function(node) {
       var doc = node.ownerDocument || node;
-      return doc === mainDoc ? this.documentPreloadSelectors :
+      return doc === rootDocument ? this.documentPreloadSelectors :
           this.importsPreloadSelectors;
     },
+    
     loaded: function(url, elt, resource, err, redirectedUrl) {
       flags.load && console.log('loaded', url, elt);
       // store generic resource
@@ -2515,14 +2583,17 @@ if (!useNative) {
       }
       parser.parseNext();
     },
+    
     bootDocument: function(doc) {
       this.loadSubtree(doc);
       this.observe(doc);
       parser.parseNext();
     },
+    
     loadedAll: function() {
       parser.parseNext();
     }
+
   };
 
   // loader singleton
@@ -2590,7 +2661,7 @@ if (!useNative) {
     };
 
     Object.defineProperty(document, 'baseURI', baseURIDescriptor);
-    Object.defineProperty(mainDoc, 'baseURI', baseURIDescriptor);
+    Object.defineProperty(rootDocument, 'baseURI', baseURIDescriptor);
   }
 
   // IE shim for CustomEvent
@@ -2615,7 +2686,6 @@ scope.importer = importer;
 scope.IMPORT_LINK_TYPE = IMPORT_LINK_TYPE;
 scope.importLoader = importLoader;
 
-
 })(window.HTMLImports);
 
 /* ../node_modules/HTMLImports/src/HTMLImports.js end */
@@ -2631,10 +2701,13 @@ scope.importLoader = importLoader;
  */
 (function(scope){
 
+// imports
 var IMPORT_LINK_TYPE = scope.IMPORT_LINK_TYPE;
-var importSelector = 'link[rel=' + IMPORT_LINK_TYPE + ']';
 var importer = scope.importer;
 var parser = scope.parser;
+
+var importSelector = 'link[rel=' + IMPORT_LINK_TYPE + ']';
+
 
 // we track mutations for addedNodes, looking for imports
 function handler(mutations) {
@@ -2646,30 +2719,38 @@ function handler(mutations) {
 }
 
 // find loadable elements and add them to the importer
+// IFF the owning document has already parsed, then parsable elements
+// need to be marked for dynamic parsing.
 function addedNodes(nodes) {
-  var owner;
-  for (var i=0, l=nodes.length, n; (i<l) && (n=nodes[i]); i++) {
-    owner = owner || n.ownerDocument;
-    if (shouldLoadNode(n)) {
+  var owner, parsed;
+  for (var i=0, l=nodes.length, n, loading; (i<l) && (n=nodes[i]); i++) {
+    if (!owner) {
+      owner = n.ownerDocument;
+      parsed = parser.isParsed(owner);
+    }
+    // note: the act of loading kicks the parser, so we use parseDynamic's
+    // 2nd argument to control if this added node needs to kick the parser.
+    loading = shouldLoadNode(n);
+    if (loading) {
       importer.loadNode(n);
+    }
+    if (shouldParseNode(n) && parsed) {
+      parser.parseDynamic(n, loading);
     }
     if (n.children && n.children.length) {
       addedNodes(n.children);
     }
   }
-  // TODO(sorvell): This is not the right approach here. We shouldn't need to
-  // invalidate parsing when an element is added. Disabling this code 
-  // until a better approach is found.
-  /*
-  if (owner) {
-    parser.invalidateParse(owner);
-  }
-  */
 }
 
 function shouldLoadNode(node) {
   return (node.nodeType === 1) && matches.call(node,
       importer.loadSelectorsForNode(node));
+}
+
+function shouldParseNode(node) {
+  return (node.nodeType === 1) && matches.call(node,
+      parser.parseSelectorsForNode(node));  
 }
 
 // x-plat matches
