@@ -515,22 +515,23 @@ xblocks.utils.lazy = function(callback, args) {
 /* global xblocks */
 /* jshint strict: false */
 
-xblocks.utils.throttle = function(callback, threshhold, scope) {
-    threshhold = threshhold || 250;
+xblocks.utils.throttle = function(callback, delay, scope) {
+    delay = delay || 250;
     var last;
-    var deferTimer;
+    var timer;
 
     return function() {
         var context = scope || this;
         var now = Date.now();
         var args = arguments;
 
-        if (last && now < last + threshhold) {
-            clearTimeout(deferTimer);
-            deferTimer = setTimeout(function() {
+        if (last && now < last + delay) {
+            clearTimeout(timer);
+
+            timer = setTimeout(function() {
                 last = now;
                 callback.apply(context, args);
-            }, threshhold);
+            }, delay);
 
         } else {
             last = now;
