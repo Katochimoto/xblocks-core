@@ -68,10 +68,18 @@ xblocks.dom.attrs.toObject = function(element) {
     var attrs = {};
 
     if (element.nodeType === 1 && element.hasAttributes()) {
-        Array.prototype.forEach.call(element.attributes, _domAttrsToObject, attrs);
+        Array.prototype.forEach.call(element.attributes, xblocks.dom.attrs._toObjectIterator, attrs);
     }
 
     return attrs;
+};
+
+/**
+ * @param {Attr} attr
+ * @private
+ */
+xblocks.dom.attrs._toObjectIterator = function(attr) {
+    this[attr.nodeName] = attr.value;
 };
 
 /**
@@ -115,7 +123,3 @@ xblocks.dom.attrs.typeConversion = function(props, propTypes) {
 
     return props;
 };
-
-function _domAttrsToObject(attr) {
-    this[attr.nodeName] = attr.value;
-}
