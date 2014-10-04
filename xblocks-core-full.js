@@ -4314,6 +4314,10 @@ xblocks.utils.dispatchEvent = function(element, name, params) {
     element.dispatchEvent(new xblocks.utils.CustomEvent(name, params));
 };
 
+/* xblocks/utils/event/filter.js begin */
+/* global xblocks */
+/* jshint strict: false */
+
 /**
  * @param {HTMLElement} element
  * @param {Event} event mouseover or mouseout event
@@ -4334,6 +4338,12 @@ xblocks.utils.event.mouseEnterFilter = function(element, event, callback) {
 };
 
 xblocks.utils.event.mouseLeaveFilter = xblocks.utils.event.mouseEnterFilter;
+
+/* xblocks/utils/event/filter.js end */
+
+/* xblocks/utils/event/delegate.js begin */
+/* global xblocks */
+/* jshint strict: false */
 
 xblocks.utils.event.delegate = function(selector, callback) {
 
@@ -4370,6 +4380,12 @@ xblocks.utils.event.delegate = function(selector, callback) {
     };
 };
 
+/* xblocks/utils/event/delegate.js end */
+
+/* xblocks/utils/event/click.js begin */
+/* global xblocks */
+/* jshint strict: false */
+
 xblocks.utils.event._clickWhich = {
     1: 'left',
     2: 'center',
@@ -4404,6 +4420,9 @@ xblocks.utils.event.click = function(which, callback) {
         }
     };
 };
+
+/* xblocks/utils/event/click.js end */
+
 
 /* xblocks/utils/event.js end */
 
