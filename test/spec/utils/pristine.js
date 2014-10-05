@@ -13,5 +13,6 @@ describe('xblocks.utils.pristine', function() {
     it('Должна вернуть false, если глобальный объект переопределен', function() {
         sinon.stub(window, 'setTimeout');
         expect(this.util('setTimeout')).to.not.ok();
+        window.setTimeout.restore();
     });
 });

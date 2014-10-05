@@ -18,23 +18,44 @@ describe('xblocks - Вставка в DOM', function() {
 
 
     beforeEach(function() {
-        this.xElement = document.createElement('x-element-insert');
+
     });
 
     afterEach(function() {
-        document.body.removeChild(this.xElement);
-        delete this.xElement;
+
     });
 
     it('Инициализация xblocks выполняется после вставки в DOM', function(done) {
-        this.xElement.addEventListener('xb-created', function() {
+        var xElement = document.createElement('x-element-insert');
+        xElement.addEventListener('xb-created', function() {
             expect(this.xblock).to.be.a(xblocks.element);
             expect(this.mounted).to.be(true);
             expect(this._inserted).to.be(true);
+            document.body.removeChild(xElement);
             done();
         }, false);
 
-        document.body.appendChild(this.xElement);
+        document.body.appendChild(xElement);
+    });
+
+    it('событие xb-created срабатывает для группы элементов на window', function(done) {
+        var e1 = document.createElement('x-element-insert');
+        var e2 = document.createElement('x-element-insert');
+
+        window.addEventListener('xb-created', function onXbCreated(event) {
+            if (event.detail.records.length === 2 &&
+                event.detail.records[0] === e1 &&
+                event.detail.records[1] === e2) {
+
+                window.removeEventListener('xb-created', onXbCreated, false);
+                document.body.removeChild(e1);
+                document.body.removeChild(e2);
+                done();
+            }
+        }, false);
+
+        document.body.appendChild(e1);
+        document.body.appendChild(e2);
     });
 
 });
