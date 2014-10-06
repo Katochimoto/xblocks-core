@@ -16,42 +16,41 @@ xblocks.utils._equal = {
         var i = 0;
         var l = x.length;
 
-	    if (l !== y.length) {
+	if (l !== y.length) {
             return false;
         }
 
-	    for (; i < l; i++) {
-		    if (!xblocks.utils.equals(x[i], y[i])) {
+    	for (; i < l; i++) {
+            if (!xblocks.utils.equals(x[i], y[i])) {
                 return false;
             }
-	    }
+        }
 
-	    return true;
+        return true;
     },
 
     'object': function(x, y) {
         if (x === y) {
-		    return true;
+            return true;
         }
 
         var i;
 
         for (i in x) {
-    		if (y.hasOwnProperty(i)) {
-    			if (!xblocks.utils.equals(x[i], y[i])) {
+            if (y.hasOwnProperty(i)) {
+                if (!xblocks.utils.equals(x[i], y[i])) {
                     return false;
                 }
-
-    		} else {
-    			return false;
-    		}
+            } else {
+                return false;
+            }
     	}
 
         for (i in y) {
-    		if (!x.hasOwnProperty(i)) {
-    			return false;
-    		}
-    	}
+            if (!x.hasOwnProperty(i)) {
+                return false;
+            }
+        }
 
     	return true;
     },
