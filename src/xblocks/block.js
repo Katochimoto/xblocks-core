@@ -81,7 +81,7 @@ var _blockCommon = {
         // check mounted react
         mounted: {
             get: function() {
-                return Boolean(this.xblock && this.xblock._isMountedComponent());
+                return Boolean(this.xblock && this.xblock.isMounted());
             }
         },
 

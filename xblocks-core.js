@@ -1337,7 +1337,7 @@ var _blockCommon = {
         // check mounted react
         mounted: {
             get: function() {
-                return Boolean(this.xblock && this.xblock._isMountedComponent());
+                return Boolean(this.xblock && this.xblock.isMounted());
             }
         },
 
@@ -1542,7 +1542,7 @@ xblocks.element.prototype.unmount = function() {
         this._observer.disconnect();
     }
 
-    if (this._isMountedComponent()) {
+    if (this.isMounted()) {
         this._component.unmountComponent();
         this._component = null;
     }
@@ -1554,7 +1554,7 @@ xblocks.element.prototype.unmount = function() {
  * @param {function} [callback]
  */
 xblocks.element.prototype.update = function(props, removeProps, callback) {
-    if (!this._isMountedComponent()) {
+    if (!this.isMounted()) {
         return;
     }
 
@@ -1584,13 +1584,21 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
 };
 
 /**
+ *
+ * @returns {boolean}
+ */
+xblocks.element.prototype.isMounted = function() {
+    return Boolean(this._component && this._component.isMounted());
+};
+
+/**
  * @param {object} [props]
  * @param {string} [children]
  * @param {function} [callback]
  * @private
  */
 xblocks.element.prototype._init = function(props, children, callback) {
-    if (this._isMountedComponent()) {
+    if (this.isMounted()) {
         return;
     }
 
@@ -1684,7 +1692,7 @@ xblocks.element.prototype._callbackRender = function(callback) {
  * @private
  */
 xblocks.element.prototype._callbackMutation = function(records) {
-    if (!this._isMountedComponent()) {
+    if (!this.isMounted()) {
         return;
     }
 
@@ -1718,20 +1726,11 @@ xblocks.element.prototype._callbackUpdate = function(callback) {
 };
 
 /**
- *
- * @returns {boolean}
- * @private
- */
-xblocks.element.prototype._isMountedComponent = function() {
-    return Boolean(this._component && this._component.isMounted());
-};
-
-/**
  * @returns {?object}
  * @private
  */
 xblocks.element.prototype._getCurrentProps = function() {
-    return this._isMountedComponent() ? this._component.props : null;
+    return this.isMounted() ? this._component.props : null;
 };
 
 /* xblocks/element.js end */
