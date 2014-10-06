@@ -72,7 +72,7 @@ var _blockCommon = {
                 this.xblock &&
                 !this.mounted) {
 
-                this.xblock._repaint();
+                this.xblock.repaint();
             }
         }
     },

@@ -5064,7 +5064,7 @@ var _blockCommon = {
                 this.xblock &&
                 !this.mounted) {
 
-                this.xblock._repaint();
+                this.xblock.repaint();
             }
         }
     },
@@ -5311,12 +5311,22 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
     }
 
     if (nextProps.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
-        this._repaint(callback);
+        this.repaint(callback);
 
     } else {
         xblocks.dom.attrs.typeConversion(nextProps, this._node.xprops);
         this._component[action](nextProps, this._callbackUpdate.bind(this, callback));
     }
+};
+
+/**
+ * @param {function} [callback]
+ */
+xblocks.element.prototype.repaint = function(callback) {
+    var props = xblocks.utils.merge(true, this._node.state, this._getCurrentProps());
+    var children = this._node.content;
+    this.destroy();
+    this._init(props, children, this._callbackRepaint.bind(this, callback));
 };
 
 /**
@@ -5363,17 +5373,6 @@ xblocks.element.prototype._init = function(props, children, callback) {
             }
         );
     }
-};
-
-/**
- * @param {function} [callback]
- * @private
- */
-xblocks.element.prototype._repaint = function(callback) {
-    var props = xblocks.utils.merge(true, this._node.state, this._getCurrentProps());
-    var children = this._node.content;
-    this.destroy();
-    this._init(props, children, this._callbackRepaint.bind(this, callback));
 };
 
 /**
@@ -5434,7 +5433,7 @@ xblocks.element.prototype._callbackMutation = function(records) {
 
     // full repaint
     if (records.some(_elementStatic.checkNodeChange)) {
-        this._repaint();
+        this.repaint();
 
     } else if (records.some(_elementStatic.checkAttributesChange)) {
 
