@@ -10,13 +10,7 @@ xblocks.dom.matchesSelector = (function() {
         ElementPrototype.msMatchesSelector ||
         ElementPrototype.oMatchesSelector ||
         function(selector) {
-            var nodes = (this.parentNode || this.document).querySelectorAll(selector);
-            var i = -1;
-            while (nodes[++i] && nodes[i] !== this) {
-                continue;
-            }
-            /* jshint: -W035 */
-            return Boolean(nodes[i]);
+            return (Array.prototype.indexOf.call((this.parentNode || this.ownerDocument).querySelectorAll(selector), this) !== -1);
         };
 
     return function(element, selector) {
