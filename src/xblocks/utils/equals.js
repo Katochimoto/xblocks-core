@@ -16,11 +16,11 @@ xblocks.utils._equal = {
         var i = 0;
         var l = x.length;
 
-	if (l !== y.length) {
+        if (l !== y.length) {
             return false;
         }
 
-    	for (; i < l; i++) {
+        for (; i < l; i++) {
             if (!xblocks.utils.equals(x[i], y[i])) {
                 return false;
             }
@@ -41,6 +41,7 @@ xblocks.utils._equal = {
                 if (!xblocks.utils.equals(x[i], y[i])) {
                     return false;
                 }
+
             } else {
                 return false;
             }

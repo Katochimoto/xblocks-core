@@ -1,6 +1,68 @@
 /* global xblocks, global, React */
 /* jshint strict: false */
 
+var _elementStatic = {
+    /**
+     * @param {MutationRecord} record
+     * @returns {boolean}
+     * @private
+     */
+    checkNodeChange: function(record) {
+        return (record.type === 'childList');
+    },
+
+    /**
+     * @param {MutationRecord} record
+     * @returns {boolean}
+     * @private
+     */
+    checkAttributesChange: function(record) {
+        return (record.type === 'attributes');
+    },
+
+    /**
+     * @param {MutationRecord} record
+     * @returns {boolean}
+     * @private
+     */
+    filterAttributesRemove: function(record) {
+        return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
+    },
+
+    /**
+     * @param {MutationRecord} record
+     * @returns {string}
+     * @private
+     */
+    mapAttributesName: function(record) {
+        return record.attributeName;
+    },
+
+    /**
+     * @param {array} records
+     * @private
+     */
+    globalInitEvent: function(records) {
+        xblocks.utils.dispatchEvent(global, 'xb-created', { detail: { records: records } });
+    },
+
+    /**
+     * @param {array} records
+     * @private
+     */
+    globalRepaintEvent: function(records) {
+        xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
+    },
+
+    /**
+     * @param {array} records
+     * @private
+     */
+    globalUpdateEvent: function(records) {
+        xblocks.utils.dispatchEvent(global, 'xb-update', { detail: { records: records } });
+    }
+};
+
 /**
  * @param {HTMLElement} node
  * @constructor
@@ -148,7 +210,7 @@ xblocks.element.prototype._repaint = function(callback) {
  */
 xblocks.element.prototype._callbackInit = function() {
     xblocks.utils.dispatchEvent(this._node, 'xb-created');
-    xblocks.utils.lazy(_elementGlobalInitEvent, this._node);
+    xblocks.utils.lazy(_elementStatic.globalInitEvent, this._node);
 };
 
 /**
@@ -157,7 +219,7 @@ xblocks.element.prototype._callbackInit = function() {
  */
 xblocks.element.prototype._callbackRepaint = function(callback) {
     xblocks.utils.dispatchEvent(this._node, 'xb-repaint');
-    xblocks.utils.lazy(_elementGlobalRepaintEvent, this._node);
+    xblocks.utils.lazy(_elementStatic.globalRepaintEvent, this._node);
 
     if (callback) {
         callback.call(this);
@@ -200,14 +262,14 @@ xblocks.element.prototype._callbackMutation = function(records) {
     }
 
     // full repaint
-    if (records.some(_elementCheckNodeChange)) {
+    if (records.some(_elementStatic.checkNodeChange)) {
         this._repaint();
 
-    } else if (records.some(_elementCheckAttributesChange)) {
+    } else if (records.some(_elementStatic.checkAttributesChange)) {
 
         var removeAttrs = records
-            .filter(_elementFilterAttributesRemove, this)
-            .map(_elementMapAttributesName);
+            .filter(_elementStatic.filterAttributesRemove, this)
+            .map(_elementStatic.mapAttributesName);
 
         this.update(null, removeAttrs);
     }
@@ -221,7 +283,7 @@ xblocks.element.prototype._callbackUpdate = function(callback) {
     this._node.upgrade();
 
     xblocks.utils.dispatchEvent(this._node, 'xb-update');
-    xblocks.utils.lazy(_elementGlobalUpdateEvent, this._node);
+    xblocks.utils.lazy(_elementStatic.globalUpdateEvent, this._node);
 
     if (callback) {
         callback.call(this);
@@ -244,63 +306,3 @@ xblocks.element.prototype._isMountedComponent = function() {
 xblocks.element.prototype._getCurrentProps = function() {
     return this._isMountedComponent() ? this._component.props : null;
 };
-
-/**
- * @param {MutationRecord} record
- * @returns {boolean}
- * @private
- */
-function _elementCheckNodeChange(record) {
-    return (record.type === 'childList');
-}
-
-/**
- * @param {MutationRecord} record
- * @returns {boolean}
- * @private
- */
-function _elementCheckAttributesChange(record) {
-    return (record.type === 'attributes');
-}
-
-/**
- * @param {MutationRecord} record
- * @returns {boolean}
- * @private
- */
-function _elementFilterAttributesRemove(record) {
-    return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
-}
-
-/**
- * @param {MutationRecord} record
- * @returns {string}
- * @private
- */
-function _elementMapAttributesName(record) {
-    return record.attributeName;
-}
-
-/**
- * @param {array} records
- * @private
- */
-function _elementGlobalInitEvent(records) {
-    xblocks.utils.dispatchEvent(global, 'xb-created', { detail: { records: records } });
-}
-
-/**
- * @param {array} records
- * @private
- */
-function _elementGlobalRepaintEvent(records) {
-    xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
-}
-
-/**
- * @param {array} records
- * @private
- */
-function _elementGlobalUpdateEvent(records) {
-    xblocks.utils.dispatchEvent(global, 'xb-update', { detail: { records: records } });
-}

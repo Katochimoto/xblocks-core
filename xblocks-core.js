@@ -709,42 +709,42 @@ xblocks.utils._equal = {
         var i = 0;
         var l = x.length;
 
-	    if (l !== y.length) {
+        if (l !== y.length) {
             return false;
         }
 
-	    for (; i < l; i++) {
-		    if (!xblocks.utils.equals(x[i], y[i])) {
+        for (; i < l; i++) {
+            if (!xblocks.utils.equals(x[i], y[i])) {
                 return false;
             }
-	    }
+        }
 
-	    return true;
+        return true;
     },
 
     'object': function(x, y) {
         if (x === y) {
-		    return true;
+            return true;
         }
 
         var i;
 
         for (i in x) {
-    		if (y.hasOwnProperty(i)) {
-    			if (!xblocks.utils.equals(x[i], y[i])) {
+            if (y.hasOwnProperty(i)) {
+                if (!xblocks.utils.equals(x[i], y[i])) {
                     return false;
                 }
 
-    		} else {
-    			return false;
-    		}
+            } else {
+                return false;
+            }
     	}
 
         for (i in y) {
-    		if (!x.hasOwnProperty(i)) {
-    			return false;
-    		}
-    	}
+            if (!x.hasOwnProperty(i)) {
+                return false;
+            }
+        }
 
     	return true;
     },
@@ -1154,13 +1154,7 @@ xblocks.dom.matchesSelector = (function() {
         ElementPrototype.msMatchesSelector ||
         ElementPrototype.oMatchesSelector ||
         function(selector) {
-            var nodes = (this.parentNode || this.document).querySelectorAll(selector);
-            var i = -1;
-            while (nodes[++i] && nodes[i] !== this) {
-                continue;
-            }
-            /* jshint: -W035 */
-            return Boolean(nodes[i]);
+            return (Array.prototype.indexOf.call((this.parentNode || this.ownerDocument).querySelectorAll(selector), this) !== -1);
         };
 
     return function(element, selector) {
@@ -1263,6 +1257,28 @@ xblocks.view.get = function(blockName) {
 /* global xblocks */
 /* jshint strict: false */
 
+var _blockStatic = {
+    tmplCompile: function(tmplElement) {
+        this.xtmpl[ tmplElement.getAttribute('ref') ] = tmplElement.innerHTML;
+    },
+
+    create: function(element) {
+        if (element.hasChildNodes()) {
+            Array.prototype.forEach.call(
+                element.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
+                _blockStatic.tmplCompile,
+                element
+            );
+        }
+
+        element.xblock = xblocks.element.create(element);
+    },
+
+    createLazy: function(elements) {
+        elements.forEach(_blockStatic.create);
+    }
+};
+
 var _blockCommon = {
     lifecycle: {
         created: function() {
@@ -1283,10 +1299,10 @@ var _blockCommon = {
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>
             if (this.getElementsByTagName('script').length) {
-                xblocks.utils.lazy(_blockLazyInstantiation, this);
+                xblocks.utils.lazy(_blockStatic.createLazy, this);
 
             } else {
-                _blockInstantiation(this);
+                _blockStatic.create(this);
             }
         },
 
@@ -1394,26 +1410,6 @@ var _blockCommon = {
     }
 };
 
-function _blockTmplCompile(tmplElement) {
-    this.xtmpl[ tmplElement.getAttribute('ref') ] = tmplElement.innerHTML;
-}
-
-function _blockInstantiation(element) {
-    if (element.hasChildNodes()) {
-        Array.prototype.forEach.call(
-            element.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
-            _blockTmplCompile,
-            element
-        );
-    }
-
-    element.xblock = xblocks.element.create(element);
-}
-
-function _blockLazyInstantiation(elements) {
-    elements.forEach(_blockInstantiation);
-}
-
 /**
  * @param {string} blockName
  * @param {?object} options
@@ -1431,6 +1427,68 @@ xblocks.create = function(blockName, options) {
     /* xblocks/element.js begin */
 /* global xblocks, global, React */
 /* jshint strict: false */
+
+var _elementStatic = {
+    /**
+     * @param {MutationRecord} record
+     * @returns {boolean}
+     * @private
+     */
+    checkNodeChange: function(record) {
+        return (record.type === 'childList');
+    },
+
+    /**
+     * @param {MutationRecord} record
+     * @returns {boolean}
+     * @private
+     */
+    checkAttributesChange: function(record) {
+        return (record.type === 'attributes');
+    },
+
+    /**
+     * @param {MutationRecord} record
+     * @returns {boolean}
+     * @private
+     */
+    filterAttributesRemove: function(record) {
+        return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
+    },
+
+    /**
+     * @param {MutationRecord} record
+     * @returns {string}
+     * @private
+     */
+    mapAttributesName: function(record) {
+        return record.attributeName;
+    },
+
+    /**
+     * @param {array} records
+     * @private
+     */
+    globalInitEvent: function(records) {
+        xblocks.utils.dispatchEvent(global, 'xb-created', { detail: { records: records } });
+    },
+
+    /**
+     * @param {array} records
+     * @private
+     */
+    globalRepaintEvent: function(records) {
+        xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
+    },
+
+    /**
+     * @param {array} records
+     * @private
+     */
+    globalUpdateEvent: function(records) {
+        xblocks.utils.dispatchEvent(global, 'xb-update', { detail: { records: records } });
+    }
+};
 
 /**
  * @param {HTMLElement} node
@@ -1579,7 +1637,7 @@ xblocks.element.prototype._repaint = function(callback) {
  */
 xblocks.element.prototype._callbackInit = function() {
     xblocks.utils.dispatchEvent(this._node, 'xb-created');
-    xblocks.utils.lazy(_elementGlobalInitEvent, this._node);
+    xblocks.utils.lazy(_elementStatic.globalInitEvent, this._node);
 };
 
 /**
@@ -1588,7 +1646,7 @@ xblocks.element.prototype._callbackInit = function() {
  */
 xblocks.element.prototype._callbackRepaint = function(callback) {
     xblocks.utils.dispatchEvent(this._node, 'xb-repaint');
-    xblocks.utils.lazy(_elementGlobalRepaintEvent, this._node);
+    xblocks.utils.lazy(_elementStatic.globalRepaintEvent, this._node);
 
     if (callback) {
         callback.call(this);
@@ -1631,14 +1689,14 @@ xblocks.element.prototype._callbackMutation = function(records) {
     }
 
     // full repaint
-    if (records.some(_elementCheckNodeChange)) {
+    if (records.some(_elementStatic.checkNodeChange)) {
         this._repaint();
 
-    } else if (records.some(_elementCheckAttributesChange)) {
+    } else if (records.some(_elementStatic.checkAttributesChange)) {
 
         var removeAttrs = records
-            .filter(_elementFilterAttributesRemove, this)
-            .map(_elementMapAttributesName);
+            .filter(_elementStatic.filterAttributesRemove, this)
+            .map(_elementStatic.mapAttributesName);
 
         this.update(null, removeAttrs);
     }
@@ -1652,7 +1710,7 @@ xblocks.element.prototype._callbackUpdate = function(callback) {
     this._node.upgrade();
 
     xblocks.utils.dispatchEvent(this._node, 'xb-update');
-    xblocks.utils.lazy(_elementGlobalUpdateEvent, this._node);
+    xblocks.utils.lazy(_elementStatic.globalUpdateEvent, this._node);
 
     if (callback) {
         callback.call(this);
@@ -1675,66 +1733,6 @@ xblocks.element.prototype._isMountedComponent = function() {
 xblocks.element.prototype._getCurrentProps = function() {
     return this._isMountedComponent() ? this._component.props : null;
 };
-
-/**
- * @param {MutationRecord} record
- * @returns {boolean}
- * @private
- */
-function _elementCheckNodeChange(record) {
-    return (record.type === 'childList');
-}
-
-/**
- * @param {MutationRecord} record
- * @returns {boolean}
- * @private
- */
-function _elementCheckAttributesChange(record) {
-    return (record.type === 'attributes');
-}
-
-/**
- * @param {MutationRecord} record
- * @returns {boolean}
- * @private
- */
-function _elementFilterAttributesRemove(record) {
-    return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
-}
-
-/**
- * @param {MutationRecord} record
- * @returns {string}
- * @private
- */
-function _elementMapAttributesName(record) {
-    return record.attributeName;
-}
-
-/**
- * @param {array} records
- * @private
- */
-function _elementGlobalInitEvent(records) {
-    xblocks.utils.dispatchEvent(global, 'xb-created', { detail: { records: records } });
-}
-
-/**
- * @param {array} records
- * @private
- */
-function _elementGlobalRepaintEvent(records) {
-    xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
-}
-
-/**
- * @param {array} records
- * @private
- */
-function _elementGlobalUpdateEvent(records) {
-    xblocks.utils.dispatchEvent(global, 'xb-update', { detail: { records: records } });
-}
 
 /* xblocks/element.js end */
 

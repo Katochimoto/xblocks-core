@@ -1,6 +1,28 @@
 /* global xblocks */
 /* jshint strict: false */
 
+var _blockStatic = {
+    tmplCompile: function(tmplElement) {
+        this.xtmpl[ tmplElement.getAttribute('ref') ] = tmplElement.innerHTML;
+    },
+
+    create: function(element) {
+        if (element.hasChildNodes()) {
+            Array.prototype.forEach.call(
+                element.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
+                _blockStatic.tmplCompile,
+                element
+            );
+        }
+
+        element.xblock = xblocks.element.create(element);
+    },
+
+    createLazy: function(elements) {
+        elements.forEach(_blockStatic.create);
+    }
+};
+
 var _blockCommon = {
     lifecycle: {
         created: function() {
@@ -21,10 +43,10 @@ var _blockCommon = {
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>
             if (this.getElementsByTagName('script').length) {
-                xblocks.utils.lazy(_blockLazyInstantiation, this);
+                xblocks.utils.lazy(_blockStatic.createLazy, this);
 
             } else {
-                _blockInstantiation(this);
+                _blockStatic.create(this);
             }
         },
 
@@ -131,26 +153,6 @@ var _blockCommon = {
         }
     }
 };
-
-function _blockTmplCompile(tmplElement) {
-    this.xtmpl[ tmplElement.getAttribute('ref') ] = tmplElement.innerHTML;
-}
-
-function _blockInstantiation(element) {
-    if (element.hasChildNodes()) {
-        Array.prototype.forEach.call(
-            element.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
-            _blockTmplCompile,
-            element
-        );
-    }
-
-    element.xblock = xblocks.element.create(element);
-}
-
-function _blockLazyInstantiation(elements) {
-    elements.forEach(_blockInstantiation);
-}
 
 /**
  * @param {string} blockName
