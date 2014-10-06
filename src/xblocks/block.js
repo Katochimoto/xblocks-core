@@ -88,8 +88,7 @@ var _blockCommon = {
         content: {
             get: function() {
                 if (this.mounted) {
-                    // FIXME bad way to get children
-                    return this.xblock._component.props.children;
+                    return this.xblock.getMountedContent();
                 }
 
                 return xblocks.utils.contentNode(this).innerHTML;
@@ -97,7 +96,7 @@ var _blockCommon = {
 
             set: function(content) {
                 if (this.mounted) {
-                    this.xblock.update({ 'children': content });
+                    this.xblock.setMountedContent(content);
 
                 } else {
                     xblocks.utils.contentNode(this).innerHTML = content;
@@ -113,6 +112,7 @@ var _blockCommon = {
             }
         },
 
+        // FIXME optimize
         state: {
             get: function() {
                 var props = {};

@@ -122,6 +122,7 @@ xblocks.element.prototype.unmount = function() {
 };
 
 /**
+ * FIXME optimize
  * @param {object} [props]
  * @param {Array} [removeProps]
  * @param {function} [callback]
@@ -140,7 +141,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
     // and the exclusion of remote properties
     if (Array.isArray(removeProps) && removeProps.length) {
         action = 'replaceProps';
-        var currentProps = this._getCurrentProps();
+        var currentProps = this.getMountedProps();
         nextProps = xblocks.utils.merge(true, currentProps, nextProps);
         nextProps = xblocks.utils.filterObject(nextProps, function(name) {
             return (removeProps.indexOf(name) === -1);
@@ -160,7 +161,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
  * @param {function} [callback]
  */
 xblocks.element.prototype.repaint = function(callback) {
-    var props = xblocks.utils.merge(true, this._node.state, this._getCurrentProps());
+    var props = xblocks.utils.merge(true, this._node.state, this.getMountedProps());
     var children = this._node.content;
     this.destroy();
     this._init(props, children, this._callbackRepaint.bind(this, callback));
@@ -172,6 +173,25 @@ xblocks.element.prototype.repaint = function(callback) {
  */
 xblocks.element.prototype.isMounted = function() {
     return Boolean(this._component && this._component.isMounted());
+};
+
+xblocks.element.prototype.setMountedContent = function(content) {
+    if (this.isMounted()) {
+        this.update({ 'children': content });
+    }
+};
+
+xblocks.element.prototype.getMountedContent = function() {
+    if (this.isMounted()) {
+        return this._component.props.children;
+    }
+};
+
+/**
+ * @returns {?object}
+ */
+xblocks.element.prototype.getMountedProps = function() {
+    return this.isMounted() ? this._component.props : null;
 };
 
 /**
@@ -295,12 +315,4 @@ xblocks.element.prototype._callbackUpdate = function(callback) {
     if (callback) {
         callback.call(this);
     }
-};
-
-/**
- * @returns {?object}
- * @private
- */
-xblocks.element.prototype._getCurrentProps = function() {
-    return this.isMounted() ? this._component.props : null;
 };
