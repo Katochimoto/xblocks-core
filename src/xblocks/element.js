@@ -143,9 +143,13 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
         action = 'replaceProps';
         var currentProps = this.getMountedProps();
         nextProps = xblocks.utils.merge(true, currentProps, nextProps);
-        nextProps = xblocks.utils.filterObject(nextProps, function(name) {
-            return (removeProps.indexOf(name) === -1);
-        });
+
+        var l = removeProps.length;
+        while (l--) {
+            if (nextProps.hasOwnProperty(removeProps[l])) {
+                delete nextProps[ removeProps[l] ];
+            }
+        }
     }
 
     if (nextProps.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
