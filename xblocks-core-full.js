@@ -224,6 +224,9 @@ var logFlags = {
     //data: true
 };
 
+/**
+ * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
+ */
 (function() {
     var attrModifiedWorks = false;
     var listener = function() {
