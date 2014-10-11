@@ -42,6 +42,7 @@
         "karma-react-jsx-preprocessor": "~0.1.x",
         "karma-phantomjs-launcher": "~0.1.x",
         "karma-chrome-launcher": "~0.1.x",
+        "karma-firefox-launcher": "~0.1.x",
 
         "CustomElements": "Polymer/CustomElements.git#0.4.2",
         "HTMLImports": "Polymer/HTMLImports.git#0.4.2",

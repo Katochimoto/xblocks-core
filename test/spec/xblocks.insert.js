@@ -39,23 +39,15 @@ describe('xblocks - Вставка в DOM', function() {
     });
 
     it('событие xb-created срабатывает для группы элементов на window', function(done) {
-        var e1 = document.createElement('x-element-insert');
-        var e2 = document.createElement('x-element-insert');
+        var e = document.createElement('x-element-insert');
 
         window.addEventListener('xb-created', function onXbCreated(event) {
-            if (event.detail.records.length === 2 &&
-                event.detail.records[0] === e1 &&
-                event.detail.records[1] === e2) {
-
-                window.removeEventListener('xb-created', onXbCreated, false);
-                document.body.removeChild(e1);
-                document.body.removeChild(e2);
-                done();
-            }
+            window.removeEventListener('xb-created', onXbCreated, false);
+            expect(event.detail.records).to.be.a('array');
+            done();
         }, false);
 
-        document.body.appendChild(e1);
-        document.body.appendChild(e2);
+        document.body.appendChild(e);
     });
 
 });
