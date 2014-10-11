@@ -224,6 +224,7 @@ var logFlags = {
     //data: true
 };
 
+/* xtag/DOMAttrModified.js begin */
 /**
  * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
  */
@@ -282,6 +283,9 @@ var logFlags = {
         this.dispatchEvent(evt);
     };
 }());
+
+/* xtag/DOMAttrModified.js end */
+
 
 /* ../node_modules/dom-token-list-polyfill/src/token-list.js begin */
 // DOMTokenList polyfill for IE9
@@ -971,6 +975,7 @@ if (typeof WeakMap === 'undefined') {
 /* ../node_modules/MutationObservers/MutationObserver.js end */
 
 
+/* xtag/microtask.js begin */
 window.Platform.endOfMicrotask = (function() {
     var iterations = 0;
     var callbacks = [];
@@ -991,6 +996,9 @@ window.Platform.endOfMicrotask = (function() {
         callbacks.push(callback);
     };
 }());
+
+/* xtag/microtask.js end */
+
 
 (function() {
     /* ../node_modules/CustomElements/src/scope.js begin */
