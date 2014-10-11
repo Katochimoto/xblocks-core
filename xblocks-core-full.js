@@ -3,7 +3,12 @@
 (function(global, undefined) {
     'use strict';
 
-    if (global.setImmediate) {
+    if (global.msSetImmediate || global.setImmediate) {
+        if (!global.setImmediate) {
+            global.setImmediate = global.msSetImmediate;
+            global.clearImmediate = global.msClearImmediate;
+        }
+
         return;
     }
 
@@ -203,8 +208,10 @@ Timer.polifill.setTimeout = function() {
 
     attachTo.setImmediate = Timer.polifill[ polifill ]();
     attachTo.setImmediate.usePolifill = polifill;
+    attachTo.msSetImmediate = attachTo.setImmediate;
 
     attachTo.clearImmediate = Timer.clear;
+    attachTo.msClearImmediate = Timer.clear;
 
 }(function() {
     return this || (1, eval)('this');
@@ -216,6 +223,62 @@ var logFlags = {
     //dom: true,
     //data: true
 };
+
+(function() {
+    var attrModifiedWorks = false;
+    var listener = function() {
+        attrModifiedWorks = true;
+    };
+
+    var doc = document.documentElement;
+    doc.addEventListener('DOMAttrModified', listener, false);
+    doc.setAttribute('___TEST___', true);
+    doc.removeAttribute('___TEST___', true);
+    doc.removeEventListener('DOMAttrModified', listener, false);
+
+    if (attrModifiedWorks) {
+        return;
+    }
+
+    HTMLElement.prototype.__setAttribute = HTMLElement.prototype.setAttribute;
+    HTMLElement.prototype.setAttribute = function(attrName, newVal) {
+        var prevVal = this.getAttribute(attrName);
+        this.__setAttribute(attrName, newVal);
+        newVal = this.getAttribute(attrName);
+        if (newVal != prevVal) {
+            var evt = document.createEvent('MutationEvent');
+            evt.initMutationEvent(
+                'DOMAttrModified',
+                true,
+                false,
+                this,
+                prevVal || '',
+                newVal || '',
+                attrName,
+                (prevVal == null) ? evt.ADDITION : evt.MODIFICATION
+            );
+            this.dispatchEvent(evt);
+        }
+    };
+
+    HTMLElement.prototype.__removeAttribute = HTMLElement.prototype.removeAttribute;
+    HTMLElement.prototype.removeAttribute = function(attrName) {
+        var prevVal = this.getAttribute(attrName);
+        this.__removeAttribute(attrName);
+        var evt = document.createEvent('MutationEvent');
+        evt.initMutationEvent(
+            'DOMAttrModified',
+            true,
+            false,
+            this,
+            prevVal,
+            '',
+            attrName,
+            evt.REMOVAL
+        );
+        this.dispatchEvent(evt);
+    };
+}());
 
 /* ../node_modules/dom-token-list-polyfill/src/token-list.js begin */
 // DOMTokenList polyfill for IE9
@@ -5140,7 +5203,6 @@ var _blockCommon = {
             }
         },
 
-        // FIXME optimize
         state: {
             get: function() {
                 var props = {};
@@ -5251,15 +5313,15 @@ var _elementStatic = {
      */
     globalRepaintEvent: function(records) {
         xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
-    },
+    }
 
     /**
      * @param {array} records
      * @private
      */
-    globalUpdateEvent: function(records) {
-        xblocks.utils.dispatchEvent(global, 'xb-update', { detail: { records: records } });
-    }
+    //globalUpdateEvent: function(records) {
+    //    xblocks.utils.dispatchEvent(global, 'xb-update', { detail: { records: records } });
+    //}
 };
 
 /**
@@ -5321,7 +5383,6 @@ xblocks.element.prototype.unmount = function() {
 };
 
 /**
- * FIXME optimize
  * @param {object} [props]
  * @param {Array} [removeProps]
  * @param {function} [callback]
@@ -5513,7 +5574,7 @@ xblocks.element.prototype._callbackUpdate = function(callback) {
     this._node.upgrade();
 
     xblocks.utils.dispatchEvent(this._node, 'xb-update');
-    xblocks.utils.lazy(_elementStatic.globalUpdateEvent, this._node);
+    //xblocks.utils.lazy(_elementStatic.globalUpdateEvent, this._node);
 
     if (callback) {
         callback.call(this);

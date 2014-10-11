@@ -52,15 +52,15 @@ var _elementStatic = {
      */
     globalRepaintEvent: function(records) {
         xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
-    },
+    }
 
     /**
      * @param {array} records
      * @private
      */
-    globalUpdateEvent: function(records) {
-        xblocks.utils.dispatchEvent(global, 'xb-update', { detail: { records: records } });
-    }
+    //globalUpdateEvent: function(records) {
+    //    xblocks.utils.dispatchEvent(global, 'xb-update', { detail: { records: records } });
+    //}
 };
 
 /**
@@ -122,7 +122,6 @@ xblocks.element.prototype.unmount = function() {
 };
 
 /**
- * FIXME optimize
  * @param {object} [props]
  * @param {Array} [removeProps]
  * @param {function} [callback]
@@ -314,7 +313,7 @@ xblocks.element.prototype._callbackUpdate = function(callback) {
     this._node.upgrade();
 
     xblocks.utils.dispatchEvent(this._node, 'xb-update');
-    xblocks.utils.lazy(_elementStatic.globalUpdateEvent, this._node);
+    //xblocks.utils.lazy(_elementStatic.globalUpdateEvent, this._node);
 
     if (callback) {
         callback.call(this);

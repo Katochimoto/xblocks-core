@@ -112,7 +112,6 @@ var _blockCommon = {
             }
         },
 
-        // FIXME optimize
         state: {
             get: function() {
                 var props = {};
