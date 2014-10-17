@@ -9,6 +9,7 @@ xblocks.utils = {};
 xblocks.utils.REG_TYPE_EXTRACT = /\s([a-zA-Z]+)/;
 xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
 
+/*! borschik:include:utils/log.js */
 /*! borschik:include:utils/support.js */
 /*! borschik:include:utils/uid.js */
 /*! borschik:include:utils/seq.js */
@@ -28,4 +29,4 @@ xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
 /*! borschik:include:utils/contentNode.js */
 /*! borschik:include:utils/propTypes.js */
 /*! borschik:include:utils/tmpl.js */
-/*! borschik:include:utils/findReactContainerForID.js */
+/*! borschik:include:utils/react.js */

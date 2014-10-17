@@ -48,7 +48,7 @@ xblocks.dom.attrs.toObject = function(element) {
  * @private
  */
 xblocks.dom.attrs._toObjectIterator = function(attr) {
-    this[attr.nodeName] = attr.value;
+    this[ attr.nodeName ] = attr.value;
 };
 
 /**
@@ -66,11 +66,14 @@ xblocks.dom.attrs.valueConversion = function(prop, value, type) {
 
     switch (type) {
         case React.PropTypes.bool:
-            return (value === true || value === '' || prop === value || value === 'true');
+            return Boolean(value === true || value === '' || prop === value || value === 'true');
+
         case React.PropTypes.string:
             return String(value);
+
         case React.PropTypes.number:
             return Number(value);
+
         default:
             return value;
     }
@@ -82,11 +85,16 @@ xblocks.dom.attrs.valueConversion = function(prop, value, type) {
  * @returns {object}
  */
 xblocks.dom.attrs.typeConversion = function(props, propTypes) {
-    propTypes = typeof(propTypes) === 'object' ? propTypes : {};
+    propTypes = propTypes || {};
+    var prop;
 
-    for (var prop in props) {
+    for (prop in props) {
         if (props.hasOwnProperty(prop)) {
-            props[prop] = xblocks.dom.attrs.valueConversion(prop, props[prop], propTypes[prop]);
+            props[ prop ] = xblocks.dom.attrs.valueConversion(
+                prop,
+                props[ prop ],
+                propTypes[ prop ]
+            );
         }
     }
 

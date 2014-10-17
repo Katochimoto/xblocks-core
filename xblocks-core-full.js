@@ -220,9 +220,34 @@ Timer.polifill.setTimeout = function() {
 
 window.Platform = {};
 var logFlags = {
-    //dom: true,
+    //dom: true
     //data: true
 };
+
+/* xtag/performance.js begin */
+(function(global) {
+    if (typeof(global.performance) === 'undefined') {
+        global.performance = {};
+    }
+
+    if (!global.performance.now) {
+        var nowOffset;
+
+        if (global.performance.timing && global.performance.timing.navigationStart) {
+            nowOffset = global.performance.timing.navigationStar;
+
+        } else {
+            nowOffset = Date.now();
+        }
+
+        global.performance.now = function() {
+            return (Date.now() - nowOffset);
+        };
+    }
+
+}(window));
+
+/* xtag/performance.js end */
 
 /* xtag/DOMAttrModified.js begin */
 /**
@@ -4046,6 +4071,26 @@ xblocks.utils = {};
 xblocks.utils.REG_TYPE_EXTRACT = /\s([a-zA-Z]+)/;
 xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
 
+/* xblocks/utils/log.js begin */
+/* global xblocks, performance */
+/* jshint strict: false */
+
+xblocks.utils.log = {};
+
+xblocks.utils.log.time = function(element, name) {
+    if (!element._xtimers) {
+        element._xtimers = {};
+    }
+
+    if (!Array.isArray(element._xtimers[ name ])) {
+        element._xtimers[ name ] = [];
+    }
+
+    element._xtimers[ name ].push(performance.now());
+};
+
+/* xblocks/utils/log.js end */
+
 /* xblocks/utils/support.js begin */
 /* global xblocks, global */
 /* jshint strict: false */
@@ -4794,19 +4839,37 @@ xblocks.utils.propTypes = function(tagName) {
 
 /* xblocks/utils/tmpl.js end */
 
-/* xblocks/utils/findReactContainerForID.js begin */
+/* xblocks/utils/react.js begin */
 /* global xblocks, React */
 /* jshint strict: false */
+
+xblocks.utils.react = {};
 
 /**
  * @param {String} rootNodeID
  * @returns {HTMLElement}
  */
-xblocks.utils.findReactContainerForID = function(rootNodeID) {
+xblocks.utils.react.findReactContainerForID = function(rootNodeID) {
     return React.__internals.Mount.findReactContainerForID(rootNodeID);
 };
 
-/* xblocks/utils/findReactContainerForID.js end */
+/**
+ * @param {HTMLElement} node
+ * @returns {?String}
+ */
+xblocks.utils.react.getReactRootID = function(node) {
+    return React.__internals.Mount.getReactRootID(node);
+};
+
+/**
+ * @param {String} rootId
+ * @returns {?Object}
+ */
+xblocks.utils.react.getInstancesByReactRootID = function(rootId) {
+    return React.__internals.Mount._instancesByReactRootID[ rootId ];
+};
+
+/* xblocks/utils/react.js end */
 
 
 /* xblocks/utils.js end */
@@ -4897,7 +4960,7 @@ xblocks.dom.attrs.toObject = function(element) {
  * @private
  */
 xblocks.dom.attrs._toObjectIterator = function(attr) {
-    this[attr.nodeName] = attr.value;
+    this[ attr.nodeName ] = attr.value;
 };
 
 /**
@@ -4915,11 +4978,14 @@ xblocks.dom.attrs.valueConversion = function(prop, value, type) {
 
     switch (type) {
         case React.PropTypes.bool:
-            return (value === true || value === '' || prop === value || value === 'true');
+            return Boolean(value === true || value === '' || prop === value || value === 'true');
+
         case React.PropTypes.string:
             return String(value);
+
         case React.PropTypes.number:
             return Number(value);
+
         default:
             return value;
     }
@@ -4931,11 +4997,16 @@ xblocks.dom.attrs.valueConversion = function(prop, value, type) {
  * @returns {object}
  */
 xblocks.dom.attrs.typeConversion = function(props, propTypes) {
-    propTypes = typeof(propTypes) === 'object' ? propTypes : {};
+    propTypes = propTypes || {};
+    var prop;
 
-    for (var prop in props) {
+    for (prop in props) {
         if (props.hasOwnProperty(prop)) {
-            props[prop] = xblocks.dom.attrs.valueConversion(prop, props[prop], propTypes[prop]);
+            props[ prop ] = xblocks.dom.attrs.valueConversion(
+                prop,
+                props[ prop ],
+                propTypes[ prop ]
+            );
         }
     }
 
@@ -5042,7 +5113,7 @@ var _viewCommon = {
     },
 
     template: function(ref, props) {
-        var rootNode = xblocks.utils.findReactContainerForID(this._rootNodeID);
+        var rootNode = xblocks.utils.react.findReactContainerForID(this._rootNodeID);
         var xtmpl = rootNode && rootNode.xtmpl;
 
         if (typeof(xtmpl) === 'object' && xtmpl.hasOwnProperty(ref)) {
@@ -5118,6 +5189,8 @@ var _blockStatic = {
         }
 
         element.xblock = xblocks.element.create(element);
+
+        xblocks.utils.log.time(element, 'dom_inserted');
     },
 
     createLazy: function(elements) {
@@ -5132,15 +5205,17 @@ var _blockCommon = {
             this.xtmpl = {};
             this.xuid = xblocks.utils.seq();
             this.xprops = xblocks.utils.propTypes(this.xtagName);
-            this._inserted = false;
+            this._xinserted = false;
+
+            xblocks.utils.log.time(this, 'dom_inserted');
         },
 
         inserted: function() {
-            if (this._inserted) {
+            if (this._xinserted) {
                 return;
             }
 
-            this._inserted = true;
+            this._xinserted = true;
 
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>
@@ -5153,7 +5228,7 @@ var _blockCommon = {
         },
 
         removed: function() {
-            this._inserted = false;
+            this._xinserted = false;
 
             // replace initial content after destroy react component
             // fix:
@@ -5216,20 +5291,22 @@ var _blockCommon = {
 
         state: {
             get: function() {
-                var props = {};
-                var elementProps = xblocks.tag.tags[this.xtagName].accessors;
+                var prop;
+                var props = xblocks.dom.attrs.toObject(this);
+                var xprops = this.xprops;
+                var eprops = xblocks.tag.tags[ this.xtagName ].accessors;
+                var common = _blockCommon.accessors;
 
-                for (var prop in elementProps) {
-                    if (this.xprops.hasOwnProperty(prop) &&
-                        elementProps.hasOwnProperty(prop) &&
-                        !_blockCommon.accessors.hasOwnProperty(prop)) {
+                for (prop in eprops) {
+                    if (xprops.hasOwnProperty(prop) &&
+                        eprops.hasOwnProperty(prop) &&
+                        !common.hasOwnProperty(prop)) {
 
-                        props[prop] = this[prop];
+                        props[ prop ] = this[ prop ];
                     }
                 }
 
-                props = xblocks.utils.merge({}, xblocks.dom.attrs.toObject(this), props);
-                xblocks.dom.attrs.typeConversion(props, this.xprops);
+                xblocks.dom.attrs.typeConversion(props, xprops);
                 return props;
             }
         }
@@ -5244,7 +5321,7 @@ var _blockCommon = {
             // not to clone the contents
             var node = Node.prototype.cloneNode.call(this, false);
             node.xtmpl = this.xtmpl;
-            node._inserted = false;
+            node._xinserted = false;
 
             if (deep) {
                 node.content = this.content;
@@ -5389,8 +5466,9 @@ xblocks.element.prototype.unmount = function() {
 
     if (this.isMounted()) {
         this._component.unmountComponent();
-        this._component = null;
     }
+
+    this._component = null;
 };
 
 /**
@@ -5406,14 +5484,20 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
     var nextProps = this._node.state;
     var action = 'setProps';
 
-    xblocks.utils.merge(true, nextProps, props);
+    if (typeof(props) === 'object') {
+        var prop;
+        for (prop in props) {
+            if (props.hasOwnProperty(prop)) {
+                nextProps[ prop ] = props[ prop ];
+            }
+        }
+    }
 
     // merge of new and current properties
     // and the exclusion of remote properties
     if (Array.isArray(removeProps) && removeProps.length) {
         action = 'replaceProps';
-        var currentProps = this.getMountedProps();
-        nextProps = xblocks.utils.merge(true, currentProps, nextProps);
+        nextProps = xblocks.utils.merge(true, {}, this.getMountedProps(), nextProps);
 
         var l = removeProps.length;
         while (l--) {
@@ -5428,7 +5512,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
 
     } else {
         xblocks.dom.attrs.typeConversion(nextProps, this._node.xprops);
-        this._component[action](nextProps, this._callbackUpdate.bind(this, callback));
+        this._component[ action ](nextProps, this._callbackUpdate.bind(this, callback));
     }
 };
 
@@ -5436,8 +5520,17 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
  * @param {function} [callback]
  */
 xblocks.element.prototype.repaint = function(callback) {
-    var props = xblocks.utils.merge(true, this._node.state, this.getMountedProps());
     var children = this._node.content;
+    var props = this._node.state;
+    var mprops = this.getMountedProps();
+    var prop;
+
+    for (prop in mprops) {
+        if (mprops.hasOwnProperty(prop)) {
+            props[ prop ] = mprops[ prop ];
+        }
+    }
+
     this.destroy();
     this._init(props, children, this._callbackRepaint.bind(this, callback));
 };
@@ -5463,10 +5556,10 @@ xblocks.element.prototype.getMountedContent = function() {
 };
 
 /**
- * @returns {?object}
+ * @returns {object}
  */
 xblocks.element.prototype.getMountedProps = function() {
-    return this.isMounted() ? this._component.props : null;
+    return this.isMounted() ? this._component.props : {};
 };
 
 /**
@@ -5480,6 +5573,19 @@ xblocks.element.prototype._init = function(props, children, callback) {
         return;
     }
 
+    var reactId = xblocks.utils.react.getReactRootID(this._node);
+    if (reactId) {
+        var reactNode = xblocks.utils.react.findReactContainerForID(reactId);
+        if (reactNode !== this._node) {
+            var oldProxyConstructor = xblocks.utils.react.getInstancesByReactRootID(reactId);
+            if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
+                children = oldProxyConstructor.props.children || '';
+                React.unmountComponentAtNode(reactNode);
+                this._node.innerHTML = '';
+            }
+        }
+    }
+
     props._uid = this._node.xuid;
     xblocks.dom.attrs.typeConversion(props, this._node.xprops);
 
@@ -5487,7 +5593,9 @@ xblocks.element.prototype._init = function(props, children, callback) {
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();
+        xblocks.utils.log.time(this._node, 'react_render');
         this._node.innerHTML = React.renderComponentToStaticMarkup(proxyConstructor);
+        xblocks.utils.log.time(this._node, 'react_render');
         this._node.upgrade();
 
         if (callback) {
@@ -5495,11 +5603,13 @@ xblocks.element.prototype._init = function(props, children, callback) {
         }
 
     } else {
+        xblocks.utils.log.time(this._node, 'react_render');
         var that = this;
         this._component = React.renderComponent(
             proxyConstructor,
             this._node,
             function() {
+                xblocks.utils.log.time(that._node, 'react_render');
                 that._component = this;
                 that._callbackRender(callback);
             }

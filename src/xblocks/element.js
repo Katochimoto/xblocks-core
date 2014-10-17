@@ -117,8 +117,9 @@ xblocks.element.prototype.unmount = function() {
 
     if (this.isMounted()) {
         this._component.unmountComponent();
-        this._component = null;
     }
+
+    this._component = null;
 };
 
 /**
@@ -134,14 +135,20 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
     var nextProps = this._node.state;
     var action = 'setProps';
 
-    xblocks.utils.merge(true, nextProps, props);
+    if (typeof(props) === 'object') {
+        var prop;
+        for (prop in props) {
+            if (props.hasOwnProperty(prop)) {
+                nextProps[ prop ] = props[ prop ];
+            }
+        }
+    }
 
     // merge of new and current properties
     // and the exclusion of remote properties
     if (Array.isArray(removeProps) && removeProps.length) {
         action = 'replaceProps';
-        var currentProps = this.getMountedProps();
-        nextProps = xblocks.utils.merge(true, currentProps, nextProps);
+        nextProps = xblocks.utils.merge(true, {}, this.getMountedProps(), nextProps);
 
         var l = removeProps.length;
         while (l--) {
@@ -156,7 +163,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
 
     } else {
         xblocks.dom.attrs.typeConversion(nextProps, this._node.xprops);
-        this._component[action](nextProps, this._callbackUpdate.bind(this, callback));
+        this._component[ action ](nextProps, this._callbackUpdate.bind(this, callback));
     }
 };
 
@@ -164,8 +171,17 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
  * @param {function} [callback]
  */
 xblocks.element.prototype.repaint = function(callback) {
-    var props = xblocks.utils.merge(true, this._node.state, this.getMountedProps());
     var children = this._node.content;
+    var props = this._node.state;
+    var mprops = this.getMountedProps();
+    var prop;
+
+    for (prop in mprops) {
+        if (mprops.hasOwnProperty(prop)) {
+            props[ prop ] = mprops[ prop ];
+        }
+    }
+
     this.destroy();
     this._init(props, children, this._callbackRepaint.bind(this, callback));
 };
@@ -191,10 +207,10 @@ xblocks.element.prototype.getMountedContent = function() {
 };
 
 /**
- * @returns {?object}
+ * @returns {object}
  */
 xblocks.element.prototype.getMountedProps = function() {
-    return this.isMounted() ? this._component.props : null;
+    return this.isMounted() ? this._component.props : {};
 };
 
 /**
@@ -208,6 +224,19 @@ xblocks.element.prototype._init = function(props, children, callback) {
         return;
     }
 
+    var reactId = xblocks.utils.react.getReactRootID(this._node);
+    if (reactId) {
+        var reactNode = xblocks.utils.react.findReactContainerForID(reactId);
+        if (reactNode !== this._node) {
+            var oldProxyConstructor = xblocks.utils.react.getInstancesByReactRootID(reactId);
+            if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
+                children = oldProxyConstructor.props.children || '';
+                React.unmountComponentAtNode(reactNode);
+                this._node.innerHTML = '';
+            }
+        }
+    }
+
     props._uid = this._node.xuid;
     xblocks.dom.attrs.typeConversion(props, this._node.xprops);
 
@@ -215,7 +244,9 @@ xblocks.element.prototype._init = function(props, children, callback) {
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();
+        xblocks.utils.log.time(this._node, 'react_render');
         this._node.innerHTML = React.renderComponentToStaticMarkup(proxyConstructor);
+        xblocks.utils.log.time(this._node, 'react_render');
         this._node.upgrade();
 
         if (callback) {
@@ -223,11 +254,13 @@ xblocks.element.prototype._init = function(props, children, callback) {
         }
 
     } else {
+        xblocks.utils.log.time(this._node, 'react_render');
         var that = this;
         this._component = React.renderComponent(
             proxyConstructor,
             this._node,
             function() {
+                xblocks.utils.log.time(that._node, 'react_render');
                 that._component = this;
                 that._callbackRender(callback);
             }

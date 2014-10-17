@@ -2,10 +2,11 @@
 
 window.Platform = {};
 var logFlags = {
-    //dom: true,
+    //dom: true
     //data: true
 };
 
+/*! borschik:include:xtag/performance.js */
 /*! borschik:include:xtag/DOMAttrModified.js */
 
 /*! borschik:include:../node_modules/dom-token-list-polyfill/src/token-list.js */

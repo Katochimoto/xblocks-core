@@ -26,7 +26,7 @@ describe('xblocks - клонирование', function() {
 
             expect(cloneElement.xblock).to.be(undefined);
             expect(cloneElement.mounted).to.be(false);
-            expect(cloneElement._inserted).to.be(false);
+            expect(cloneElement._xinserted).to.be(false);
             expect(cloneElement.content).to.be('');
             done();
         }, false);

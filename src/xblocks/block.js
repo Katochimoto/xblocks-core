@@ -16,6 +16,8 @@ var _blockStatic = {
         }
 
         element.xblock = xblocks.element.create(element);
+
+        xblocks.utils.log.time(element, 'dom_inserted');
     },
 
     createLazy: function(elements) {
@@ -30,15 +32,17 @@ var _blockCommon = {
             this.xtmpl = {};
             this.xuid = xblocks.utils.seq();
             this.xprops = xblocks.utils.propTypes(this.xtagName);
-            this._inserted = false;
+            this._xinserted = false;
+
+            xblocks.utils.log.time(this, 'dom_inserted');
         },
 
         inserted: function() {
-            if (this._inserted) {
+            if (this._xinserted) {
                 return;
             }
 
-            this._inserted = true;
+            this._xinserted = true;
 
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>
@@ -51,7 +55,7 @@ var _blockCommon = {
         },
 
         removed: function() {
-            this._inserted = false;
+            this._xinserted = false;
 
             // replace initial content after destroy react component
             // fix:
@@ -114,20 +118,22 @@ var _blockCommon = {
 
         state: {
             get: function() {
-                var props = {};
-                var elementProps = xblocks.tag.tags[this.xtagName].accessors;
+                var prop;
+                var props = xblocks.dom.attrs.toObject(this);
+                var xprops = this.xprops;
+                var eprops = xblocks.tag.tags[ this.xtagName ].accessors;
+                var common = _blockCommon.accessors;
 
-                for (var prop in elementProps) {
-                    if (this.xprops.hasOwnProperty(prop) &&
-                        elementProps.hasOwnProperty(prop) &&
-                        !_blockCommon.accessors.hasOwnProperty(prop)) {
+                for (prop in eprops) {
+                    if (xprops.hasOwnProperty(prop) &&
+                        eprops.hasOwnProperty(prop) &&
+                        !common.hasOwnProperty(prop)) {
 
-                        props[prop] = this[prop];
+                        props[ prop ] = this[ prop ];
                     }
                 }
 
-                props = xblocks.utils.merge({}, xblocks.dom.attrs.toObject(this), props);
-                xblocks.dom.attrs.typeConversion(props, this.xprops);
+                xblocks.dom.attrs.typeConversion(props, xprops);
                 return props;
             }
         }
@@ -142,7 +148,7 @@ var _blockCommon = {
             // not to clone the contents
             var node = Node.prototype.cloneNode.call(this, false);
             node.xtmpl = this.xtmpl;
-            node._inserted = false;
+            node._xinserted = false;
 
             if (deep) {
                 node.content = this.content;
