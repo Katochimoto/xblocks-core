@@ -5580,7 +5580,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     }
 
     // FIXME need more tests
-    // only polyfil
+    // only polyfill
     // internal elements are re-created, while retaining component reference react that you created earlier
     // possible solutions: to use the tag <template> or <script> for the inner elements
     // example:
