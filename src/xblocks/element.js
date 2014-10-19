@@ -173,7 +173,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
 xblocks.element.prototype.repaint = function(callback) {
     var children = this._node.content;
     var props = this._node.state;
-    var mprops = this.getMountedProps();
+    var mprops = this.getMountedProps() || {};
     var prop;
 
     for (prop in mprops) {
@@ -207,10 +207,10 @@ xblocks.element.prototype.getMountedContent = function() {
 };
 
 /**
- * @returns {object}
+ * @returns {?object}
  */
 xblocks.element.prototype.getMountedProps = function() {
-    return this.isMounted() ? this._component.props : {};
+    return this.isMounted() ? this._component.props : null;
 };
 
 /**
@@ -224,15 +224,29 @@ xblocks.element.prototype._init = function(props, children, callback) {
         return;
     }
 
-    var reactId = xblocks.utils.react.getReactRootID(this._node);
-    if (reactId) {
-        var reactNode = xblocks.utils.react.findReactContainerForID(reactId);
-        if (reactNode !== this._node) {
-            var oldProxyConstructor = xblocks.utils.react.getInstancesByReactRootID(reactId);
-            if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
-                children = oldProxyConstructor.props.children || '';
-                React.unmountComponentAtNode(reactNode);
-                this._node.innerHTML = '';
+    // FIXME need more tests
+    // only polyfil
+    // internal elements are re-created, while retaining component reference react that you created earlier
+    // possible solutions: to use the tag <template> or <script> for the inner elements
+    // example:
+    // <xb-menu>
+    //   <template>
+    //     <xb-menuitem></xb-menuitem>
+    //     <xb-menuitem></xb-menuitem>
+    //     <xb-menuitem></xb-menuitem>
+    //   </template>
+    // </xb-menu>
+    if (!global.CustomElements.useNative) {
+        var reactId = xblocks.utils.react.getReactRootID(this._node);
+        if (reactId) {
+            var reactNode = xblocks.utils.react.findReactContainerForID(reactId);
+            if (reactNode !== this._node) {
+                var oldProxyConstructor = xblocks.utils.react.getInstancesByReactRootID(reactId);
+                if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
+                    children = oldProxyConstructor.props.children || '';
+                    React.unmountComponentAtNode(reactNode);
+                    this._node.innerHTML = '';
+                }
             }
         }
     }
@@ -274,6 +288,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
 xblocks.element.prototype._callbackInit = function() {
     xblocks.utils.dispatchEvent(this._node, 'xb-created');
     xblocks.utils.lazy(_elementStatic.globalInitEvent, this._node);
+    xblocks.utils.log.time(this._node, 'xb_init');
 };
 
 /**

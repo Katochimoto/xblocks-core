@@ -3,7 +3,8 @@
 
 xblocks.utils.log = {};
 
-xblocks.utils.log.time = function(element, name) {
+xblocks.utils.log.time = function(/*element, name*/) {
+    /*
     if (!element._xtimers) {
         element._xtimers = {};
     }
@@ -13,4 +14,5 @@ xblocks.utils.log.time = function(element, name) {
     }
 
     element._xtimers[ name ].push(performance.now());
+    */
 };

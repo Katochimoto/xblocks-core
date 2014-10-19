@@ -262,15 +262,17 @@ var logFlags = {
     var doc = document.documentElement;
     doc.addEventListener('DOMAttrModified', listener, false);
     doc.setAttribute('___TEST___', true);
-    doc.removeAttribute('___TEST___', true);
     doc.removeEventListener('DOMAttrModified', listener, false);
+    doc.removeAttribute('___TEST___', true);
 
     if (attrModifiedWorks) {
         return;
     }
 
-    HTMLElement.prototype.__setAttribute = HTMLElement.prototype.setAttribute;
-    HTMLElement.prototype.setAttribute = function(attrName, newVal) {
+    var proto = HTMLElement.prototype;
+
+    proto.__setAttribute = proto.setAttribute;
+    proto.setAttribute = function(attrName, newVal) {
         var prevVal = this.getAttribute(attrName);
         this.__setAttribute(attrName, newVal);
         newVal = this.getAttribute(attrName);
@@ -290,8 +292,8 @@ var logFlags = {
         }
     };
 
-    HTMLElement.prototype.__removeAttribute = HTMLElement.prototype.removeAttribute;
-    HTMLElement.prototype.removeAttribute = function(attrName) {
+    proto.__removeAttribute = proto.removeAttribute;
+    proto.removeAttribute = function(attrName) {
         var prevVal = this.getAttribute(attrName);
         this.__removeAttribute(attrName);
         var evt = document.createEvent('MutationEvent');
@@ -307,6 +309,7 @@ var logFlags = {
         );
         this.dispatchEvent(evt);
     };
+
 }());
 
 /* xtag/DOMAttrModified.js end */
@@ -4077,7 +4080,8 @@ xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
 
 xblocks.utils.log = {};
 
-xblocks.utils.log.time = function(element, name) {
+xblocks.utils.log.time = function(/*element, name*/) {
+    /*
     if (!element._xtimers) {
         element._xtimers = {};
     }
@@ -4087,6 +4091,7 @@ xblocks.utils.log.time = function(element, name) {
     }
 
     element._xtimers[ name ].push(performance.now());
+    */
 };
 
 /* xblocks/utils/log.js end */
@@ -5189,8 +5194,6 @@ var _blockStatic = {
         }
 
         element.xblock = xblocks.element.create(element);
-
-        xblocks.utils.log.time(element, 'dom_inserted');
     },
 
     createLazy: function(elements) {
@@ -5201,13 +5204,14 @@ var _blockStatic = {
 var _blockCommon = {
     lifecycle: {
         created: function() {
+            xblocks.utils.log.time(this, 'xb_init');
+            xblocks.utils.log.time(this, 'dom_inserted');
+
             this.xtagName = this.tagName.toLowerCase();
             this.xtmpl = {};
             this.xuid = xblocks.utils.seq();
             this.xprops = xblocks.utils.propTypes(this.xtagName);
             this._xinserted = false;
-
-            xblocks.utils.log.time(this, 'dom_inserted');
         },
 
         inserted: function() {
@@ -5225,6 +5229,8 @@ var _blockCommon = {
             } else {
                 _blockStatic.create(this);
             }
+
+            xblocks.utils.log.time(this, 'dom_inserted');
         },
 
         removed: function() {
@@ -5522,7 +5528,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
 xblocks.element.prototype.repaint = function(callback) {
     var children = this._node.content;
     var props = this._node.state;
-    var mprops = this.getMountedProps();
+    var mprops = this.getMountedProps() || {};
     var prop;
 
     for (prop in mprops) {
@@ -5556,10 +5562,10 @@ xblocks.element.prototype.getMountedContent = function() {
 };
 
 /**
- * @returns {object}
+ * @returns {?object}
  */
 xblocks.element.prototype.getMountedProps = function() {
-    return this.isMounted() ? this._component.props : {};
+    return this.isMounted() ? this._component.props : null;
 };
 
 /**
@@ -5573,15 +5579,29 @@ xblocks.element.prototype._init = function(props, children, callback) {
         return;
     }
 
-    var reactId = xblocks.utils.react.getReactRootID(this._node);
-    if (reactId) {
-        var reactNode = xblocks.utils.react.findReactContainerForID(reactId);
-        if (reactNode !== this._node) {
-            var oldProxyConstructor = xblocks.utils.react.getInstancesByReactRootID(reactId);
-            if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
-                children = oldProxyConstructor.props.children || '';
-                React.unmountComponentAtNode(reactNode);
-                this._node.innerHTML = '';
+    // FIXME need more tests
+    // only polyfil
+    // internal elements are re-created, while retaining component reference react that you created earlier
+    // possible solutions: to use the tag <template> or <script> for the inner elements
+    // example:
+    // <xb-menu>
+    //   <template>
+    //     <xb-menuitem></xb-menuitem>
+    //     <xb-menuitem></xb-menuitem>
+    //     <xb-menuitem></xb-menuitem>
+    //   </template>
+    // </xb-menu>
+    if (!global.CustomElements.useNative) {
+        var reactId = xblocks.utils.react.getReactRootID(this._node);
+        if (reactId) {
+            var reactNode = xblocks.utils.react.findReactContainerForID(reactId);
+            if (reactNode !== this._node) {
+                var oldProxyConstructor = xblocks.utils.react.getInstancesByReactRootID(reactId);
+                if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
+                    children = oldProxyConstructor.props.children || '';
+                    React.unmountComponentAtNode(reactNode);
+                    this._node.innerHTML = '';
+                }
             }
         }
     }
@@ -5623,6 +5643,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
 xblocks.element.prototype._callbackInit = function() {
     xblocks.utils.dispatchEvent(this._node, 'xb-created');
     xblocks.utils.lazy(_elementStatic.globalInitEvent, this._node);
+    xblocks.utils.log.time(this._node, 'xb_init');
 };
 
 /**
