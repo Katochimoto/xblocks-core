@@ -1,4 +1,4 @@
-/* global xblocks, performance */
+/* global xblocks */
 /* jshint strict: false */
 
 xblocks.utils.log = {};
