@@ -6,8 +6,7 @@
  * @private
  */
 xblocks.utils._lazy = (function() {
-    // setImmediate bad work in IE 10
-    if (typeof(global.setImmediate) === 'function' && !xblocks.utils.support.msie) {
+    if (typeof(global.setImmediate) === 'function') {
         return global.setImmediate;
 
     } else {

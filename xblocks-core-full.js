@@ -180,9 +180,13 @@ Timer.polifill.setTimeout = function() {
 
     var polifill;
 
+    // @see http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
+    if (global.navigator && /Trident/.test(global.navigator.userAgent)) {
+        polifill = 'setTimeout';
+
     // Don't get fooled by e.g. browserify environments.
     // For Node.js before 0.9
-    if (toString.call(global.process) === '[object process]') {
+    } else if (toString.call(global.process) === '[object process]') {
         polifill = 'nextTick';
 
     // For non-IE10 modern browsers
@@ -4372,8 +4376,7 @@ xblocks.utils.merge = function() {
  * @private
  */
 xblocks.utils._lazy = (function() {
-    // setImmediate bad work in IE 10
-    if (typeof(global.setImmediate) === 'function' && !xblocks.utils.support.msie) {
+    if (typeof(global.setImmediate) === 'function') {
         return global.setImmediate;
 
     } else {
