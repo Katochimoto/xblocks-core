@@ -15,7 +15,7 @@ module.exports = function(config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'node_modules/setimmediate/setImmediate.js',
+            'node_modules/setimmediate2/setImmediate.js',
             'bower_components/vow/vow.min.js',
             'bower_components/es5-shim/es5-shim.js',
             'bower_components/react/react-with-addons.js',

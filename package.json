@@ -26,7 +26,7 @@
     },
     "devDependencies": {
         "borschik": "1.3.0",
-        "setimmediate": "Katochimoto/setImmediate.git#1.1.1",
+        "setimmediate2": "1.1.3",
 
         "jshint": "2.5.5",
         "jscs": "1.6.2",
@@ -44,11 +44,7 @@
         "karma-chrome-launcher": "~0.1.x",
         "karma-firefox-launcher": "~0.1.x",
 
-        "CustomElements": "Polymer/CustomElements.git#0.4.2",
-        "HTMLImports": "Polymer/HTMLImports.git#0.4.2",
-
-        "MutationObservers": "Polymer/MutationObservers.git#0.4.2",
-        "WeakMap": "Polymer/WeakMap.git#0.4.2",
+        "webcomponents.js": "Polymer/webcomponentsjs.git",
         "dom-token-list-polyfill": "pennyfx/dom-token-list.git#0.0.2",
         "x-tag-core": "x-tag/core.git"
     },

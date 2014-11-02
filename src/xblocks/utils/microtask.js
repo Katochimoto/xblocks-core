@@ -1,8 +1,11 @@
-window.Platform.endOfMicrotask = (function() {
+/* global global, xblocks */
+/* jshint strict: false */
+
+xblocks.utils.microtask = (function() {
     var iterations = 0;
     var callbacks = [];
-    var twiddle = document.createTextNode('');
-    var Mutation = window.MutationObserver || window.JsMutationObserver;
+    var twiddle = global.document.createTextNode('');
+    var Mutation = global.MutationObserver || global.JsMutationObserver;
 
     (new Mutation(function() {
         while (callbacks.length) {
@@ -17,4 +20,5 @@ window.Platform.endOfMicrotask = (function() {
         twiddle.textContent = iterations++;
         callbacks.push(callback);
     };
+
 }());
