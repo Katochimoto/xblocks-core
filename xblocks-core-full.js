@@ -5188,10 +5188,27 @@ xblocks.utils.react.findReactContainerForID = function(rootNodeID) {
 
 /**
  * @param {HTMLElement} node
+ * @returns {HTMLElement}
+ */
+xblocks.utils.react.findReactContainerForNode = function(node) {
+    var reatId = xblocks.utils.react.getID(node);
+    return (node && xblocks.utils.react.findReactContainerForID(reatId));
+};
+
+/**
+ * @param {HTMLElement} node
  * @returns {?String}
  */
 xblocks.utils.react.getReactRootID = function(node) {
     return React.__internals.Mount.getReactRootID(node);
+};
+
+/**
+ * @param {HTMLElement} node
+ * @returns {?String}
+ */
+xblocks.utils.react.getID = function(node) {
+    return React.__internals.Mount.getID(node);
 };
 
 /**
