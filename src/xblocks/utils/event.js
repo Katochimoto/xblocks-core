@@ -32,7 +32,3 @@ xblocks.utils.CustomEvent = (function() {
 xblocks.utils.dispatchEvent = function(element, name, params) {
     element.dispatchEvent(new xblocks.utils.CustomEvent(name, params));
 };
-
-/*! borschik:include:event/filter.js */
-/*! borschik:include:event/delegate.js */
-/*! borschik:include:event/click.js */

@@ -273,46 +273,6 @@ xblocks.utils.log.time = function(/*element, name*/) {
 
 /* xblocks/utils/log.js end */
 
-/* xblocks/utils/support.js begin */
-/* global xblocks, global */
-/* jshint strict: false */
-
-xblocks.utils.support = {};
-
-xblocks.utils.support.template = ('content' in global.document.createElement('template'));
-
-xblocks.utils.support.msie = (function() {
-    var ua = global.navigator.userAgent.toLowerCase();
-    var match = /(msie) ([\w.]+)/.exec(ua) || [];
-
-    if (match[1]) {
-        return match[2] || '0';
-    }
-
-    return false;
-}());
-
-xblocks.utils.support.upgradeelements = Boolean(
-    global.CustomElements &&
-    typeof(global.CustomElements.upgradeAll) === 'function'
-);
-
-/* xblocks/utils/support.js end */
-
-/* xblocks/utils/uid.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-/**
- * Generate unique string
- * @returns {string}
- */
-xblocks.utils.uid = function() {
-    return Math.floor((1 + Math.random()) * 0x10000000 + Date.now()).toString(36);
-};
-
-/* xblocks/utils/uid.js end */
-
 /* xblocks/utils/seq.js begin */
 /* global xblocks */
 /* jshint strict: false */
@@ -368,42 +328,6 @@ xblocks.utils.type = function(param) {
 };
 
 /* xblocks/utils/type.js end */
-
-/* xblocks/utils/isEmptyObject.js begin */
-/* global xblocks, global */
-/* jshint strict: false */
-
-/**
- * @param {*} obj
- * @returns {boolean}
- */
-xblocks.utils.isEmptyObject = function(obj) {
-    if (xblocks.utils.type(obj) === 'object') {
-        for (var key in obj) {
-            if (global.hasOwnProperty.call(obj, key)) {
-                return false;
-            }
-        }
-    }
-
-    return true;
-};
-
-/* xblocks/utils/isEmptyObject.js end */
-
-/* xblocks/utils/isWindow.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-/**
- * @param {*} obj
- * @returns {boolean}
- */
-xblocks.utils.isWindow = function(obj) {
-    return obj !== null && obj === obj.window;
-};
-
-/* xblocks/utils/isWindow.js end */
 
 /* xblocks/utils/isPlainObject.js begin */
 /* global xblocks */
@@ -583,37 +507,6 @@ xblocks.utils.lazy = function(callback, args) {
 
 /* xblocks/utils/lazy.js end */
 
-/* xblocks/utils/throttle.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-xblocks.utils.throttle = function(callback, delay, scope) {
-    delay = delay || 250;
-    var last;
-    var timer;
-
-    return function() {
-        var context = scope || this;
-        var now = Date.now();
-        var args = arguments;
-
-        if (last && now < last + delay) {
-            clearTimeout(timer);
-
-            timer = setTimeout(function() {
-                last = now;
-                callback.apply(context, args);
-            }, delay);
-
-        } else {
-            last = now;
-            callback.apply(context, args);
-        }
-    };
-};
-
-/* xblocks/utils/throttle.js end */
-
 /* xblocks/utils/event.js begin */
 /* global xblocks, global */
 /* jshint strict: false */
@@ -649,116 +542,6 @@ xblocks.utils.CustomEvent = (function() {
 xblocks.utils.dispatchEvent = function(element, name, params) {
     element.dispatchEvent(new xblocks.utils.CustomEvent(name, params));
 };
-
-/* xblocks/utils/event/filter.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-/**
- * @param {HTMLElement} element
- * @param {Event} event mouseover or mouseout event
- * @param {function} callback
- */
-xblocks.utils.event.mouseEnterFilter = function(element, event, callback) {
-    var toElement = event.relatedTarget || event.srcElement;
-
-    while (toElement && toElement !== element) {
-        toElement = toElement.parentNode;
-    }
-
-    if (toElement === element) {
-        return;
-    }
-
-    return callback.call(element, event);
-};
-
-xblocks.utils.event.mouseLeaveFilter = xblocks.utils.event.mouseEnterFilter;
-
-/* xblocks/utils/event/filter.js end */
-
-/* xblocks/utils/event/delegate.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-xblocks.utils.event.delegate = function(selector, callback) {
-
-    return function(event) {
-        var target = event.target || event.srcElement;
-        var match;
-
-        if (!target.tagName) {
-            return;
-        }
-
-        if (xblocks.dom.matchesSelector(target, selector)) {
-            match = target;
-
-        } else if (xblocks.dom.matchesSelector(target, selector + ' *')) {
-            var parent = target.parentNode;
-
-            while (parent) {
-                if (xblocks.dom.matchesSelector(parent, selector)) {
-                    match = parent;
-                    break;
-                }
-
-                parent = parent.parentNode;
-            }
-        }
-
-        if (!match) {
-            return;
-        }
-
-        event.delegateElement = match;
-        callback.call(match, event);
-    };
-};
-
-/* xblocks/utils/event/delegate.js end */
-
-/* xblocks/utils/event/click.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-xblocks.utils.event._clickWhich = {
-    1: 'left',
-    2: 'center',
-    3: 'right'
-};
-
-xblocks.utils.event.click = function(which, callback) {
-    which = Array.isArray(which) ? which : [ which ];
-
-    return function(event) {
-        if (event.type !== 'click') {
-            return;
-        }
-
-        var whichEvt = event.which;
-
-        if (!whichEvt && event.button) {
-            /* jshint -W016 */
-            if (event.button & 1) {
-                whichEvt = 1;
-            } else if (event.button & 4) {
-                whichEvt = 2;
-            } else if (event.button & 2) {
-                whichEvt = 3;
-            }
-        }
-
-        whichEvt = xblocks.utils.event._clickWhich[ whichEvt ];
-
-        if (which.indexOf(whichEvt) !== -1) {
-            callback.call(this, event);
-        }
-    };
-};
-
-/* xblocks/utils/event/click.js end */
-
 
 /* xblocks/utils/event.js end */
 
@@ -855,76 +638,14 @@ xblocks.utils.equals = function(x, y) {
 
 /* xblocks/utils/equals.js end */
 
-/* xblocks/utils/filterObject.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-/**
- * @param {object} from
- * @param {function} [callback]
- * @returns {object}
- */
-xblocks.utils.filterObject = function(from, callback) {
-    var obj = {};
-    var props = {};
-    var fill = false;
-
-    Object.keys(from).forEach(function(property) {
-        var descr = Object.getOwnPropertyDescriptor(from, property);
-        if (callback && callback(property, descr)) {
-            props[property] = descr;
-            fill = true;
-        }
-    });
-
-    if (fill) {
-        Object.defineProperties(obj, props);
-    }
-
-    return obj;
-};
-
-/* xblocks/utils/filterObject.js end */
-
-/* xblocks/utils/mapObject.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-/**
- * @param {object} from
- * @param {function} [callback]
- * @returns {object}
- */
-xblocks.utils.mapObject = function(from, callback) {
-    var obj = {};
-    var props = {};
-    var fill = false;
-
-    Object.keys(from).forEach(function(property) {
-        var descr = Object.getOwnPropertyDescriptor(from, property);
-        var map = callback && callback(property, descr);
-        if (xblocks.utils.type(map) === 'object') {
-            props[map.name] = map.descr;
-            fill = true;
-        }
-    });
-
-    if (fill) {
-        Object.defineProperties(obj, props);
-    }
-
-    return obj;
-};
-
-/* xblocks/utils/mapObject.js end */
-
 /* xblocks/utils/upgradeElements.js begin */
 /* global xblocks, global */
 /* jshint strict: false */
 
 xblocks.utils.upgradeElements = (function() {
-    if (xblocks.utils.support.upgradeelements) {
+    if (global.CustomElements && typeof(global.CustomElements.upgradeAll) === 'function') {
         return global.CustomElements.upgradeAll;
+
     } else {
         return function() {};
     }
@@ -1212,73 +933,6 @@ xblocks.dom.attrs.typeConversion = function(props, propTypes) {
 };
 
 /* xblocks/dom/attrs.js end */
-
-/* xblocks/dom/index.js begin */
-/* global xblocks, global */
-/* jshint strict: false */
-
-xblocks.dom.index = function(selector, element, context) {
-    return Array.prototype.indexOf.call((context || global.document).querySelectorAll(selector), element);
-};
-
-/* xblocks/dom/index.js end */
-
-/* xblocks/dom/isParent.js begin */
-/* global xblocks, global */
-/* jshint strict: false */
-
-xblocks.dom.isParent = (function() {
-    var root = global.document.documentElement;
-
-    if ('compareDocumentPosition' in root) {
-        return function(container, element) {
-            /*jshint -W016 */
-            return (container.compareDocumentPosition(element) & 16) == 16;
-        };
-
-    } else if ('contains' in root) {
-        return function(container, element) {
-            return container !== element && container.contains(element);
-        };
-
-    } else {
-        return function(container, element) {
-            while ((element = element.parentNode)) {
-                if (element === container) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
-    }
-}());
-
-/* xblocks/dom/isParent.js end */
-
-/* xblocks/dom/matchesSelector.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-xblocks.dom.matchesSelector = (function() {
-    var ElementPrototype = Element.prototype;
-    var matches = ElementPrototype.matches ||
-        ElementPrototype.matchesSelector ||
-        ElementPrototype.webkitMatchesSelector ||
-        ElementPrototype.mozMatchesSelector ||
-        ElementPrototype.msMatchesSelector ||
-        ElementPrototype.oMatchesSelector ||
-        function(selector) {
-            return (Array.prototype.indexOf.call((this.parentNode || this.ownerDocument).querySelectorAll(selector), this) !== -1);
-        };
-
-    return function(element, selector) {
-        return (element.nodeType === 1 ? matches.call(element, selector) : false);
-    };
-
-}());
-
-/* xblocks/dom/matchesSelector.js end */
 
 
 /* xblocks/dom.js end */
