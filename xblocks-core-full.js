@@ -4805,30 +4805,6 @@ xblocks.utils.upgradeElements = (function() {
 
 /* xblocks/utils/upgradeElements.js end */
 
-/* xblocks/utils/contentNode.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-/**
- * @param {HTMLElement} node
- * @returns {HTMLElement}
- */
-xblocks.utils.contentNode = function(node) {
-    var element;
-
-    if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
-        element = node.querySelector('[data-xb-content="' + node.xuid + '"]');
-
-        if (!element) {
-            element = node.querySelector('script[type="text/x-template"]:not([ref]),template:not([ref])');
-        }
-    }
-
-    return element || node;
-};
-
-/* xblocks/utils/contentNode.js end */
-
 /* xblocks/utils/propTypes.js begin */
 /* global xblocks */
 /* jshint strict: false */
@@ -4952,32 +4928,31 @@ xblocks.utils.react.getInstancesByReactRootID = function(rootId) {
 /**
  * @namespace
  */
-xblocks.dom = {
-    attrs: {
-        /**
-         * @type {string[]}
-         */
-        ARRTS_BOOLEAN: [
-            'active',
-            'autofocus',
-            'checked',
-            'defer',
-            'disabled',
-            'ismap',
-            'multiple',
-            'readonly',
-            'required',
-            'selected',
-            'xb-static'
-        ],
+xblocks.dom = xblocks.dom || {};
+xblocks.dom.attrs = xblocks.dom.attrs || {};
 
-        /**
-         * @type {object}
-         */
-        XB_ATTRS: {
-            STATIC: 'xb-static'
-        }
-    }
+/**
+ * @type {string[]}
+ */
+xblocks.dom.attrs.ARRTS_BOOLEAN = [
+    'active',
+    'autofocus',
+    'checked',
+    'defer',
+    'disabled',
+    'ismap',
+    'multiple',
+    'readonly',
+    'required',
+    'selected',
+    'xb-static'
+];
+
+/**
+ * @type {object}
+ */
+xblocks.dom.attrs.XB_ATTRS = {
+    STATIC: 'xb-static'
 };
 
 /* xblocks/dom/attrs.js begin */
@@ -4996,15 +4971,15 @@ xblocks.dom.attrs.get = function(element, attrs) {
 
     for (var attrName in attrs) {
         if (attrs.hasOwnProperty(attrName) && element.hasAttribute(attrName)) {
-            if (typeof(attrs[attrName]) === 'boolean') {
-                attrs[attrName] = xblocks.dom.attrs.valueConversion(
+            if (typeof(attrs[ attrName ]) === 'boolean') {
+                attrs[ attrName ] = xblocks.dom.attrs.valueConversion(
                     attrName,
                     element.getAttribute(attrName),
                     React.PropTypes.bool
                 );
 
             } else {
-                attrs[attrName] = element.getAttribute(attrName);
+                attrs[ attrName ] = element.getAttribute(attrName);
             }
         }
     }
@@ -5085,6 +5060,30 @@ xblocks.dom.attrs.typeConversion = function(props, propTypes) {
 };
 
 /* xblocks/dom/attrs.js end */
+
+/* xblocks/dom/contentNode.js begin */
+/* global xblocks */
+/* jshint strict: false */
+
+/**
+ * @param {HTMLElement} node
+ * @returns {HTMLElement}
+ */
+xblocks.dom.contentNode = function(node) {
+    var element;
+
+    if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
+        element = node.querySelector('[data-xb-content="' + node.xuid + '"]');
+
+        if (!element) {
+            element = node.querySelector('script[type="text/x-template"]:not([ref]),template:not([ref])');
+        }
+    }
+
+    return element || node;
+};
+
+/* xblocks/dom/contentNode.js end */
 
 
 /* xblocks/dom.js end */
@@ -5273,7 +5272,7 @@ var _blockCommon = {
                     return this.xblock.getMountedContent();
                 }
 
-                return xblocks.utils.contentNode(this).innerHTML;
+                return xblocks.dom.contentNode(this).innerHTML;
             },
 
             set: function(content) {
@@ -5281,7 +5280,7 @@ var _blockCommon = {
                     this.xblock.setMountedContent(content);
 
                 } else {
-                    xblocks.utils.contentNode(this).innerHTML = content;
+                    xblocks.dom.contentNode(this).innerHTML = content;
                     this.upgrade();
                 }
             }

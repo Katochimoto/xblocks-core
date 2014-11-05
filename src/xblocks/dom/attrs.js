@@ -13,15 +13,15 @@ xblocks.dom.attrs.get = function(element, attrs) {
 
     for (var attrName in attrs) {
         if (attrs.hasOwnProperty(attrName) && element.hasAttribute(attrName)) {
-            if (typeof(attrs[attrName]) === 'boolean') {
-                attrs[attrName] = xblocks.dom.attrs.valueConversion(
+            if (typeof(attrs[ attrName ]) === 'boolean') {
+                attrs[ attrName ] = xblocks.dom.attrs.valueConversion(
                     attrName,
                     element.getAttribute(attrName),
                     React.PropTypes.bool
                 );
 
             } else {
-                attrs[attrName] = element.getAttribute(attrName);
+                attrs[ attrName ] = element.getAttribute(attrName);
             }
         }
     }

@@ -96,7 +96,7 @@ var _blockCommon = {
                     return this.xblock.getMountedContent();
                 }
 
-                return xblocks.utils.contentNode(this).innerHTML;
+                return xblocks.dom.contentNode(this).innerHTML;
             },
 
             set: function(content) {
@@ -104,7 +104,7 @@ var _blockCommon = {
                     this.xblock.setMountedContent(content);
 
                 } else {
-                    xblocks.utils.contentNode(this).innerHTML = content;
+                    xblocks.dom.contentNode(this).innerHTML = content;
                     this.upgrade();
                 }
             }
