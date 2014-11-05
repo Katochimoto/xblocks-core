@@ -17,7 +17,6 @@ xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
 /*! borschik:include:utils/merge.js */
 /*! borschik:include:utils/lazy.js */
 /*! borschik:include:utils/equals.js */
-/*! borschik:include:utils/upgradeElements.js */
 /*! borschik:include:utils/propTypes.js */
 /*! borschik:include:utils/tmpl.js */
 /*! borschik:include:utils/react.js */

@@ -33,3 +33,4 @@ xblocks.dom.attrs.XB_ATTRS = {
 
 /*! borschik:include:dom/attrs.js */
 /*! borschik:include:dom/contentNode.js */
+/*! borschik:include:dom/upgradeElements.js */

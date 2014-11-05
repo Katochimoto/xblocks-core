@@ -4752,21 +4752,6 @@ xblocks.utils.equals = function(x, y) {
 
 /* xblocks/utils/equals.js end */
 
-/* xblocks/utils/upgradeElements.js begin */
-/* global xblocks, global */
-/* jshint strict: false */
-
-xblocks.utils.upgradeElements = (function() {
-    if (global.CustomElements && typeof(global.CustomElements.upgradeAll) === 'function') {
-        return global.CustomElements.upgradeAll;
-
-    } else {
-        return function() {};
-    }
-}());
-
-/* xblocks/utils/upgradeElements.js end */
-
 /* xblocks/utils/propTypes.js begin */
 /* global xblocks */
 /* jshint strict: false */
@@ -5047,6 +5032,21 @@ xblocks.dom.contentNode = function(node) {
 
 /* xblocks/dom/contentNode.js end */
 
+/* xblocks/dom/upgradeElements.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+xblocks.dom.upgradeElements = (function() {
+    if (global.CustomElements && typeof(global.CustomElements.upgradeAll) === 'function') {
+        return global.CustomElements.upgradeAll;
+
+    } else {
+        return function() {};
+    }
+}());
+
+/* xblocks/dom/upgradeElements.js end */
+
 
 /* xblocks/dom.js end */
 
@@ -5321,7 +5321,7 @@ var _blockCommon = {
 
     methods: {
         upgrade: function() {
-            xblocks.utils.upgradeElements(this);
+            xblocks.dom.upgradeElements(this);
         },
 
         cloneNode: function(deep) {

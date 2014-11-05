@@ -142,7 +142,7 @@ var _blockCommon = {
 
     methods: {
         upgrade: function() {
-            xblocks.utils.upgradeElements(this);
+            xblocks.dom.upgradeElements(this);
         },
 
         cloneNode: function(deep) {
