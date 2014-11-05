@@ -4836,7 +4836,7 @@ xblocks.utils.react.findReactContainerForID = function(rootNodeID) {
  */
 xblocks.utils.react.findReactContainerForNode = function(node) {
     var reatId = xblocks.utils.react.getID(node);
-    return (node && xblocks.utils.react.findReactContainerForID(reatId));
+    return (reatId && xblocks.utils.react.findReactContainerForID(reatId));
 };
 
 /**
