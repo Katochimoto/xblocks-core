@@ -43,7 +43,7 @@ var _elementStatic = {
      * @private
      */
     globalInitEvent: function(records) {
-        xblocks.utils.dispatchEvent(global, 'xb-created', { detail: { records: records } });
+        xblocks.event.dispatch(global, 'xb-created', { detail: { records: records } });
     },
 
     /**
@@ -51,7 +51,7 @@ var _elementStatic = {
      * @private
      */
     globalRepaintEvent: function(records) {
-        xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
+        xblocks.event.dispatch(global, 'xb-repaint', { detail: { records: records } });
     }
 
     /**
@@ -59,7 +59,7 @@ var _elementStatic = {
      * @private
      */
     //globalUpdateEvent: function(records) {
-    //    xblocks.utils.dispatchEvent(global, 'xb-update', { detail: { records: records } });
+    //    xblocks.event.dispatch(global, 'xb-update', { detail: { records: records } });
     //}
 };
 
@@ -286,7 +286,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
  * @private
  */
 xblocks.element.prototype._callbackInit = function() {
-    xblocks.utils.dispatchEvent(this._node, 'xb-created');
+    xblocks.event.dispatch(this._node, 'xb-created');
     xblocks.utils.lazy(_elementStatic.globalInitEvent, this._node);
     xblocks.utils.log.time(this._node, 'xb_init');
 };
@@ -296,7 +296,7 @@ xblocks.element.prototype._callbackInit = function() {
  * @private
  */
 xblocks.element.prototype._callbackRepaint = function(callback) {
-    xblocks.utils.dispatchEvent(this._node, 'xb-repaint');
+    xblocks.event.dispatch(this._node, 'xb-repaint');
     xblocks.utils.lazy(_elementStatic.globalRepaintEvent, this._node);
 
     if (callback) {
@@ -360,7 +360,7 @@ xblocks.element.prototype._callbackMutation = function(records) {
 xblocks.element.prototype._callbackUpdate = function(callback) {
     this._node.upgrade();
 
-    xblocks.utils.dispatchEvent(this._node, 'xb-update');
+    xblocks.event.dispatch(this._node, 'xb-update');
     //xblocks.utils.lazy(_elementStatic.globalUpdateEvent, this._node);
 
     if (callback) {

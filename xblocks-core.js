@@ -507,44 +507,6 @@ xblocks.utils.lazy = function(callback, args) {
 
 /* xblocks/utils/lazy.js end */
 
-/* xblocks/utils/event.js begin */
-/* global xblocks, global */
-/* jshint strict: false */
-
-xblocks.utils.event = {};
-
-/**
- * @constructor
- */
-xblocks.utils.CustomEvent = (function() {
-    if (!xblocks.utils.pristine('CustomEvent')) {
-        var CustomEvent = function(event, params) {
-            params = params || {};
-            var evt = document.createEvent('CustomEvent');
-            evt.initCustomEvent(event, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
-            return evt;
-        };
-
-        CustomEvent.prototype = global.Event.prototype;
-
-        return CustomEvent;
-
-    } else {
-        return global.CustomEvent;
-    }
-}());
-
-/**
- * @param {HTMLElement} element
- * @param {string} name
- * @param {object} params
- */
-xblocks.utils.dispatchEvent = function(element, name, params) {
-    element.dispatchEvent(new xblocks.utils.CustomEvent(name, params));
-};
-
-/* xblocks/utils/event.js end */
-
 /* xblocks/utils/equals.js begin */
 /* global xblocks */
 /* jshint strict: false */
@@ -936,6 +898,47 @@ xblocks.dom.contentNode = function(node) {
 
 /* xblocks/dom.js end */
 
+    /* xblocks/event.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+ * @namespace
+ */
+xblocks.event = xblocks.event || {};
+
+/**
+ * @constructor
+ */
+xblocks.event.Custom = (function() {
+    if (!xblocks.utils.pristine('CustomEvent')) {
+        var CustomEvent = function(event, params) {
+            params = params || {};
+            var evt = global.document.createEvent('CustomEvent');
+            evt.initCustomEvent(event, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
+            return evt;
+        };
+
+        CustomEvent.prototype = global.Event.prototype;
+
+        return CustomEvent;
+
+    } else {
+        return global.CustomEvent;
+    }
+}());
+
+/**
+ * @param {HTMLElement} element
+ * @param {string} name
+ * @param {object} params
+ */
+xblocks.event.dispatch = function(element, name, params) {
+    element.dispatchEvent(new xblocks.event.Custom(name, params));
+};
+
+/* xblocks/event.js end */
+
     /* xblocks/tag.js begin */
 /* global xblocks, global */
 /* jshint strict: false */
@@ -1244,7 +1247,7 @@ var _elementStatic = {
      * @private
      */
     globalInitEvent: function(records) {
-        xblocks.utils.dispatchEvent(global, 'xb-created', { detail: { records: records } });
+        xblocks.event.dispatch(global, 'xb-created', { detail: { records: records } });
     },
 
     /**
@@ -1252,7 +1255,7 @@ var _elementStatic = {
      * @private
      */
     globalRepaintEvent: function(records) {
-        xblocks.utils.dispatchEvent(global, 'xb-repaint', { detail: { records: records } });
+        xblocks.event.dispatch(global, 'xb-repaint', { detail: { records: records } });
     }
 
     /**
@@ -1260,7 +1263,7 @@ var _elementStatic = {
      * @private
      */
     //globalUpdateEvent: function(records) {
-    //    xblocks.utils.dispatchEvent(global, 'xb-update', { detail: { records: records } });
+    //    xblocks.event.dispatch(global, 'xb-update', { detail: { records: records } });
     //}
 };
 
@@ -1487,7 +1490,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
  * @private
  */
 xblocks.element.prototype._callbackInit = function() {
-    xblocks.utils.dispatchEvent(this._node, 'xb-created');
+    xblocks.event.dispatch(this._node, 'xb-created');
     xblocks.utils.lazy(_elementStatic.globalInitEvent, this._node);
     xblocks.utils.log.time(this._node, 'xb_init');
 };
@@ -1497,7 +1500,7 @@ xblocks.element.prototype._callbackInit = function() {
  * @private
  */
 xblocks.element.prototype._callbackRepaint = function(callback) {
-    xblocks.utils.dispatchEvent(this._node, 'xb-repaint');
+    xblocks.event.dispatch(this._node, 'xb-repaint');
     xblocks.utils.lazy(_elementStatic.globalRepaintEvent, this._node);
 
     if (callback) {
@@ -1561,7 +1564,7 @@ xblocks.element.prototype._callbackMutation = function(records) {
 xblocks.element.prototype._callbackUpdate = function(callback) {
     this._node.upgrade();
 
-    xblocks.utils.dispatchEvent(this._node, 'xb-update');
+    xblocks.event.dispatch(this._node, 'xb-update');
     //xblocks.utils.lazy(_elementStatic.globalUpdateEvent, this._node);
 
     if (callback) {
