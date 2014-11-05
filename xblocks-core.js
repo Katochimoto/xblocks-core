@@ -246,7 +246,7 @@ Timer.polifill.setTimeout = function() {
 /**
  * @namespace
  */
-xblocks.utils = {};
+xblocks.utils = xblocks.utils || {};
 
 xblocks.utils.REG_TYPE_EXTRACT = /\s([a-zA-Z]+)/;
 xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
