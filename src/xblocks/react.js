@@ -1,13 +1,16 @@
 /* global xblocks, React */
 /* jshint strict: false */
 
-xblocks.utils.react = {};
+/**
+ * @namespace
+ */
+xblocks.react = xblocks.react || {};
 
 /**
  * @param {String} rootNodeID
  * @returns {HTMLElement}
  */
-xblocks.utils.react.findReactContainerForID = function(rootNodeID) {
+xblocks.react.findReactContainerForID = function(rootNodeID) {
     return React.__internals.Mount.findReactContainerForID(rootNodeID);
 };
 
@@ -15,25 +18,25 @@ xblocks.utils.react.findReactContainerForID = function(rootNodeID) {
  * @param {HTMLElement} node
  * @returns {HTMLElement}
  */
-xblocks.utils.react.findReactContainerForNode = function(node) {
-    var reatId = xblocks.utils.react.getID(node);
-    return (reatId && xblocks.utils.react.findReactContainerForID(reatId));
+xblocks.react.findReactContainerForNode = function(node) {
+    var reatId = xblocks.react.getID(node);
+    return (reatId && xblocks.react.findReactContainerForID(reatId));
 };
 
 /**
  * @param {HTMLElement} node
  * @returns {?String}
  */
-xblocks.utils.react.getReactRootID = function(node) {
-    var rootElement = xblocks.utils.react.getRootElementInContainer(node);
-    return rootElement && xblocks.utils.react.getID(rootElement);
+xblocks.react.getReactRootID = function(node) {
+    var rootElement = xblocks.react.getRootElementInContainer(node);
+    return rootElement && xblocks.react.getID(rootElement);
 };
 
 /**
  * @param {String} rootId
  * @returns {?Object}
  */
-xblocks.utils.react.getInstancesByReactRootID = function(rootId) {
+xblocks.react.getInstancesByReactRootID = function(rootId) {
     return React.__internals.Mount._instancesByReactRootID[ rootId ];
 };
 
@@ -42,7 +45,7 @@ xblocks.utils.react.getInstancesByReactRootID = function(rootId) {
  * @param {HTMLElement} node
  * @returns {?HTMLElement}
  */
-xblocks.utils.react.getRootElementInContainer = function(node) {
+xblocks.react.getRootElementInContainer = function(node) {
     if (!node) {
         return null;
     }
@@ -59,6 +62,6 @@ xblocks.utils.react.getRootElementInContainer = function(node) {
  * @param {HTMLElement} node
  * @returns {?String}
  */
-xblocks.utils.react.getID = function(node) {
+xblocks.react.getID = function(node) {
     return node && node.getAttribute && node.getAttribute('data-reactid') || '';
 };

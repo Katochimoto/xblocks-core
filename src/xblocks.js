@@ -16,6 +16,7 @@
     /*! borschik:include:xblocks/utils.js */
     /*! borschik:include:xblocks/dom.js */
     /*! borschik:include:xblocks/event.js */
+    /*! borschik:include:xblocks/react.js */
     /*! borschik:include:xblocks/tag.js */
     /*! borschik:include:xblocks/view.js */
     /*! borschik:include:xblocks/block.js */

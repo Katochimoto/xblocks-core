@@ -237,11 +237,11 @@ xblocks.element.prototype._init = function(props, children, callback) {
     //   </template>
     // </xb-menu>
     if (!global.CustomElements.useNative) {
-        var reactId = xblocks.utils.react.getReactRootID(this._node);
+        var reactId = xblocks.react.getReactRootID(this._node);
         if (reactId) {
-            var reactNode = xblocks.utils.react.findReactContainerForID(reactId);
+            var reactNode = xblocks.react.findReactContainerForID(reactId);
             if (reactNode !== this._node) {
-                var oldProxyConstructor = xblocks.utils.react.getInstancesByReactRootID(reactId);
+                var oldProxyConstructor = xblocks.react.getInstancesByReactRootID(reactId);
                 if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
                     children = oldProxyConstructor.props.children || '';
                     React.unmountComponentAtNode(reactNode);

@@ -4816,74 +4816,6 @@ xblocks.utils.propTypes = function(tagName) {
 
 /* xblocks/utils/tmpl.js end */
 
-/* xblocks/utils/react.js begin */
-/* global xblocks, React */
-/* jshint strict: false */
-
-xblocks.utils.react = {};
-
-/**
- * @param {String} rootNodeID
- * @returns {HTMLElement}
- */
-xblocks.utils.react.findReactContainerForID = function(rootNodeID) {
-    return React.__internals.Mount.findReactContainerForID(rootNodeID);
-};
-
-/**
- * @param {HTMLElement} node
- * @returns {HTMLElement}
- */
-xblocks.utils.react.findReactContainerForNode = function(node) {
-    var reatId = xblocks.utils.react.getID(node);
-    return (reatId && xblocks.utils.react.findReactContainerForID(reatId));
-};
-
-/**
- * @param {HTMLElement} node
- * @returns {?String}
- */
-xblocks.utils.react.getReactRootID = function(node) {
-    var rootElement = xblocks.utils.react.getRootElementInContainer(node);
-    return rootElement && xblocks.utils.react.getID(rootElement);
-};
-
-/**
- * @param {String} rootId
- * @returns {?Object}
- */
-xblocks.utils.react.getInstancesByReactRootID = function(rootId) {
-    return React.__internals.Mount._instancesByReactRootID[ rootId ];
-};
-
-/**
- * FIXME check after update React !!
- * @param {HTMLElement} node
- * @returns {?HTMLElement}
- */
-xblocks.utils.react.getRootElementInContainer = function(node) {
-    if (!node) {
-        return null;
-    }
-
-    if (node.nodeType === 9) {
-        return node.documentElement;
-    } else {
-        return node.firstChild;
-    }
-};
-
-/**
- * FIXME check after update React !!
- * @param {HTMLElement} node
- * @returns {?String}
- */
-xblocks.utils.react.getID = function(node) {
-    return node && node.getAttribute && node.getAttribute('data-reactid') || '';
-};
-
-/* xblocks/utils/react.js end */
-
 
 /* xblocks/utils.js end */
 
@@ -5110,6 +5042,77 @@ xblocks.event.dispatch = function(element, name, params) {
 
 /* xblocks/event.js end */
 
+    /* xblocks/react.js begin */
+/* global xblocks, React */
+/* jshint strict: false */
+
+/**
+ * @namespace
+ */
+xblocks.react = xblocks.react || {};
+
+/**
+ * @param {String} rootNodeID
+ * @returns {HTMLElement}
+ */
+xblocks.react.findReactContainerForID = function(rootNodeID) {
+    return React.__internals.Mount.findReactContainerForID(rootNodeID);
+};
+
+/**
+ * @param {HTMLElement} node
+ * @returns {HTMLElement}
+ */
+xblocks.react.findReactContainerForNode = function(node) {
+    var reatId = xblocks.react.getID(node);
+    return (reatId && xblocks.react.findReactContainerForID(reatId));
+};
+
+/**
+ * @param {HTMLElement} node
+ * @returns {?String}
+ */
+xblocks.react.getReactRootID = function(node) {
+    var rootElement = xblocks.react.getRootElementInContainer(node);
+    return rootElement && xblocks.react.getID(rootElement);
+};
+
+/**
+ * @param {String} rootId
+ * @returns {?Object}
+ */
+xblocks.react.getInstancesByReactRootID = function(rootId) {
+    return React.__internals.Mount._instancesByReactRootID[ rootId ];
+};
+
+/**
+ * FIXME check after update React !!
+ * @param {HTMLElement} node
+ * @returns {?HTMLElement}
+ */
+xblocks.react.getRootElementInContainer = function(node) {
+    if (!node) {
+        return null;
+    }
+
+    if (node.nodeType === 9) {
+        return node.documentElement;
+    } else {
+        return node.firstChild;
+    }
+};
+
+/**
+ * FIXME check after update React !!
+ * @param {HTMLElement} node
+ * @returns {?String}
+ */
+xblocks.react.getID = function(node) {
+    return node && node.getAttribute && node.getAttribute('data-reactid') || '';
+};
+
+/* xblocks/react.js end */
+
     /* xblocks/tag.js begin */
 /* global xblocks, global */
 /* jshint strict: false */
@@ -5138,7 +5141,7 @@ var _viewCommon = {
     },
 
     template: function(ref, props) {
-        var rootNode = xblocks.utils.react.findReactContainerForID(this._rootNodeID);
+        var rootNode = xblocks.react.findReactContainerForID(this._rootNodeID);
         var xtmpl = rootNode && rootNode.xtmpl;
 
         if (typeof(xtmpl) === 'object' && xtmpl.hasOwnProperty(ref)) {
@@ -5612,11 +5615,11 @@ xblocks.element.prototype._init = function(props, children, callback) {
     //   </template>
     // </xb-menu>
     if (!global.CustomElements.useNative) {
-        var reactId = xblocks.utils.react.getReactRootID(this._node);
+        var reactId = xblocks.react.getReactRootID(this._node);
         if (reactId) {
-            var reactNode = xblocks.utils.react.findReactContainerForID(reactId);
+            var reactNode = xblocks.react.findReactContainerForID(reactId);
             if (reactNode !== this._node) {
-                var oldProxyConstructor = xblocks.utils.react.getInstancesByReactRootID(reactId);
+                var oldProxyConstructor = xblocks.react.getInstancesByReactRootID(reactId);
                 if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
                     children = oldProxyConstructor.props.children || '';
                     React.unmountComponentAtNode(reactNode);
