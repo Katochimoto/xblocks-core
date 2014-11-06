@@ -36,7 +36,7 @@ xblocks.react.getRootID = function(node) {
  * @param {String} rootId
  * @returns {?Object}
  */
-xblocks.react.getInstancesByReactRootID = function(rootId) {
+xblocks.react.getInstancesByRootID = function(rootId) {
     return React.__internals.Mount._instancesByReactRootID[ rootId ];
 };
 

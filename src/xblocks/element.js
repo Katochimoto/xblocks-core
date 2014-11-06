@@ -241,7 +241,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
         if (reactId) {
             var reactNode = xblocks.react.findContainerForID(reactId);
             if (reactNode !== this._node) {
-                var oldProxyConstructor = xblocks.react.getInstancesByReactRootID(reactId);
+                var oldProxyConstructor = xblocks.react.getInstancesByRootID(reactId);
                 if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
                     children = oldProxyConstructor.props.children || '';
                     React.unmountComponentAtNode(reactNode);

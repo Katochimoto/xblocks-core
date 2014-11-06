@@ -929,7 +929,7 @@ xblocks.react.getRootID = function(node) {
  * @param {String} rootId
  * @returns {?Object}
  */
-xblocks.react.getInstancesByReactRootID = function(rootId) {
+xblocks.react.getInstancesByRootID = function(rootId) {
     return React.__internals.Mount._instancesByReactRootID[ rootId ];
 };
 
@@ -1467,7 +1467,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
         if (reactId) {
             var reactNode = xblocks.react.findContainerForID(reactId);
             if (reactNode !== this._node) {
-                var oldProxyConstructor = xblocks.react.getInstancesByReactRootID(reactId);
+                var oldProxyConstructor = xblocks.react.getInstancesByRootID(reactId);
                 if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
                     children = oldProxyConstructor.props.children || '';
                     React.unmountComponentAtNode(reactNode);
