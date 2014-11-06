@@ -692,15 +692,8 @@ xblocks.utils.react.findReactContainerForNode = function(node) {
  * @returns {?String}
  */
 xblocks.utils.react.getReactRootID = function(node) {
-    return React.__internals.Mount.getReactRootID(node);
-};
-
-/**
- * @param {HTMLElement} node
- * @returns {?String}
- */
-xblocks.utils.react.getID = function(node) {
-    return React.__internals.Mount.getID(node);
+    var rootElement = xblocks.utils.react.getRootElementInContainer(node);
+    return rootElement && xblocks.utils.react.getID(rootElement);
 };
 
 /**
@@ -709,6 +702,32 @@ xblocks.utils.react.getID = function(node) {
  */
 xblocks.utils.react.getInstancesByReactRootID = function(rootId) {
     return React.__internals.Mount._instancesByReactRootID[ rootId ];
+};
+
+/**
+ * FIXME check after update React !!
+ * @param {HTMLElement} node
+ * @returns {?HTMLElement}
+ */
+xblocks.utils.react.getRootElementInContainer = function(node) {
+    if (!node) {
+        return null;
+    }
+
+    if (node.nodeType === 9) {
+        return node.documentElement;
+    } else {
+        return node.firstChild;
+    }
+};
+
+/**
+ * FIXME check after update React !!
+ * @param {HTMLElement} node
+ * @returns {?String}
+ */
+xblocks.utils.react.getID = function(node) {
+    return node && node.getAttribute && node.getAttribute('data-reactid') || '';
 };
 
 /* xblocks/utils/react.js end */
