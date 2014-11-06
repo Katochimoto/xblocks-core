@@ -911,7 +911,7 @@ xblocks.react.findContainerForID = function(rootNodeID) {
  * @param {HTMLElement} node
  * @returns {HTMLElement}
  */
-xblocks.react.findReactContainerForNode = function(node) {
+xblocks.react.findContainerForNode = function(node) {
     var reatId = xblocks.react.getID(node);
     return (reatId && xblocks.react.findContainerForID(reatId));
 };
