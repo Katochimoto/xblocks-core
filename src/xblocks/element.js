@@ -237,7 +237,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     //   </template>
     // </xb-menu>
     if (!global.CustomElements.useNative) {
-        var reactId = xblocks.react.getReactRootID(this._node);
+        var reactId = xblocks.react.getRootID(this._node);
         if (reactId) {
             var reactNode = xblocks.react.findContainerForID(reactId);
             if (reactNode !== this._node) {

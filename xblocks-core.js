@@ -920,7 +920,7 @@ xblocks.react.findContainerForNode = function(node) {
  * @param {HTMLElement} node
  * @returns {?String}
  */
-xblocks.react.getReactRootID = function(node) {
+xblocks.react.getRootID = function(node) {
     var rootElement = xblocks.react.getRootElementInContainer(node);
     return rootElement && xblocks.react.getID(rootElement);
 };
@@ -1463,7 +1463,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     //   </template>
     // </xb-menu>
     if (!global.CustomElements.useNative) {
-        var reactId = xblocks.react.getReactRootID(this._node);
+        var reactId = xblocks.react.getRootID(this._node);
         if (reactId) {
             var reactNode = xblocks.react.findContainerForID(reactId);
             if (reactNode !== this._node) {
