@@ -14,7 +14,7 @@ var _viewCommon = {
     },
 
     template: function(ref, props) {
-        var rootNode = xblocks.react.findReactContainerForID(this._rootNodeID);
+        var rootNode = xblocks.react.findContainerForID(this._rootNodeID);
         var xtmpl = rootNode && rootNode.xtmpl;
 
         if (typeof(xtmpl) === 'object' && xtmpl.hasOwnProperty(ref)) {

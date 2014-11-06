@@ -10,7 +10,7 @@ xblocks.react = xblocks.react || {};
  * @param {String} rootNodeID
  * @returns {HTMLElement}
  */
-xblocks.react.findReactContainerForID = function(rootNodeID) {
+xblocks.react.findContainerForID = function(rootNodeID) {
     return React.__internals.Mount.findReactContainerForID(rootNodeID);
 };
 
@@ -20,7 +20,7 @@ xblocks.react.findReactContainerForID = function(rootNodeID) {
  */
 xblocks.react.findReactContainerForNode = function(node) {
     var reatId = xblocks.react.getID(node);
-    return (reatId && xblocks.react.findReactContainerForID(reatId));
+    return (reatId && xblocks.react.findContainerForID(reatId));
 };
 
 /**

@@ -5055,7 +5055,7 @@ xblocks.react = xblocks.react || {};
  * @param {String} rootNodeID
  * @returns {HTMLElement}
  */
-xblocks.react.findReactContainerForID = function(rootNodeID) {
+xblocks.react.findContainerForID = function(rootNodeID) {
     return React.__internals.Mount.findReactContainerForID(rootNodeID);
 };
 
@@ -5065,7 +5065,7 @@ xblocks.react.findReactContainerForID = function(rootNodeID) {
  */
 xblocks.react.findReactContainerForNode = function(node) {
     var reatId = xblocks.react.getID(node);
-    return (reatId && xblocks.react.findReactContainerForID(reatId));
+    return (reatId && xblocks.react.findContainerForID(reatId));
 };
 
 /**
@@ -5141,7 +5141,7 @@ var _viewCommon = {
     },
 
     template: function(ref, props) {
-        var rootNode = xblocks.react.findReactContainerForID(this._rootNodeID);
+        var rootNode = xblocks.react.findContainerForID(this._rootNodeID);
         var xtmpl = rootNode && rootNode.xtmpl;
 
         if (typeof(xtmpl) === 'object' && xtmpl.hasOwnProperty(ref)) {
@@ -5617,7 +5617,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     if (!global.CustomElements.useNative) {
         var reactId = xblocks.react.getReactRootID(this._node);
         if (reactId) {
-            var reactNode = xblocks.react.findReactContainerForID(reactId);
+            var reactNode = xblocks.react.findContainerForID(reactId);
             if (reactNode !== this._node) {
                 var oldProxyConstructor = xblocks.react.getInstancesByReactRootID(reactId);
                 if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
