@@ -17,7 +17,7 @@
         return;
     }
 
-    var proto = HTMLElement.prototype;
+    var proto = Element.prototype;
 
     proto.__setAttribute = proto.setAttribute;
     proto.setAttribute = function(attrName, newVal) {
