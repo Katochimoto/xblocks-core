@@ -3665,7 +3665,7 @@ if (document.readyState === 'complete' ||
           var _name = name.toLowerCase();
           var attr = tag.attributes[_name];
           modAttr(this, attr, _name, attr && attr.boolean ? '' : value, 'setAttribute');
-          if (attr) attr.setter.call(this, attr.boolean ? true : value);
+          if (attr && attr.setter) attr.setter.call(this, attr.boolean ? true : value);
         }
       };
 
@@ -3676,7 +3676,7 @@ if (document.readyState === 'complete' ||
           var _name = name.toLowerCase();
           var attr = tag.attributes[_name];
           modAttr(this, attr, _name, '', 'removeAttribute');
-          if (attr) attr.setter.call(this, attr.boolean ? false : undefined);
+          if (attr && attr.setter) attr.setter.call(this, attr.boolean ? false : undefined);
         }
       };
 
