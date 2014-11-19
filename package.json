@@ -44,7 +44,7 @@
         "karma-chrome-launcher": "~0.1.x",
         "karma-firefox-launcher": "~0.1.x",
 
-        "webcomponents.js": "Polymer/webcomponentsjs.git",
+        "webcomponents.js": "webcomponents/webcomponentsjs.git",
         "dom-token-list-polyfill": "pennyfx/dom-token-list.git#0.0.2",
         "x-tag-core": "x-tag/core.git"
     },
