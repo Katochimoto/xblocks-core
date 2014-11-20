@@ -31,6 +31,29 @@ var logFlags = {
 
 /* xtag/performance.js end */
 
+/* xtag/CustomEvent.js begin */
+/**
+ * strange commit, checks CustomEvent only in IE
+ * https://github.com/webcomponents/webcomponentsjs/commit/8d6a38aa6e3d03ff54a41db9e9725401bbc1446c
+ */
+(function(global) {
+    if (typeof(global.CustomEvent) === 'function') {
+        return;
+    }
+
+    global.CustomEvent = function(event, params) {
+        params = params || {};
+        var evt = global.document.createEvent('CustomEvent');
+        evt.initCustomEvent(event, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
+        return evt;
+    };
+
+    global.CustomEvent.prototype = global.Event.prototype;
+
+}(window));
+
+/* xtag/CustomEvent.js end */
+
 /* xtag/DOMAttrModified.js begin */
 /**
  * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
@@ -1736,6 +1759,8 @@ document.register = document.registerElement;
 var useNative = scope.useNative;
 var initializeModules = scope.initializeModules;
 
+var isIE = /Trident/.test(navigator.userAgent);
+
 // If native, setup stub api and bail.
 // NOTE: we fire `WebComponentsReady` under native for api compatibility
 if (useNative) {
@@ -1755,8 +1780,8 @@ if (useNative) {
   };
 
 } else {
-  // Initialize polyfill modules. Note, polyfill modules are loaded but not 
-  // executed; this is a convenient way to control which modules run when 
+  // Initialize polyfill modules. Note, polyfill modules are loaded but not
+  // executed; this is a convenient way to control which modules run when
   // the polyfill is required and allows the polyfill to load even when it's
   // not needed.
   initializeModules();
@@ -1789,7 +1814,7 @@ function bootstrap() {
       //CustomElements.parser.parse(elt.import);
     };
   }
-  // set internal 'ready' flag, now document.registerElement will trigger 
+  // set internal 'ready' flag, now document.registerElement will trigger
   // synchronous upgrades
   CustomElements.ready = true;
   // async to ensure *native* custom elements upgrade prior to this
@@ -1809,7 +1834,8 @@ function bootstrap() {
 }
 
 // CustomEvent shim for IE
-if (typeof window.CustomEvent !== 'function') {
+// NOTE: we explicitly test for IE since Safari has an type `object` CustomEvent
+if (isIE && (typeof window.CustomEvent !== 'function')) {
   window.CustomEvent = function(inType, params) {
     params = params || {};
     var e = document.createEvent('CustomEvent');
@@ -1829,7 +1855,7 @@ if (document.readyState === 'complete' || scope.flags.eager) {
 } else if (document.readyState === 'interactive' && !window.attachEvent &&
     (!window.HTMLImports || window.HTMLImports.ready)) {
   bootstrap();
-// When loading at other readyStates, wait for the appropriate DOM event to 
+// When loading at other readyStates, wait for the appropriate DOM event to
 // bootstrap.
 } else {
   var loadEvent = window.HTMLImports && !HTMLImports.ready ?
@@ -2581,12 +2607,7 @@ var importParser = {
 
   addElementToDocument: function(elt) {
     var port = this.rootImportForElement(elt.__importElement || elt);
-    var l = port.__insertedElements = port.__insertedElements || 0;
-    var refNode = port.nextElementSibling;
-    for (var i=0; i < l; i++) {
-      refNode = refNode && refNode.nextElementSibling;
-    }
-    port.parentNode.insertBefore(elt, refNode);
+    port.parentNode.insertBefore(elt, port);
   },
 
   // tracks when a loadable element has loaded
@@ -2998,7 +3019,8 @@ var matches = HTMLElement.prototype.matches ||
 (function(scope){
 
 // imports
-initializeModules = scope.initializeModules;
+var initializeModules = scope.initializeModules;
+var isIE = scope.isIE;
 
 /*
 NOTE: Even when native HTMLImports exists, the following api is available by
@@ -3013,16 +3035,16 @@ if (scope.useNative) {
   return;
 }
 
-// IE shim for CustomEvent
-if (typeof window.CustomEvent !== 'function') {
-  window.CustomEvent = function(inType, dictionary) {
-    var e = document.createEvent('HTMLEvents');
-    e.initEvent(inType,
-      dictionary.bubbles === false ? false : true,
-      dictionary.cancelable === false ? false : true,
-      dictionary.detail);
+// CustomEvent shim for IE
+// NOTE: we explicitly test for IE since Safari has an type `object` CustomEvent
+if (isIE && (typeof window.CustomEvent !== 'function')) {
+  window.CustomEvent = function(inType, params) {
+    params = params || {};
+    var e = document.createEvent('CustomEvent');
+    e.initCustomEvent(inType, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
     return e;
   };
+  window.CustomEvent.prototype = window.Event.prototype;
 }
 
 // Initialize polyfill modules. Note, polyfill modules are loaded but not 

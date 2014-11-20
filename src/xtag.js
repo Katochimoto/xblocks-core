@@ -7,6 +7,7 @@ var logFlags = {
 };
 
 /*! borschik:include:xtag/performance.js */
+/*! borschik:include:xtag/CustomEvent.js */
 /*! borschik:include:xtag/DOMAttrModified.js */
 
 /*! borschik:include:../node_modules/dom-token-list-polyfill/src/token-list.js */
