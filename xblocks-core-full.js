@@ -434,10 +434,14 @@ defineElementGetter(Element.prototype, 'classList', function () {
 /* ../node_modules/dom-token-list-polyfill/src/token-list.js end */
 
 /* ../node_modules/webcomponents.js/src/WeakMap/WeakMap.js begin */
-/*
- * Copyright 2012 The Polymer Authors. All rights reserved.
- * Use of this source code is governed by a BSD-style
- * license that can be found in the LICENSE file.
+/**
+ * @license
+ * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
 if (typeof WeakMap === 'undefined') {
@@ -483,10 +487,14 @@ if (typeof WeakMap === 'undefined') {
 /* ../node_modules/webcomponents.js/src/WeakMap/WeakMap.js end */
 
 /* ../node_modules/webcomponents.js/src/MutationObserver/MutationObserver.js begin */
-/*
- * Copyright 2012 The Polymer Authors. All rights reserved.
- * Use of this source code is goverened by a BSD-style
- * license that can be found in the LICENSE file.
+/**
+ * @license
+ * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
 (function(global) {
@@ -1054,7 +1062,8 @@ if (typeof WeakMap === 'undefined') {
 
 (function() {
     /* ../node_modules/webcomponents.js/src/CustomElements/base.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -1088,14 +1097,16 @@ scope.hasNative = Boolean(document.registerElement);
 
 // NOTE: For consistent timing, use native custom elements only when not
 // polyfilling other key related web components features.
-scope.useNative = !flags.register && scope.hasNative && 
+scope.useNative = !flags.register && scope.hasNative &&
 		!window.ShadowDOMPolyfill && (!window.HTMLImports || HTMLImports.useNative);
 
 })(CustomElements);
+
 /* ../node_modules/webcomponents.js/src/CustomElements/base.js end */
 
     /* ../node_modules/webcomponents.js/src/CustomElements/traverse.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -1191,7 +1202,8 @@ scope.forSubtree = forSubtree;
 /* ../node_modules/webcomponents.js/src/CustomElements/traverse.js end */
 
     /* ../node_modules/webcomponents.js/src/CustomElements/observe.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -1294,9 +1306,9 @@ function attached(element) {
 // multiple times so we protect against extra processing here.
 function _attached(element) {
   // track element for insertion if it's upgraded and cares about insertion
-  if (element.__upgraded__ && 
+  if (element.__upgraded__ &&
     (element.attachedCallback || element.detachedCallback)) {
-    // bail if the element is already marked as attached and proceed only 
+    // bail if the element is already marked as attached and proceed only
     // if it's actually in the document at this moment.
     if (!element.__attached && inDocument(element)) {
       element.__attached = true;
@@ -1311,7 +1323,7 @@ function _attached(element) {
   Manage nodes detached from document trees
 */
 
-// manage lifecycle on detached node and it's subtree; process detached 
+// manage lifecycle on detached node and it's subtree; process detached
 // for the node and entire subtree
 function detachedNode(node) {
   detached(node);
@@ -1334,9 +1346,9 @@ function detached(element) {
 // multiple times so we protect against extra processing here.
 function _detached(element) {
   // track element for removal if it's upgraded and cares about removal
-  if (element.__upgraded__ && 
+  if (element.__upgraded__ &&
     (element.attachedCallback || element.detachedCallback)) {
-    // bail if the element is already marked as not attached and proceed only 
+    // bail if the element is already marked as not attached and proceed only
     // if it's actually *not* in the document at this moment.
     if (element.__attached && !inDocument(element)) {
       element.__attached = false;
@@ -1380,7 +1392,7 @@ function watchShadow(node) {
 
   Here's an example:
 
-  (1) In this case, recursion is required to see `child`: 
+  (1) In this case, recursion is required to see `child`:
 
       node.innerHTML = '<div><child></child></div>'
 
@@ -1426,7 +1438,7 @@ function handler(mutations) {
 
 
 /*
-  When elements are added to the dom, upgrade and attached/detached may be 
+  When elements are added to the dom, upgrade and attached/detached may be
   asynchronous. `CustomElements.takeRecords` can be called to process any
   pending upgrades and attached/detached callbacks synchronously.
 */
@@ -1473,7 +1485,7 @@ function upgradeDocument(doc) {
 
 /*
 This method is intended to be called when the document tree (including imports)
-has pending custom elements to upgrade. It can be called multiple times and 
+has pending custom elements to upgrade. It can be called multiple times and
 should do nothing if no elements are in need of upgrade.
 */
 function upgradeDocumentTree(doc) {
@@ -1502,7 +1514,8 @@ scope.takeRecords = takeRecords;
 /* ../node_modules/webcomponents.js/src/CustomElements/observe.js end */
 
     /* ../node_modules/webcomponents.js/src/CustomElements/upgrade.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -1570,7 +1583,7 @@ function upgradeWithDefinition(element, definition) {
   return element;
 }
 
-//  Set __proto__ on supported platforms and use a mixin strategy when 
+//  Set __proto__ on supported platforms and use a mixin strategy when
 //  this is not supported; e.g. on IE10.
 function implementPrototype(element, definition) {
   // prototype swizzling is best
@@ -1623,7 +1636,8 @@ scope.implementPrototype = implementPrototype;
 /* ../node_modules/webcomponents.js/src/CustomElements/upgrade.js end */
 
     /* ../node_modules/webcomponents.js/src/CustomElements/register.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -1971,7 +1985,8 @@ document.register = document.registerElement;
 /* ../node_modules/webcomponents.js/src/CustomElements/register.js end */
 
     /* ../node_modules/webcomponents.js/src/CustomElements/boot.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -2006,8 +2021,8 @@ if (useNative) {
   };
 
 } else {
-  // Initialize polyfill modules. Note, polyfill modules are loaded but not 
-  // executed; this is a convenient way to control which modules run when 
+  // Initialize polyfill modules. Note, polyfill modules are loaded but not
+  // executed; this is a convenient way to control which modules run when
   // the polyfill is required and allows the polyfill to load even when it's
   // not needed.
   initializeModules();
@@ -2040,7 +2055,7 @@ function bootstrap() {
       //CustomElements.parser.parse(elt.import);
     };
   }
-  // set internal 'ready' flag, now document.registerElement will trigger 
+  // set internal 'ready' flag, now document.registerElement will trigger
   // synchronous upgrades
   CustomElements.ready = true;
   // async to ensure *native* custom elements upgrade prior to this
@@ -2081,7 +2096,7 @@ if (document.readyState === 'complete' || scope.flags.eager) {
 } else if (document.readyState === 'interactive' && !window.attachEvent &&
     (!window.HTMLImports || window.HTMLImports.ready)) {
   bootstrap();
-// When loading at other readyStates, wait for the appropriate DOM event to 
+// When loading at other readyStates, wait for the appropriate DOM event to
 // bootstrap.
 } else {
   var loadEvent = window.HTMLImports && !HTMLImports.ready ?
@@ -2097,7 +2112,8 @@ if (document.readyState === 'complete' || scope.flags.eager) {
 
 (function() {
     /* ../node_modules/webcomponents.js/src/HTMLImports/base.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -2144,9 +2160,9 @@ var currentScriptDescriptor = {
   get: function() {
     var script = HTMLImports.currentScript || document.currentScript ||
         // NOTE: only works when called in synchronously executing code.
-        // readyState should check if `loading` but IE10 is 
+        // readyState should check if `loading` but IE10 is
         // interactive when scripts run so we cheat.
-        (document.readyState !== 'complete' ? 
+        (document.readyState !== 'complete' ?
         document.scripts[document.scripts.length - 1] : null);
     return wrap(script);
   },
@@ -2163,16 +2179,16 @@ Object.defineProperty(rootDocument, '_currentScript', currentScriptDescriptor);
   code in either an `HTMLImportsLoaded` hander or after load time in an
   `HTMLImports.whenReady(callback)` call.
 
-  NOTE: This module also supports these apis under the native implementation. 
-  Therefore, if this file is loaded, the same code can be used under both 
+  NOTE: This module also supports these apis under the native implementation.
+  Therefore, if this file is loaded, the same code can be used under both
   the polyfill and native implementation.
  */
 
 var isIE = /Trident/.test(navigator.userAgent);
 
-// call a callback when all HTMLImports in the document at call time 
+// call a callback when all HTMLImports in the document at call time
 // (or at least document ready) have loaded.
-// 1. ensure the document is in a ready state (has dom), then 
+// 1. ensure the document is in a ready state (has dom), then
 // 2. watch for loading of imports and call callback when done
 function whenReady(callback, doc) {
   doc = doc || rootDocument;
@@ -2194,7 +2210,7 @@ function isDocumentReady(doc) {
 function whenDocumentReady(callback, doc) {
   if (!isDocumentReady(doc)) {
     var checkReady = function() {
-      if (doc.readyState === 'complete' || 
+      if (doc.readyState === 'complete' ||
           doc.readyState === requiredReadyState) {
         doc.removeEventListener(READY_EVENT, checkReady);
         whenDocumentReady(callback, doc);
@@ -2214,7 +2230,7 @@ function markTargetLoaded(event) {
 function watchImportsLoad(callback, doc) {
   var imports = doc.querySelectorAll('link[rel=import]');
   var loaded = 0, l = imports.length;
-  function checkDone(d) { 
+  function checkDone(d) {
     if ((loaded == l) && callback) {
        callback();
     }
@@ -2242,15 +2258,15 @@ function watchImportsLoad(callback, doc) {
 // all imports (see below).
 // However, we cannot rely on this entirely without watching the entire document
 // for import links. For perf reasons, currently only head is watched.
-// Instead, we fallback to checking if the import property is available 
-// and the document is not itself loading. 
+// Instead, we fallback to checking if the import property is available
+// and the document is not itself loading.
 function isImportLoaded(link) {
-  return useNative ? link.__loaded || 
+  return useNative ? link.__loaded ||
       (link.import && link.import.readyState !== 'loading') :
       link.__importParsed;
 }
 
-// TODO(sorvell): Workaround for 
+// TODO(sorvell): Workaround for
 // https://www.w3.org/Bugs/Public/show_bug.cgi?id=25007, should be removed when
 // this bug is addressed.
 // (1) Install a mutation observer to see when HTMLImports have loaded
@@ -2258,7 +2274,7 @@ function isImportLoaded(link) {
 // imports for loading.
 //
 // NOTE: The workaround has restricted functionality: (1) it's only compatible
-// with imports that are added to document.head since the mutation observer 
+// with imports that are added to document.head since the mutation observer
 // watches only head for perf reasons, (2) it requires this script
 // to run before any imports have completed loading.
 if (useNative) {
@@ -2273,7 +2289,7 @@ if (useNative) {
   function handleImports(nodes) {
     for (var i=0, l=nodes.length, n; (i<l) && (n=nodes[i]); i++) {
       if (isImport(n)) {
-        handleImport(n);  
+        handleImport(n);
       }
     }
   }
@@ -2305,8 +2321,8 @@ if (useNative) {
 
 }
 
-// Fire the 'HTMLImportsLoaded' event when imports in document at load time 
-// have loaded. This event is required to simulate the script blocking 
+// Fire the 'HTMLImportsLoaded' event when imports in document at load time
+// have loaded. This event is required to simulate the script blocking
 // behavior of native imports. A main document script that needs to be sure
 // imports have loaded should wait for this event.
 whenReady(function() {
@@ -2329,7 +2345,8 @@ scope.isIE = isIE;
 /* ../node_modules/webcomponents.js/src/HTMLImports/base.js end */
 
     /* ../node_modules/webcomponents.js/src/HTMLImports/module.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -2361,7 +2378,8 @@ scope.initializeModules = initializeModules;
 /* ../node_modules/webcomponents.js/src/HTMLImports/module.js end */
 
     /* ../node_modules/webcomponents.js/src/HTMLImports/path.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -2374,7 +2392,7 @@ HTMLImports.addModule(function(scope) {
 var CSS_URL_REGEXP = /(url\()([^)]*)(\))/g;
 var CSS_IMPORT_REGEXP = /(@import[\s]+(?!url\())([^;]*)(;)/g;
 
-// path fixup: style elements in imports must be made relative to the main 
+// path fixup: style elements in imports must be made relative to the main
 // document. We fixup url's in url() and @import.
 var path = {
 
@@ -2382,7 +2400,7 @@ var path = {
     var doc = style.ownerDocument;
     var resolver = doc.createElement('a');
     style.textContent = this.resolveUrlsInCssText(style.textContent, resolver);
-    return style;  
+    return style;
   },
 
   resolveUrlsInCssText: function(cssText, urlObj) {
@@ -2397,7 +2415,7 @@ var path = {
       urlObj.href = urlPath;
       urlPath = urlObj.href;
       return pre + '\'' + urlPath + '\'' + post;
-    });    
+    });
   }
 
 };
@@ -2410,7 +2428,8 @@ scope.path = path;
 /* ../node_modules/webcomponents.js/src/HTMLImports/path.js end */
 
     /* ../node_modules/webcomponents.js/src/HTMLImports/xhr.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -2460,7 +2479,7 @@ xhr = {
   loadDocument: function(url, next, nextContext) {
     this.load(url, next, nextContext).responseType = 'document';
   }
-  
+
 };
 
 // exports
@@ -2471,7 +2490,8 @@ scope.xhr = xhr;
 /* ../node_modules/webcomponents.js/src/HTMLImports/xhr.js end */
 
     /* ../node_modules/webcomponents.js/src/HTMLImports/Loader.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -2487,8 +2507,8 @@ var flags = scope.flags;
 
 // This loader supports a dynamic list of urls
 // and an oncomplete callback that is called when the loader is done.
-// NOTE: The polyfill currently does *not* need this dynamism or the 
-// onComplete concept. Because of this, the loader could be simplified 
+// NOTE: The polyfill currently does *not* need this dynamism or the
+// onComplete concept. Because of this, the loader could be simplified
 // quite a bit.
 var Loader = function(onLoad, onComplete) {
   this.cache = {};
@@ -2606,10 +2626,12 @@ Loader.prototype = {
 scope.Loader = Loader;
 
 });
+
 /* ../node_modules/webcomponents.js/src/HTMLImports/Loader.js end */
 
     /* ../node_modules/webcomponents.js/src/HTMLImports/Observer.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -2663,7 +2685,8 @@ scope.Observer = Observer;
 /* ../node_modules/webcomponents.js/src/HTMLImports/Observer.js end */
 
     /* ../node_modules/webcomponents.js/src/HTMLImports/parser.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -2686,7 +2709,7 @@ var IMPORT_SELECTOR = 'link[rel=' + IMPORT_LINK_TYPE + ']';
 // parses import related elements and ensures proper parse order
 // parse order is enforced by crawling the tree and monitoring which elements
 // have been parsed;
-// elements can be dynamically added to imports. These are maintained in a 
+// elements can be dynamically added to imports. These are maintained in a
 // separate queue and parsed after all other elements.
 var importParser = {
 
@@ -2744,7 +2767,7 @@ var importParser = {
   // To prompt the system to parse the next element, parseNext should then be
   // called.
   // Note, parseNext used to be included at the end of markParsingComplete, but
-  // we must not do this so that, for example, we can (1) mark parsing complete 
+  // we must not do this so that, for example, we can (1) mark parsing complete
   // then (2) fire an import load event, and then (3) parse the next resource.
   markParsing: function(elt) {
     flags.parse && console.log('parsing', elt);
@@ -2782,7 +2805,7 @@ var importParser = {
     this.markParsingComplete(elt);
     // fire load event
     if (elt.__resource && !elt.__error) {
-      elt.dispatchEvent(new CustomEvent('load', {bubbles: false}));    
+      elt.dispatchEvent(new CustomEvent('load', {bubbles: false}));
     } else {
       elt.dispatchEvent(new CustomEvent('error', {bubbles: false}));
     }
@@ -2883,13 +2906,13 @@ var importParser = {
   parseScript: function(scriptElt) {
     var script = document.createElement('script');
     script.__importElement = scriptElt;
-    script.src = scriptElt.src ? scriptElt.src : 
+    script.src = scriptElt.src ? scriptElt.src :
         generateScriptDataUrl(scriptElt);
     // keep track of executing script to help polyfill `document.currentScript`
     scope.currentScript = scriptElt;
     this.trackElement(script, function(e) {
       script.parentNode.removeChild(script);
-      scope.currentScript = null;  
+      scope.currentScript = null;
     });
     this.addElementToDocument(script);
   },
@@ -2900,7 +2923,7 @@ var importParser = {
   // order.
   nextToParse: function() {
     this._mayParse = [];
-    return !this.parsingElement && (this.nextToParseInDoc(rootDocument) || 
+    return !this.parsingElement && (this.nextToParseInDoc(rootDocument) ||
         this.nextToParseDynamic());
   },
 
@@ -2996,7 +3019,8 @@ scope.IMPORT_SELECTOR = IMPORT_SELECTOR;
 /* ../node_modules/webcomponents.js/src/HTMLImports/parser.js end */
 
     /* ../node_modules/webcomponents.js/src/HTMLImports/importer.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -3020,43 +3044,43 @@ var parser = scope.parser;
 // for any document, importer:
 // - loads any linked import documents (with deduping)
 // - whenever an import is loaded, prompts the parser to try to parse
-// - observes imported documents for new elements (these are handled via the 
+// - observes imported documents for new elements (these are handled via the
 // dynamic importer)
 var importer = {
 
   documents: {},
-  
+
   // nodes to load in the mian document
   documentPreloadSelectors: IMPORT_SELECTOR,
-  
+
   // nodes to load in imports
   importsPreloadSelectors: [
     IMPORT_SELECTOR
   ].join(','),
-  
+
   loadNode: function(node) {
     importLoader.addNode(node);
   },
-  
+
   // load all loadable elements within the parent element
   loadSubtree: function(parent) {
     var nodes = this.marshalNodes(parent);
     // add these nodes to loader's queue
     importLoader.addNodes(nodes);
   },
-  
+
   marshalNodes: function(parent) {
     // all preloadable nodes in inDocument
     return parent.querySelectorAll(this.loadSelectorsForNode(parent));
   },
-  
+
   // find the proper set of load selectors for a given node
   loadSelectorsForNode: function(node) {
     var doc = node.ownerDocument || node;
     return doc === rootDocument ? this.documentPreloadSelectors :
         this.importsPreloadSelectors;
   },
-  
+
   loaded: function(url, elt, resource, err, redirectedUrl) {
     flags.load && console.log('loaded', url, elt);
     // store generic resource
@@ -3085,7 +3109,7 @@ var importer = {
     }
     parser.parseNext();
   },
-  
+
   bootDocument: function(doc) {
     this.loadSubtree(doc);
     // observe documents for new elements being added
@@ -3100,11 +3124,11 @@ var importer = {
 };
 
 // loader singleton to handle loading imports
-var importLoader = new Loader(importer.loaded.bind(importer), 
+var importLoader = new Loader(importer.loaded.bind(importer),
     importer.loadedAll.bind(importer));
 
 // observer singleton to handle observing elements in imports
-// NOTE: the observer has a node added callback and this is set 
+// NOTE: the observer has a node added callback and this is set
 // by the dynamic importer module.
 importer.observer = new Observer();
 
@@ -3163,10 +3187,12 @@ scope.importer = importer;
 scope.importLoader = importLoader;
 
 });
+
 /* ../node_modules/webcomponents.js/src/HTMLImports/importer.js end */
 
     /* ../node_modules/webcomponents.js/src/HTMLImports/dynamic.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -3214,17 +3240,17 @@ var dynamic = {
 
   shouldParseNode: function(node) {
     return (node.nodeType === 1) && matches.call(node,
-        parser.parseSelectorsForNode(node));  
+        parser.parseSelectorsForNode(node));
   }
-  
+
 };
 
 // let the dynamic element helper tie into the import observer.
 importer.observer.addCallback = dynamic.added.bind(dynamic);
 
 // x-plat matches
-var matches = HTMLElement.prototype.matches || 
-    HTMLElement.prototype.matchesSelector || 
+var matches = HTMLElement.prototype.matches ||
+    HTMLElement.prototype.matchesSelector ||
     HTMLElement.prototype.webkitMatchesSelector ||
     HTMLElement.prototype.mozMatchesSelector ||
     HTMLElement.prototype.msMatchesSelector;
@@ -3234,7 +3260,8 @@ var matches = HTMLElement.prototype.matches ||
 /* ../node_modules/webcomponents.js/src/HTMLImports/dynamic.js end */
 
     /* ../node_modules/webcomponents.js/src/HTMLImports/boot.js begin */
-/*
+/**
+ * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
@@ -3273,8 +3300,8 @@ if (isIE && (typeof window.CustomEvent !== 'function')) {
   window.CustomEvent.prototype = window.Event.prototype;
 }
 
-// Initialize polyfill modules. Note, polyfill modules are loaded but not 
-// executed; this is a convenient way to control which modules run when 
+// Initialize polyfill modules. Note, polyfill modules are loaded but not
+// executed; this is a convenient way to control which modules run when
 // the polyfill is required and allows the polyfill to load even when it's
 // not needed.
 initializeModules();
@@ -3288,9 +3315,9 @@ var rootDocument = scope.rootDocument;
 function bootstrap() {
   HTMLImports.importer.bootDocument(rootDocument);
 }
-  
+
 // TODO(sorvell): SD polyfill does *not* generate mutations for nodes added
-// by the parser. For this reason, we must wait until the dom exists to 
+// by the parser. For this reason, we must wait until the dom exists to
 // bootstrap.
 if (document.readyState === 'complete' ||
     (document.readyState === 'interactive' && !window.attachEvent)) {
