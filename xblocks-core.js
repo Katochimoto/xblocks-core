@@ -233,6 +233,8 @@ Timer.polifill.setTimeout = function() {
      * @namespace React
      */
     var React = global.React;
+    var ReactMount = (React.__internals && React.__internals.Mount) ||
+        (global.__REACT_DEVTOOLS_GLOBAL_HOOK__ && global.__REACT_DEVTOOLS_GLOBAL_HOOK__._reactRuntime.Mount);
 
     /**
      * @namespace xblocks
@@ -891,7 +893,7 @@ xblocks.event.dispatch = function(element, name, params) {
 /* xblocks/event.js end */
 
     /* xblocks/react.js begin */
-/* global xblocks, React */
+/* global xblocks, React, ReactMount */
 /* jshint strict: false */
 
 /**
@@ -899,12 +901,16 @@ xblocks.event.dispatch = function(element, name, params) {
  */
 xblocks.react = xblocks.react || {};
 
+xblocks.react.renderToStaticMarkup = (React.renderToStaticMarkup || React.renderComponentToStaticMarkup).bind(React);
+xblocks.react.render = (React.render || React.renderComponent).bind(React);
+xblocks.react.unmountComponentAtNode = React.unmountComponentAtNode.bind(React);
+
 /**
  * @param {String} rootNodeID
  * @returns {HTMLElement}
  */
 xblocks.react.findContainerForID = function(rootNodeID) {
-    return React.__internals.Mount.findReactContainerForID(rootNodeID);
+    return ReactMount.findReactContainerForID(rootNodeID);
 };
 
 /**
@@ -930,7 +936,7 @@ xblocks.react.getRootID = function(node) {
  * @returns {?Object}
  */
 xblocks.react.getInstancesByRootID = function(rootId) {
-    return React.__internals.Mount._instancesByReactRootID[ rootId ];
+    return ReactMount._instancesByReactRootID[ rootId ];
 };
 
 /**
@@ -983,8 +989,8 @@ xblocks.view = {};
 
 var _viewCommon = {
     propTypes: {
-        '_uid': React.PropTypes.renderable,
-        'children': React.PropTypes.renderable,
+        '_uid': React.PropTypes.node || React.PropTypes.renderable,
+        'children': React.PropTypes.node || React.PropTypes.renderable,
         'xb-static': React.PropTypes.bool
     },
 
@@ -1224,7 +1230,7 @@ xblocks.create = function(blockName, options) {
 /* xblocks/block.js end */
 
     /* xblocks/element.js begin */
-/* global xblocks, global, React */
+/* global xblocks, global */
 /* jshint strict: false */
 
 var _elementStatic = {
@@ -1329,7 +1335,7 @@ xblocks.element.prototype._observer = null;
  * Unmounts a component and removes it from the DOM
  */
 xblocks.element.prototype.destroy = function() {
-    React.unmountComponentAtNode(this._node);
+    xblocks.react.unmountComponentAtNode(this._node);
     this.unmount();
 };
 
@@ -1470,7 +1476,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
                 var oldProxyConstructor = xblocks.react.getInstancesByRootID(reactId);
                 if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
                     children = oldProxyConstructor.props.children || '';
-                    React.unmountComponentAtNode(reactNode);
+                    xblocks.react.unmountComponentAtNode(reactNode);
                     this._node.innerHTML = '';
                 }
             }
@@ -1485,7 +1491,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();
         xblocks.utils.log.time(this._node, 'react_render');
-        this._node.innerHTML = React.renderComponentToStaticMarkup(proxyConstructor);
+        this._node.innerHTML = xblocks.react.renderToStaticMarkup(proxyConstructor);
         xblocks.utils.log.time(this._node, 'react_render');
         this._node.upgrade();
 
@@ -1496,7 +1502,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     } else {
         xblocks.utils.log.time(this._node, 'react_render');
         var that = this;
-        this._component = React.renderComponent(
+        this._component = xblocks.react.render(
             proxyConstructor,
             this._node,
             function() {

@@ -7,6 +7,8 @@
      * @namespace React
      */
     var React = global.React;
+    var ReactMount = (React.__internals && React.__internals.Mount) ||
+        (global.__REACT_DEVTOOLS_GLOBAL_HOOK__ && global.__REACT_DEVTOOLS_GLOBAL_HOOK__._reactRuntime.Mount);
 
     /**
      * @namespace xblocks

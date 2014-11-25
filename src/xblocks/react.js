@@ -1,4 +1,4 @@
-/* global xblocks, React */
+/* global xblocks, React, ReactMount */
 /* jshint strict: false */
 
 /**
@@ -6,12 +6,16 @@
  */
 xblocks.react = xblocks.react || {};
 
+xblocks.react.renderToStaticMarkup = (React.renderToStaticMarkup || React.renderComponentToStaticMarkup).bind(React);
+xblocks.react.render = (React.render || React.renderComponent).bind(React);
+xblocks.react.unmountComponentAtNode = React.unmountComponentAtNode.bind(React);
+
 /**
  * @param {String} rootNodeID
  * @returns {HTMLElement}
  */
 xblocks.react.findContainerForID = function(rootNodeID) {
-    return React.__internals.Mount.findReactContainerForID(rootNodeID);
+    return ReactMount.findReactContainerForID(rootNodeID);
 };
 
 /**
@@ -37,7 +41,7 @@ xblocks.react.getRootID = function(node) {
  * @returns {?Object}
  */
 xblocks.react.getInstancesByRootID = function(rootId) {
-    return React.__internals.Mount._instancesByReactRootID[ rootId ];
+    return ReactMount._instancesByReactRootID[ rootId ];
 };
 
 /**

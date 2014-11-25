@@ -8,8 +8,8 @@ xblocks.view = {};
 
 var _viewCommon = {
     propTypes: {
-        '_uid': React.PropTypes.renderable,
-        'children': React.PropTypes.renderable,
+        '_uid': React.PropTypes.node || React.PropTypes.renderable,
+        'children': React.PropTypes.node || React.PropTypes.renderable,
         'xb-static': React.PropTypes.bool
     },
 

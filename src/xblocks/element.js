@@ -1,4 +1,4 @@
-/* global xblocks, global, React */
+/* global xblocks, global */
 /* jshint strict: false */
 
 var _elementStatic = {
@@ -103,7 +103,7 @@ xblocks.element.prototype._observer = null;
  * Unmounts a component and removes it from the DOM
  */
 xblocks.element.prototype.destroy = function() {
-    React.unmountComponentAtNode(this._node);
+    xblocks.react.unmountComponentAtNode(this._node);
     this.unmount();
 };
 
@@ -244,7 +244,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
                 var oldProxyConstructor = xblocks.react.getInstancesByRootID(reactId);
                 if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
                     children = oldProxyConstructor.props.children || '';
-                    React.unmountComponentAtNode(reactNode);
+                    xblocks.react.unmountComponentAtNode(reactNode);
                     this._node.innerHTML = '';
                 }
             }
@@ -259,7 +259,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();
         xblocks.utils.log.time(this._node, 'react_render');
-        this._node.innerHTML = React.renderComponentToStaticMarkup(proxyConstructor);
+        this._node.innerHTML = xblocks.react.renderToStaticMarkup(proxyConstructor);
         xblocks.utils.log.time(this._node, 'react_render');
         this._node.upgrade();
 
@@ -270,7 +270,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     } else {
         xblocks.utils.log.time(this._node, 'react_render');
         var that = this;
-        this._component = React.renderComponent(
+        this._component = xblocks.react.render(
             proxyConstructor,
             this._node,
             function() {
