@@ -1,14 +1,10 @@
-/* global xblocks, React, ReactMount */
+/* global xblocks, ReactMount */
 /* jshint strict: false */
 
 /**
  * @namespace
  */
 xblocks.react = xblocks.react || {};
-
-xblocks.react.renderToStaticMarkup = (React.renderToStaticMarkup || React.renderComponentToStaticMarkup).bind(React);
-xblocks.react.render = (React.render || React.renderComponent).bind(React);
-xblocks.react.unmountComponentAtNode = React.unmountComponentAtNode.bind(React);
 
 /**
  * @param {String} rootNodeID
