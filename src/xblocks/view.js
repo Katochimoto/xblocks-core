@@ -9,13 +9,13 @@ xblocks.view = {};
 var _viewCommon = {
     propTypes: {
         '_uid': React.PropTypes.node,
+        '_container': React.PropTypes.any,  // Bad way ;(
         'children': React.PropTypes.node,
         'xb-static': React.PropTypes.bool
     },
 
     template: function(ref, props) {
-        var rootNode = xblocks.react.findContainerForID(this._rootNodeID);
-        var xtmpl = rootNode && rootNode.xtmpl;
+        var xtmpl = this.props && this.props._container && this.props._container.xtmpl;
 
         if (typeof(xtmpl) === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
             props = props || {};

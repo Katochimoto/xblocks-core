@@ -254,6 +254,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     }*/
 
     props._uid = this._node.xuid;
+    props._container = this._node;
     xblocks.dom.attrs.typeConversion(props, this._node.xprops);
 
     var proxyConstructor = React.createFactory(xblocks.view.get(this._node.xtagName))(props, children);
