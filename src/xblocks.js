@@ -8,8 +8,6 @@
      */
     var React = global.React;
 
-    var ReactMount = global.__REACT_DEVTOOLS_GLOBAL_HOOK__._reactRuntime.Mount;
-
     /**
      * @namespace xblocks
      */

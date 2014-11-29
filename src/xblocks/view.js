@@ -8,8 +8,8 @@ xblocks.view = {};
 
 var _viewCommon = {
     propTypes: {
-        '_uid': React.PropTypes.node || React.PropTypes.renderable,
-        'children': React.PropTypes.node || React.PropTypes.renderable,
+        '_uid': React.PropTypes.node,
+        'children': React.PropTypes.node,
         'xb-static': React.PropTypes.bool
     },
 
@@ -17,7 +17,7 @@ var _viewCommon = {
         var rootNode = xblocks.react.findContainerForID(this._rootNodeID);
         var xtmpl = rootNode && rootNode.xtmpl;
 
-        if (typeof(xtmpl) === 'object' && xtmpl.hasOwnProperty(ref)) {
+        if (typeof(xtmpl) === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
             props = props || {};
             props.dangerouslySetInnerHTML = {
                 '__html': this._templatePrepare(xtmpl[ref])

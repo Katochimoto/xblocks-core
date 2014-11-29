@@ -103,7 +103,7 @@ xblocks.element.prototype._observer = null;
  * Unmounts a component and removes it from the DOM
  */
 xblocks.element.prototype.destroy = function() {
-    React.unmountComponentAtNode(this._node);
+    xblocks.react.unmountComponentAtNode(this._node);
     this.unmount();
 };
 
@@ -224,6 +224,8 @@ xblocks.element.prototype._init = function(props, children, callback) {
         return;
     }
 
+    // UPD (29.11.2014) can't reproduce in FireFox
+    //
     // FIXME need more tests
     // only polyfill
     // internal elements are re-created, while retaining component reference react that you created earlier
@@ -236,7 +238,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     //     <xb-menuitem></xb-menuitem>
     //   </template>
     // </xb-menu>
-    if (!global.CustomElements.useNative) {
+    /*if (!global.CustomElements.useNative) {
         var reactId = xblocks.react.getRootID(this._node);
         if (reactId) {
             var reactNode = xblocks.react.findContainerForID(reactId);
@@ -244,12 +246,12 @@ xblocks.element.prototype._init = function(props, children, callback) {
                 var oldProxyConstructor = xblocks.react.getInstancesByRootID(reactId);
                 if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
                     children = oldProxyConstructor.props.children || '';
-                    React.unmountComponentAtNode(reactNode);
+                    xblocks.react.unmountComponentAtNode(reactNode);
                     this._node.innerHTML = '';
                 }
             }
         }
-    }
+    }*/
 
     props._uid = this._node.xuid;
     xblocks.dom.attrs.typeConversion(props, this._node.xprops);
@@ -270,7 +272,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     } else {
         xblocks.utils.log.time(this._node, 'react_render');
         var that = this;
-        this._component = React.render(
+        this._component = xblocks.react.render(
             proxyConstructor,
             this._node,
             function() {

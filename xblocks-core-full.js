@@ -4418,8 +4418,6 @@ for (z in UIEventProto){
      */
     var React = global.React;
 
-    var ReactMount = global.__REACT_DEVTOOLS_GLOBAL_HOOK__._reactRuntime.Mount;
-
     /**
      * @namespace xblocks
      */
@@ -5077,20 +5075,58 @@ xblocks.event.dispatch = function(element, name, params) {
 /* xblocks/event.js end */
 
     /* xblocks/react.js begin */
-/* global xblocks, ReactMount */
+/* global xblocks, React */
 /* jshint strict: false */
+
+/**
+ * NOTE check after update React !!
+ */
 
 /**
  * @namespace
  */
 xblocks.react = xblocks.react || {};
 
+xblocks.react._idAttributeName = 'data-reactid';
+
+xblocks.react._separator = '.';
+
+var _containersByReactRootID = {};
+
 /**
- * @param {String} rootNodeID
+ * @param {HTMLElement} node
+ * @returns {Boolean}
+ */
+xblocks.react.unmountComponentAtNode = function(node) {
+    var rootId = xblocks.react.getRootID(node);
+
+    if (React.unmountComponentAtNode(node)) {
+        delete _containersByReactRootID[ rootId ];
+        return true;
+    }
+
+    return false;
+};
+
+/**
+ * @param {Object} nextElement
+ * @param {HTMLElement} container
+ * @param {Function} [callback]
+ * @returns {Object}
+ */
+xblocks.react.render = function(nextElement, container, callback) {
+    var component = React.render(nextElement, container, callback);
+    _containersByReactRootID[ component._rootNodeID ] = container;
+    return component;
+};
+
+/**
+ * @param {String} id
  * @returns {HTMLElement}
  */
-xblocks.react.findContainerForID = function(rootNodeID) {
-    return ReactMount.findReactContainerForID(rootNodeID);
+xblocks.react.findContainerForID = function(id) {
+    var rootId = xblocks.react.getReactRootIDFromNodeID(id);
+    return _containersByReactRootID[ rootId ];
 };
 
 /**
@@ -5098,9 +5134,17 @@ xblocks.react.findContainerForID = function(rootNodeID) {
  * @returns {HTMLElement}
  */
 xblocks.react.findContainerForNode = function(node) {
-    var reatId = xblocks.react.getID(node);
-    return (reatId && xblocks.react.findContainerForID(reatId));
+    var id = xblocks.react.getID(node);
+    return (id && xblocks.react.findContainerForID(id));
 };
+
+/**
+ * @param {String} rootId
+ * @returns {?Object}
+ */
+/*xblocks.react.getInstancesByRootID = function(rootId) {
+    return ReactMount._instancesByReactRootID[ rootId ];
+};*/
 
 /**
  * @param {HTMLElement} node
@@ -5112,15 +5156,6 @@ xblocks.react.getRootID = function(node) {
 };
 
 /**
- * @param {String} rootId
- * @returns {?Object}
- */
-xblocks.react.getInstancesByRootID = function(rootId) {
-    return ReactMount._instancesByReactRootID[ rootId ];
-};
-
-/**
- * FIXME check after update React !!
  * @param {HTMLElement} node
  * @returns {?HTMLElement}
  */
@@ -5137,12 +5172,23 @@ xblocks.react.getRootElementInContainer = function(node) {
 };
 
 /**
- * FIXME check after update React !!
  * @param {HTMLElement} node
  * @returns {?String}
  */
 xblocks.react.getID = function(node) {
-    return node && node.getAttribute && node.getAttribute('data-reactid') || '';
+    return (node && node.getAttribute && node.getAttribute(xblocks.react._idAttributeName) || '');
+};
+
+/**
+ * @param {String} id
+ * @returns {?String}
+ */
+xblocks.react.getReactRootIDFromNodeID = function(id) {
+    if (id && id.charAt(0) === xblocks.react._separator && id.length > 1) {
+        var index = id.indexOf(xblocks.react._separator, 1);
+        return index > -1 ? id.substr(0, index) : id;
+    }
+    return null;
 };
 
 /* xblocks/react.js end */
@@ -5169,8 +5215,8 @@ xblocks.view = {};
 
 var _viewCommon = {
     propTypes: {
-        '_uid': React.PropTypes.node || React.PropTypes.renderable,
-        'children': React.PropTypes.node || React.PropTypes.renderable,
+        '_uid': React.PropTypes.node,
+        'children': React.PropTypes.node,
         'xb-static': React.PropTypes.bool
     },
 
@@ -5178,7 +5224,7 @@ var _viewCommon = {
         var rootNode = xblocks.react.findContainerForID(this._rootNodeID);
         var xtmpl = rootNode && rootNode.xtmpl;
 
-        if (typeof(xtmpl) === 'object' && xtmpl.hasOwnProperty(ref)) {
+        if (typeof(xtmpl) === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
             props = props || {};
             props.dangerouslySetInnerHTML = {
                 '__html': this._templatePrepare(xtmpl[ref])
@@ -5515,7 +5561,7 @@ xblocks.element.prototype._observer = null;
  * Unmounts a component and removes it from the DOM
  */
 xblocks.element.prototype.destroy = function() {
-    React.unmountComponentAtNode(this._node);
+    xblocks.react.unmountComponentAtNode(this._node);
     this.unmount();
 };
 
@@ -5636,6 +5682,8 @@ xblocks.element.prototype._init = function(props, children, callback) {
         return;
     }
 
+    // UPD (29.11.2014) can't reproduce in FireFox
+    //
     // FIXME need more tests
     // only polyfill
     // internal elements are re-created, while retaining component reference react that you created earlier
@@ -5648,7 +5696,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     //     <xb-menuitem></xb-menuitem>
     //   </template>
     // </xb-menu>
-    if (!global.CustomElements.useNative) {
+    /*if (!global.CustomElements.useNative) {
         var reactId = xblocks.react.getRootID(this._node);
         if (reactId) {
             var reactNode = xblocks.react.findContainerForID(reactId);
@@ -5656,12 +5704,12 @@ xblocks.element.prototype._init = function(props, children, callback) {
                 var oldProxyConstructor = xblocks.react.getInstancesByRootID(reactId);
                 if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
                     children = oldProxyConstructor.props.children || '';
-                    React.unmountComponentAtNode(reactNode);
+                    xblocks.react.unmountComponentAtNode(reactNode);
                     this._node.innerHTML = '';
                 }
             }
         }
-    }
+    }*/
 
     props._uid = this._node.xuid;
     xblocks.dom.attrs.typeConversion(props, this._node.xprops);
@@ -5682,7 +5730,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     } else {
         xblocks.utils.log.time(this._node, 'react_render');
         var that = this;
-        this._component = React.render(
+        this._component = xblocks.react.render(
             proxyConstructor,
             this._node,
             function() {

@@ -1,17 +1,55 @@
-/* global xblocks, ReactMount */
+/* global xblocks, React */
 /* jshint strict: false */
+
+/**
+ * NOTE check after update React !!
+ */
 
 /**
  * @namespace
  */
 xblocks.react = xblocks.react || {};
 
+xblocks.react._idAttributeName = 'data-reactid';
+
+xblocks.react._separator = '.';
+
+var _containersByReactRootID = {};
+
 /**
- * @param {String} rootNodeID
+ * @param {HTMLElement} node
+ * @returns {Boolean}
+ */
+xblocks.react.unmountComponentAtNode = function(node) {
+    var rootId = xblocks.react.getRootID(node);
+
+    if (React.unmountComponentAtNode(node)) {
+        delete _containersByReactRootID[ rootId ];
+        return true;
+    }
+
+    return false;
+};
+
+/**
+ * @param {Object} nextElement
+ * @param {HTMLElement} container
+ * @param {Function} [callback]
+ * @returns {Object}
+ */
+xblocks.react.render = function(nextElement, container, callback) {
+    var component = React.render(nextElement, container, callback);
+    _containersByReactRootID[ component._rootNodeID ] = container;
+    return component;
+};
+
+/**
+ * @param {String} id
  * @returns {HTMLElement}
  */
-xblocks.react.findContainerForID = function(rootNodeID) {
-    return ReactMount.findReactContainerForID(rootNodeID);
+xblocks.react.findContainerForID = function(id) {
+    var rootId = xblocks.react.getReactRootIDFromNodeID(id);
+    return _containersByReactRootID[ rootId ];
 };
 
 /**
@@ -19,9 +57,17 @@ xblocks.react.findContainerForID = function(rootNodeID) {
  * @returns {HTMLElement}
  */
 xblocks.react.findContainerForNode = function(node) {
-    var reatId = xblocks.react.getID(node);
-    return (reatId && xblocks.react.findContainerForID(reatId));
+    var id = xblocks.react.getID(node);
+    return (id && xblocks.react.findContainerForID(id));
 };
+
+/**
+ * @param {String} rootId
+ * @returns {?Object}
+ */
+/*xblocks.react.getInstancesByRootID = function(rootId) {
+    return ReactMount._instancesByReactRootID[ rootId ];
+};*/
 
 /**
  * @param {HTMLElement} node
@@ -33,15 +79,6 @@ xblocks.react.getRootID = function(node) {
 };
 
 /**
- * @param {String} rootId
- * @returns {?Object}
- */
-xblocks.react.getInstancesByRootID = function(rootId) {
-    return ReactMount._instancesByReactRootID[ rootId ];
-};
-
-/**
- * FIXME check after update React !!
  * @param {HTMLElement} node
  * @returns {?HTMLElement}
  */
@@ -58,10 +95,21 @@ xblocks.react.getRootElementInContainer = function(node) {
 };
 
 /**
- * FIXME check after update React !!
  * @param {HTMLElement} node
  * @returns {?String}
  */
 xblocks.react.getID = function(node) {
-    return node && node.getAttribute && node.getAttribute('data-reactid') || '';
+    return (node && node.getAttribute && node.getAttribute(xblocks.react._idAttributeName) || '');
+};
+
+/**
+ * @param {String} id
+ * @returns {?String}
+ */
+xblocks.react.getReactRootIDFromNodeID = function(id) {
+    if (id && id.charAt(0) === xblocks.react._separator && id.length > 1) {
+        var index = id.indexOf(xblocks.react._separator, 1);
+        return index > -1 ? id.substr(0, index) : id;
+    }
+    return null;
 };
