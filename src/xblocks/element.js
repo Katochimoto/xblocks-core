@@ -224,35 +224,6 @@ xblocks.element.prototype._init = function(props, children, callback) {
         return;
     }
 
-    // UPD (29.11.2014) can't reproduce in FireFox
-    //
-    // FIXME need more tests
-    // only polyfill
-    // internal elements are re-created, while retaining component reference react that you created earlier
-    // possible solutions: to use the tag <template> or <script> for the inner elements
-    // example:
-    // <xb-menu>
-    //   <template>
-    //     <xb-menuitem></xb-menuitem>
-    //     <xb-menuitem></xb-menuitem>
-    //     <xb-menuitem></xb-menuitem>
-    //   </template>
-    // </xb-menu>
-    /*if (!global.CustomElements.useNative) {
-        var reactId = xblocks.react.getRootID(this._node);
-        if (reactId) {
-            var reactNode = xblocks.react.findContainerForID(reactId);
-            if (reactNode !== this._node) {
-                var oldProxyConstructor = xblocks.react.getInstancesByRootID(reactId);
-                if (oldProxyConstructor && oldProxyConstructor.isMounted()) {
-                    children = oldProxyConstructor.props.children || '';
-                    xblocks.react.unmountComponentAtNode(reactNode);
-                    this._node.innerHTML = '';
-                }
-            }
-        }
-    }*/
-
     props._uid = this._node.xuid;
     props._container = this._node;
     xblocks.dom.attrs.typeConversion(props, this._node.xprops);

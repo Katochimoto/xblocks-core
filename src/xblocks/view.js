@@ -15,7 +15,7 @@ var _viewCommon = {
     },
 
     template: function(ref, props) {
-        var xtmpl = this.props && this.props._container && this.props._container.xtmpl;
+        var xtmpl = this.props._container && this.props._container.xtmpl;
 
         if (typeof(xtmpl) === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
             props = props || {};

@@ -62,14 +62,6 @@ xblocks.react.findContainerForNode = function(node) {
 };
 
 /**
- * @param {String} rootId
- * @returns {?Object}
- */
-/*xblocks.react.getInstancesByRootID = function(rootId) {
-    return ReactMount._instancesByReactRootID[ rootId ];
-};*/
-
-/**
  * @param {HTMLElement} node
  * @returns {?String}
  */
