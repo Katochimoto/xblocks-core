@@ -1021,6 +1021,8 @@ xblocks.tag = global.xtag;
  */
 xblocks.view = {};
 
+var _viewComponentsFactory = {};
+
 var _viewCommon = {
     propTypes: {
         '_uid': React.PropTypes.node,
@@ -1073,15 +1075,24 @@ xblocks.view.register = function(blockName, component) {
     }
 
     React.DOM[ blockName ] = xblocks.view.create(component);
+    _viewComponentsFactory[ blockName ] = React.createFactory( React.DOM[ blockName ] );
     return React.DOM[ blockName ];
 };
 
 /**
  * @param {string} blockName
- * @returns {*}
+ * @returns {Function}
  */
 xblocks.view.get = function(blockName) {
     return React.DOM[ blockName ];
+};
+
+/**
+* @param {string} blockName
+* @returns {Function}
+*/
+xblocks.view.getFactory = function(blockName) {
+    return _viewComponentsFactory[ blockName ];
 };
 
 /* xblocks/view.js end */
@@ -1494,7 +1505,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     props._container = this._node;
     xblocks.dom.attrs.typeConversion(props, this._node.xprops);
 
-    var proxyConstructor = React.createFactory(xblocks.view.get(this._node.xtagName))(props, children);
+    var proxyConstructor = xblocks.view.getFactory(this._node.xtagName)(props, children);
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();

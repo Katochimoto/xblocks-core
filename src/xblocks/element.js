@@ -228,7 +228,7 @@ xblocks.element.prototype._init = function(props, children, callback) {
     props._container = this._node;
     xblocks.dom.attrs.typeConversion(props, this._node.xprops);
 
-    var proxyConstructor = React.createFactory(xblocks.view.get(this._node.xtagName))(props, children);
+    var proxyConstructor = xblocks.view.getFactory(this._node.xtagName)(props, children);
 
     if (props.hasOwnProperty(xblocks.dom.attrs.XB_ATTRS.STATIC)) {
         this.unmount();

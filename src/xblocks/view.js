@@ -6,6 +6,8 @@
  */
 xblocks.view = {};
 
+var _viewComponentsFactory = {};
+
 var _viewCommon = {
     propTypes: {
         '_uid': React.PropTypes.node,
@@ -58,13 +60,22 @@ xblocks.view.register = function(blockName, component) {
     }
 
     React.DOM[ blockName ] = xblocks.view.create(component);
+    _viewComponentsFactory[ blockName ] = React.createFactory( React.DOM[ blockName ] );
     return React.DOM[ blockName ];
 };
 
 /**
  * @param {string} blockName
- * @returns {*}
+ * @returns {Function}
  */
 xblocks.view.get = function(blockName) {
     return React.DOM[ blockName ];
+};
+
+/**
+* @param {string} blockName
+* @returns {Function}
+*/
+xblocks.view.getFactory = function(blockName) {
+    return _viewComponentsFactory[ blockName ];
 };
