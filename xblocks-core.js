@@ -1269,7 +1269,32 @@ xblocks.create = function(blockName, options) {
     options = Array.isArray(options) ? options : [ options ];
     options.unshift(true, {});
     options.push(_blockCommon);
-    return xblocks.tag.register(blockName, xblocks.utils.merge.apply({}, options));
+
+    // error when merging prototype in FireFox <=19
+    var proto;
+    var o;
+    var i = 2;
+    var l = options.length;
+
+    for (; i < l; i++) {
+        o = options[ i ];
+
+        if (xblocks.utils.isPlainObject(o)) {
+            if (!proto && o.prototype) {
+                proto = o.prototype;
+            }
+
+            delete o.prototype;
+        }
+    }
+
+    options = xblocks.utils.merge.apply({}, options);
+
+    if (proto) {
+        options.prototype = proto;
+    }
+
+    return xblocks.tag.register(blockName, options);
 };
 
 /* xblocks/block.js end */
