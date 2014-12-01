@@ -67,7 +67,7 @@ xblocks.react.findContainerForNode = function(node) {
  */
 xblocks.react.getRootID = function(node) {
     var rootElement = xblocks.react.getRootElementInContainer(node);
-    return rootElement && xblocks.react.getID(rootElement);
+    return (rootElement && xblocks.react.getID(rootElement));
 };
 
 /**

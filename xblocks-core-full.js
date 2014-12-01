@@ -5003,10 +5003,10 @@ xblocks.dom.contentNode = function(node) {
     var element;
 
     if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
-        element = node.querySelector('[data-xb-content="' + node.xuid + '"]');
+        element = xblocks.dom.querySelector(node, '[data-xb-content="' + node.xuid + '"]');
 
         if (!element) {
-            element = node.querySelector('script[type="text/x-template"]:not([ref]),template:not([ref])');
+            element = xblocks.dom.querySelector(node, 'script[type="text/x-template"]:not([ref]),template:not([ref])');
         }
     }
 
@@ -5029,6 +5029,44 @@ xblocks.dom.upgradeElements = (function() {
 }());
 
 /* xblocks/dom/upgradeElements.js end */
+
+/* xblocks/dom/querySelector.js begin */
+/* global xblocks */
+/* jshint strict: false */
+
+/**
+* @param {HTMLElement} node
+* @param {String} selector
+* @returns {NodeList}
+*/
+xblocks.dom.querySelector = function(node, selector) {
+    try {
+        return node.querySelector(selector);
+    } catch (e) {
+        return node.ownerDocument.importNode(node, true).querySelector(selector);
+    }
+};
+
+/* xblocks/dom/querySelector.js end */
+
+/* xblocks/dom/querySelectorAll.js begin */
+/* global xblocks */
+/* jshint strict: false */
+
+/**
+* @param {HTMLElement} node
+* @param {String} selector
+* @returns {NodeList}
+*/
+xblocks.dom.querySelectorAll = function(node, selector) {
+    try {
+        return node.querySelectorAll(selector);
+    } catch (e) {
+        return node.ownerDocument.importNode(node, true).querySelectorAll(selector);
+    }
+};
+
+/* xblocks/dom/querySelectorAll.js end */
 
 
 /* xblocks/dom.js end */
@@ -5144,7 +5182,7 @@ xblocks.react.findContainerForNode = function(node) {
  */
 xblocks.react.getRootID = function(node) {
     var rootElement = xblocks.react.getRootElementInContainer(node);
-    return rootElement && xblocks.react.getID(rootElement);
+    return (rootElement && xblocks.react.getID(rootElement));
 };
 
 /**
@@ -5293,7 +5331,7 @@ var _blockStatic = {
     create: function(element) {
         if (element.hasChildNodes()) {
             Array.prototype.forEach.call(
-                element.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
+                xblocks.dom.querySelectorAll(element, 'script[type="text/x-template"][ref],template[ref]'),
                 _blockStatic.tmplCompile,
                 element
             );
@@ -5327,9 +5365,11 @@ var _blockCommon = {
 
             this._xinserted = true;
 
+            var isScriptContent = xblocks.dom.querySelectorAll(this, 'script').length;
+
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>
-            if (this.getElementsByTagName('script').length) {
+            if (isScriptContent) {
                 xblocks.utils.lazy(_blockStatic.createLazy, this);
 
             } else {

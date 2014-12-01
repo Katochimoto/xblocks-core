@@ -9,10 +9,10 @@ xblocks.dom.contentNode = function(node) {
     var element;
 
     if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
-        element = node.querySelector('[data-xb-content="' + node.xuid + '"]');
+        element = xblocks.dom.querySelector(node, '[data-xb-content="' + node.xuid + '"]');
 
         if (!element) {
-            element = node.querySelector('script[type="text/x-template"]:not([ref]),template:not([ref])');
+            element = xblocks.dom.querySelector(node, 'script[type="text/x-template"]:not([ref]),template:not([ref])');
         }
     }
 
