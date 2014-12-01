@@ -43,7 +43,7 @@ var _blockCommon = {
 
             this._xinserted = true;
 
-            var isScriptContent = xblocks.dom.querySelectorAll(this, 'script').length;
+            var isScriptContent = Boolean(xblocks.dom.querySelector(this, 'script'));
 
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>
