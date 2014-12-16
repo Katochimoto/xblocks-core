@@ -3181,6 +3181,15 @@ if (document.readyState === 'complete' ||
     matchSelector = Element.prototype.matchesSelector || Element.prototype[prefix.lowercase + 'MatchesSelector'],
     mutation = win.MutationObserver || win[prefix.js + 'MutationObserver'];
 
+  var issetCustomEvent = false;
+  var customEvent;
+  try {
+    customEvent = doc.createEvent('CustomEvent');
+    issetCustomEvent = true;
+  } catch(e) {
+    customEvent = doc.createEvent('Event');
+  }
+
 /*** Functions ***/
 
 // Utilities
@@ -3348,7 +3357,7 @@ if (document.readyState === 'complete' ||
   }
 
   var skipProps = {};
-  for (var z in doc.createEvent('CustomEvent')) skipProps[z] = 1;
+  for (var z in customEvent) skipProps[z] = 1;
   function inheritEvent(event, base){
     var desc = Object.getOwnPropertyDescriptor(event, 'target');
     for (var z in base) {
@@ -4003,7 +4012,7 @@ if (document.readyState === 'complete' ||
       event._attach.forEach(function(obj) {
         xtag.removeEvent(element, obj);
       });
-      element.removeEventListener(event.type, event.stack);
+      element.removeEventListener(event.type, event.stack, false);
     },
 
     removeEvents: function(element, obj){
@@ -4011,14 +4020,24 @@ if (document.readyState === 'complete' ||
     },
 
     fireEvent: function(element, type, options){
-      var event = doc.createEvent('CustomEvent');
       options = options || {};
-      event.initCustomEvent(type,
-        options.bubbles !== false,
-        options.cancelable !== false,
-        options.detail
-      );
+
+      var event;
+      var bubbles = options.bubbles !== false;
+      var cancelable = options.cancelable !== false;
+
+      if (issetCustomEvent) {
+        event = doc.createEvent('CustomEvent');
+        event.initCustomEvent(type, bubbles, cancelable, options.detail);
+
+      } else {
+        event = doc.createEvent('Event');
+        event.initEvent(type, bubbles, cancelable);
+        event.detail = options.detail;
+      }
+
       if (options.baseEvent) inheritEvent(event, options.baseEvent);
+
       element.dispatchEvent(event);
     },
 
@@ -4121,13 +4140,13 @@ for (z in UIEventProto){
   function addTap(el, tap, e){
     if (!el.__tap__) {
       el.__tap__ = { click: e.type == 'mousedown' };
-      if (el.__tap__.click) el.addEventListener('click', tap.observer);
+      if (el.__tap__.click) el.addEventListener('click', tap.observer, false);
       else {
         el.__tap__.scroll = tap.observer.bind(el);
         window.addEventListener('scroll', el.__tap__.scroll, true);
-        el.addEventListener('touchmove', tap.observer);
-        el.addEventListener('touchcancel', tap.observer);
-        el.addEventListener('touchend', tap.observer);
+        el.addEventListener('touchmove', tap.observer, false);
+        el.addEventListener('touchcancel', tap.observer, false);
+        el.addEventListener('touchend', tap.observer, false);
       }
     }
     if (!el.__tap__.click) {
@@ -4138,12 +4157,12 @@ for (z in UIEventProto){
 
   function removeTap(el, tap){
     if (el.__tap__) {
-      if (el.__tap__.click) el.removeEventListener('click', tap.observer);
+      if (el.__tap__.click) el.removeEventListener('click', tap.observer, false);
       else {
         window.removeEventListener('scroll', el.__tap__.scroll, true);
-        el.removeEventListener('touchmove', tap.observer);
-        el.removeEventListener('touchcancel', tap.observer);
-        el.removeEventListener('touchend', tap.observer);
+        el.removeEventListener('touchmove', tap.observer, false);
+        el.removeEventListener('touchcancel', tap.observer, false);
+        el.removeEventListener('touchend', tap.observer, false);
       }
       delete el.__tap__;
     }
@@ -4201,7 +4220,7 @@ for (z in UIEventProto){
 
   doc.addEventListener('WebComponentsReady', function(){
     xtag.fireEvent(doc.body, 'DOMComponentsLoaded');
-  });
+  }, false);
 
 })();
 
