@@ -267,10 +267,30 @@ var logFlags = {
         return;
     }
 
-    global.CustomEvent = function(event, params) {
+    var issetCustomEvent = false;
+    try {
+        issetCustomEvent = Boolean(global.document.createEvent('CustomEvent'));
+    } catch(e) {
+        // do nothing
+    }
+
+    global.CustomEvent = function(eventName, params) {
         params = params || {};
-        var evt = global.document.createEvent('CustomEvent');
-        evt.initCustomEvent(event, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
+
+        var evt;
+        var bubbles = Boolean(params.bubbles);
+        var cancelable = Boolean(params.cancelable);
+
+        if (issetCustomEvent) {
+            evt = global.document.createEvent('CustomEvent');
+            evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
+
+        } else {
+            evt = global.document.createEvent('Event');
+            evt.initEvent(eventName, bubbles, cancelable);
+            evt.detail = params.detail;
+        }
+
         return evt;
     };
 
@@ -509,7 +529,7 @@ if (typeof WeakMap === 'undefined') {
   //
   // For a thorough discussion on this, see:
   // http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
-  if (/Trident/.test(navigator.userAgent)) {
+  if (/Trident|Edge/.test(navigator.userAgent)) {
     // Sadly, this bug also affects postMessage and MessageQueues.
     //
     // We would like to use the onreadystatechange hack for IE <= 10, but it is
@@ -2000,7 +2020,7 @@ document.register = document.registerElement;
 var useNative = scope.useNative;
 var initializeModules = scope.initializeModules;
 
-var isIE = /Trident/.test(navigator.userAgent);
+var isIE11OrOlder = /Trident/.test(navigator.userAgent);
 
 // If native, setup stub api and bail.
 // NOTE: we fire `WebComponentsReady` under native for api compatibility
@@ -2074,9 +2094,9 @@ function bootstrap() {
   });
 }
 
-// CustomEvent shim for IE
-// NOTE: we explicitly test for IE since Safari has an type `object` CustomEvent
-if (isIE && (typeof window.CustomEvent !== 'function')) {
+// CustomEvent shim for IE <= 11
+// NOTE: we explicitly test for IE since Safari has a type `object` CustomEvent
+if (isIE11OrOlder && (typeof window.CustomEvent !== 'function')) {
   window.CustomEvent = function(inType, params) {
     params = params || {};
     var e = document.createEvent('CustomEvent');
@@ -2101,7 +2121,7 @@ if (document.readyState === 'complete' || scope.flags.eager) {
 } else {
   var loadEvent = window.HTMLImports && !HTMLImports.ready ?
       'HTMLImportsLoaded' : 'DOMContentLoaded';
-  window.addEventListener(loadEvent, bootstrap);
+  window.addEventListener(loadEvent, bootstrap, false);
 }
 
 })(window.CustomElements);
@@ -2184,7 +2204,7 @@ Object.defineProperty(rootDocument, '_currentScript', currentScriptDescriptor);
   the polyfill and native implementation.
  */
 
-var isIE = /Trident/.test(navigator.userAgent);
+var isIE = /Trident|Edge/.test(navigator.userAgent);
 
 // call a callback when all HTMLImports in the document at call time
 // (or at least document ready) have loaded.
@@ -2212,11 +2232,11 @@ function whenDocumentReady(callback, doc) {
     var checkReady = function() {
       if (doc.readyState === 'complete' ||
           doc.readyState === requiredReadyState) {
-        doc.removeEventListener(READY_EVENT, checkReady);
+        doc.removeEventListener(READY_EVENT, checkReady, false);
         whenDocumentReady(callback, doc);
       }
     };
-    doc.addEventListener(READY_EVENT, checkReady);
+    doc.addEventListener(READY_EVENT, checkReady, false);
   } else if (callback) {
     callback();
   }
@@ -2245,8 +2265,8 @@ function watchImportsLoad(callback, doc) {
       if (isImportLoaded(imp)) {
         loadedImport.call(imp, {target: imp});
       } else {
-        imp.addEventListener('load', loadedImport);
-        imp.addEventListener('error', loadedImport);
+        imp.addEventListener('load', loadedImport, false);
+        imp.addEventListener('error', loadedImport, false);
       }
     }
   } else {
@@ -2303,8 +2323,8 @@ if (useNative) {
     if (loaded) {
       markTargetLoaded({target: element});
     } else {
-      element.addEventListener('load', markTargetLoaded);
-      element.addEventListener('error', markTargetLoaded);
+      element.addEventListener('load', markTargetLoaded, false);
+      element.addEventListener('error', markTargetLoaded, false);
     }
   }
 
@@ -2442,7 +2462,7 @@ HTMLImports.addModule(function(scope) {
 /*
   xhr processor.
 */
-xhr = {
+var xhr = {
   async: true,
 
   ok: function(request) {
@@ -2576,7 +2596,11 @@ Loader.prototype = {
 
   fetch: function(url, elt) {
     flags.load && console.log('fetch', url, elt);
-    if (url.match(/^data:/)) {
+    if (!url) {
+      setTimeout(function() {
+        this.receive(url, elt, {error: 'href must be specified'}, null);
+      }.bind(this), 0);
+    } else if (url.match(/^data:/)) {
       // Handle Data URI Scheme
       var pieces = url.split(',');
       var header = pieces[0];
@@ -2869,8 +2893,8 @@ var importParser = {
       self.markParsingComplete(elt);
       self.parseNext();
     };
-    elt.addEventListener('load', done);
-    elt.addEventListener('error', done);
+    elt.addEventListener('load', done, false);
+    elt.addEventListener('error', done, false);
 
     // NOTE: IE does not fire "load" event for styles that have already loaded
     // This is in violation of the spec, so we try our hardest to work around it
@@ -3150,7 +3174,8 @@ function makeDocument(resource, url) {
   base.setAttribute('href', url);
   // add baseURI support to browsers (IE) that lack it.
   if (!doc.baseURI) {
-    doc.baseURI = url;
+    // Use defineProperty since Safari throws an exception when using assignment.
+    Object.defineProperty(doc, 'baseURI', {value:url});
   }
   // ensure UTF-8 charset
   var meta = doc.createElement('meta');
@@ -3215,7 +3240,7 @@ var importer = scope.importer;
 var dynamic = {
   // process (load/parse) any nodes added to imported documents.
   added: function(nodes) {
-    var owner, parsed;
+    var owner, parsed, loading;
     for (var i=0, l=nodes.length, n; (i<l) && (n=nodes[i]); i++) {
       if (!owner) {
         owner = n.ownerDocument;
@@ -3323,7 +3348,7 @@ if (document.readyState === 'complete' ||
     (document.readyState === 'interactive' && !window.attachEvent)) {
   bootstrap();
 } else {
-  document.addEventListener('DOMContentLoaded', bootstrap);
+  document.addEventListener('DOMContentLoaded', bootstrap, false);
 }
 
 })(HTMLImports);
@@ -5088,21 +5113,40 @@ xblocks.event = xblocks.event || {};
  * @constructor
  */
 xblocks.event.Custom = (function() {
-    if (!xblocks.utils.pristine('CustomEvent')) {
-        var CustomEvent = function(event, params) {
-            params = params || {};
-            var evt = global.document.createEvent('CustomEvent');
-            evt.initCustomEvent(event, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
-            return evt;
-        };
-
-        CustomEvent.prototype = global.Event.prototype;
-
-        return CustomEvent;
-
-    } else {
+    if (xblocks.utils.pristine('CustomEvent')) {
         return global.CustomEvent;
     }
+
+    var issetCustomEvent = false;
+    try {
+        issetCustomEvent = Boolean(global.document.createEvent('CustomEvent'));
+    } catch(e) {
+        // do nothing
+    }
+
+    var CustomEvent = function(eventName, params) {
+        params = params || {};
+
+        var evt;
+        var bubbles = Boolean(params.bubbles);
+        var cancelable = Boolean(params.cancelable);
+
+        if (issetCustomEvent) {
+            evt = global.document.createEvent('CustomEvent');
+            evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
+
+        } else {
+            evt = global.document.createEvent('Event');
+            evt.initEvent(eventName, bubbles, cancelable);
+            evt.detail = params.detail;
+        }
+
+        return evt;
+    };
+
+    CustomEvent.prototype = global.Event.prototype;
+
+    return CustomEvent;
 }());
 
 /**

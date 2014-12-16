@@ -7,10 +7,30 @@
         return;
     }
 
-    global.CustomEvent = function(event, params) {
+    var issetCustomEvent = false;
+    try {
+        issetCustomEvent = Boolean(global.document.createEvent('CustomEvent'));
+    } catch(e) {
+        // do nothing
+    }
+
+    global.CustomEvent = function(eventName, params) {
         params = params || {};
-        var evt = global.document.createEvent('CustomEvent');
-        evt.initCustomEvent(event, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
+
+        var evt;
+        var bubbles = Boolean(params.bubbles);
+        var cancelable = Boolean(params.cancelable);
+
+        if (issetCustomEvent) {
+            evt = global.document.createEvent('CustomEvent');
+            evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
+
+        } else {
+            evt = global.document.createEvent('Event');
+            evt.initEvent(eventName, bubbles, cancelable);
+            evt.detail = params.detail;
+        }
+
         return evt;
     };
 
