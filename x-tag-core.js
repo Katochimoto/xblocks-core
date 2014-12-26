@@ -6,7 +6,8 @@ var logFlags = {
     //data: true
 };
 
-/* xtag/performance.js begin */
+/* polyfills/performance.js begin */
+/* jshint -W067 */
 (function(global) {
     if (typeof(global.performance) === 'undefined') {
         global.performance = {};
@@ -27,16 +28,21 @@ var logFlags = {
         };
     }
 
-}(window));
+}(function() {
+    return this || (1, eval)('this');
+}()));
 
-/* xtag/performance.js end */
+/* polyfills/performance.js end */
 
-/* xtag/CustomEvent.js begin */
+/* polyfills/CustomEvent.js begin */
+/* jshint -W067 */
 /**
  * strange commit, checks CustomEvent only in IE
  * https://github.com/webcomponents/webcomponentsjs/commit/8d6a38aa6e3d03ff54a41db9e9725401bbc1446c
  */
 (function(global) {
+    'use strict';
+
     if (typeof(global.CustomEvent) === 'function') {
         return;
     }
@@ -48,43 +54,56 @@ var logFlags = {
         // do nothing
     }
 
-    global.CustomEvent = function(eventName, params) {
-        params = params || {};
+    if (issetCustomEvent) {
+        global.CustomEvent = function(eventName, params) {
+            params = params || {};
 
-        var evt;
-        var bubbles = Boolean(params.bubbles);
-        var cancelable = Boolean(params.cancelable);
+            var bubbles = Boolean(params.bubbles);
+            var cancelable = Boolean(params.cancelable);
+            var evt = global.document.createEvent('CustomEvent');
 
-        if (issetCustomEvent) {
-            evt = global.document.createEvent('CustomEvent');
             evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
-        } else {
-            evt = global.document.createEvent('Event');
+            return evt;
+        };
+
+    } else {
+        global.CustomEvent = function(eventName, params) {
+            params = params || {};
+
+            var bubbles = Boolean(params.bubbles);
+            var cancelable = Boolean(params.cancelable);
+            var evt = global.document.createEvent('Event');
+
             evt.initEvent(eventName, bubbles, cancelable);
             evt.detail = params.detail;
-        }
 
-        return evt;
-    };
+            return evt;
+        };
+    }
 
     global.CustomEvent.prototype = global.Event.prototype;
 
-}(window));
+}(function() {
+    return this || (1, eval)('this');
+}()));
 
-/* xtag/CustomEvent.js end */
+/* polyfills/CustomEvent.js end */
 
-/* xtag/DOMAttrModified.js begin */
+/* polyfills/DOMAttrModified.js begin */
+/* jshint -W067 */
 /**
  * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
  */
-(function() {
+(function(global) {
+    'use strict';
+
     var attrModifiedWorks = false;
     var listener = function() {
         attrModifiedWorks = true;
     };
 
-    var doc = document.documentElement;
+    var doc = global.document.documentElement;
     doc.addEventListener('DOMAttrModified', listener, false);
     doc.setAttribute('___TEST___', true);
     doc.removeEventListener('DOMAttrModified', listener, false);
@@ -94,7 +113,7 @@ var logFlags = {
         return;
     }
 
-    var proto = Element.prototype;
+    var proto = global.Element.prototype;
 
     proto.__setAttribute = proto.setAttribute;
     proto.setAttribute = function(attrName, newVal) {
@@ -102,7 +121,7 @@ var logFlags = {
         this.__setAttribute(attrName, newVal);
         newVal = this.getAttribute(attrName);
         if (newVal != prevVal) {
-            var evt = document.createEvent('MutationEvent');
+            var evt = global.document.createEvent('MutationEvent');
             evt.initMutationEvent(
                 'DOMAttrModified',
                 true,
@@ -121,7 +140,7 @@ var logFlags = {
     proto.removeAttribute = function(attrName) {
         var prevVal = this.getAttribute(attrName);
         this.__removeAttribute(attrName);
-        var evt = document.createEvent('MutationEvent');
+        var evt = global.document.createEvent('MutationEvent');
         evt.initMutationEvent(
             'DOMAttrModified',
             true,
@@ -135,9 +154,11 @@ var logFlags = {
         this.dispatchEvent(evt);
     };
 
-}());
+}(function() {
+    return this || (1, eval)('this');
+}()));
 
-/* xtag/DOMAttrModified.js end */
+/* polyfills/DOMAttrModified.js end */
 
 
 /* ../node_modules/dom-token-list-polyfill/src/token-list.js begin */

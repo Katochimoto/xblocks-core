@@ -1,31 +1,24 @@
-/* global xblocks, global */
-/* jshint strict: false */
-
+/* jshint -W067 */
 /**
- * @namespace
+ * strange commit, checks CustomEvent only in IE
+ * https://github.com/webcomponents/webcomponentsjs/commit/8d6a38aa6e3d03ff54a41db9e9725401bbc1446c
  */
-xblocks.event = xblocks.event || {};
+(function(global) {
+    'use strict';
 
-/**
- * @constructor
- */
-xblocks.event.Custom = (function() {
-    if (xblocks.utils.pristine('CustomEvent')) {
-        return global.CustomEvent;
+    if (typeof(global.CustomEvent) === 'function') {
+        return;
     }
 
     var issetCustomEvent = false;
-
     try {
         issetCustomEvent = Boolean(global.document.createEvent('CustomEvent'));
     } catch(e) {
         // do nothing
     }
 
-    var CustomEvent;
-
     if (issetCustomEvent) {
-        CustomEvent = function(eventName, params) {
+        global.CustomEvent = function(eventName, params) {
             params = params || {};
 
             var bubbles = Boolean(params.bubbles);
@@ -38,7 +31,7 @@ xblocks.event.Custom = (function() {
         };
 
     } else {
-        CustomEvent = function(eventName, params) {
+        global.CustomEvent = function(eventName, params) {
             params = params || {};
 
             var bubbles = Boolean(params.bubbles);
@@ -52,17 +45,8 @@ xblocks.event.Custom = (function() {
         };
     }
 
-    CustomEvent.prototype = global.Event.prototype;
+    global.CustomEvent.prototype = global.Event.prototype;
 
-    return CustomEvent;
-
-}());
-
-/**
- * @param {HTMLElement} element
- * @param {string} name
- * @param {object} params
- */
-xblocks.event.dispatch = function(element, name, params) {
-    element.dispatchEvent(new xblocks.event.Custom(name, params));
-};
+}(function() {
+    return this || (1, eval)('this');
+}()));

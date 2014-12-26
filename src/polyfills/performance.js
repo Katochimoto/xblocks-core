@@ -1,3 +1,4 @@
+/* jshint -W067 */
 (function(global) {
     if (typeof(global.performance) === 'undefined') {
         global.performance = {};
@@ -18,4 +19,6 @@
         };
     }
 
-}(window));
+}(function() {
+    return this || (1, eval)('this');
+}()));

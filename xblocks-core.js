@@ -909,35 +909,47 @@ xblocks.event.Custom = (function() {
     }
 
     var issetCustomEvent = false;
+
     try {
         issetCustomEvent = Boolean(global.document.createEvent('CustomEvent'));
     } catch(e) {
         // do nothing
     }
 
-    var CustomEvent = function(eventName, params) {
-        params = params || {};
+    var CustomEvent;
 
-        var evt;
-        var bubbles = Boolean(params.bubbles);
-        var cancelable = Boolean(params.cancelable);
+    if (issetCustomEvent) {
+        CustomEvent = function(eventName, params) {
+            params = params || {};
 
-        if (issetCustomEvent) {
-            evt = global.document.createEvent('CustomEvent');
+            var bubbles = Boolean(params.bubbles);
+            var cancelable = Boolean(params.cancelable);
+            var evt = global.document.createEvent('CustomEvent');
+
             evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
-        } else {
-            evt = global.document.createEvent('Event');
+            return evt;
+        };
+
+    } else {
+        CustomEvent = function(eventName, params) {
+            params = params || {};
+
+            var bubbles = Boolean(params.bubbles);
+            var cancelable = Boolean(params.cancelable);
+            var evt = global.document.createEvent('Event');
+
             evt.initEvent(eventName, bubbles, cancelable);
             evt.detail = params.detail;
-        }
 
-        return evt;
-    };
+            return evt;
+        };
+    }
 
     CustomEvent.prototype = global.Event.prototype;
 
     return CustomEvent;
+
 }());
 
 /**

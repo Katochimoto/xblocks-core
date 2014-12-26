@@ -1,7 +1,7 @@
 /* global describe, it, expect, xblocks, beforeEach, afterEach */
 /* jshint strict: false */
 
-describe('xblocks - клонирование', function() {
+describe('xblocks - клонирование ->', function() {
 
     xblocks.view.register('x-element-clone', {
         render: function() {

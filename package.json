@@ -42,7 +42,7 @@
         "karma-react-jsx-preprocessor": "~0.1.x",
         "karma-phantomjs-launcher": "~0.1.x",
         "karma-chrome-launcher": "~0.1.x",
-        "karma-firefox-launcher": "~0.1.x",
+        "karma-firefox-launcher": "Katochimoto/karma-firefox-launcher.git",
 
         "webcomponents.js": "Katochimoto/webcomponentsjs.git",
         "dom-token-list-polyfill": "pennyfx/dom-token-list.git#0.0.2",

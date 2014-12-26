@@ -6,9 +6,9 @@ var logFlags = {
     //data: true
 };
 
-/*! borschik:include:xtag/performance.js */
-/*! borschik:include:xtag/CustomEvent.js */
-/*! borschik:include:xtag/DOMAttrModified.js */
+/*! borschik:include:polyfills/performance.js */
+/*! borschik:include:polyfills/CustomEvent.js */
+/*! borschik:include:polyfills/DOMAttrModified.js */
 
 /*! borschik:include:../node_modules/dom-token-list-polyfill/src/token-list.js */
 /*! borschik:include:../node_modules/webcomponents.js/src/WeakMap/WeakMap.js */
