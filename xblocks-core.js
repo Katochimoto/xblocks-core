@@ -831,6 +831,21 @@ xblocks.dom.contentNode = function(node) {
 
 /* xblocks/dom/contentNode.js end */
 
+/* xblocks/dom/upgradeElement.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+xblocks.dom.upgradeElement = (function() {
+    if (global.CustomElements && typeof(global.CustomElements.upgrade) === 'function') {
+        return global.CustomElements.upgrade;
+
+    } else {
+        return function() {};
+    }
+}());
+
+/* xblocks/dom/upgradeElement.js end */
+
 /* xblocks/dom/upgradeElements.js begin */
 /* global xblocks, global */
 /* jshint strict: false */
@@ -1171,7 +1186,7 @@ xblocks.view.getFactory = function(blockName) {
 /* xblocks/view.js end */
 
     /* xblocks/block.js begin */
-/* global xblocks */
+/* global xblocks, global */
 /* jshint strict: false */
 
 var _blockStatic = {
@@ -1322,13 +1337,20 @@ var _blockCommon = {
 
         cloneNode: function(deep) {
             // not to clone the contents
-            var node = Node.prototype.cloneNode.call(this, false);
+            // FireFox19 cannot use native cloneNode the Node object
+            var node = global.Element.prototype.cloneNode.call(this, false);
+
+            xblocks.dom.upgradeElement(node);
+
             node.xtmpl = this.xtmpl;
             node._xinserted = false;
 
             if (deep) {
                 node.content = this.content;
             }
+
+            //???
+            //if ('checked' in this) clone.checked = this.checked;
 
             return node;
         }

@@ -20,13 +20,43 @@ describe('xblocks - клонирование ->', function() {
         delete this.xElement;
     });
 
-    it('Клонированный элемент не инициализирован', function(done) {
+    it('Клонированный элемент не инициализирован 1', function(done) {
         this.xElement.addEventListener('xb-created', function() {
             var cloneElement = this.cloneNode();
 
             expect(cloneElement.xblock).to.be(undefined);
+            done();
+        }, false);
+
+        document.body.appendChild(this.xElement);
+    });
+
+    it('Клонированный элемент не инициализирован 2', function(done) {
+        this.xElement.addEventListener('xb-created', function() {
+            var cloneElement = this.cloneNode();
+
             expect(cloneElement.mounted).to.be(false);
+            done();
+        }, false);
+
+        document.body.appendChild(this.xElement);
+    });
+
+    it('Клонированный элемент не инициализирован 3', function(done) {
+        this.xElement.addEventListener('xb-created', function() {
+            var cloneElement = this.cloneNode();
+
             expect(cloneElement._xinserted).to.be(false);
+            done();
+        }, false);
+
+        document.body.appendChild(this.xElement);
+    });
+
+    it('Клонированный элемент не инициализирован 4', function(done) {
+        this.xElement.addEventListener('xb-created', function() {
+            var cloneElement = this.cloneNode();
+
             expect(cloneElement.content).to.be('');
             done();
         }, false);
