@@ -1,5 +1,5 @@
 src_js := $(shell find src -type f -name "*.js")
-xtag_src_js := $(shell find src/xtag -type f -name "*.js")
+polyfills_js := $(shell find src/polyfills -type f -name "*.js")
 
 all: node_modules \
     bower_components \
@@ -42,7 +42,7 @@ xblocks-core-full.js: node_modules $(src_js)
 xblocks-core-full.min.js: xblocks-core-full.js
 	./node_modules/.bin/borschik -i xblocks-core-full.js -o xblocks-core-full.min.js
 
-x-tag-core.js: node_modules src/xtag.js $(xtag_src_js)
+x-tag-core.js: node_modules src/xtag.js $(polyfills_js)
 	./node_modules/.bin/borschik -m no -i src/xtag.js > x-tag-core.js
 
 x-tag-core.min.js: x-tag-core.js
