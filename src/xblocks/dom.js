@@ -37,3 +37,4 @@ xblocks.dom.attrs.XB_ATTRS = {
 /*! borschik:include:dom/upgradeElements.js */
 /*! borschik:include:dom/querySelector.js */
 /*! borschik:include:dom/querySelectorAll.js */
+/*! borschik:include:dom/cloneNode.js */

@@ -874,7 +874,7 @@ xblocks.dom.querySelector = function(node, selector) {
     try {
         return node.querySelector(selector);
     } catch(e) {
-        // FireFox 10
+        // FireFox <=13
         // uncaught exception: [Exception... "Could not convert JavaScript argument"  nsresult: "0x80570009 (NS_ERROR_XPC_BAD_CONVERT_JS)"
         return node.ownerDocument.importNode(node, true).querySelector(selector);
     }
@@ -895,13 +895,35 @@ xblocks.dom.querySelectorAll = function(node, selector) {
     try {
         return node.querySelectorAll(selector);
     } catch(e) {
-        // FireFox 10
+        // FireFox <=13
         // uncaught exception: [Exception... "Could not convert JavaScript argument"  nsresult: "0x80570009 (NS_ERROR_XPC_BAD_CONVERT_JS)"
         return node.ownerDocument.importNode(node, true).querySelectorAll(selector);
     }
 };
 
 /* xblocks/dom/querySelectorAll.js end */
+
+/* xblocks/dom/cloneNode.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+* @param {HTMLElement} node
+* @param {Boolean} deep
+* @returns {NodeList}
+*/
+xblocks.dom.cloneNode = function(node, deep) {
+    try {
+        // FireFox19 cannot use native cloneNode the Node object
+        return global.Element.prototype.cloneNode.call(node, deep);
+    } catch(e) {
+        // FireFox <=13
+        // uncaught exception: [Exception... "Could not convert JavaScript argument"  nsresult: "0x80570009 (NS_ERROR_XPC_BAD_CONVERT_JS)"
+        return node.ownerDocument.importNode(node, deep);
+    }
+};
+
+/* xblocks/dom/cloneNode.js end */
 
 
 /* xblocks/dom.js end */
@@ -1186,7 +1208,7 @@ xblocks.view.getFactory = function(blockName) {
 /* xblocks/view.js end */
 
     /* xblocks/block.js begin */
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 var _blockStatic = {
@@ -1337,9 +1359,7 @@ var _blockCommon = {
 
         cloneNode: function(deep) {
             // not to clone the contents
-            // FireFox19 cannot use native cloneNode the Node object
-            var node = global.Element.prototype.cloneNode.call(this, false);
-
+            var node = xblocks.dom.cloneNode(this, false);
             xblocks.dom.upgradeElement(node);
 
             node.xtmpl = this.xtmpl;

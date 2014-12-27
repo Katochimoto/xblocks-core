@@ -1,4 +1,4 @@
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 var _blockStatic = {
@@ -149,9 +149,7 @@ var _blockCommon = {
 
         cloneNode: function(deep) {
             // not to clone the contents
-            // FireFox19 cannot use native cloneNode the Node object
-            var node = global.Element.prototype.cloneNode.call(this, false);
-
+            var node = xblocks.dom.cloneNode(this, false);
             xblocks.dom.upgradeElement(node);
 
             node.xtmpl = this.xtmpl;

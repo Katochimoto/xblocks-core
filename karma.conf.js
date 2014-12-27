@@ -69,9 +69,16 @@ module.exports = function(config) {
             'ChromeCanary',
             'Firefox',
             'FirefoxDeveloperEdition',
-            'Firefox5',
-            'Firefox6',
-            'Firefox10',
+
+            //'Firefox5',
+            //'Firefox6',
+            //'Firefox10',
+            //'Firefox11',
+            //'Firefox12',
+            //'Firefox13',
+            
+            'Firefox14',
+            'Firefox15',
             'Firefox19',
             'Firefox30',
             'Firefox32'
