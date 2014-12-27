@@ -2,8 +2,6 @@
 /* jshint strict: false */
 
 /**
-* @param {HTMLElement} node
-* @param {String} [html]
 * @returns {{ get: function, set: function }}
 */
 xblocks.dom.outerHTML = (function() {
