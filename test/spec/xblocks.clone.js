@@ -46,7 +46,7 @@ describe('xblocks - клонирование ->', function() {
         this.xElement.addEventListener('xb-created', function() {
             var cloneElement = this.cloneNode();
 
-            expect(cloneElement._xinserted).to.be(false);
+            expect(cloneElement.xinserted).to.be(false);
             done();
         }, false);
 

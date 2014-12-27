@@ -86,8 +86,8 @@ describe('xblocks - Создание ->', function() {
         expect(this.xElement.xblock).to.be.a('undefined');
     });
 
-    it('свойство _xinserted', function() {
-        expect(this.xElement._xinserted).to.be.a('boolean');
-        expect(this.xElement._xinserted).to.be(false);
+    it('свойство xinserted', function() {
+        expect(this.xElement.xinserted).to.be.a('boolean');
+        expect(this.xElement.xinserted).to.be(false);
     });
 });

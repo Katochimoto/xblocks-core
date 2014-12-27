@@ -33,15 +33,15 @@ var _blockCommon = {
             this.xtmpl = {};
             this.xuid = xblocks.utils.seq();
             this.xprops = xblocks.utils.propTypes(this.xtagName);
-            this._xinserted = false;
+            this.xinserted = false;
         },
 
         inserted: function() {
-            if (this._xinserted) {
+            if (this.xinserted) {
                 return;
             }
 
-            this._xinserted = true;
+            this.xinserted = true;
 
             var isScriptContent = Boolean(xblocks.dom.querySelector(this, 'script'));
 
@@ -58,7 +58,7 @@ var _blockCommon = {
         },
 
         removed: function() {
-            this._xinserted = false;
+            this.xinserted = false;
 
             // replace initial content after destroy react component
             // fix:
@@ -155,7 +155,7 @@ var _blockCommon = {
             xblocks.dom.upgradeElement(node);
 
             node.xtmpl = this.xtmpl;
-            node._xinserted = false;
+            node.xinserted = false;
 
             if (deep) {
                 node.content = this.content;
