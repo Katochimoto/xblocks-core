@@ -1,7 +1,7 @@
 /* global describe, it, expect, xblocks, beforeEach, afterEach */
 /* jshint strict: false */
 
-describe('xblocks - работа с атрибутами', function() {
+describe('xblocks - работа с атрибутами ->', function() {
 
     xblocks.view.register('x-element', {
         propTypes: {

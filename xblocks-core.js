@@ -668,7 +668,7 @@ xblocks.utils.propTypes = function(tagName) {
 /* xblocks/utils.js end */
 
     /* xblocks/dom.js begin */
-/* global xblocks */
+/* global xblocks, global */
 /* jshint strict: false */
 
 /**
@@ -700,6 +700,8 @@ xblocks.dom.attrs.ARRTS_BOOLEAN = [
 xblocks.dom.attrs.XB_ATTRS = {
     STATIC: 'xb-static'
 };
+
+xblocks.dom.ELEMENT_PROTO = (global.HTMLElement || global.Element).prototype;
 
 /* xblocks/dom/attrs.js begin */
 /* global xblocks, React */
@@ -904,7 +906,7 @@ xblocks.dom.querySelectorAll = function(node, selector) {
 /* xblocks/dom/querySelectorAll.js end */
 
 /* xblocks/dom/cloneNode.js begin */
-/* global xblocks, global */
+/* global xblocks */
 /* jshint strict: false */
 
 /**
@@ -915,7 +917,7 @@ xblocks.dom.querySelectorAll = function(node, selector) {
 xblocks.dom.cloneNode = function(node, deep) {
     try {
         // FireFox19 cannot use native cloneNode the Node object
-        return global.Element.prototype.cloneNode.call(node, deep);
+        return xblocks.dom.ELEMENT_PROTO.cloneNode.call(node, deep);
     } catch(e) {
         // FireFox <=13
         // uncaught exception: [Exception... "Could not convert JavaScript argument"  nsresult: "0x80570009 (NS_ERROR_XPC_BAD_CONVERT_JS)"
@@ -924,6 +926,77 @@ xblocks.dom.cloneNode = function(node, deep) {
 };
 
 /* xblocks/dom/cloneNode.js end */
+
+/* xblocks/dom/outerHTML.js begin */
+/* global xblocks, global */
+/* jshint strict: false */
+
+/**
+* @param {HTMLElement} node
+* @param {String} [html]
+* @returns {{ get: function, set: function }}
+*/
+xblocks.dom.outerHTML = (function() {
+
+    var container = global.document.createElementNS('http://www.w3.org/1999/xhtml', '_');
+    var getter;
+    var setter;
+
+    if (container.hasOwnProperty('outerHTML')) {
+        getter = function() {
+            return this.outerHTML;
+        };
+
+        setter = function(html) {
+            this.outerHTML = html;
+        };
+
+    } else {
+        var serializer = global.XMLSerializer && (new global.XMLSerializer());
+        var xmlns = /\sxmlns=\"[^\"]+\"/;
+
+        if (serializer) {
+            getter = function() {
+                return serializer.serializeToString(this).replace(xmlns, '');
+            };
+
+        } else {
+            getter = function() {
+                container.appendChild(this.cloneNode(false));
+                var html = container.innerHTML.replace('><', '>' + this.innerHTML + '<');
+                container.innerHTML = '';
+                return html;
+            };
+        }
+
+        setter = function(html) {
+            var node = this;
+            var parent = node.parentNode;
+            var child;
+
+            if (!parent) {
+                global.DOMException.code = global.DOMException.NOT_FOUND_ERR;
+                throw global.DOMException;
+            }
+
+            container.innerHTML = html;
+
+            while ((child = container.firstChild)) {
+                parent.insertBefore(child, node);
+            }
+
+            parent.removeChild(node);
+        };
+    }
+
+    return {
+        'get': getter,
+        'set': setter
+    };
+
+}());
+
+/* xblocks/dom/outerHTML.js end */
 
 
 /* xblocks/dom.js end */
@@ -1349,7 +1422,9 @@ var _blockCommon = {
                 xblocks.dom.attrs.typeConversion(props, xprops);
                 return props;
             }
-        }
+        },
+
+        outerHTML: xblocks.dom.outerHTML
     },
 
     methods: {

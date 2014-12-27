@@ -1,4 +1,4 @@
-/* global xblocks */
+/* global xblocks, global */
 /* jshint strict: false */
 
 /**
@@ -31,6 +31,8 @@ xblocks.dom.attrs.XB_ATTRS = {
     STATIC: 'xb-static'
 };
 
+xblocks.dom.ELEMENT_PROTO = (global.HTMLElement || global.Element).prototype;
+
 /*! borschik:include:dom/attrs.js */
 /*! borschik:include:dom/contentNode.js */
 /*! borschik:include:dom/upgradeElement.js */
@@ -38,3 +40,4 @@ xblocks.dom.attrs.XB_ATTRS = {
 /*! borschik:include:dom/querySelector.js */
 /*! borschik:include:dom/querySelectorAll.js */
 /*! borschik:include:dom/cloneNode.js */
+/*! borschik:include:dom/outerHTML.js */

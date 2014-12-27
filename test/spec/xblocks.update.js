@@ -1,7 +1,7 @@
 /* global describe, it, expect, xblocks, beforeEach, afterEach */
 /* jshint strict: false */
 
-describe('xblocks - Изменение атрибутов', function() {
+describe('xblocks - Изменение атрибутов ->', function() {
 
     xblocks.view.register('x-element-update', {
         propTypes: {
@@ -32,12 +32,12 @@ describe('xblocks - Изменение атрибутов', function() {
 
         xElement.addEventListener('xb-update', function() {
             expect(this.getAttribute('bool-attr')).to.be('true');
-            expect(this.querySelector('.bool')).not.to.be(null);
+            expect(xblocks.dom.querySelector(this, '.bool')).not.to.be(null);
             done();
         }, false);
 
         xElement.addEventListener('xb-created', function() {
-            expect(this.querySelector('.bool')).to.be(null);
+            expect(xblocks.dom.querySelector(this, '.bool')).to.be(null);
             xElement.setAttribute('bool-attr', 'true');
         }, false);
 

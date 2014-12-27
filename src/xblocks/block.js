@@ -139,7 +139,9 @@ var _blockCommon = {
                 xblocks.dom.attrs.typeConversion(props, xprops);
                 return props;
             }
-        }
+        },
+
+        outerHTML: xblocks.dom.outerHTML
     },
 
     methods: {
