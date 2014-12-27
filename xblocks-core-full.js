@@ -4747,7 +4747,11 @@ xblocks.utils.lazy = function(callback, args) {
     if (!callback._timer) {
         callback._timer = xblocks.utils._lazy(function() {
             callback._timer = 0;
-            callback(callback._args.splice(0, callback._args.length));
+
+            var args = callback._args;
+            callback._args = [];
+
+            callback(args);
         });
     }
 
