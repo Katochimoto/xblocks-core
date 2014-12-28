@@ -1,3 +1,4 @@
+/* global CustomEventCommon */
 /* jshint -W067 */
 /**
  * strange commit, checks CustomEvent only in IE
@@ -10,42 +11,10 @@
         return;
     }
 
-    var issetCustomEvent = false;
-    try {
-        issetCustomEvent = Boolean(global.document.createEvent('CustomEvent'));
-    } catch(e) {
-        // do nothing
-    }
-
-    if (issetCustomEvent) {
-        global.CustomEvent = function(eventName, params) {
-            params = params || {};
-
-            var bubbles = Boolean(params.bubbles);
-            var cancelable = Boolean(params.cancelable);
-            var evt = global.document.createEvent('CustomEvent');
-
-            evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
-
-            return evt;
-        };
-
-    } else {
-        global.CustomEvent = function(eventName, params) {
-            params = params || {};
-
-            var bubbles = Boolean(params.bubbles);
-            var cancelable = Boolean(params.cancelable);
-            var evt = global.document.createEvent('Event');
-
-            evt.initEvent(eventName, bubbles, cancelable);
-            evt.detail = params.detail;
-
-            return evt;
-        };
-    }
-
-    global.CustomEvent.prototype = global.Event.prototype;
+    global.CustomEvent = (function() {
+        /*! borschik:include:CustomEventCommon.js */
+        return CustomEventCommon;
+    }());
 
 }(function() {
     return this || (1, eval)('this');

@@ -1,4 +1,4 @@
-/* global xblocks, global */
+/* global xblocks, global, CustomEventCommon */
 /* jshint strict: false */
 
 /**
@@ -14,48 +14,10 @@ xblocks.event.Custom = (function() {
         return global.CustomEvent;
     }
 
-    var issetCustomEvent = false;
-
-    try {
-        issetCustomEvent = Boolean(global.document.createEvent('CustomEvent'));
-    } catch(e) {
-        // do nothing
-    }
-
-    var CustomEvent;
-
-    if (issetCustomEvent) {
-        CustomEvent = function(eventName, params) {
-            params = params || {};
-
-            var bubbles = Boolean(params.bubbles);
-            var cancelable = Boolean(params.cancelable);
-            var evt = global.document.createEvent('CustomEvent');
-
-            evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
-
-            return evt;
-        };
-
-    } else {
-        CustomEvent = function(eventName, params) {
-            params = params || {};
-
-            var bubbles = Boolean(params.bubbles);
-            var cancelable = Boolean(params.cancelable);
-            var evt = global.document.createEvent('Event');
-
-            evt.initEvent(eventName, bubbles, cancelable);
-            evt.detail = params.detail;
-
-            return evt;
-        };
-    }
-
-    CustomEvent.prototype = global.Event.prototype;
-
-    return CustomEvent;
-
+    return (function() {
+        /*! borschik:include:../polyfills/CustomEventCommon.js */
+        return CustomEventCommon;
+    }());
 }());
 
 /**

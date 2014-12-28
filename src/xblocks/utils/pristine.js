@@ -6,9 +6,13 @@
  * @returns {boolean}
  */
 xblocks.utils.pristine = function(methodName) {
-    var method = global[methodName];
+    if (!methodName) {
+        return false;
+    }
 
-    if (!methodName || !method) {
+    var method = global[ methodName ];
+
+    if (!method) {
         return false;
     }
 

@@ -35,6 +35,7 @@ var logFlags = {
 /* polyfills/performance.js end */
 
 /* polyfills/CustomEvent.js begin */
+/* global CustomEventCommon */
 /* jshint -W067 */
 /**
  * strange commit, checks CustomEvent only in IE
@@ -47,42 +48,54 @@ var logFlags = {
         return;
     }
 
-    var issetCustomEvent = false;
-    try {
-        issetCustomEvent = Boolean(global.document.createEvent('CustomEvent'));
-    } catch(e) {
-        // do nothing
-    }
+    global.CustomEvent = (function() {
+        /* polyfills/CustomEventCommon.js begin */
+/* global global */
 
-    if (issetCustomEvent) {
-        global.CustomEvent = function(eventName, params) {
-            params = params || {};
+var CustomEventCommon;
+var doc = global.document;
+var issetCustomEvent = false;
 
-            var bubbles = Boolean(params.bubbles);
-            var cancelable = Boolean(params.cancelable);
-            var evt = global.document.createEvent('CustomEvent');
+try {
+    issetCustomEvent = Boolean(doc.createEvent('CustomEvent'));
+} catch(e) {
+    // do nothing
+}
 
-            evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
+if (issetCustomEvent) {
+    CustomEventCommon = function(eventName, params) {
+        params = params || {};
 
-            return evt;
-        };
+        var bubbles = Boolean(params.bubbles);
+        var cancelable = Boolean(params.cancelable);
+        var evt = doc.createEvent('CustomEvent');
 
-    } else {
-        global.CustomEvent = function(eventName, params) {
-            params = params || {};
+        evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
-            var bubbles = Boolean(params.bubbles);
-            var cancelable = Boolean(params.cancelable);
-            var evt = global.document.createEvent('Event');
+        return evt;
+    };
 
-            evt.initEvent(eventName, bubbles, cancelable);
-            evt.detail = params.detail;
+} else {
+    CustomEventCommon = function(eventName, params) {
+        params = params || {};
 
-            return evt;
-        };
-    }
+        var bubbles = Boolean(params.bubbles);
+        var cancelable = Boolean(params.cancelable);
+        var evt = doc.createEvent('Event');
 
-    global.CustomEvent.prototype = global.Event.prototype;
+        evt.initEvent(eventName, bubbles, cancelable);
+        evt.detail = params.detail;
+
+        return evt;
+    };
+}
+
+CustomEventCommon.prototype = global.Event.prototype;
+
+/* polyfills/CustomEventCommon.js end */
+
+        return CustomEventCommon;
+    }());
 
 }(function() {
     return this || (1, eval)('this');
