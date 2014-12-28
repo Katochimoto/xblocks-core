@@ -8,10 +8,12 @@
      */
     var React = global.React;
 
+    global.xblocks = global.xblocks || {};
+
     /**
      * @namespace xblocks
      */
-    var xblocks = global.xblocks = {};
+    var xblocks = global.xblocks;
 
     /*! borschik:include:xblocks/utils.js */
     /*! borschik:include:xblocks/dom.js */

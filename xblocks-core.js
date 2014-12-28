@@ -234,10 +234,12 @@ Timer.polifill.setTimeout = function() {
      */
     var React = global.React;
 
+    global.xblocks = global.xblocks || {};
+
     /**
      * @namespace xblocks
      */
-    var xblocks = global.xblocks = {};
+    var xblocks = global.xblocks;
 
     /* xblocks/utils.js begin */
 /* global xblocks */
