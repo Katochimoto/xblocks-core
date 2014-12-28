@@ -2,6 +2,19 @@
 /* jshint strict: false */
 
 var _blockStatic = {
+    init: function(element) {
+        if (!element.xtagName) {
+            element.xtagName = element.tagName.toLowerCase();
+            element.xtmpl = {};
+            element.xuid = xblocks.utils.seq();
+            element.xprops = xblocks.utils.propTypes(element.xtagName);
+            element.xinserted = false;
+            return true;
+        }
+
+        return false;
+    },
+
     tmplCompile: function(tmplElement) {
         this.xtmpl[ tmplElement.getAttribute('ref') ] = tmplElement.innerHTML;
     },
@@ -29,17 +42,15 @@ var _blockCommon = {
             xblocks.utils.log.time(this, 'xb_init');
             xblocks.utils.log.time(this, 'dom_inserted');
 
-            this.xtagName = this.tagName.toLowerCase();
-            this.xtmpl = {};
-            this.xuid = xblocks.utils.seq();
-            this.xprops = xblocks.utils.propTypes(this.xtagName);
-            this.xinserted = false;
+            _blockStatic.init(this);
         },
 
         inserted: function() {
             if (this.xinserted) {
                 return;
             }
+
+            _blockStatic.init(this);
 
             this.xinserted = true;
 
