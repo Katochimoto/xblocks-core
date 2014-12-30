@@ -1,4 +1,4 @@
-/* global describe, it, expect, xblocks, beforeEach, afterEach */
+/* global describe, it, expect, xblocks, beforeEach */
 /* jshint strict: false */
 
 describe('xblocks - Создание ->', function() {
@@ -18,10 +18,6 @@ describe('xblocks - Создание ->', function() {
 
     beforeEach(function() {
         this.xElement = document.createElement('x-element-create');
-    });
-
-    afterEach(function() {
-        delete this.xElement;
     });
 
     it('свойство xtagName', function() {
