@@ -29,7 +29,7 @@ describe('xblocks - Изменение атрибутов ->', function() {
         }
     });
 
-    it.only('Добавление атрибута вызывает перерисовку', function() {
+    it('Добавление атрибута вызывает перерисовку', function() {
         var that = this;
 
         return new vow.Promise(function(resolve) {
