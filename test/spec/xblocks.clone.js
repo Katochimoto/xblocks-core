@@ -1,4 +1,4 @@
-/* global describe, it, expect, xblocks, beforeEach, afterEach */
+/* global describe, it, expect, xblocks, beforeEach, afterEach, vow */
 /* jshint strict: false */
 
 describe('xblocks - клонирование ->', function() {
@@ -16,52 +16,77 @@ describe('xblocks - клонирование ->', function() {
     });
 
     afterEach(function() {
-        document.body.removeChild(this.xElement);
-        delete this.xElement;
+        if (this.xElement.parentNode) {
+            this.xElement.parentNode.removeChild(this.xElement);
+        }
     });
 
-    it('Клонированный элемент не инициализирован 1', function(done) {
-        this.xElement.addEventListener('xb-created', function() {
-            var cloneElement = this.cloneNode();
+    it('Клонированный элемент не инициализирован 1', function() {
+        var that = this;
 
-            expect(cloneElement.xblock).to.be(undefined);
-            done();
-        }, false);
+        return new vow.Promise(function(resolve) {
+            that.xElement.addEventListener('xb-created', function _onXbCreated() {
+                that.xElement.removeEventListener('xb-created', _onXbCreated, false);
 
-        document.body.appendChild(this.xElement);
+                var cloneElement = this.cloneNode();
+
+                expect(cloneElement.xblock).to.be(undefined);
+                resolve();
+            }, false);
+
+            document.body.appendChild(that.xElement);
+        });
     });
 
-    it('Клонированный элемент не инициализирован 2', function(done) {
-        this.xElement.addEventListener('xb-created', function() {
-            var cloneElement = this.cloneNode();
+    it('Клонированный элемент не инициализирован 2', function() {
+        var that = this;
 
-            expect(cloneElement.mounted).to.be(false);
-            done();
-        }, false);
+        return new vow.Promise(function(resolve) {
+            that.xElement.addEventListener('xb-created', function _onXbCreated() {
+                that.xElement.removeEventListener('xb-created', _onXbCreated, false);
 
-        document.body.appendChild(this.xElement);
+                var cloneElement = this.cloneNode();
+
+                expect(cloneElement.mounted).to.be(false);
+                resolve();
+            }, false);
+
+            document.body.appendChild(that.xElement);
+        });
     });
 
-    it('Клонированный элемент не инициализирован 3', function(done) {
-        this.xElement.addEventListener('xb-created', function() {
-            var cloneElement = this.cloneNode();
+    it('Клонированный элемент не инициализирован 3', function() {
+        var that = this;
 
-            expect(cloneElement.xinserted).to.be(false);
-            done();
-        }, false);
+        return new vow.Promise(function(resolve) {
+            that.xElement.addEventListener('xb-created', function _onXbCreated() {
+                that.xElement.removeEventListener('xb-created', _onXbCreated, false);
 
-        document.body.appendChild(this.xElement);
+                var cloneElement = this.cloneNode();
+
+                expect(cloneElement.xinserted).to.be(false);
+                resolve();
+            }, false);
+
+            document.body.appendChild(that.xElement);
+        });
     });
 
-    it('Клонированный элемент не инициализирован 4', function(done) {
-        this.xElement.addEventListener('xb-created', function() {
-            var cloneElement = this.cloneNode();
+    it('Клонированный элемент не инициализирован 4', function() {
+        var that = this;
 
-            expect(cloneElement.content).to.be('');
-            done();
-        }, false);
+        return new vow.Promise(function(resolve) {
+            that.xElement.addEventListener('xb-created', function _onXbCreated() {
+                that.xElement.removeEventListener('xb-created', _onXbCreated, false);
 
-        document.body.appendChild(this.xElement);
+                var cloneElement = this.cloneNode();
+
+                expect(cloneElement.content).to.be('');
+                resolve();
+            }, false);
+
+            document.body.appendChild(that.xElement);
+        });
     });
 
 });
