@@ -9,7 +9,7 @@ describe('xblocks.dom', function() {
 
                 var element = document.createElement('div');
                 xblocks.dom.attrs.ARRTS_BOOLEAN.forEach(function(attrName) {
-                    expectAttrs[attrName] = attrName;
+                    expectAttrs[ attrName ] = attrName;
                     element.setAttribute(attrName, attrName);
                 });
 

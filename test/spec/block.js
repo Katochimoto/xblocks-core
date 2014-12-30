@@ -1,10 +1,10 @@
-/* global describe, it, expect, xblocks, sinon */
+/* global describe, it, expect, xblocks */
 /* jshint strict: false */
 
 describe('xblocks.create', function() {
 
     it('Элемент можно определить в виде массива объектов', function() {
-        sinon.stub(xblocks.tag, 'register', function(name, params) {
+        this.sinon.stub(xblocks.tag, 'register', function(name, params) {
             expect(name).to.be('xb-test1');
             expect(params.methods).to.have.keys('test1', 'test2');
         });
@@ -28,7 +28,7 @@ describe('xblocks.create', function() {
         var removed = function() {};
         var attributeChanged = function() {};
 
-        sinon.stub(xblocks.tag, 'register', function(name, params) {
+        this.sinon.stub(xblocks.tag, 'register', function(name, params) {
             expect(name).to.be('xb-test2');
             expect(params.lifecycle.created).not.to.be(created);
             expect(params.lifecycle.inserted).not.to.be(inserted);

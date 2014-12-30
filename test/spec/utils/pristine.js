@@ -1,4 +1,4 @@
-/* global describe, it, expect, xblocks, sinon, beforeEach */
+/* global describe, it, expect, xblocks, beforeEach */
 /* jshint strict: false */
 
 describe('xblocks.utils.pristine', function() {
@@ -11,7 +11,7 @@ describe('xblocks.utils.pristine', function() {
     });
 
     it('Должна вернуть false, если глобальный объект переопределен', function() {
-        sinon.stub(window, 'setTimeout');
+        this.sinon.stub(window, 'setTimeout');
         expect(this.util('setTimeout')).to.not.ok();
         window.setTimeout.restore();
     });
