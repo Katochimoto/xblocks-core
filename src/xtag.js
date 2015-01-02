@@ -7,6 +7,7 @@ var logFlags = {
 };
 
 /*! borschik:include:polyfills/performance.js */
+/*! borschik:include:polyfills/matches.js */
 /*! borschik:include:polyfills/CustomEvent.js */
 /*! borschik:include:polyfills/DOMAttrModified.js */
 

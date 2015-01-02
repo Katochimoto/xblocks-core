@@ -26,5 +26,5 @@ xblocks.event.Custom = (function() {
  * @param {object} params
  */
 xblocks.event.dispatch = function(element, name, params) {
-    element.dispatchEvent(new xblocks.event.Custom(name, params));
+    element.dispatchEvent(new xblocks.event.Custom(name, params || {}));
 };
