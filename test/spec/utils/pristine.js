@@ -1,7 +1,7 @@
 /* global describe, it, expect, xblocks, beforeEach */
 /* jshint strict: false */
 
-describe('xblocks.utils.pristine', function() {
+describe('xblocks.utils.pristine ->', function() {
     beforeEach(function() {
         this.util = xblocks.utils.pristine;
     });

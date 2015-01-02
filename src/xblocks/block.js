@@ -22,7 +22,7 @@ var _blockStatic = {
     create: function(element) {
         if (element.hasChildNodes()) {
             Array.prototype.forEach.call(
-                xblocks.dom.querySelectorAll(element, 'script[type="text/x-template"][ref],template[ref]'),
+                element.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
                 _blockStatic.tmplCompile,
                 element
             );
@@ -54,7 +54,7 @@ var _blockCommon = {
 
             this.xinserted = true;
 
-            var isScriptContent = Boolean(xblocks.dom.querySelector(this, 'script'));
+            var isScriptContent = Boolean(this.querySelector('script'));
 
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>

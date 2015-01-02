@@ -1,7 +1,7 @@
 /* global describe, it, expect, xblocks, beforeEach */
 /* jshint strict: false */
 
-describe('xblocks.utils.equals', function() {
+describe('xblocks.utils.equals ->', function() {
 
     beforeEach(function() {
         this.util = xblocks.utils.equals;

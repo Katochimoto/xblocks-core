@@ -1,7 +1,7 @@
 /* global describe, it, expect, xblocks */
 /* jshint strict: false */
 
-describe('xblocks.create', function() {
+describe('xblocks.create ->', function() {
 
     it('Элемент можно определить в виде массива объектов', function() {
         this.sinon.stub(xblocks.tag, 'register', function(name, params) {

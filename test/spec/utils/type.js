@@ -1,7 +1,7 @@
 /* global describe, it, expect, xblocks, beforeEach */
 /* jshint strict: false */
 
-describe('xblocks.utils.type', function() {
+describe('xblocks.utils.type ->', function() {
     beforeEach(function() {
         this.util = xblocks.utils.type;
     });

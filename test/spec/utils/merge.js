@@ -1,7 +1,7 @@
 /* global describe, it, expect, xblocks, beforeEach */
 /* jshint strict: false */
 
-describe('xblocks.utils.merge', function() {
+describe('xblocks.utils.merge ->', function() {
     beforeEach(function() {
         this.util = xblocks.utils.merge;
     });

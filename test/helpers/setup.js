@@ -1,8 +1,8 @@
 /* global afterEach, beforeEach, sinon */
 (function() {
 
-    var clearTestContext = function(context) {
-        if (!context || typeof context !== 'object') {
+    function clearTestContext(context) {
+        if (!context || typeof(context) !== 'object') {
             return;
         }
 
@@ -11,7 +11,7 @@
                 delete context[ property ];
             }
         }
-    };
+    }
 
     beforeEach(function() {
         this.sinon = sinon.sandbox.create();

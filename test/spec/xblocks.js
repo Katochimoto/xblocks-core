@@ -1,7 +1,7 @@
-/* global describe, it, expect, xblocks, beforeEach, afterEach */
+/* global xdescribe */
 /* jshint strict: false */
 
-describe('xblocks', function() {
+xdescribe('xblocks', function() {
 
 
 

@@ -40,7 +40,7 @@ describe('xblocks - работа с атрибутами ->', function() {
     });
 
 
-    describe('приведение к типу boolean атрибутов', function() {
+    describe('приведение к типу boolean атрибутов ->', function() {
         xblocks.dom.attrs.ARRTS_BOOLEAN.forEach(function(attrName) {
             it.call(this, attrName + 'checked - state: строка "true" приводится к true', function() {
                 this.xElement.setAttribute(attrName, 'true');
@@ -84,7 +84,7 @@ describe('xblocks - работа с атрибутами ->', function() {
         }, this);
     });
 
-    describe('атрибуты приводятся к типу, указанному в объекте propTypes вида', function() {
+    describe('атрибуты приводятся к типу, указанному в объекте propTypes вида ->', function() {
         it('значение "true" приводится к true в state и не меняется в attrs', function() {
             this.xElement.setAttribute('bool-attr', 'true');
             expect(this.xElement.getAttribute('bool-attr')).to.be('true');

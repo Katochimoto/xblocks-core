@@ -5093,10 +5093,10 @@ xblocks.dom.contentNode = function(node) {
     var element;
 
     if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
-        element = xblocks.dom.querySelector(node, '[data-xb-content="' + node.xuid + '"]');
+        element = node.querySelector('[data-xb-content="' + node.xuid + '"]');
 
         if (!element) {
-            element = xblocks.dom.querySelector(node, 'script[type="text/x-template"]:not([ref]),template:not([ref])');
+            element = node.querySelector('script[type="text/x-template"]:not([ref]),template:not([ref])');
         }
     }
 
@@ -5135,48 +5135,6 @@ xblocks.dom.upgradeElements = (function() {
 
 /* xblocks/dom/upgradeElements.js end */
 
-/* xblocks/dom/querySelector.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-/**
-* @param {HTMLElement} node
-* @param {String} selector
-* @returns {NodeList}
-*/
-xblocks.dom.querySelector = function(node, selector) {
-    try {
-        return node.querySelector(selector);
-    } catch(e) {
-        // FireFox <=13
-        // uncaught exception: [Exception... "Could not convert JavaScript argument"  nsresult: "0x80570009 (NS_ERROR_XPC_BAD_CONVERT_JS)"
-        return node.ownerDocument.importNode(node, true).querySelector(selector);
-    }
-};
-
-/* xblocks/dom/querySelector.js end */
-
-/* xblocks/dom/querySelectorAll.js begin */
-/* global xblocks */
-/* jshint strict: false */
-
-/**
-* @param {HTMLElement} node
-* @param {String} selector
-* @returns {NodeList}
-*/
-xblocks.dom.querySelectorAll = function(node, selector) {
-    try {
-        return node.querySelectorAll(selector);
-    } catch(e) {
-        // FireFox <=13
-        // uncaught exception: [Exception... "Could not convert JavaScript argument"  nsresult: "0x80570009 (NS_ERROR_XPC_BAD_CONVERT_JS)"
-        return node.ownerDocument.importNode(node, true).querySelectorAll(selector);
-    }
-};
-
-/* xblocks/dom/querySelectorAll.js end */
-
 /* xblocks/dom/cloneNode.js begin */
 /* global xblocks */
 /* jshint strict: false */
@@ -5187,6 +5145,10 @@ xblocks.dom.querySelectorAll = function(node, selector) {
 * @returns {NodeList}
 */
 xblocks.dom.cloneNode = function(node, deep) {
+    // FireFox19 cannot use native cloneNode the Node object
+    return xblocks.dom.ELEMENT_PROTO.cloneNode.call(node, deep);
+
+    /*
     try {
         // FireFox19 cannot use native cloneNode the Node object
         return xblocks.dom.ELEMENT_PROTO.cloneNode.call(node, deep);
@@ -5195,6 +5157,7 @@ xblocks.dom.cloneNode = function(node, deep) {
         // uncaught exception: [Exception... "Could not convert JavaScript argument"  nsresult: "0x80570009 (NS_ERROR_XPC_BAD_CONVERT_JS)"
         return node.ownerDocument.importNode(node, deep);
     }
+    */
 };
 
 /* xblocks/dom/cloneNode.js end */
@@ -5581,7 +5544,7 @@ var _blockStatic = {
     create: function(element) {
         if (element.hasChildNodes()) {
             Array.prototype.forEach.call(
-                xblocks.dom.querySelectorAll(element, 'script[type="text/x-template"][ref],template[ref]'),
+                element.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
                 _blockStatic.tmplCompile,
                 element
             );
@@ -5613,7 +5576,7 @@ var _blockCommon = {
 
             this.xinserted = true;
 
-            var isScriptContent = Boolean(xblocks.dom.querySelector(this, 'script'));
+            var isScriptContent = Boolean(this.querySelector('script'));
 
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>
