@@ -72,6 +72,7 @@ module.exports = function(config) {
             'Firefox',
             'FirefoxDeveloperEdition',
             'Safari',
+            'Opera',
 
             //'Firefox5',
             //'Firefox6',
