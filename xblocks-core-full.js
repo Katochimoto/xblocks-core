@@ -5489,6 +5489,10 @@ var _viewCommon = {
         }
 
         return null;
+    },
+
+    container: function() {
+        return this.props._container;
     }
 };
 
