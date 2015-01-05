@@ -365,11 +365,12 @@ CustomEventCommon.prototype = global.Event.prototype;
         attrModifiedWorks = true;
     };
 
-    var doc = global.document.documentElement;
-    doc.addEventListener('DOMAttrModified', listener, false);
-    doc.setAttribute('___TEST___', true);
-    doc.removeEventListener('DOMAttrModified', listener, false);
-    doc.removeAttribute('___TEST___', true);
+    var doc = global.document;
+    var htmlElement = doc.documentElement;
+    htmlElement.addEventListener('DOMAttrModified', listener, false);
+    htmlElement.setAttribute('___TEST___', true);
+    htmlElement.removeEventListener('DOMAttrModified', listener, false);
+    htmlElement.removeAttribute('___TEST___', true);
 
     if (attrModifiedWorks) {
         return;
@@ -383,7 +384,7 @@ CustomEventCommon.prototype = global.Event.prototype;
         this.__setAttribute(attrName, newVal);
         newVal = this.getAttribute(attrName);
         if (newVal != prevVal) {
-            var evt = global.document.createEvent('MutationEvent');
+            var evt = doc.createEvent('MutationEvent');
             evt.initMutationEvent(
                 'DOMAttrModified',
                 true,
@@ -402,7 +403,7 @@ CustomEventCommon.prototype = global.Event.prototype;
     proto.removeAttribute = function(attrName) {
         var prevVal = this.getAttribute(attrName);
         this.__removeAttribute(attrName);
-        var evt = global.document.createEvent('MutationEvent');
+        var evt = doc.createEvent('MutationEvent');
         evt.initMutationEvent(
             'DOMAttrModified',
             true,
@@ -4526,6 +4527,11 @@ for (z in UIEventProto){
      */
     var xblocks = global.xblocks;
 
+    var __doc = global.document;
+    var __toString = Object.prototype.toString;
+    var __forEach = Array.prototype.forEach;
+    var __noop = function() {};
+
     /* xblocks/utils.js begin */
 /* global xblocks */
 /* jshint strict: false */
@@ -4537,6 +4543,9 @@ xblocks.utils = xblocks.utils || {};
 
 xblocks.utils.REG_TYPE_EXTRACT = /\s([a-zA-Z]+)/;
 xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
+
+xblocks.utils.SELECTOR_TMPL = 'script[type="text/x-template"][ref],template[ref]';
+xblocks.utils.SELECTOR_CONTENT = 'script[type="text/x-template"]:not([ref]),template:not([ref])';
 
 /* xblocks/utils/log.js begin */
 /* global xblocks */
@@ -4577,7 +4586,7 @@ xblocks.utils.seq = (function() {
 /* xblocks/utils/seq.js end */
 
 /* xblocks/utils/type.js begin */
-/* global xblocks */
+/* global xblocks, __toString */
 /* jshint strict: false */
 
 /**
@@ -4596,7 +4605,7 @@ xblocks.utils.type = function(param) {
     var type = typeof(param);
 
     if (type === 'object') {
-        type = Object.prototype.toString.call(param)
+        type = __toString.call(param)
             .match(xblocks.utils.REG_TYPE_EXTRACT)[1]
             .toLowerCase();
     }
@@ -4928,6 +4937,7 @@ xblocks.utils.propTypes = function(tagName) {
 /* jshint strict: false */
 
 (function() {
+
     var cache = {};
 
     /**
@@ -4939,7 +4949,7 @@ xblocks.utils.propTypes = function(tagName) {
     xblocks.utils.tmpl = function(str, data) {
         if (!cache.hasOwnProperty(str)) {
             /* jshint -W054 */
-            cache[str] = new Function('obj',
+            cache[ str ] = new Function('obj',
                "var p=[],print=function(){p.push.apply(p,arguments);};" +
                "with(obj){p.push('" +
                str.replace(/[\r\t\n]/g, " ")
@@ -4952,7 +4962,7 @@ xblocks.utils.propTypes = function(tagName) {
                    "');}return p.join('');");
         }
 
-        return data ? cache[str](data) : cache[str];
+        return data ? cache[ str ](data) : cache[ str ];
     };
 
 }());
@@ -4999,7 +5009,7 @@ xblocks.dom.attrs.XB_ATTRS = {
 xblocks.dom.ELEMENT_PROTO = (global.HTMLElement || global.Element).prototype;
 
 /* xblocks/dom/attrs.js begin */
-/* global xblocks, React */
+/* global xblocks, React, __forEach */
 /* jshint strict: false */
 
 /**
@@ -5038,7 +5048,7 @@ xblocks.dom.attrs.toObject = function(element) {
     var attrs = {};
 
     if (element.nodeType === 1 && element.hasAttributes()) {
-        Array.prototype.forEach.call(element.attributes, xblocks.dom.attrs._toObjectIterator, attrs);
+        __forEach.call(element.attributes, xblocks.dom.attrs._toObjectIterator, attrs);
     }
 
     return attrs;
@@ -5119,7 +5129,7 @@ xblocks.dom.contentNode = function(node) {
         element = node.querySelector('[data-xb-content="' + node.xuid + '"]');
 
         if (!element) {
-            element = node.querySelector('script[type="text/x-template"]:not([ref]),template:not([ref])');
+            element = node.querySelector(xblocks.utils.SELECTOR_CONTENT);
         }
     }
 
@@ -5128,35 +5138,35 @@ xblocks.dom.contentNode = function(node) {
 
 /* xblocks/dom/contentNode.js end */
 
-/* xblocks/dom/upgradeElement.js begin */
-/* global xblocks, global */
+/* xblocks/dom/upgrade.js begin */
+/* global xblocks, global, __noop */
 /* jshint strict: false */
 
-xblocks.dom.upgradeElement = (function() {
+xblocks.dom.upgrade = (function() {
     if (global.CustomElements && typeof(global.CustomElements.upgrade) === 'function') {
         return global.CustomElements.upgrade;
 
     } else {
-        return function() {};
+        return __noop;
     }
 }());
 
-/* xblocks/dom/upgradeElement.js end */
+/* xblocks/dom/upgrade.js end */
 
-/* xblocks/dom/upgradeElements.js begin */
-/* global xblocks, global */
+/* xblocks/dom/upgradeAll.js begin */
+/* global xblocks, global, __noop */
 /* jshint strict: false */
 
-xblocks.dom.upgradeElements = (function() {
+xblocks.dom.upgradeAll = (function() {
     if (global.CustomElements && typeof(global.CustomElements.upgradeAll) === 'function') {
         return global.CustomElements.upgradeAll;
 
     } else {
-        return function() {};
+        return __noop;
     }
 }());
 
-/* xblocks/dom/upgradeElements.js end */
+/* xblocks/dom/upgradeAll.js end */
 
 /* xblocks/dom/cloneNode.js begin */
 /* global xblocks */
@@ -5186,7 +5196,7 @@ xblocks.dom.cloneNode = function(node, deep) {
 /* xblocks/dom/cloneNode.js end */
 
 /* xblocks/dom/outerHTML.js begin */
-/* global xblocks, global */
+/* global xblocks, global, __doc */
 /* jshint strict: false */
 
 /**
@@ -5194,7 +5204,7 @@ xblocks.dom.cloneNode = function(node, deep) {
 */
 xblocks.dom.outerHTML = (function() {
 
-    var container = global.document.createElementNS('http://www.w3.org/1999/xhtml', '_');
+    var container = __doc.createElementNS('http://www.w3.org/1999/xhtml', '_');
     var getter;
     var setter;
 
@@ -5547,7 +5557,7 @@ xblocks.view.getFactory = function(blockName) {
 /* xblocks/view.js end */
 
     /* xblocks/block.js begin */
-/* global xblocks */
+/* global xblocks, __forEach */
 /* jshint strict: false */
 
 var _blockStatic = {
@@ -5570,8 +5580,8 @@ var _blockStatic = {
 
     create: function(element) {
         if (element.hasChildNodes()) {
-            Array.prototype.forEach.call(
-                element.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
+            __forEach.call(
+                element.querySelectorAll(xblocks.utils.SELECTOR_TMPL),
                 _blockStatic.tmplCompile,
                 element
             );
@@ -5706,13 +5716,13 @@ var _blockCommon = {
 
     methods: {
         upgrade: function() {
-            xblocks.dom.upgradeElements(this);
+            xblocks.dom.upgradeAll(this);
         },
 
         cloneNode: function(deep) {
             // not to clone the contents
             var node = xblocks.dom.cloneNode(this, false);
-            xblocks.dom.upgradeElement(node);
+            xblocks.dom.upgrade(node);
 
             node.xtmpl = this.xtmpl;
             node.xinserted = false;

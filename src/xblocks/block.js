@@ -1,4 +1,4 @@
-/* global xblocks */
+/* global xblocks, __forEach */
 /* jshint strict: false */
 
 var _blockStatic = {
@@ -21,8 +21,8 @@ var _blockStatic = {
 
     create: function(element) {
         if (element.hasChildNodes()) {
-            Array.prototype.forEach.call(
-                element.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
+            __forEach.call(
+                element.querySelectorAll(xblocks.utils.SELECTOR_TMPL),
                 _blockStatic.tmplCompile,
                 element
             );
@@ -157,13 +157,13 @@ var _blockCommon = {
 
     methods: {
         upgrade: function() {
-            xblocks.dom.upgradeElements(this);
+            xblocks.dom.upgradeAll(this);
         },
 
         cloneNode: function(deep) {
             // not to clone the contents
             var node = xblocks.dom.cloneNode(this, false);
-            xblocks.dom.upgradeElement(node);
+            xblocks.dom.upgrade(node);
 
             node.xtmpl = this.xtmpl;
             node.xinserted = false;

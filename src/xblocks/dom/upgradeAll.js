@@ -1,11 +1,11 @@
-/* global xblocks, global */
+/* global xblocks, global, __noop */
 /* jshint strict: false */
 
-xblocks.dom.upgradeElements = (function() {
+xblocks.dom.upgradeAll = (function() {
     if (global.CustomElements && typeof(global.CustomElements.upgradeAll) === 'function') {
         return global.CustomElements.upgradeAll;
 
     } else {
-        return function() {};
+        return __noop;
     }
 }());

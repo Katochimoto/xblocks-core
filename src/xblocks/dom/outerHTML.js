@@ -1,4 +1,4 @@
-/* global xblocks, global */
+/* global xblocks, global, __doc */
 /* jshint strict: false */
 
 /**
@@ -6,7 +6,7 @@
 */
 xblocks.dom.outerHTML = (function() {
 
-    var container = global.document.createElementNS('http://www.w3.org/1999/xhtml', '_');
+    var container = __doc.createElementNS('http://www.w3.org/1999/xhtml', '_');
     var getter;
     var setter;
 

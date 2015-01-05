@@ -35,7 +35,7 @@ xblocks.dom.ELEMENT_PROTO = (global.HTMLElement || global.Element).prototype;
 
 /*! borschik:include:dom/attrs.js */
 /*! borschik:include:dom/contentNode.js */
-/*! borschik:include:dom/upgradeElement.js */
-/*! borschik:include:dom/upgradeElements.js */
+/*! borschik:include:dom/upgrade.js */
+/*! borschik:include:dom/upgradeAll.js */
 /*! borschik:include:dom/cloneNode.js */
 /*! borschik:include:dom/outerHTML.js */

@@ -10,11 +10,12 @@
         attrModifiedWorks = true;
     };
 
-    var doc = global.document.documentElement;
-    doc.addEventListener('DOMAttrModified', listener, false);
-    doc.setAttribute('___TEST___', true);
-    doc.removeEventListener('DOMAttrModified', listener, false);
-    doc.removeAttribute('___TEST___', true);
+    var doc = global.document;
+    var htmlElement = doc.documentElement;
+    htmlElement.addEventListener('DOMAttrModified', listener, false);
+    htmlElement.setAttribute('___TEST___', true);
+    htmlElement.removeEventListener('DOMAttrModified', listener, false);
+    htmlElement.removeAttribute('___TEST___', true);
 
     if (attrModifiedWorks) {
         return;
@@ -28,7 +29,7 @@
         this.__setAttribute(attrName, newVal);
         newVal = this.getAttribute(attrName);
         if (newVal != prevVal) {
-            var evt = global.document.createEvent('MutationEvent');
+            var evt = doc.createEvent('MutationEvent');
             evt.initMutationEvent(
                 'DOMAttrModified',
                 true,
@@ -47,7 +48,7 @@
     proto.removeAttribute = function(attrName) {
         var prevVal = this.getAttribute(attrName);
         this.__removeAttribute(attrName);
-        var evt = global.document.createEvent('MutationEvent');
+        var evt = doc.createEvent('MutationEvent');
         evt.initMutationEvent(
             'DOMAttrModified',
             true,

@@ -35,7 +35,7 @@
 - Internet Explorer 9+
 - Chrome 4+
 - Safari 4+
-- Opera 15+
+- Opera 12+
 
 ##Example
 ```js

@@ -28,25 +28,25 @@ clean:
 	rm -f x-tag-core.min.js
 
 xblocks-core.js: node_modules $(src_js)
-	cat node_modules/setimmediate2/setImmediate.js > xblocks-core.js
-	./node_modules/.bin/borschik -m no -i src/xblocks.js >> xblocks-core.js
+	cat node_modules/setimmediate2/setImmediate.js > $@
+	./node_modules/.bin/borschik -m no -i src/xblocks.js >> $@
 
 xblocks-core.min.js: xblocks-core.js
-	./node_modules/.bin/borschik -i xblocks-core.js -o xblocks-core.min.js
+	./node_modules/.bin/borschik -i $< -o $@
 
 xblocks-core-full.js: node_modules $(src_js)
-	cat node_modules/setimmediate2/setImmediate.js > xblocks-core-full.js
-	./node_modules/.bin/borschik -m no -i src/xtag.js >> xblocks-core-full.js
-	./node_modules/.bin/borschik -m no -i src/xblocks.js >> xblocks-core-full.js
+	cat node_modules/setimmediate2/setImmediate.js > $@
+	./node_modules/.bin/borschik -m no -i src/xtag.js >> $@
+	./node_modules/.bin/borschik -m no -i src/xblocks.js >> $@
 
 xblocks-core-full.min.js: xblocks-core-full.js
-	./node_modules/.bin/borschik -i xblocks-core-full.js -o xblocks-core-full.min.js
+	./node_modules/.bin/borschik -i $< -o $@
 
-x-tag-core.js: node_modules src/xtag.js $(polyfills_js)
-	./node_modules/.bin/borschik -m no -i src/xtag.js > x-tag-core.js
+x-tag-core.js: src/xtag.js node_modules $(polyfills_js)
+	./node_modules/.bin/borschik -m no -i $< > $@
 
 x-tag-core.min.js: x-tag-core.js
-	./node_modules/.bin/borschik -i x-tag-core.js -o x-tag-core.min.js
+	./node_modules/.bin/borschik -i $< -o $@
 
 test: node_modules bower_components
 	./node_modules/.bin/jshint .

@@ -5,14 +5,21 @@
     "globals": {
         "console": false,
         "require": false,
+        "xtag": false,
         "xblocks": false,
         "module": false,
         "expect": false,
         "it": false,
+        "xit": false,
         "describe": false,
+        "xdescribe": false,
         "xtag": false,
         "React": false,
-        "CustomElements": false
+        "CustomElements": false,
+        "beforeEach": false,
+        "afterEach": false,
+        "sinon": false,
+        "vow": false
     },
 
     "bitwise": true,

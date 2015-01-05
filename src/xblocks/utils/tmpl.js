@@ -2,6 +2,7 @@
 /* jshint strict: false */
 
 (function() {
+
     var cache = {};
 
     /**
@@ -13,7 +14,7 @@
     xblocks.utils.tmpl = function(str, data) {
         if (!cache.hasOwnProperty(str)) {
             /* jshint -W054 */
-            cache[str] = new Function('obj',
+            cache[ str ] = new Function('obj',
                "var p=[],print=function(){p.push.apply(p,arguments);};" +
                "with(obj){p.push('" +
                str.replace(/[\r\t\n]/g, " ")
@@ -26,7 +27,7 @@
                    "');}return p.join('');");
         }
 
-        return data ? cache[str](data) : cache[str];
+        return data ? cache[ str ](data) : cache[ str ];
     };
 
 }());

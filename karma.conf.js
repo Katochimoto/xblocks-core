@@ -21,6 +21,7 @@ module.exports = function(config) {
             'bower_components/vow/vow.min.js',
             'bower_components/es5-shim/es5-shim.js',
             'bower_components/react/react-with-addons.js',
+
             'src/xtag.js',
             'src/xblocks.js',
             'test/spec/**/*.js'

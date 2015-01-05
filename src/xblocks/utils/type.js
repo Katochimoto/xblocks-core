@@ -1,4 +1,4 @@
-/* global xblocks */
+/* global xblocks, __toString */
 /* jshint strict: false */
 
 /**
@@ -17,7 +17,7 @@ xblocks.utils.type = function(param) {
     var type = typeof(param);
 
     if (type === 'object') {
-        type = Object.prototype.toString.call(param)
+        type = __toString.call(param)
             .match(xblocks.utils.REG_TYPE_EXTRACT)[1]
             .toLowerCase();
     }

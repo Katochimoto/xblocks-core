@@ -12,7 +12,7 @@ xblocks.dom.contentNode = function(node) {
         element = node.querySelector('[data-xb-content="' + node.xuid + '"]');
 
         if (!element) {
-            element = node.querySelector('script[type="text/x-template"]:not([ref]),template:not([ref])');
+            element = node.querySelector(xblocks.utils.SELECTOR_CONTENT);
         }
     }
 

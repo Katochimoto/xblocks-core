@@ -1,4 +1,4 @@
-/* global xblocks, React */
+/* global xblocks, React, __forEach */
 /* jshint strict: false */
 
 /**
@@ -37,7 +37,7 @@ xblocks.dom.attrs.toObject = function(element) {
     var attrs = {};
 
     if (element.nodeType === 1 && element.hasAttributes()) {
-        Array.prototype.forEach.call(element.attributes, xblocks.dom.attrs._toObjectIterator, attrs);
+        __forEach.call(element.attributes, xblocks.dom.attrs._toObjectIterator, attrs);
     }
 
     return attrs;

@@ -15,6 +15,11 @@
      */
     var xblocks = global.xblocks;
 
+    var __doc = global.document;
+    var __toString = Object.prototype.toString;
+    var __forEach = Array.prototype.forEach;
+    var __noop = function() {};
+
     /*! borschik:include:xblocks/utils.js */
     /*! borschik:include:xblocks/dom.js */
     /*! borschik:include:xblocks/event.js */
