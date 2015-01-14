@@ -1953,7 +1953,7 @@ if (document.readyState === 'complete' || scope.flags.eager) {
 } else {
   var loadEvent = window.HTMLImports && !HTMLImports.ready ?
       'HTMLImportsLoaded' : 'DOMContentLoaded';
-  window.addEventListener(loadEvent, bootstrap, false);
+  window.addEventListener(loadEvent, bootstrap);
 }
 
 })(window.CustomElements);
@@ -2028,7 +2028,7 @@ Object.defineProperty(rootDocument, '_currentScript', currentScriptDescriptor);
   Add support for the `HTMLImportsLoaded` event and the `HTMLImports.whenReady`
   method. This api is necessary because unlike the native implementation,
   script elements do not force imports to resolve. Instead, users should wrap
-  code in either an `HTMLImportsLoaded` hander or after load time in an
+  code in either an `HTMLImportsLoaded` handler or after load time in an
   `HTMLImports.whenReady(callback)` call.
 
   NOTE: This module also supports these apis under the native implementation.
@@ -2064,11 +2064,11 @@ function whenDocumentReady(callback, doc) {
     var checkReady = function() {
       if (doc.readyState === 'complete' ||
           doc.readyState === requiredReadyState) {
-        doc.removeEventListener(READY_EVENT, checkReady, false);
+        doc.removeEventListener(READY_EVENT, checkReady);
         whenDocumentReady(callback, doc);
       }
     };
-    doc.addEventListener(READY_EVENT, checkReady, false);
+    doc.addEventListener(READY_EVENT, checkReady);
   } else if (callback) {
     callback();
   }
@@ -2097,8 +2097,8 @@ function watchImportsLoad(callback, doc) {
       if (isImportLoaded(imp)) {
         loadedImport.call(imp, {target: imp});
       } else {
-        imp.addEventListener('load', loadedImport, false);
-        imp.addEventListener('error', loadedImport, false);
+        imp.addEventListener('load', loadedImport);
+        imp.addEventListener('error', loadedImport);
       }
     }
   } else {
@@ -2155,8 +2155,8 @@ if (useNative) {
     if (loaded) {
       markTargetLoaded({target: element});
     } else {
-      element.addEventListener('load', markTargetLoaded, false);
-      element.addEventListener('error', markTargetLoaded, false);
+      element.addEventListener('load', markTargetLoaded);
+      element.addEventListener('error', markTargetLoaded);
     }
   }
 
@@ -2180,9 +2180,9 @@ if (useNative) {
 whenReady(function() {
   HTMLImports.ready = true;
   HTMLImports.readyTime = new Date().getTime();
-  rootDocument.dispatchEvent(
-    new CustomEvent('HTMLImportsLoaded', {bubbles: true})
-  );
+  var evt = rootDocument.createEvent("CustomEvent");
+  evt.initCustomEvent("HTMLImportsLoaded", true, true, {});
+  rootDocument.dispatchEvent(evt);
 });
 
 // exports
@@ -2725,8 +2725,8 @@ var importParser = {
       self.markParsingComplete(elt);
       self.parseNext();
     };
-    elt.addEventListener('load', done, false);
-    elt.addEventListener('error', done, false);
+    elt.addEventListener('load', done);
+    elt.addEventListener('error', done);
 
     // NOTE: IE does not fire "load" event for styles that have already loaded
     // This is in violation of the spec, so we try our hardest to work around it
@@ -3134,7 +3134,7 @@ var isIE = scope.isIE;
 
 /*
 NOTE: Even when native HTMLImports exists, the following api is available by
-loading the polyfill. This provides api compabitility where the polyfill
+loading the polyfill. This provides api compatibility where the polyfill
 cannot be "correct":
 
   * `document._currentScript`
@@ -3180,7 +3180,7 @@ if (document.readyState === 'complete' ||
     (document.readyState === 'interactive' && !window.attachEvent)) {
   bootstrap();
 } else {
-  document.addEventListener('DOMContentLoaded', bootstrap, false);
+  document.addEventListener('DOMContentLoaded', bootstrap);
 }
 
 })(HTMLImports);
