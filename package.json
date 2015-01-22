@@ -45,6 +45,7 @@
         "karma-firefox-launcher": "Katochimoto/karma-firefox-launcher.git",
         "karma-safari-launcher": "~0.1.x",
         "karma-opera-launcher": "~0.1.x",
+        "karma-coverage": "0.2.7",
 
         "webcomponents.js": "webcomponents/webcomponentsjs.git",
         "dom-token-list-polyfill": "pennyfx/dom-token-list.git#0.0.2",
