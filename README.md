@@ -1,7 +1,7 @@
 # xblocks-core
 > HTML core custom elements
 
-[![Build Status][build]][build-link] [![NPM version][version]][version-link] [![Dependency Status][dependency]][dependency-link] [![devDependency Status][dev-dependency]][dev-dependency-link] [![Code Climate][climate]][climate-link]
+[![Build Status][build]][build-link] [![NPM version][version]][version-link] [![Dependency Status][dependency]][dependency-link] [![devDependency Status][dev-dependency]][dev-dependency-link] [![Code Climate][climate]][climate-link] [![Test Coverage](coverage)](coverage-link)
 
 ## Stats
 
@@ -20,7 +20,8 @@
 [dev-dependency-link]: https://david-dm.org/Katochimoto/xblocks-core#info=devDependencies
 [climate]: https://codeclimate.com/github/Katochimoto/xblocks-core.png
 [climate-link]: https://codeclimate.com/github/Katochimoto/xblocks-core
-
+[coverage]: https://codeclimate.com/github/Katochimoto/xblocks-core/badges/coverage.svg
+[coverage-link]: https://codeclimate.com/github/Katochimoto/xblocks-core
 
 
 ##Dependencies
