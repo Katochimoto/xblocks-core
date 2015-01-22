@@ -1,6 +1,7 @@
 node_modules
 bower_components
 test
+coverage
 xblocks-core.js
 xblocks-core.min.js
 xblocks-core-full.js
