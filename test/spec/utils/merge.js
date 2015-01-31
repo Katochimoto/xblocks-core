@@ -23,4 +23,10 @@ describe('xblocks.utils.merge ->', function() {
         this.util(true, obj, { test1: { test3: 3 } }, { test4: 4 });
         expect(obj).to.be.eql({ test1: { test2: 2, test3: 3 }, test4: 4 });
     });
+
+    it('При мерже массивов должен сохранятся тип Array', function() {
+        var obj = { test1: [ { test2: 2 }, { test3: 3 } ] };
+        this.util(true, obj, { test1: [ { test4: 4 } ] });
+        expect(obj).to.be.eql({ test1: [ { test2: 2, test4: 4 }, { test3: 3 } ] });
+    });
 });
