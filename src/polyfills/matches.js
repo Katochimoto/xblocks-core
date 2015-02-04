@@ -1,5 +1,6 @@
 /* jshint -W067 */
 (function(global) {
+    'use strict';
 
     var indexOf = Array.prototype.indexOf;
     var proto = global.Element.prototype;

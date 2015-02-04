@@ -1,5 +1,7 @@
 /* jshint -W067 */
 (function(global) {
+    'use strict';
+
     if (typeof(global.performance) === 'undefined') {
         global.performance = {};
     }
