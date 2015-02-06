@@ -10,7 +10,6 @@ var logFlags = {
 /*! borschik:include:polyfills/matches.js */
 /*! borschik:include:polyfills/CustomEvent.js */
 /*! borschik:include:polyfills/DOMAttrModified.js */
-/*! borschik:include:polyfills/requestAnimationFrame.js */
 
 /*! borschik:include:../node_modules/dom-token-list-polyfill/src/token-list.js */
 /*! borschik:include:../node_modules/webcomponents.js/src/WeakMap/WeakMap.js */
