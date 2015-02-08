@@ -1699,15 +1699,30 @@ xblocks.element.prototype.isMounted = function() {
     return Boolean(this._component && this._component.isMounted());
 };
 
+/**
+ * @param {string} content
+ */
 xblocks.element.prototype.setMountedContent = function(content) {
     if (this.isMounted()) {
         this.update({ 'children': content });
     }
 };
 
+/**
+ * @returns {?string}
+ */
 xblocks.element.prototype.getMountedContent = function() {
     if (this.isMounted()) {
         return this._component.props.children;
+    }
+};
+
+/**
+ * @returns {?ReactCompositeComponent.createClass.Constructor}
+ */
+xblocks.element.prototype.getMountedComponent = function() {
+    if (this.isMounted()) {
+        return this._component;
     }
 };
 
