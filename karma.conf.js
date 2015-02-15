@@ -39,7 +39,7 @@ module.exports = function(config) {
         preprocessors: {
             '**/*.js': [ 'borschik' ],
             '**/*.jsx': [ 'react-jsx' ],
-            '**/src/*.js': 'coverage'
+            '**/src/xblocks.js': 'coverage'
         },
 
 
