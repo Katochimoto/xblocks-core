@@ -356,3 +356,10 @@ xblocks.element.prototype._callbackUpdate = function(callback) {
         callback.call(this);
     }
 };
+
+
+/**
+ * Created event
+ * @event xblocks:element~event:xb-created
+ * @type {xblocks.event.Custom}
+ */

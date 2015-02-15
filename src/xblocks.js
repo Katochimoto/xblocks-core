@@ -3,9 +3,6 @@
 (function(global, undefined) {
     'use strict';
 
-    /**
-     * @namespace React
-     */
     var React = global.React;
 
     global.xblocks = global.xblocks || {};
