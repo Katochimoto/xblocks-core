@@ -18,7 +18,7 @@ var _containersByReactRootID = {};
 
 /**
  * @param {HTMLElement} node
- * @returns {Boolean}
+ * @returns {boolean}
  */
 xblocks.react.unmountComponentAtNode = function(node) {
     var rootId = xblocks.react.getRootID(node);
@@ -32,10 +32,10 @@ xblocks.react.unmountComponentAtNode = function(node) {
 };
 
 /**
- * @param {Object} nextElement
+ * @param {object} nextElement
  * @param {HTMLElement} container
- * @param {Function} [callback]
- * @returns {Object}
+ * @param {function} [callback]
+ * @returns {function}
  */
 xblocks.react.render = function(nextElement, container, callback) {
     var component = React.render(nextElement, container, callback);

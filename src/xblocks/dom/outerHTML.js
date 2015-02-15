@@ -2,8 +2,8 @@
 /* jshint strict: false */
 
 /**
-* @returns {{ get: function, set: function }}
-*/
+ * @returns {{ get: function, set: function }}
+ */
 xblocks.dom.outerHTML = (function() {
 
     var container = __doc.createElementNS('http://www.w3.org/1999/xhtml', '_');

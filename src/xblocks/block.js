@@ -2,7 +2,7 @@
 /* jshint strict: false */
 
 var _blockStatic = {
-    init: function(element) {
+    'init': function(element) {
         if (!element.xtagName) {
             element.xtagName = element.tagName.toLowerCase();
             element.xtmpl = {};
@@ -15,11 +15,11 @@ var _blockStatic = {
         return false;
     },
 
-    tmplCompile: function(tmplElement) {
+    'tmplCompile': function(tmplElement) {
         this.xtmpl[ tmplElement.getAttribute('ref') ] = tmplElement.innerHTML;
     },
 
-    create: function(element) {
+    'create': function(element) {
         if (element.hasChildNodes()) {
             __forEach.call(
                 element.querySelectorAll(xblocks.utils.SELECTOR_TMPL),
@@ -31,21 +31,21 @@ var _blockStatic = {
         element.xblock = xblocks.element.create(element);
     },
 
-    createLazy: function(elements) {
+    'createLazy': function(elements) {
         elements.forEach(_blockStatic.create);
     }
 };
 
 var _blockCommon = {
-    lifecycle: {
-        created: function() {
+    'lifecycle': {
+        'created': function() {
             xblocks.utils.log.time(this, 'xb_init');
             xblocks.utils.log.time(this, 'dom_inserted');
 
             _blockStatic.init(this);
         },
 
-        inserted: function() {
+        'inserted': function() {
             if (this.xinserted) {
                 return;
             }
@@ -68,7 +68,7 @@ var _blockCommon = {
             xblocks.utils.log.time(this, 'dom_inserted');
         },
 
-        removed: function() {
+        'removed': function() {
             this.xinserted = false;
 
             // replace initial content after destroy react component
@@ -83,7 +83,7 @@ var _blockCommon = {
             }
         },
 
-        attributeChanged: function(attrName, oldValue, newValue) {
+        'attributeChanged': function(attrName, oldValue, newValue) {
             // removeAttribute('xb-static')
             if (attrName === xblocks.dom.attrs.XB_ATTRS.STATIC &&
                 newValue === null &&
@@ -95,16 +95,16 @@ var _blockCommon = {
         }
     },
 
-    accessors: {
+    'accessors': {
         // check mounted react
-        mounted: {
-            get: function() {
+        'mounted': {
+            'get': function() {
                 return Boolean(this.xblock && this.xblock.isMounted());
             }
         },
 
-        content: {
-            get: function() {
+        'content': {
+            'get': function() {
                 if (this.mounted) {
                     return this.xblock.getMountedContent();
                 }
@@ -112,7 +112,7 @@ var _blockCommon = {
                 return xblocks.dom.contentNode(this).innerHTML;
             },
 
-            set: function(content) {
+            'set': function(content) {
                 if (this.mounted) {
                     this.xblock.setMountedContent(content);
 
@@ -124,14 +124,14 @@ var _blockCommon = {
         },
 
         // getting object attributes
-        attrs: {
-            get: function() {
+        'attrs': {
+            'get': function() {
                 return xblocks.dom.attrs.toObject(this);
             }
         },
 
-        state: {
-            get: function() {
+        'state': {
+            'get': function() {
                 var prop;
                 var props = xblocks.dom.attrs.toObject(this);
                 var xprops = this.xprops;
@@ -152,15 +152,15 @@ var _blockCommon = {
             }
         },
 
-        outerHTML: xblocks.dom.outerHTML
+        'outerHTML': xblocks.dom.outerHTML
     },
 
-    methods: {
-        upgrade: function() {
+    'methods': {
+        'upgrade': function() {
             xblocks.dom.upgradeAll(this);
         },
 
-        cloneNode: function(deep) {
+        'cloneNode': function(deep) {
             // not to clone the contents
             var node = xblocks.dom.cloneNode(this, false);
             xblocks.dom.upgrade(node);
@@ -181,8 +181,11 @@ var _blockCommon = {
 };
 
 /**
- * @param {string} blockName
- * @param {?object} options
+ * Creating a new tag
+ *
+ * @see http://x-tags.org/docs
+ * @param {string} blockName the name of the new node
+ * @param {?object|array} options settings tag creation
  * @returns {HTMLElement}
  */
 xblocks.create = function(blockName, options) {

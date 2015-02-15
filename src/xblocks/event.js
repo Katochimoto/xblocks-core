@@ -8,6 +8,7 @@ xblocks.event = xblocks.event || {};
 
 /**
  * @constructor
+ * @memberOf xblocks.event
  */
 xblocks.event.Custom = (function() {
     if (xblocks.utils.pristine('CustomEvent')) {

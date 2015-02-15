@@ -2,10 +2,12 @@
 /* jshint strict: false */
 
 /**
-* @param {HTMLElement} node
-* @param {Boolean} deep
-* @returns {NodeList}
-*/
+ * Cloning node
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Node.cloneNode
+ * @param {HTMLElement} node the node to be cloned
+ * @param {boolean} deep true if the children of the node should also be cloned, or false to clone only the specified node.
+ * @returns {HTMLElement} The new node that will be a clone of node
+ */
 xblocks.dom.cloneNode = function(node, deep) {
     // FireFox19 cannot use native cloneNode the Node object
     return xblocks.dom.ELEMENT_PROTO.cloneNode.call(node, deep);

@@ -28,7 +28,7 @@ xblocks.dom.attrs.ARRTS_BOOLEAN = [
  * @type {object}
  */
 xblocks.dom.attrs.XB_ATTRS = {
-    STATIC: 'xb-static'
+    'STATIC': 'xb-static'
 };
 
 xblocks.dom.ELEMENT_PROTO = (global.HTMLElement || global.Element).prototype;
