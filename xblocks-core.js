@@ -1187,7 +1187,6 @@ xblocks.react.getReactRootIDFromNodeID = function(id) {
 /**
  * @namespace
  * @see http://x-tags.org/docs
- * @alias xtag
  */
 xblocks.tag = global.xtag;
 

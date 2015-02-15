@@ -4,6 +4,5 @@
 /**
  * @namespace
  * @see http://x-tags.org/docs
- * @alias xtag
  */
 xblocks.tag = global.xtag;
