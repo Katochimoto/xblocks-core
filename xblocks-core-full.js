@@ -2313,24 +2313,35 @@ function markTargetLoaded(event) {
 // call <callback> when we ensure all imports have loaded
 function watchImportsLoad(callback, doc) {
   var imports = doc.querySelectorAll('link[rel=import]');
-  var loaded = 0, l = imports.length;
-  function checkDone(d) {
-    if ((loaded == l) && callback) {
-       callback();
+  var parsedCount = 0, importCount = imports.length, newImports = [], errorImports = [];
+  function checkDone() {
+    if (parsedCount == importCount && callback) {
+      callback({
+        allImports: imports,
+        loadedImports: newImports,
+        errorImports: errorImports
+      });
     }
   }
   function loadedImport(e) {
     markTargetLoaded(e);
-    loaded++;
+    newImports.push(this);
+    parsedCount++;
     checkDone();
   }
-  if (l) {
-    for (var i=0, imp; (i<l) && (imp=imports[i]); i++) {
+  function errorLoadingImport(e) {
+    errorImports.push(this);
+    parsedCount++;
+    checkDone();
+  }
+  if (importCount) {
+    for (var i=0, imp; i<importCount && (imp=imports[i]); i++) {
       if (isImportLoaded(imp)) {
-        loadedImport.call(imp, {target: imp});
+        parsedCount++;
+        checkDone();
       } else {
         imp.addEventListener('load', loadedImport);
-        imp.addEventListener('error', loadedImport);
+        imp.addEventListener('error', errorLoadingImport);
       }
     }
   } else {
@@ -2409,11 +2420,11 @@ if (useNative) {
 // have loaded. This event is required to simulate the script blocking
 // behavior of native imports. A main document script that needs to be sure
 // imports have loaded should wait for this event.
-whenReady(function() {
+whenReady(function(detail) {
   HTMLImports.ready = true;
   HTMLImports.readyTime = new Date().getTime();
   var evt = rootDocument.createEvent("CustomEvent");
-  evt.initCustomEvent("HTMLImportsLoaded", true, true, {});
+  evt.initCustomEvent("HTMLImportsLoaded", true, true, detail);
   rootDocument.dispatchEvent(evt);
 });
 
@@ -2480,22 +2491,25 @@ var CSS_IMPORT_REGEXP = /(@import[\s]+(?!url\())([^;]*)(;)/g;
 // document. We fixup url's in url() and @import.
 var path = {
 
-  resolveUrlsInStyle: function(style) {
+  resolveUrlsInStyle: function(style, linkUrl) {
     var doc = style.ownerDocument;
     var resolver = doc.createElement('a');
-    style.textContent = this.resolveUrlsInCssText(style.textContent, resolver);
+    style.textContent = this.resolveUrlsInCssText(style.textContent, linkUrl, resolver);
     return style;
   },
 
-  resolveUrlsInCssText: function(cssText, urlObj) {
-    var r = this.replaceUrls(cssText, urlObj, CSS_URL_REGEXP);
-    r = this.replaceUrls(r, urlObj, CSS_IMPORT_REGEXP);
+  resolveUrlsInCssText: function(cssText, linkUrl, urlObj) {
+    var r = this.replaceUrls(cssText, urlObj, linkUrl, CSS_URL_REGEXP);
+    r = this.replaceUrls(r, urlObj, linkUrl, CSS_IMPORT_REGEXP);
     return r;
   },
 
-  replaceUrls: function(text, urlObj, regexp) {
+  replaceUrls: function(text, urlObj, linkUrl, regexp) {
     return text.replace(regexp, function(m, pre, url, post) {
       var urlPath = url.replace(/["']/g, '');
+      if (linkUrl) {
+        urlPath = (new URL(urlPath, linkUrl)).href;
+      }
       urlObj.href = urlPath;
       urlPath = urlObj.href;
       return pre + '\'' + urlPath + '\'' + post;
@@ -3619,11 +3633,11 @@ if (document.readyState === 'complete' ||
   function delegateAction(pseudo, event) {
     var match, target = event.target;
     if (!target.tagName) return null;
-    if (xtag.matchSelector(target, pseudo.value)) match = target;
-    else if (xtag.matchSelector(target, pseudo.value + ' *')) {
+    if (matchSelector.call(target, pseudo.value)) match = target;
+    else if (matchSelector.call(target, pseudo._delegate_selector)) {
       var parent = target.parentNode;
       while (!match) {
-        if (xtag.matchSelector(parent, pseudo.value)) match = parent;
+        if (matchSelector.call(parent, pseudo.value)) match = parent;
         parent = parent.parentNode;
       }
     }
