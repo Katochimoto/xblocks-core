@@ -5493,10 +5493,10 @@ var _viewCommon = {
      * @type {object}
      */
     'propTypes': {
-        '_uid': React.PropTypes.node,
-        '_container': React.PropTypes.any,  // Bad way ;(
-        'children': React.PropTypes.node,
-        'xb-static': React.PropTypes.bool
+        '_uid':         React.PropTypes.node,
+        '_container':   React.PropTypes.any,  // Bad way ;(
+        'children':     React.PropTypes.node,
+        'xb-static':    React.PropTypes.bool
     },
 
     /**
