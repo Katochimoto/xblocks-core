@@ -2,6 +2,7 @@
 /* jshint strict: false */
 
 /**
+ * The definition of the data type
  * @param {*} param
  * @returns {string}
  */

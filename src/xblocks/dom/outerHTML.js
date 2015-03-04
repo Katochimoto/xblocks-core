@@ -2,7 +2,9 @@
 /* jshint strict: false */
 
 /**
- * @returns {{ get: function, set: function }}
+ * @prop {object} xblocks.dom.outerHTML
+ * @prop {function} xblocks.dom.outerHTML.get
+ * @prop {function} xblocks.dom.outerHTML.set
  */
 xblocks.dom.outerHTML = (function() {
 

@@ -5,8 +5,8 @@
  * @param {*} x
  * @param {*} y
  * @returns {boolean}
+ * @private
  */
-
 xblocks.utils._equal = {
     'array': function(x, y) {
         if (x === y) {
@@ -69,6 +69,21 @@ xblocks.utils._equal = {
     }
 };
 
+/**
+ * Comparison
+ *
+ * @example
+ * xblocks.utils.equals(1, 1)
+ * // true
+ * xblocks.utils.equals({ a: 1 }, { a: 1 })
+ * // true
+ * xblocks.utils.equals({ a: 1 }, { a: 2 })
+ * // false
+ *
+ * @param {*} x that compared
+ * @param {*} y compared to
+ * @returns {boolean}
+ */
 xblocks.utils.equals = function(x, y) {
     if (x === y) {
         return true;

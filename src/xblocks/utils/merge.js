@@ -2,6 +2,19 @@
 /* jshint strict: false */
 
 /**
+ * Combining objects
+ *
+ * @example
+ * var target = { a: 1 };
+ * xblocks.utils.merge(target, { b: 2 })
+ * // { a: 1, b: 2 }
+ *
+ * xblocks.utils.merge({ a: 1 }, { b: 2 }, { c: 3 })
+ * // { a: 1, b: 2, c: 3 }
+ *
+ * xblocks.utils.merge(true, { a: 1 }, { b: { c: 2 } }, { b: { d: 3 } })
+ * // { a: 1, b: { c: 2, d: 3 } }
+ *
  * @returns {object}
  */
 xblocks.utils.merge = function() {

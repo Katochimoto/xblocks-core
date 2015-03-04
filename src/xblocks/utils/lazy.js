@@ -2,6 +2,18 @@
 /* jshint strict: false */
 
 /**
+ * Deferred execution
+ *
+ * @example
+ * var lazyCallback = function() {
+ *     console.log(arguments);
+ * };
+ * xblocks.utils.lazy(lazyCallback, 'a');
+ * xblocks.utils.lazy(lazyCallback, 'b');
+ * xblocks.utils.lazy(lazyCallback, 'c');
+ * // ....
+ * [ Array[ 'a', 'b', 'c' ] ]
+ *
  * @param {function} callback
  * @param {*} args
  * @returns {function}

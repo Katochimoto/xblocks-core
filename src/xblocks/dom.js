@@ -5,6 +5,10 @@
  * @namespace
  */
 xblocks.dom = xblocks.dom || {};
+
+/**
+ * @namespace
+ */
 xblocks.dom.attrs = xblocks.dom.attrs || {};
 
 /**

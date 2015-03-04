@@ -6,8 +6,9 @@
     var cache = {};
 
     /**
-     * @param {string} str
-     * @param {object} data
+     * Template engine
+     * @param {string} str template
+     * @param {object} data the template data
      * @returns {string}
      * @see http://ejohn.org/blog/javascript-micro-templating/
      */

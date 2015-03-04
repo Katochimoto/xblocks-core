@@ -2,8 +2,9 @@
 /* jshint strict: false */
 
 /**
- * @param {string} methodName
- * @returns {boolean}
+ * Check the override method
+ * @param {string} methodName method name
+ * @returns {boolean} true if the method is not overridden
  */
 xblocks.utils.pristine = function(methodName) {
     if (!methodName) {

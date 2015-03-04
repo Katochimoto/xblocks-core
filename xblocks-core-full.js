@@ -4595,7 +4595,16 @@ xblocks.utils.log.time = function(/*element, name*/) {
 /* jshint strict: false */
 
 /**
- * @returns {number}
+ * The generator is a unique sequence of positive numbers
+ *
+ * @example
+ * xblocks.utils.seq()
+ * // 1
+ * xblocks.utils.seq()
+ * // 2
+ *
+ * @function xblocks.utils.seq
+ * @returns {number} a unique, incremental positive number
  */
 xblocks.utils.seq = (function() {
     var i = 0;
@@ -4611,6 +4620,7 @@ xblocks.utils.seq = (function() {
 /* jshint strict: false */
 
 /**
+ * The definition of the data type
  * @param {*} param
  * @returns {string}
  */
@@ -4651,15 +4661,23 @@ xblocks.utils.type = function(param) {
 /* jshint strict: false */
 
 /**
- * @param {*} obj
+ * Check to see if an object is a plain object (created using "{}" or "new Object")
+ *
+ * @example
+ * xblocks.utils.isPlainObject({})
+ * // true
+ * xblocks.utils.isPlainObject(test)
+ * // false
+ *
+ * @param {*} value the value to test
  * @returns {boolean}
  */
-xblocks.utils.isPlainObject = function(obj) {
-    if (xblocks.utils.type(obj) !== 'object') {
+xblocks.utils.isPlainObject = function(value) {
+    if (xblocks.utils.type(value) !== 'object') {
         return false;
     }
 
-    if (obj.constructor && !obj.constructor.prototype.hasOwnProperty('isPrototypeOf')) {
+    if (value.constructor && !value.constructor.prototype.hasOwnProperty('isPrototypeOf')) {
         return false;
     }
 
@@ -4673,8 +4691,9 @@ xblocks.utils.isPlainObject = function(obj) {
 /* jshint strict: false */
 
 /**
- * @param {string} methodName
- * @returns {boolean}
+ * Check the override method
+ * @param {string} methodName method name
+ * @returns {boolean} true if the method is not overridden
  */
 xblocks.utils.pristine = function(methodName) {
     if (!methodName) {
@@ -4719,6 +4738,19 @@ xblocks.utils.pristine = function(methodName) {
 /* jshint strict: false */
 
 /**
+ * Combining objects
+ *
+ * @example
+ * var target = { a: 1 };
+ * xblocks.utils.merge(target, { b: 2 })
+ * // { a: 1, b: 2 }
+ *
+ * xblocks.utils.merge({ a: 1 }, { b: 2 }, { c: 3 })
+ * // { a: 1, b: 2, c: 3 }
+ *
+ * xblocks.utils.merge(true, { a: 1 }, { b: { c: 2 } }, { b: { d: 3 } })
+ * // { a: 1, b: { c: 2, d: 3 } }
+ *
  * @returns {object}
  */
 xblocks.utils.merge = function() {
@@ -4800,6 +4832,18 @@ xblocks.utils.merge = function() {
 /* jshint strict: false */
 
 /**
+ * Deferred execution
+ *
+ * @example
+ * var lazyCallback = function() {
+ *     console.log(arguments);
+ * };
+ * xblocks.utils.lazy(lazyCallback, 'a');
+ * xblocks.utils.lazy(lazyCallback, 'b');
+ * xblocks.utils.lazy(lazyCallback, 'c');
+ * // ....
+ * [ Array[ 'a', 'b', 'c' ] ]
+ *
  * @param {function} callback
  * @param {*} args
  * @returns {function}
@@ -4835,8 +4879,8 @@ xblocks.utils.lazy = function(callback, args) {
  * @param {*} x
  * @param {*} y
  * @returns {boolean}
+ * @private
  */
-
 xblocks.utils._equal = {
     'array': function(x, y) {
         if (x === y) {
@@ -4899,6 +4943,21 @@ xblocks.utils._equal = {
     }
 };
 
+/**
+ * Comparison
+ *
+ * @example
+ * xblocks.utils.equals(1, 1)
+ * // true
+ * xblocks.utils.equals({ a: 1 }, { a: 1 })
+ * // true
+ * xblocks.utils.equals({ a: 1 }, { a: 2 })
+ * // false
+ *
+ * @param {*} x that compared
+ * @param {*} y compared to
+ * @returns {boolean}
+ */
 xblocks.utils.equals = function(x, y) {
     if (x === y) {
         return true;
@@ -4957,8 +5016,9 @@ xblocks.utils.propTypes = function(tagName) {
     var cache = {};
 
     /**
-     * @param {string} str
-     * @param {object} data
+     * Template engine
+     * @param {string} str template
+     * @param {object} data the template data
      * @returns {string}
      * @see http://ejohn.org/blog/javascript-micro-templating/
      */
@@ -4996,6 +5056,10 @@ xblocks.utils.propTypes = function(tagName) {
  * @namespace
  */
 xblocks.dom = xblocks.dom || {};
+
+/**
+ * @namespace
+ */
 xblocks.dom.attrs = xblocks.dom.attrs || {};
 
 /**
@@ -5158,6 +5222,9 @@ xblocks.dom.contentNode = function(node) {
 /* global xblocks, global, __noop */
 /* jshint strict: false */
 
+/**
+ * @function xblocks.dom.upgrade
+ */
 xblocks.dom.upgrade = (function() {
     if (global.CustomElements && typeof(global.CustomElements.upgrade) === 'function') {
         return global.CustomElements.upgrade;
@@ -5173,6 +5240,9 @@ xblocks.dom.upgrade = (function() {
 /* global xblocks, global, __noop */
 /* jshint strict: false */
 
+/**
+ * @function xblocks.dom.upgradeAll
+ */
 xblocks.dom.upgradeAll = (function() {
     if (global.CustomElements && typeof(global.CustomElements.upgradeAll) === 'function') {
         return global.CustomElements.upgradeAll;
@@ -5218,7 +5288,9 @@ xblocks.dom.cloneNode = function(node, deep) {
 /* jshint strict: false */
 
 /**
- * @returns {{ get: function, set: function }}
+ * @prop {object} xblocks.dom.outerHTML
+ * @prop {function} xblocks.dom.outerHTML.get
+ * @prop {function} xblocks.dom.outerHTML.set
  */
 xblocks.dom.outerHTML = (function() {
 
@@ -5295,6 +5367,15 @@ xblocks.dom.outerHTML = (function() {
 xblocks.event = xblocks.event || {};
 
 /**
+ * Designer events
+ *
+ * @example
+ * new xblocks.event.Custom('custom-event', {
+ *     bubbles: true,
+ *     cancelable: true,
+ *     detail: { data: '123' }
+ * })
+ *
  * @constructor
  * @memberOf xblocks.event
  */
@@ -5354,9 +5435,18 @@ CustomEventCommon.prototype = global.Event.prototype;
 }());
 
 /**
- * @param {HTMLElement} element
- * @param {string} name
- * @param {object} params
+ * Dispatch event
+ *
+ * @example
+ * xblocks.event.dispatch(node, 'custom-event', {
+ *     bubbles: true,
+ *     cancelable: true,
+ *     detail: { data: '123' }
+ * })
+ *
+ * @param {HTMLElement} element node events
+ * @param {string} name event name
+ * @param {object} params the event parameters
  */
 xblocks.event.dispatch = function(element, name, params) {
     element.dispatchEvent(new xblocks.event.Custom(name, params || {}));
@@ -5447,7 +5537,7 @@ var _viewCommon = {
      * @param {object} [props] the attributes of a node
      * @returns {?ReactElement}
      */
-    template: function(ref, props) {
+    'template': function(ref, props) {
         var xtmpl = this.props._container && this.props._container.xtmpl;
 
         if (typeof(xtmpl) === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
@@ -5466,13 +5556,13 @@ var _viewCommon = {
      * Get the node associated with the view
      * @returns {HTMLElement}
      */
-    container: function() {
+    'container': function() {
         return this.props._container;
     }
 };
 
 var _viewCommonUser = {
-    _templatePrepare: function(tmplString) {
+    '_templatePrepare': function(tmplString) {
         return tmplString;
     }
 };

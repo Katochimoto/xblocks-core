@@ -31,7 +31,7 @@ var _viewCommon = {
      * @param {object} [props] the attributes of a node
      * @returns {?ReactElement}
      */
-    template: function(ref, props) {
+    'template': function(ref, props) {
         var xtmpl = this.props._container && this.props._container.xtmpl;
 
         if (typeof(xtmpl) === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
@@ -50,13 +50,13 @@ var _viewCommon = {
      * Get the node associated with the view
      * @returns {HTMLElement}
      */
-    container: function() {
+    'container': function() {
         return this.props._container;
     }
 };
 
 var _viewCommonUser = {
-    _templatePrepare: function(tmplString) {
+    '_templatePrepare': function(tmplString) {
         return tmplString;
     }
 };
