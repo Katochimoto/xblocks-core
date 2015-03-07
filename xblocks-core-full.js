@@ -1447,7 +1447,7 @@ function inDocument(element) {
     if (p == doc) {
       return true;
     }
-    p = p.parentNode || p.host;
+    p = p.parentNode || ((p.nodeType === Node.DOCUMENT_FRAGMENT_NODE) && p.host);
   }
 }
 
@@ -1577,7 +1577,6 @@ function upgradeDocumentTree(doc) {
 // undefined to aid feature detection of Shadow DOM.
 var originalCreateShadowRoot = Element.prototype.createShadowRoot;
 if (originalCreateShadowRoot) {
-  // ensure that all ShadowRoots watch for CustomElements.
   Element.prototype.createShadowRoot = function() {
     var root = originalCreateShadowRoot.call(this);
     CustomElements.watchShadow(this);
@@ -2939,6 +2938,7 @@ var importParser = {
     // TODO(sorvell): style element load event can just not fire so clone styles
     var src = elt;
     elt = cloneStyle(elt);
+    src.__appliedElement = elt;
     elt.__importElement = src;
     this.parseGeneric(elt);
   },
@@ -3632,14 +3632,9 @@ if (document.readyState === 'complete' ||
 
   function delegateAction(pseudo, event) {
     var match, target = event.target;
-    if (!target.tagName) return null;
-    if (matchSelector.call(target, pseudo.value)) match = target;
-    else if (matchSelector.call(target, pseudo._delegate_selector)) {
-      var parent = target.parentNode;
-      while (!match) {
-        if (matchSelector.call(parent, pseudo.value)) match = parent;
-        parent = parent.parentNode;
-      }
+    if (target.tagName) {
+      if (matchSelector.call(target, pseudo.value)) match = target;
+      else match = (pseudo.walker.currentNode = target) && pseudo.walker.parentNode();
     }
     return match ? pseudo.listener = pseudo.listener.bind(match) : null;
   }
@@ -3966,10 +3961,6 @@ if (document.readyState === 'complete' ||
     },
     pseudos: {
       __mixin__: {},
-      /*
-
-
-      */
       mixins: {
         onCompiled: function(fn, pseudo){
           var mixins = pseudo.source.__mixins__;
@@ -3996,10 +3987,16 @@ if (document.readyState === 'complete' ||
       },
       keypass: keypseudo,
       keyfail: keypseudo,
-      delegate: { action: delegateAction },
+      delegate: {
+        action: delegateAction,
+        onAdd: function(pseudo){
+          pseudo.walker = document.createTreeWalker(this, 1, { acceptNode: function(node) { return matchSelector.call(node, pseudo.value); } });
+        }
+      },
       within: {
         action: delegateAction,
         onAdd: function(pseudo){
+          pseudo.walker = document.createTreeWalker(this, 1, { acceptNode: function(node) { return matchSelector.call(node, pseudo.value); } });
           var condition = pseudo.source.condition;
           if (condition) pseudo.source.condition = function(event, custom){
             return xtag.query(this, pseudo.value).filter(function(node){
