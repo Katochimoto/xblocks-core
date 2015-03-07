@@ -9,10 +9,6 @@
  */
 xblocks.utils._equal = {
     'array': function(x, y) {
-        if (x === y) {
-            return true;
-        }
-
         var i = 0;
         var l = x.length;
 
@@ -30,10 +26,6 @@ xblocks.utils._equal = {
     },
 
     'object': function(x, y) {
-        if (x === y) {
-            return true;
-        }
-
         var i;
 
         for (i in x) {

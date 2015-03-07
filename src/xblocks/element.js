@@ -180,7 +180,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
 };
 
 /**
- * Redrawing куфсе view
+ * Redrawing react view
  * @param {function} [callback] the callback function
  */
 xblocks.element.prototype.repaint = function(callback) {

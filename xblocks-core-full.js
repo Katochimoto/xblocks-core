@@ -4883,10 +4883,6 @@ xblocks.utils.lazy = function(callback, args) {
  */
 xblocks.utils._equal = {
     'array': function(x, y) {
-        if (x === y) {
-            return true;
-        }
-
         var i = 0;
         var l = x.length;
 
@@ -4904,10 +4900,6 @@ xblocks.utils._equal = {
     },
 
     'object': function(x, y) {
-        if (x === y) {
-            return true;
-        }
-
         var i;
 
         for (i in x) {
@@ -5063,6 +5055,7 @@ xblocks.dom = xblocks.dom || {};
 xblocks.dom.attrs = xblocks.dom.attrs || {};
 
 /**
+ * A set of boolean attributes
  * @type {string[]}
  */
 xblocks.dom.attrs.ARRTS_BOOLEAN = [
@@ -5080,6 +5073,7 @@ xblocks.dom.attrs.ARRTS_BOOLEAN = [
 ];
 
 /**
+ * A set of special attributes
  * @type {object}
  */
 xblocks.dom.attrs.XB_ATTRS = {
@@ -5093,8 +5087,21 @@ xblocks.dom.ELEMENT_PROTO = (global.HTMLElement || global.Element).prototype;
 /* jshint strict: false */
 
 /**
+ * To obtain the specified attributes
+ *
+ * @example
+ * node = document.createElement('div');
+ * node.setAttribute('attr1', '');
+ * node.setAttribute('attr2', 'test1');
+ * node.setAttribute('attr3', 'test2');
+ * xblocks.dom.attrs.get(node, {
+ *     'attr1': false,
+ *     'attr2': undefined
+ * });
+ * // { 'attr1': true, 'attr2': 'test1' }
+ *
  * @param {HTMLElement} element
- * @param {object} attrs
+ * @param {object} attrs the set of derived attributes (+default values)
  * @return {object}
  */
 xblocks.dom.attrs.get = function(element, attrs) {
@@ -5102,7 +5109,8 @@ xblocks.dom.attrs.get = function(element, attrs) {
         return attrs;
     }
 
-    for (var attrName in attrs) {
+    var attrName;
+    for (attrName in attrs) {
         if (attrs.hasOwnProperty(attrName) && element.hasAttribute(attrName)) {
             if (typeof(attrs[ attrName ]) === 'boolean') {
                 attrs[ attrName ] = xblocks.dom.attrs.valueConversion(
@@ -5121,6 +5129,15 @@ xblocks.dom.attrs.get = function(element, attrs) {
 };
 
 /**
+ * Retrieve object attributes
+ *
+ * @example
+ * node = document.createElement('div');
+ * node.setAttribute('attr1', '');
+ * node.setAttribute('attr2', 'test');
+ * xblocks.dom.attrs.toObject(node);
+ * // { 'attr1': '', 'attr2': 'test' }
+ *
  * @param {HTMLElement} element
  * @return {object}
  */
@@ -5143,9 +5160,19 @@ xblocks.dom.attrs._toObjectIterator = function(attr) {
 };
 
 /**
- * @param {string} prop
- * @param {*} value
- * @param {function} [type]
+ * Convert the attribute value to the specified type
+ *
+ * @example
+ * xblocks.dom.attrs.valueConversion('attr1', 'true');
+ * // true
+ * xblocks.dom.attrs.valueConversion('attr1', 'true', React.PropTypes.string);
+ * // 'true'
+ * xblocks.dom.attrs.valueConversion('attr1', '123', React.PropTypes.number);
+ * // 123
+ *
+ * @param {string} prop attribute name
+ * @param {*} value attribute value
+ * @param {function} [type] attribute type
  * @returns {*}
  */
 xblocks.dom.attrs.valueConversion = function(prop, value, type) {
@@ -5171,8 +5198,20 @@ xblocks.dom.attrs.valueConversion = function(prop, value, type) {
 };
 
 /**
- * @param {object} props
- * @param {object} [propTypes]
+ * Collective conversion of attribute types
+ *
+ * @example
+ * xblocks.dom.attrs.typeConversion({
+ *     'attr1': '123',
+ *     'attr2': ''
+ * }, {
+ *     'attr1': React.PropTypes.number,
+ *     'attr2': React.PropTypes.bool
+ * });
+ * // { 'attr1': 123, 'attr2': true }
+ *
+ * @param {object} props the set of attributes
+ * @param {object} [propTypes] the set of attribute types
  * @returns {object}
  */
 xblocks.dom.attrs.typeConversion = function(props, propTypes) {
@@ -6061,7 +6100,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
 };
 
 /**
- * Redrawing куфсе view
+ * Redrawing react view
  * @param {function} [callback] the callback function
  */
 xblocks.element.prototype.repaint = function(callback) {

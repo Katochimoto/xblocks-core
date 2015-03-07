@@ -12,6 +12,7 @@ xblocks.dom = xblocks.dom || {};
 xblocks.dom.attrs = xblocks.dom.attrs || {};
 
 /**
+ * A set of boolean attributes
  * @type {string[]}
  */
 xblocks.dom.attrs.ARRTS_BOOLEAN = [
@@ -29,6 +30,7 @@ xblocks.dom.attrs.ARRTS_BOOLEAN = [
 ];
 
 /**
+ * A set of special attributes
  * @type {object}
  */
 xblocks.dom.attrs.XB_ATTRS = {
