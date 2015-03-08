@@ -3260,7 +3260,7 @@ if (document.readyState === 'complete' ||
         js: pre == 'ms' ? pre : pre[0].toUpperCase() + pre.substr(1)
       };
     })(),
-    matchSelector = Element.prototype.matchesSelector || Element.prototype[prefix.lowercase + 'MatchesSelector'],
+    matchSelector = Element.prototype.matches || Element.prototype.matchesSelector || Element.prototype[prefix.lowercase + 'MatchesSelector'],
     mutation = win.MutationObserver || win[prefix.js + 'MutationObserver'];
 
   var issetCustomEvent = false;
@@ -3405,11 +3405,14 @@ if (document.readyState === 'complete' ||
 // Events
 
   function delegateAction(pseudo, event) {
-    var match, target = event.target;
-    if (target.tagName) {
-      if (matchSelector.call(target, pseudo.value)) match = target;
-      else match = (pseudo.walker.currentNode = target) && pseudo.walker.parentNode();
+    var match,
+        target = event.target,
+        root = event.currentTarget;
+    while (!match && target != root) {
+      if (target.tagName && matchSelector.call(target, pseudo.value)) match = target;
+      target = target.parentNode;
     }
+    if (!match && root.tagName && matchSelector.call(root, pseudo.value)) match = root;
     return match ? pseudo.listener = pseudo.listener.bind(match) : null;
   }
 
@@ -3762,15 +3765,11 @@ if (document.readyState === 'complete' ||
       keypass: keypseudo,
       keyfail: keypseudo,
       delegate: {
-        action: delegateAction,
-        onAdd: function(pseudo){
-          pseudo.walker = document.createTreeWalker(this, 1, { acceptNode: function(node) { return matchSelector.call(node, pseudo.value); } });
-        }
+        action: delegateAction
       },
       within: {
         action: delegateAction,
         onAdd: function(pseudo){
-          pseudo.walker = document.createTreeWalker(this, 1, { acceptNode: function(node) { return matchSelector.call(node, pseudo.value); } });
           var condition = pseudo.source.condition;
           if (condition) pseudo.source.condition = function(event, custom){
             return xtag.query(this, pseudo.value).filter(function(node){
