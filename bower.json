@@ -21,7 +21,7 @@
     ],
     "dependencies": {
         "es5-shim": "4.1.0",
-        "react": "0.13.0-rc1",
+        "react": "0.13.0",
         "vow": "0.4.8"
     },
     "homepage": "https://github.com/Katochimoto/xblocks-core",
