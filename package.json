@@ -1,7 +1,7 @@
 {
     "name": "xblocks-core",
     "description": "HTML core custom elements",
-    "version": "0.5.8",
+    "version": "0.6.0",
     "keywords": [
         "x-tag",
         "x-tags",
@@ -9,7 +9,7 @@
         "html5",
         "xblocks"
     ],
-    "homepage": "https://github.com/Katochimoto/xblocks-core/",
+    "homepage": "http://xblocks.ru",
     "author": {
         "name": "Rikishi",
         "email": "bufpost@yandex.ru",
