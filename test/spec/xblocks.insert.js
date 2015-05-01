@@ -18,13 +18,13 @@ describe('xblocks - Вставка в DOM ->', function() {
 
         return new vow.Promise(function(resolve) {
             that.xElement.addEventListener('xb-created', function _onXbCreated() {
-                that.xElement.removeEventListener('xb-created', _onXbCreated, false);
+                that.xElement.removeEventListener('xb-created', _onXbCreated);
 
                 expect(this.xblock).to.be.a(xblocks.element);
                 expect(this.mounted).to.be(true);
                 expect(this.xinserted).to.be(true);
                 resolve();
-            }, false);
+            });
 
             document.body.appendChild(that.xElement);
         });
@@ -35,11 +35,11 @@ describe('xblocks - Вставка в DOM ->', function() {
 
         return new vow.Promise(function(resolve) {
             window.addEventListener('xb-created', function _onXbCreated(event) {
-                window.removeEventListener('xb-created', _onXbCreated, false);
+                window.removeEventListener('xb-created', _onXbCreated);
 
                 expect(event.detail.records).to.be.a('array');
                 resolve();
-            }, false);
+            });
 
             document.body.appendChild(that.xElement);
         });

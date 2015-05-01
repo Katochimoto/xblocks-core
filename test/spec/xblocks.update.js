@@ -18,19 +18,19 @@ describe('xblocks - Изменение атрибутов ->', function() {
 
         return new vow.Promise(function(resolve) {
             that.xElement.addEventListener('xb-update', function _onXbUpdate() {
-                that.xElement.removeEventListener('xb-update', _onXbUpdate, false);
+                that.xElement.removeEventListener('xb-update', _onXbUpdate);
 
                 expect(this.getAttribute('bool-attr')).to.be('true');
                 expect(this.querySelector('.bool')).not.to.be(null);
                 resolve();
-            }, false);
+            });
 
             that.xElement.addEventListener('xb-created', function _onXbCreated() {
-                that.xElement.removeEventListener('xb-created', _onXbCreated, false);
+                that.xElement.removeEventListener('xb-created', _onXbCreated);
 
                 expect(this.querySelector('.bool')).to.be(null);
                 that.xElement.setAttribute('bool-attr', 'true');
-            }, false);
+            });
 
             document.body.appendChild(that.xElement);
         });
