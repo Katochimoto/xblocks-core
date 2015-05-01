@@ -3,14 +3,6 @@
 
 describe('xblocks - клонирование ->', function() {
 
-    xblocks.view.register('x-element-clone', {
-        render: function() {
-            return React.DOM.div({});
-        }
-    });
-
-    xblocks.create('x-element-clone');
-
     beforeEach(function() {
         this.xElement = document.createElement('x-element-clone');
     });

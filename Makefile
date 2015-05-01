@@ -1,5 +1,7 @@
 src_js := $(shell find src -type f -name "*.js")
 polyfills_js := $(shell find src/polyfills -type f -name "*.js")
+src_jsx := $(shell find test src -type f -name "*.jsx")
+src_jsx_js := $(addsuffix .js, $(src_jsx))
 
 all: node_modules \
     bower_components \
@@ -8,7 +10,8 @@ all: node_modules \
     xblocks-core-full.js \
     xblocks-core-full.min.js \
     x-tag-core.js \
-    x-tag-core.min.js
+    x-tag-core.min.js \
+	$(src_jsx_js)
 
 
 node_modules: package.json
@@ -26,15 +29,19 @@ clean:
 	rm -f xblocks-core-full.min.js
 	rm -f x-tag-core.js
 	rm -f x-tag-core.min.js
+	find src -type f -name "*.jsx.js" -exec rm -f {} \;
 
-xblocks-core.js: node_modules $(src_js)
+$(src_jsx_js): %.jsx.js: %.jsx node_modules
+	./node_modules/.bin/jsx --no-cache-dir --strip-types --harmony $< > $@
+
+xblocks-core.js: node_modules $(src_jsx_js) $(src_js)
 	cat node_modules/setimmediate2/setImmediate.js > $@
 	./node_modules/.bin/borschik -m no -i src/xblocks.js >> $@
 
 xblocks-core.min.js: xblocks-core.js
 	./node_modules/.bin/borschik -i $< -o $@
 
-xblocks-core-full.js: node_modules $(src_js)
+xblocks-core-full.js: node_modules $(src_jsx_js) $(src_js)
 	cat node_modules/setimmediate2/setImmediate.js > $@
 	./node_modules/.bin/borschik -m no -i src/xtag.js >> $@
 	./node_modules/.bin/borschik -m no -i src/xblocks.js >> $@

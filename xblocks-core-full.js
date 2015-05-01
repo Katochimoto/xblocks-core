@@ -5987,7 +5987,7 @@ var _elementStatic = {
      * @protected
      */
     globalInitEvent: function(records) {
-        xblocks.event.dispatch(global, 'xb-created', { detail: { records: records } });
+        xblocks.event.dispatch(global, 'xb-created', { 'detail': { 'records': records } });
     },
 
     /**
@@ -5995,7 +5995,7 @@ var _elementStatic = {
      * @protected
      */
     globalRepaintEvent: function(records) {
-        xblocks.event.dispatch(global, 'xb-repaint', { detail: { records: records } });
+        xblocks.event.dispatch(global, 'xb-repaint', { 'detail': { 'records': records } });
     }
 
     /**
@@ -6003,7 +6003,7 @@ var _elementStatic = {
      * @protected
      */
     //globalUpdateEvent: function(records) {
-    //    xblocks.event.dispatch(global, 'xb-update', { detail: { records: records } });
+    //    xblocks.event.dispatch(global, 'xb-update', { 'detail': { 'records': records } });
     //}
 };
 

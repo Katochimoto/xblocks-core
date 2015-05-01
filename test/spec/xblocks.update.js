@@ -3,22 +3,6 @@
 
 describe('xblocks - Изменение атрибутов ->', function() {
 
-    xblocks.view.register('x-element-update', {
-        propTypes: {
-            'bool-attr': React.PropTypes.bool,
-            'number-attr': React.PropTypes.number
-        },
-
-        render: function() {
-            return React.DOM.div({
-                className: (this.props['bool-attr'] ? 'bool' : '')
-            });
-        }
-    });
-
-    xblocks.create('x-element-update');
-
-
     beforeEach(function() {
         this.xElement = document.createElement('x-element-update');
     });

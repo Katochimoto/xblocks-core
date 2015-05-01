@@ -5,14 +5,6 @@ describe('xblocks.view', function() {
 
     describe('.template ->', function() {
 
-        xblocks.view.register('x-element-view-template', {
-            render: function() {
-                return React.DOM.div({}, this.template('test'));
-            }
-        });
-
-        xblocks.create('x-element-view-template');
-
         beforeEach(function() {
             this.xElement = document.createElement('x-element-view-template');
         });

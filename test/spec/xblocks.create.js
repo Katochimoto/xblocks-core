@@ -3,19 +3,6 @@
 
 describe('xblocks - Создание ->', function() {
 
-    xblocks.view.register('x-element-create', {
-        propTypes: {
-            'bool-attr': React.PropTypes.bool,
-            'number-attr': React.PropTypes.number
-        },
-
-        render: function() {
-            return React.DOM.div({});
-        }
-    });
-
-    xblocks.create('x-element-create');
-
     beforeEach(function() {
         this.xElement = document.createElement('x-element-create');
     });

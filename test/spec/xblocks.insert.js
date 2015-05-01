@@ -3,20 +3,6 @@
 
 describe('xblocks - Вставка в DOM ->', function() {
 
-    xblocks.view.register('x-element-insert', {
-        propTypes: {
-            'bool-attr': React.PropTypes.bool,
-            'number-attr': React.PropTypes.number
-        },
-
-        render: function() {
-            return React.DOM.div({});
-        }
-    });
-
-    xblocks.create('x-element-insert');
-
-
     beforeEach(function() {
         this.xElement = document.createElement('x-element-insert');
     });

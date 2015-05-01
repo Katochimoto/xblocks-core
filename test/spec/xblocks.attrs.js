@@ -3,19 +3,6 @@
 
 describe('xblocks - работа с атрибутами ->', function() {
 
-    xblocks.view.register('x-element', {
-        propTypes: {
-            'bool-attr': React.PropTypes.bool,
-            'number-attr': React.PropTypes.number
-        },
-
-        render: function() {
-            return React.DOM.div({});
-        }
-    });
-
-    xblocks.create('x-element');
-
     beforeEach(function() {
         this.xElement = document.createElement('x-element');
     });
