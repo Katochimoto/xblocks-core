@@ -1019,19 +1019,12 @@ function forRoots(node, cb) {
   }
 }
 
-/*
-Note that the import tree can consume itself and therefore special care
-must be taken to avoid recursion.
-*/
-var processingDocuments;
 function forDocumentTree(doc, cb) {
-  processingDocuments = [];
-  _forDocumentTree(doc, cb);
-  processingDocuments = null;
+  _forDocumentTree(doc, cb, []);
 }
 
 
-function _forDocumentTree(doc, cb) {
+function _forDocumentTree(doc, cb, processingDocuments) {
   doc = wrap(doc);
   if (processingDocuments.indexOf(doc) >= 0) {
     return;
@@ -1040,7 +1033,7 @@ function _forDocumentTree(doc, cb) {
   var imports = doc.querySelectorAll('link[rel=' + IMPORT_LINK_TYPE + ']');
   for (var i=0, l=imports.length, n; (i<l) && (n=imports[i]); i++) {
     if (n.import) {
-      _forDocumentTree(n.import, cb);
+      _forDocumentTree(n.import, cb, processingDocuments);
     }
   }
   cb(doc);
@@ -1516,8 +1509,9 @@ scope.implementPrototype = implementPrototype;
 CustomElements.addModule(function(scope) {
 
 // imports
+var isIE11OrOlder = scope.isIE11OrOlder;
 var upgradeDocumentTree = scope.upgradeDocumentTree;
-var upgrade = scope.upgrade;
+var upgradeAll = scope.upgradeAll;
 var upgradeWithDefinition = scope.upgradeWithDefinition;
 var implementPrototype = scope.implementPrototype;
 var useNative = scope.useNative;
@@ -1786,20 +1780,9 @@ function createElement(tag, typeExtension) {
   return element;
 }
 
-function cloneNode(deep) {
-  // call original clone
-  var n = domCloneNode.call(this, deep);
-  // upgrade the element and subtree
-  upgrade(n);
-  // return the clone
-  return n;
-}
-
 // capture native createElement before we override it
 var domCreateElement = document.createElement.bind(document);
 var domCreateElementNS = document.createElementNS.bind(document);
-// capture native cloneNode before we override it
-var domCloneNode = Node.prototype.cloneNode;
 
 // Create a custom 'instanceof'. This is necessary when CustomElements
 // are implemented via a mixin strategy, as for example on IE10.
@@ -1824,11 +1807,44 @@ if (!Object.__proto__ && !useNative) {
   };
 }
 
+// wrap a dom object method that works on nodes such that it forces upgrade 
+function wrapDomMethodToForceUpgrade(obj, methodName) {
+  var orig = obj[methodName];
+  obj[methodName] = function() {
+    var n = orig.apply(this, arguments);
+    upgradeAll(n);
+    return n;
+  };
+}
+
+wrapDomMethodToForceUpgrade(Node.prototype, 'cloneNode');
+wrapDomMethodToForceUpgrade(document, 'importNode');
+
+// Patch document.importNode to work around IE11 bug that
+// casues children of a document fragment imported while
+// there is a mutation observer to not have a parentNode (!?!)
+if (isIE11OrOlder) {
+  (function() {
+    var importNode = document.importNode;
+    document.importNode = function() {
+      var n = importNode.apply(document, arguments);
+      // Copy all children to a new document fragment since
+      // this one may be broken
+      if (n.nodeType == n.DOCUMENT_FRAGMENT_NODE) {
+        var f = document.createDocumentFragment();
+        f.appendChild(n);
+        return f;
+      } else {
+        return n;
+      }
+    };
+  })();  
+}
+
 // exports
 document.registerElement = register;
 document.createElement = createElement; // override
 document.createElementNS = createElementNS; // override
-Node.prototype.cloneNode = cloneNode; // override
 scope.registry = registry;
 scope.instanceof = isInstance;
 scope.reservedTagList = reservedTagList;
@@ -1858,27 +1874,6 @@ var useNative = scope.useNative;
 var initializeModules = scope.initializeModules;
 
 var isIE11OrOlder = /Trident/.test(navigator.userAgent);
-
-// Patch document.importNode to work around IE11 bug that
-// casues children of a document fragment imported while
-// there is a mutation observer to not have a parentNode (!?!)
-if (isIE11OrOlder) {
-  (function() {
-    var importNode = document.importNode;
-    document.importNode = function() {
-      var n = importNode.apply(document, arguments);
-      // Copy all children to a new document fragment since
-      // this one may be broken
-      if (n.nodeType == n.DOCUMENT_FRAGMENT_NODE) {
-        var f = document.createDocumentFragment();
-        f.appendChild(n);
-        return f;
-      } else {
-        return n;
-      }
-    };
-  })();  
-}
 
 // If native, setup stub api and bail.
 // NOTE: we fire `WebComponentsReady` under native for api compatibility
@@ -1982,6 +1977,9 @@ if (document.readyState === 'complete' || scope.flags.eager) {
       'HTMLImportsLoaded' : 'DOMContentLoaded';
   window.addEventListener(loadEvent, bootstrap);
 }
+
+// exports
+scope.isIE11OrOlder = isIE11OrOlder;
 
 })(window.CustomElements);
 
@@ -3373,36 +3371,45 @@ if (document.readyState === 'complete' ||
     else source[key] = clone(current, type);
     return source;
   }
-
-  function wrapMixin(tag, key, pseudo, value, original){
-    var fn = original[key];
-    if (!(key in original)) {
-      original[key + (pseudo.match(':mixins') ? '' : ':mixins')] = value;
-    }
-    else if (typeof original[key] == 'function') {
-      if (!fn.__mixins__) fn.__mixins__ = [];
-      fn.__mixins__.push(xtag.applyPseudos(pseudo, value, tag.pseudos));
+  
+  function mergeMixin(tag, original, mixin, name) {
+    var key, keys = {};
+    for (var z in original) keys[z.split(':')[0]] = z;
+    for (z in mixin) {
+      key = keys[z.split(':')[0]];
+      if (typeof original[key] == 'function') {
+        if (!key.match(':mixins')) {
+          original[key + ':mixins'] = original[key];
+          delete original[key];
+          key = key + ':mixins';
+        }
+        original[key].__mixin__ = xtag.applyPseudos(z + (z.match(':mixins') ? '' : ':mixins'), mixin[z], tag.pseudos, original[key].__mixin__);
+      }
+      else {
+        original[z] = mixin[z];
+        delete original[key];
+      }
     }
   }
-
+  
   var uniqueMixinCount = 0;
-  function mergeMixin(tag, mixin, original, mix) {
-    if (mix) {
-      var uniques = {};
-      for (var z in original) uniques[z.split(':')[0]] = z;
-      for (z in mixin) {
-        wrapMixin(tag, uniques[z.split(':')[0]] || z, z, mixin[z], original);
-      }
-    }
-    else {
-      for (var zz in mixin){
-        original[zz + ':__mixin__(' + (uniqueMixinCount++) + ')'] = xtag.applyPseudos(zz, mixin[zz], tag.pseudos);
-      }
+  function addMixin(tag, original, mixin){
+    for (var z in mixin){
+      original[z + ':__mixin__(' + (uniqueMixinCount++) + ')'] = xtag.applyPseudos(z, mixin[z], tag.pseudos);
     }
   }
-
+  
+  function resolveMixins(mixins, output){
+    var index = mixins.length;
+    while (index--){
+      output.unshift(mixins[index]);
+      if (xtag.mixins[mixins[index]].mixins) resolveMixins(xtag.mixins[mixins[index]].mixins, output);
+    }
+    return output;
+  }
+  
   function applyMixins(tag) {
-    tag.mixins.forEach(function (name) {
+    resolveMixins(tag.mixins, []).forEach(function(name){
       var mixin = xtag.mixins[name];
       for (var type in mixin) {
         var item = mixin[type],
@@ -3410,13 +3417,16 @@ if (document.readyState === 'complete' ||
         if (!original) tag[type] = item;
         else {
           switch (type){
-            case 'accessors': case 'prototype':
+            case 'mixins': break;
+            case 'events': addMixin(tag, original, item); break;
+            case 'accessors':
+            case 'prototype':
               for (var z in item) {
                 if (!original[z]) original[z] = item[z];
-                else mergeMixin(tag, item[z], original[z], true);
+                else mergeMixin(tag, original[z], item[z], name);
               }
-              break;
-            default: mergeMixin(tag, item, original, type != 'events');
+              break;             
+            default: mergeMixin(tag, original, item, name);
           }
         }
       }
@@ -3580,7 +3590,7 @@ if (document.readyState === 'complete' ||
       var basePrototype = options.prototype;
       delete options.prototype;
       var tag = xtag.tags[_name].compiled = applyMixins(xtag.merge({}, xtag.defaultOptions, options));
-
+      
       for (var z in tag.events) tag.events[z] = xtag.parseEvent(z, tag.events[z]);
       for (z in tag.lifecycle) tag.lifecycle[z.split(':')[0]] = xtag.applyPseudos(z, tag.lifecycle[z], tag.pseudos, tag.lifecycle[z]);
       for (z in tag.methods) tag.prototype[z.split(':')[0]] = { value: xtag.applyPseudos(z, tag.methods[z], tag.pseudos, tag.methods[z]), enumerable: true };
@@ -3764,26 +3774,20 @@ if (document.readyState === 'complete' ||
       __mixin__: {},
       mixins: {
         onCompiled: function(fn, pseudo){
-          var mixins = pseudo.source.__mixins__;
-          if (mixins) switch (pseudo.value) {
-            case 'before': return function(){
-              var self = this,
-                  args = arguments;
-              mixins.forEach(function(m){
-                m.apply(self, args);
-              });
-              return fn.apply(self, args);
-            };
-            case null: case '': case 'after': return function(){
-              var self = this,
-                  args = arguments;
-                  returns = fn.apply(self, args);
-              mixins.forEach(function(m){
-                m.apply(self, args);
-              });
+          var mixin = pseudo.source && pseudo.source.__mixin__ || pseudo.source;
+          if (mixin) switch (pseudo.value) {
+            case null: case '': case 'before': return function(){
+              mixin.apply(this, arguments);
+              return fn.apply(this, arguments);
+            }; 
+            case 'after': return function(){
+              var returns = fn.apply(this, arguments);
+              mixin.apply(this, arguments);
               return returns;
             };
+            case 'none': return fn;
           }
+          else return fn;
         }
       },
       keypass: keypseudo,
