@@ -5,12 +5,12 @@ src_jsx_js := $(addsuffix .js, $(src_jsx))
 
 all: node_modules \
     bower_components \
-    xblocks-core.js \
-    xblocks-core.min.js \
-    xblocks-core-full.js \
-    xblocks-core-full.min.js \
-    x-tag-core.js \
-    x-tag-core.min.js \
+    dist/xblocks-core.js \
+	dist/xblocks-core.min.js \
+	dist/xblocks-core-full.js \
+	dist/xblocks-core-full.min.js \
+	dist/x-tag-core.js \
+	dist/x-tag-core.min.js \
 	$(src_jsx_js)
 
 
@@ -23,36 +23,36 @@ bower_components: bower.json
 	touch bower_components
 
 clean:
-	rm -f xblocks-core.js
-	rm -f xblocks-core.min.js
-	rm -f xblocks-core-full.js
-	rm -f xblocks-core-full.min.js
-	rm -f x-tag-core.js
-	rm -f x-tag-core.min.js
+	rm -f dist/xblocks-core.js
+	rm -f dist/xblocks-core.min.js
+	rm -f dist/xblocks-core-full.js
+	rm -f dist/xblocks-core-full.min.js
+	rm -f dist/x-tag-core.js
+	rm -f dist/x-tag-core.min.js
 	find src -type f -name "*.jsx.js" -exec rm -f {} \;
 
 $(src_jsx_js): %.jsx.js: %.jsx node_modules
 	./node_modules/.bin/jsx --no-cache-dir --strip-types --harmony $< > $@
 
-xblocks-core.js: node_modules $(src_jsx_js) $(src_js)
+dist/xblocks-core.js: node_modules $(src_jsx_js) $(src_js)
 	cat node_modules/setimmediate2/setImmediate.js > $@
 	./node_modules/.bin/borschik -m no -i src/xblocks.js >> $@
 
-xblocks-core.min.js: xblocks-core.js
+dist/xblocks-core.min.js: dist/xblocks-core.js
 	./node_modules/.bin/borschik -i $< -o $@
 
-xblocks-core-full.js: node_modules $(src_jsx_js) $(src_js)
+dist/xblocks-core-full.js: node_modules $(src_jsx_js) $(src_js)
 	cat node_modules/setimmediate2/setImmediate.js > $@
 	./node_modules/.bin/borschik -m no -i src/xtag.js >> $@
 	./node_modules/.bin/borschik -m no -i src/xblocks.js >> $@
 
-xblocks-core-full.min.js: xblocks-core-full.js
+dist/xblocks-core-full.min.js: dist/xblocks-core-full.js
 	./node_modules/.bin/borschik -i $< -o $@
 
-x-tag-core.js: src/xtag.js node_modules $(polyfills_js)
+dist/x-tag-core.js: src/xtag.js node_modules $(polyfills_js)
 	./node_modules/.bin/borschik -m no -i $< > $@
 
-x-tag-core.min.js: x-tag-core.js
+dist/x-tag-core.min.js: dist/x-tag-core.js
 	./node_modules/.bin/borschik -i $< -o $@
 
 test: node_modules bower_components

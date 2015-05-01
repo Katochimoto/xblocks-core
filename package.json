@@ -59,7 +59,7 @@
     "scripts": {
         "test": "make test"
     },
-    "main": "xblocks-core.js",
+    "main": "dist/xblocks-core.js",
     "directories": {
         "test": "test"
     }

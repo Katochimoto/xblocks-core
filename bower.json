@@ -2,12 +2,12 @@
     "name": "xblocks-core",
     "version": "0.6.1",
     "main": [
-        "xblocks-core.js",
-        "xblocks-core.min.js",
-        "xblocks-core-full.js",
-        "xblocks-core-full.min.js",
-        "x-tag-core.js",
-        "x-tag-core.min.js"
+        "dist/xblocks-core.js",
+        "dist/xblocks-core.min.js",
+        "dist/xblocks-core-full.js",
+        "dist/xblocks-core-full.min.js",
+        "dist/x-tag-core.js",
+        "dist/x-tag-core.min.js"
     ],
     "ignore": [
         "**/.*",
