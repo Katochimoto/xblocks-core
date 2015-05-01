@@ -65,5 +65,7 @@ testall: node_modules bower_components
 	./node_modules/.bin/jscs .
 	./node_modules/karma/bin/karma start --single-run
 
+codeclimate: test
+	CODECLIMATE_REPO_TOKEN=a410510f9164927ff329a119f9117c9a000878453a123228ec99bbdd852aa650 codeclimate < coverage/report/lcov.info
 
 .PHONY: all test testall clean
