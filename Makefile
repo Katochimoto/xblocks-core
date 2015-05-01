@@ -4,8 +4,8 @@ src_jsx := $(shell find test src -type f -name "*.jsx")
 src_jsx_js := $(addsuffix .js, $(src_jsx))
 
 all: node_modules \
-    bower_components \
-    dist/xblocks-core.js \
+	bower_components \
+	dist/xblocks-core.js \
 	dist/xblocks-core.min.js \
 	dist/xblocks-core-full.js \
 	dist/xblocks-core-full.min.js \
