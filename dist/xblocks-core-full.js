@@ -4222,6 +4222,8 @@ if (document.readyState === 'complete' ||
           pseudo['arguments'] = (value || '').split(',');
           pseudo.action = pseudo.action || trueop;
           pseudo.source = source;
+          pseudo.onAdd = pseudo.onAdd || noop;
+          pseudo.onRemove = pseudo.onRemove || noop;
           var original = pseudo.listener = listener;
           listener = function(){
             var output = pseudo.action.apply(this, [pseudo].concat(toArray(arguments)));
@@ -4230,10 +4232,8 @@ if (document.readyState === 'complete' ||
             pseudo.listener = original;
             return output;
           };
-          if (target && pseudo.onAdd) {
-            if (target.nodeName) pseudo.onAdd.call(target, pseudo);
-            else target.push(pseudo);
-          }
+          if (!target) pseudo.onAdd.call(fn, pseudo);
+          else target.push(pseudo);
         });
       }
       for (var z in pseudos) {
@@ -4244,7 +4244,7 @@ if (document.readyState === 'complete' ||
 
     removePseudos: function(target, pseudos){
       pseudos.forEach(function(obj){
-        if (obj.onRemove) obj.onRemove.call(target, obj);
+        obj.onRemove.call(target, obj);
       });
     },
 
