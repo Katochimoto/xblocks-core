@@ -37,4 +37,5 @@ var logFlags = {
     /*! borschik:include:../node_modules/webcomponents.js/src/HTMLImports/boot.js */
 }());
 
+/*! borschik:include:../node_modules/handjs/hand.base.js */
 /*! borschik:include:../node_modules/x-tag-core/src/core.js */
