@@ -1,3 +1,6 @@
+NPM_BIN=$(CURDIR)/node_modules/.bin
+export NPM_BIN
+
 src_js := $(shell find src -type f -name "*.js")
 polyfills_js := $(shell find src/polyfills -type f -name "*.js")
 src_jsx := $(shell find test src -type f -name "*.jsx")
@@ -32,37 +35,37 @@ clean:
 	find src -type f -name "*.jsx.js" -exec rm -f {} \;
 
 $(src_jsx_js): %.jsx.js: %.jsx node_modules
-	./node_modules/.bin/jsx --no-cache-dir --strip-types --harmony $< > $@
+	$(NPM_BIN)/jsx --no-cache-dir --strip-types --harmony $< > $@
 
 dist/xblocks-core.js: node_modules $(src_jsx_js) $(src_js)
 	cat node_modules/setimmediate2/setImmediate.js > $@
-	./node_modules/.bin/borschik -m no -i src/xblocks.js >> $@
+	$(NPM_BIN)/borschik -m no -i src/xblocks.js >> $@
 
 dist/xblocks-core.min.js: dist/xblocks-core.js
-	./node_modules/.bin/borschik -i $< -o $@
+	$(NPM_BIN)/borschik -i $< -o $@
 
 dist/xblocks-core-full.js: node_modules $(src_jsx_js) $(src_js)
 	cat node_modules/setimmediate2/setImmediate.js > $@
-	./node_modules/.bin/borschik -m no -i src/xtag.js >> $@
-	./node_modules/.bin/borschik -m no -i src/xblocks.js >> $@
+	$(NPM_BIN)/borschik -m no -i src/xtag.js >> $@
+	$(NPM_BIN)/borschik -m no -i src/xblocks.js >> $@
 
 dist/xblocks-core-full.min.js: dist/xblocks-core-full.js
-	./node_modules/.bin/borschik -i $< -o $@
+	$(NPM_BIN)/borschik -i $< -o $@
 
 dist/x-tag-core.js: src/xtag.js node_modules $(polyfills_js)
-	./node_modules/.bin/borschik -m no -i $< > $@
+	$(NPM_BIN)/borschik -m no -i $< > $@
 
 dist/x-tag-core.min.js: dist/x-tag-core.js
-	./node_modules/.bin/borschik -i $< -o $@
+	$(NPM_BIN)/borschik -i $< -o $@
 
 test: node_modules bower_components
-	./node_modules/.bin/jshint .
-	./node_modules/.bin/jscs .
+	$(NPM_BIN)/jshint .
+	$(NPM_BIN)/jscs .
 	./node_modules/karma/bin/karma start --single-run --browsers PhantomJS
 
 testall: node_modules bower_components
-	./node_modules/.bin/jshint .
-	./node_modules/.bin/jscs .
+	$(NPM_BIN)/jshint .
+	$(NPM_BIN)/jscs .
 	./node_modules/karma/bin/karma start --single-run
 
 codeclimate: test
