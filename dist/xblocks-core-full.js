@@ -1982,6 +1982,12 @@ function createElementNS(namespace, tag, typeExtension) {
 function createElement(tag, typeExtension) {
   // TODO(sjmiles): ignore 'tag' when using 'typeExtension', we could
   // error check it, or perhaps there should only ever be one argument
+  if (tag) {
+    tag = tag.toLowerCase();
+  }
+  if (typeExtension) {
+    typeExtension = typeExtension.toLowerCase();
+  }
   var definition = getRegisteredDefinition(typeExtension || tag);
   if (definition) {
     if (tag == definition.tag && typeExtension == definition.is) {
@@ -2843,6 +2849,7 @@ var importParser = {
     'link[rel=stylesheet]',
     'style',
     'script:not([type])',
+    'script[type="application/javascript"]',
     'script[type="text/javascript"]'
   ].join(','),
 
@@ -3016,7 +3023,10 @@ var importParser = {
       }
       // dispatch a fake load event and continue parsing
       if (fakeLoad) {
-        elt.dispatchEvent(new CustomEvent('load', {bubbles: false}));
+        // Fire async, to prevent reentrancy
+        setTimeout(function() {
+          elt.dispatchEvent(new CustomEvent('load', {bubbles: false}));
+        });
       }
     }
   },
@@ -4337,15 +4347,8 @@ if (document.readyState === 'complete' ||
     return match ? pseudo.listener = pseudo.listener.bind(match) : null;
   }
 
-  function touchFilter(event) {
-    if (event.type.match('touch')){
-      event.target.__touched__ = true;
-    }
-    else if (event.target.__touched__ && event.type.match('mouse')){
-      delete event.target.__touched__;
-      return;
-    }
-    return true;
+  function touchFilter(event){
+    return event.button == 0;
   }
 
   function writeProperty(key, event, base, desc){
@@ -4468,12 +4471,10 @@ if (document.readyState === 'complete' ||
       }
     },
     register: function (name, options) {
-      var _name;
       if (typeof name == 'string') {
-        _name = name.toLowerCase();
-      } else {
-        return;
+        var _name = name.toLowerCase();
       }
+      else return;
       xtag.tags[_name] = options || {};
       // save prototype for actual object creation below
       var basePrototype = options.prototype;
@@ -4611,19 +4612,16 @@ if (document.readyState === 'complete' ||
         }
       },
       tap: {
-        observe: {
-          pointerup: doc
-        }
+        attach: ['pointerup'],
+        condition: touchFilter
       }, 
       tapstart: {
-        observe: {
-          pointerdown: doc
-        }
+        attach: ['pointerdown'],
+        condition: touchFilter
       },
       tapend: {
-        observe: {
-          pointerup: doc
-        }
+        attach: ['pointerup'],
+        condition: touchFilter
       },
       tapmove: {
         attach: ['pointerdown', 'pointerup'],
@@ -4634,6 +4632,24 @@ if (document.readyState === 'complete' ||
           else if (event.type == 'pointerup') {
             xtag.removeEvent(this, custom.moveListener);
             custom.moveListener = null;
+          }
+          else return true;
+        }
+      },
+      taphold: {
+        attach: ['pointerdown', 'pointerup'],
+        condition: function(event, custom){
+          if (event.type == 'pointerdown') {
+            (custom.pointers = custom.pointers || {})[event.pointerId] = setTimeout(
+              xtag.fireEvent.bind(null, this, 'taphold'),
+              custom.duration || 1000
+            );   
+          }
+          else if (event.type == 'pointerup') {
+            if (custom.pointers) {
+              clearTimeout(custom.pointers[event.pointerId]);
+              delete custom.pointers[event.pointerId];
+            }
           }
           else return true;
         }
@@ -4679,6 +4695,9 @@ if (document.readyState === 'complete' ||
         action: function (pseudo, event) {
           return !event.defaultPrevented;
         }
+      },
+      duration: {
+        onAdd: function(pseudo){ pseudo.source.duration = Number(pseudo.value) }
       }
     },
 
@@ -4690,9 +4709,8 @@ if (document.readyState === 'complete' ||
 
     wrap: function (original, fn) {
       return function(){
-        var args = arguments,
-            output = original.apply(this, args);
-        fn.apply(this, args);
+        var output = original.apply(this, arguments);
+        fn.apply(this, arguments);
         return output;
       };
     },
@@ -4944,18 +4962,6 @@ if (document.readyState === 'complete' ||
       event.attach.forEach(function(name) {
         event._attach.push(xtag.parseEvent(name, event.listener));
       });
-      if (custom && custom.observe && !custom.__observing__) {
-        custom.observer = function(e){
-          var output = event.condition.apply(this, toArray(arguments).concat([custom]));
-          if (!output) return output;
-          xtag.fireEvent(e.target, key, {
-            baseEvent: e,
-            detail: output !== true ? output : {}
-          });
-        };
-        for (var z in custom.observe) xtag.addEvent(custom.observe[z] || document, z, custom.observer, true);
-        custom.__observing__ = true;
-      }
       return event;
     },
 
@@ -5051,9 +5057,7 @@ if (document.readyState === 'complete' ||
       if (obj && fn){
         obj[type].splice(obj[type].indexOf(fn), 1);
       }
-      else{
-        obj[type] = [];
-      }
+      else obj[type] = [];
     }
 
   };
