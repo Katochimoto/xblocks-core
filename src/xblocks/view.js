@@ -6,7 +6,7 @@
  */
 xblocks.view = {};
 
-var _viewComponentsFactory = {};
+var _viewComponentsClass = {};
 
 var _viewCommon = {
 
@@ -120,19 +120,12 @@ xblocks.view.register = function(blockName, component) {
         throw 'Specified item "' + blockName + '" is already defined';
     }
 
-    React.DOM[ blockName ] = xblocks.view.create(component);
-    _viewComponentsFactory[ blockName ] = React.createFactory( React.DOM[ blockName ] );
-    return React.DOM[ blockName ];
-};
+    var componentClass = xblocks.view.create(component);
+    _viewComponentsClass[ blockName ] = componentClass;
 
-/**
- * Get class view node
- *
- * @param {string} blockName the name of the new node
- * @returns {function}
- */
-xblocks.view.get = function(blockName) {
-    return React.DOM[ blockName ];
+    React.DOM[ blockName ] = React.createFactory(componentClass);
+
+    return componentClass;
 };
 
 /**
@@ -142,5 +135,15 @@ xblocks.view.get = function(blockName) {
  * @returns {function}
  */
 xblocks.view.getFactory = function(blockName) {
-    return _viewComponentsFactory[ blockName ];
+    return React.DOM[ blockName ];
+};
+
+/**
+ * Get class view node
+ *
+ * @param {string} blockName the name of the new node
+ * @returns {function}
+ */
+xblocks.view.getClass = function(blockName) {
+    return _viewComponentsClass[ blockName ];
 };

@@ -6,7 +6,7 @@
  * @returns {object}
  */
 xblocks.utils.propTypes = function(tagName) {
-    var view = xblocks.view.get(tagName);
+    var view = xblocks.view.getClass(tagName);
 
     if (!view) {
         return {};
