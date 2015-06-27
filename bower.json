@@ -20,9 +20,9 @@
         "karma.conf.js"
     ],
     "dependencies": {
-        "es5-shim": "4.1.1",
+        "es5-shim": "4.1.7",
         "react": "0.13.3",
-        "vow": "0.4.9"
+        "vow": "0.4.10"
     },
     "homepage": "http://xblocks.ru",
     "authors": [
