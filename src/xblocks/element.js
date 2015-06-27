@@ -68,20 +68,10 @@ var _elementStatic = {
  * @param {HTMLElement} node the node of a custom element
  * @constructor
  */
-xblocks.element = function(node) {
+xblocks.Element = function(node) {
     node.xblock = this;
     this._node = node;
     this._init(node.state, node.content, this._callbackInit);
-};
-
-/**
- * Xblock element factory
- *
- * @param {HTMLElement} node the node of a custom element
- * @returns {xblocks.element}
- */
-xblocks.element.create = function(node) {
-    return new xblocks.element(node);
 };
 
 /**
@@ -90,7 +80,7 @@ xblocks.element.create = function(node) {
  * @type {HTMLElement}
  * @protected
  */
-xblocks.element.prototype._node = null;
+xblocks.Element.prototype._node = null;
 
 /**
  * React component
@@ -98,7 +88,7 @@ xblocks.element.prototype._node = null;
  * @type {Constructor}
  * @protected
  */
-xblocks.element.prototype._component = null;
+xblocks.Element.prototype._component = null;
 
 /**
  * Instance MutationObserver
@@ -106,13 +96,13 @@ xblocks.element.prototype._component = null;
  * @type {MutationObserver}
  * @protected
  */
-xblocks.element.prototype._observer = null;
+xblocks.Element.prototype._observer = null;
 
 /**
  * Unmounts a component and removes it from the DOM
- * @fires xblocks.element~event:xb-destroy
+ * @fires xblocks.Element~event:xb-destroy
  */
-xblocks.element.prototype.destroy = function() {
+xblocks.Element.prototype.destroy = function() {
     xblocks.react.unmountComponentAtNode(this._node);
     this.unmount();
     xblocks.event.dispatch(this._node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
@@ -121,7 +111,7 @@ xblocks.element.prototype.destroy = function() {
 /**
  * Unmounts a component
  */
-xblocks.element.prototype.unmount = function() {
+xblocks.Element.prototype.unmount = function() {
     if (this._observer) {
         this._observer.disconnect();
     }
@@ -139,7 +129,7 @@ xblocks.element.prototype.unmount = function() {
  * @param {array} [removeProps] remote attributes
  * @param {function} [callback] the callback function
  */
-xblocks.element.prototype.update = function(props, removeProps, callback) {
+xblocks.Element.prototype.update = function(props, removeProps, callback) {
     if (!this.isMounted()) {
         return;
     }
@@ -183,7 +173,7 @@ xblocks.element.prototype.update = function(props, removeProps, callback) {
  * Redrawing react view
  * @param {function} [callback] the callback function
  */
-xblocks.element.prototype.repaint = function(callback) {
+xblocks.Element.prototype.repaint = function(callback) {
     var children = this._node.content;
     var props = this._node.state;
     var mprops = this.getMountedProps() || {};
@@ -204,7 +194,7 @@ xblocks.element.prototype.repaint = function(callback) {
  * @see http://facebook.github.io/react/docs/component-api.html#ismounted
  * @returns {boolean}
  */
-xblocks.element.prototype.isMounted = function() {
+xblocks.Element.prototype.isMounted = function() {
     return Boolean(this._component && this._component.isMounted());
 };
 
@@ -212,7 +202,7 @@ xblocks.element.prototype.isMounted = function() {
  * Installing a new content react component
  * @param {string} content
  */
-xblocks.element.prototype.setMountedContent = function(content) {
+xblocks.Element.prototype.setMountedContent = function(content) {
     if (this.isMounted()) {
         this.update({ 'children': content });
     }
@@ -222,7 +212,7 @@ xblocks.element.prototype.setMountedContent = function(content) {
  * Receiving the content components react
  * @returns {?string}
  */
-xblocks.element.prototype.getMountedContent = function() {
+xblocks.Element.prototype.getMountedContent = function() {
     if (this.isMounted()) {
         return this._component.props.children;
     }
@@ -232,7 +222,7 @@ xblocks.element.prototype.getMountedContent = function() {
  * Get components react
  * @returns {?ReactCompositeComponent.createClass.Constructor}
  */
-xblocks.element.prototype.getMountedComponent = function() {
+xblocks.Element.prototype.getMountedComponent = function() {
     if (this.isMounted()) {
         return this._component;
     }
@@ -242,7 +232,7 @@ xblocks.element.prototype.getMountedComponent = function() {
  * Gets the attributes of the components
  * @returns {?object}
  */
-xblocks.element.prototype.getMountedProps = function() {
+xblocks.Element.prototype.getMountedProps = function() {
     return this.isMounted() ? this._component.props : null;
 };
 
@@ -252,7 +242,7 @@ xblocks.element.prototype.getMountedProps = function() {
  * @param {function} [callback] the callback function
  * @protected
  */
-xblocks.element.prototype._init = function(props, children, callback) {
+xblocks.Element.prototype._init = function(props, children, callback) {
     if (this.isMounted()) {
         return;
     }
@@ -291,9 +281,9 @@ xblocks.element.prototype._init = function(props, children, callback) {
 
 /**
  * @protected
- * @fires xblocks.element~event:xb-created
+ * @fires xblocks.Element~event:xb-created
  */
-xblocks.element.prototype._callbackInit = function() {
+xblocks.Element.prototype._callbackInit = function() {
     xblocks.event.dispatch(this._node, 'xb-created');
     xblocks.utils.lazy(_elementStatic.globalInitEvent, this._node);
     xblocks.utils.log.time(this._node, 'xb_init');
@@ -302,9 +292,9 @@ xblocks.element.prototype._callbackInit = function() {
 /**
  * @param {function} [callback] the callback function
  * @protected
- * @fires xblocks.element~event:xb-repaint
+ * @fires xblocks.Element~event:xb-repaint
  */
-xblocks.element.prototype._callbackRepaint = function(callback) {
+xblocks.Element.prototype._callbackRepaint = function(callback) {
     xblocks.event.dispatch(this._node, 'xb-repaint');
     xblocks.utils.lazy(_elementStatic.globalRepaintEvent, this._node);
 
@@ -317,7 +307,7 @@ xblocks.element.prototype._callbackRepaint = function(callback) {
  * @param {function} [callback] the callback function
  * @protected
  */
-xblocks.element.prototype._callbackRender = function(callback) {
+xblocks.Element.prototype._callbackRender = function(callback) {
     this._node.upgrade();
 
     if (!this._observer) {
@@ -343,7 +333,7 @@ xblocks.element.prototype._callbackRender = function(callback) {
  * @param {MutationRecord[]} records
  * @protected
  */
-xblocks.element.prototype._callbackMutation = function(records) {
+xblocks.Element.prototype._callbackMutation = function(records) {
     if (!this.isMounted()) {
         return;
     }
@@ -365,9 +355,9 @@ xblocks.element.prototype._callbackMutation = function(records) {
 /**
  * @param {function} [callback] the callback function
  * @protected
- * @fires xblocks.element~event:xb-update
+ * @fires xblocks.Element~event:xb-update
  */
-xblocks.element.prototype._callbackUpdate = function(callback) {
+xblocks.Element.prototype._callbackUpdate = function(callback) {
     this._node.upgrade();
 
     xblocks.event.dispatch(this._node, 'xb-update');
@@ -381,24 +371,24 @@ xblocks.element.prototype._callbackUpdate = function(callback) {
 
 /**
  * Created event
- * @event xblocks.element~event:xb-created
+ * @event xblocks.Element~event:xb-created
  * @type {xblocks.event.Custom}
  */
 
 /**
  * Destroy event
- * @event xblocks.element~event:xb-destroy
+ * @event xblocks.Element~event:xb-destroy
  * @type {xblocks.event.Custom}
  */
 
 /**
  * Updated event
- * @event xblocks.element~event:xb-update
+ * @event xblocks.Element~event:xb-update
  * @type {xblocks.event.Custom}
  */
 
 /**
  * Repaint event
- * @event xblocks.element~event:xb-repaint
+ * @event xblocks.Element~event:xb-repaint
  * @type {xblocks.event.Custom}
  */

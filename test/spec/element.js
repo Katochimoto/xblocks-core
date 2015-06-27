@@ -6,14 +6,14 @@ describe('xblocks.element', function() {
     describe('.create ->', function() {
 
         beforeEach(function() {
-            this._stubInit = this.sinon.stub(xblocks.element.prototype, '_init');
+            this._stubInit = this.sinon.stub(xblocks.Element.prototype, '_init');
 
             this.node = document.createElement('div');
-            this.element = xblocks.element.create(this.node);
+            this.element = new xblocks.Element(this.node);
         });
 
-        it('создается объект xblocks.element', function() {
-            expect(this.element).to.be.a(xblocks.element);
+        it('создается объект xblocks.Element', function() {
+            expect(this.element).to.be.a(xblocks.Element);
         });
 
         it('узел сожержит свойство xblock с созданным объектом', function() {
@@ -32,14 +32,14 @@ describe('xblocks.element', function() {
     describe('#destroy ->', function() {
 
         beforeEach(function() {
-            this.sinon.stub(xblocks.element.prototype, '_init');
+            this.sinon.stub(xblocks.Element.prototype, '_init');
 
             this.node = document.createElement('div');
 
-            this._stubUnmount = this.sinon.stub(xblocks.element.prototype, 'unmount');
+            this._stubUnmount = this.sinon.stub(xblocks.Element.prototype, 'unmount');
             this._stubReactUmount = this.sinon.stub(xblocks.react, 'unmountComponentAtNode').withArgs(this.node);
 
-            this.element = xblocks.element.create(this.node);
+            this.element = new xblocks.Element(this.node);
             this.element.destroy();
         });
 

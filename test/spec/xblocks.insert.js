@@ -20,7 +20,7 @@ describe('xblocks - Вставка в DOM ->', function() {
             that.xElement.addEventListener('xb-created', function _onXbCreated() {
                 that.xElement.removeEventListener('xb-created', _onXbCreated);
 
-                expect(this.xblock).to.be.a(xblocks.element);
+                expect(this.xblock).to.be.a(xblocks.Element);
                 expect(this.mounted).to.be(true);
                 expect(this.xinserted).to.be(true);
                 resolve();

@@ -28,7 +28,7 @@ var _blockStatic = {
             );
         }
 
-        element.xblock = xblocks.element.create(element);
+        element.xblock = new xblocks.Element(element);
     },
 
     'createLazy': function(elements) {
