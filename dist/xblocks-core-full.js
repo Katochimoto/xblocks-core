@@ -1178,9 +1178,9 @@ scope.hasNative = Boolean(document.registerElement);
 // NOTE: For consistent timing, use native custom elements only when not
 // polyfilling other key related web components features.
 scope.useNative = !flags.register && scope.hasNative &&
-		!window.ShadowDOMPolyfill && (!window.HTMLImports || HTMLImports.useNative);
+		!window.ShadowDOMPolyfill && (!window.HTMLImports || window.HTMLImports.useNative);
 
-})(CustomElements);
+})(window.CustomElements);
 
 /* ../node_modules/webcomponents.js/src/CustomElements/base.js end */
 
@@ -1196,10 +1196,10 @@ scope.useNative = !flags.register && scope.hasNative &&
  */
 
 // helper methods for traversing through element trees
-CustomElements.addModule(function(scope){
+window.CustomElements.addModule(function(scope){
 
 // imports
-var IMPORT_LINK_TYPE = window.HTMLImports ? HTMLImports.IMPORT_LINK_TYPE : 'none';
+var IMPORT_LINK_TYPE = window.HTMLImports ? window.HTMLImports.IMPORT_LINK_TYPE : 'none';
 
 // walk the subtree rooted at node, including descent into shadow-roots,
 // applying 'cb' to each element
@@ -1251,7 +1251,7 @@ function forDocumentTree(doc, cb) {
 
 
 function _forDocumentTree(doc, cb, processingDocuments) {
-  doc = wrap(doc);
+  doc = window.wrap(doc);
   if (processingDocuments.indexOf(doc) >= 0) {
     return;
   }
@@ -1290,7 +1290,7 @@ scope.forSubtree = forSubtree;
  * @module observe
 */
 
-CustomElements.addModule(function(scope){
+window.CustomElements.addModule(function(scope){
 
 // imports
 var flags = scope.flags;
@@ -1435,7 +1435,7 @@ function _detached(element) {
 // recurse up the tree to check if an element is actually in the main document.
 function inDocument(element) {
   var p = element;
-  var doc = wrap(document);
+  var doc = window.wrap(document);
   while (p) {
     if (p == doc) {
       return true;
@@ -1516,10 +1516,10 @@ function handler(mutations) {
   pending upgrades and attached/detached callbacks synchronously.
 */
 function takeRecords(node) {
-  node = wrap(node);
+  node = window.wrap(node);
   // If the optional node is not supplied, assume we mean the whole document.
   if (!node) {
-    node = wrap(document);
+    node = window.wrap(document);
   }
   // Find the root of the tree, which will be an Document or ShadowRoot.
   while (node.parentNode) {
@@ -1549,7 +1549,7 @@ function observe(inRoot) {
 
 // upgrade an entire document and observe it for elements changes.
 function upgradeDocument(doc) {
-  doc = wrap(doc);
+  doc = window.wrap(doc);
   flags.dom && console.group('upgradeDocument: ', (doc.baseURI).split('/').pop());
   addedNode(doc);
   observe(doc);
@@ -1572,7 +1572,7 @@ var originalCreateShadowRoot = Element.prototype.createShadowRoot;
 if (originalCreateShadowRoot) {
   Element.prototype.createShadowRoot = function() {
     var root = originalCreateShadowRoot.call(this);
-    CustomElements.watchShadow(this);
+    window.CustomElements.watchShadow(this);
     return root;
   };
 }
@@ -1605,7 +1605,7 @@ scope.takeRecords = takeRecords;
  * @module upgrade
 */
 
-CustomElements.addModule(function(scope) {
+window.CustomElements.addModule(function(scope) {
 
 // imports
 var flags = scope.flags;
@@ -1732,7 +1732,7 @@ scope.implementPrototype = implementPrototype;
  * @class Document
 */
 
-CustomElements.addModule(function(scope) {
+window.CustomElements.addModule(function(scope) {
 
 // imports
 var isIE11OrOlder = scope.isIE11OrOlder;
@@ -2140,8 +2140,8 @@ var upgradeDocumentTree = scope.upgradeDocumentTree;
 // cannot be wrapped so we help the polyfill by wrapping some elements.
 if (!window.wrap) {
   if (window.ShadowDOMPolyfill) {
-    window.wrap = ShadowDOMPolyfill.wrapIfNeeded;
-    window.unwrap = ShadowDOMPolyfill.unwrapIfNeeded;
+    window.wrap = window.ShadowDOMPolyfill.wrapIfNeeded;
+    window.unwrap = window.ShadowDOMPolyfill.unwrapIfNeeded;
   } else {
     window.wrap = window.unwrap = function(node) {
       return node;
@@ -2153,25 +2153,25 @@ if (!window.wrap) {
 // bootstrap parsing
 function bootstrap() {
   // parse document
-  upgradeDocumentTree(wrap(document));
+  upgradeDocumentTree(window.wrap(document));
   // install upgrade hook if HTMLImports are available
   if (window.HTMLImports) {
-    HTMLImports.__importsParsingHook = function(elt) {
-      upgradeDocumentTree(wrap(elt.import));
+    window.HTMLImports.__importsParsingHook = function(elt) {
+      upgradeDocumentTree(window.wrap(elt.import));
       //CustomElements.parser.parse(elt.import);
     };
   }
   // set internal 'ready' flag, now document.registerElement will trigger
   // synchronous upgrades
-  CustomElements.ready = true;
+  window.CustomElements.ready = true;
   // async to ensure *native* custom elements upgrade prior to this
   // DOMContentLoaded can fire before elements upgrade (e.g. when there's
   // an external script)
   setTimeout(function() {
     // capture blunt profiling data
-    CustomElements.readyTime = Date.now();
+    window.CustomElements.readyTime = Date.now();
     if (window.HTMLImports) {
-      CustomElements.elapsed = CustomElements.readyTime - HTMLImports.readyTime;
+      window.CustomElements.elapsed = window.CustomElements.readyTime - window.HTMLImports.readyTime;
     }
     // notify the system that we are bootstrapped
     document.dispatchEvent(
@@ -2187,6 +2187,16 @@ if (isIE11OrOlder && (typeof window.CustomEvent !== 'function')) {
     params = params || {};
     var e = document.createEvent('CustomEvent');
     e.initCustomEvent(inType, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
+    // IE does not set `defaultPrevented` when `preventDefault()` is called on
+    // CustomEvents
+    // http://stackoverflow.com/questions/23349191/event-preventdefault-is-not-working-in-ie-11-for-custom-events
+    e.preventDefault = function() {
+      Object.defineProperty(this, 'defaultPrevented', {
+        get: function() {
+          return true;
+        }
+      });
+    };
     return e;
   };
   window.CustomEvent.prototype = window.Event.prototype;
@@ -2205,7 +2215,7 @@ if (document.readyState === 'complete' || scope.flags.eager) {
 // When loading at other readyStates, wait for the appropriate DOM event to
 // bootstrap.
 } else {
-  var loadEvent = window.HTMLImports && !HTMLImports.ready ?
+  var loadEvent = window.HTMLImports && !window.HTMLImports.ready ?
       'HTMLImportsLoaded' : 'DOMContentLoaded';
   window.addEventListener(loadEvent, bootstrap);
 }
@@ -2261,13 +2271,13 @@ var useNative = Boolean(IMPORT_LINK_TYPE in document.createElement('link'));
 // NOTE: ShadowDOMPolyfill intrusion.
 var hasShadowDOMPolyfill = Boolean(window.ShadowDOMPolyfill);
 var wrap = function(node) {
-  return hasShadowDOMPolyfill ? ShadowDOMPolyfill.wrapIfNeeded(node) : node;
+  return hasShadowDOMPolyfill ? window.ShadowDOMPolyfill.wrapIfNeeded(node) : node;
 };
 var rootDocument = wrap(document);
 
 var currentScriptDescriptor = {
   get: function() {
-    var script = HTMLImports.currentScript || document.currentScript ||
+    var script = window.HTMLImports.currentScript || document.currentScript ||
         // NOTE: only works when called in synchronously executing code.
         // readyState should check if `loading` but IE10 is
         // interactive when scripts run so we cheat.
@@ -2293,7 +2303,7 @@ Object.defineProperty(rootDocument, '_currentScript', currentScriptDescriptor);
   the polyfill and native implementation.
  */
 
-var isIE = /Trident|Edge/.test(navigator.userAgent);
+var isIE = /Trident/.test(navigator.userAgent);
 
 // call a callback when all HTMLImports in the document at call time
 // (or at least document ready) have loaded.
@@ -2446,8 +2456,8 @@ if (useNative) {
 // behavior of native imports. A main document script that needs to be sure
 // imports have loaded should wait for this event.
 whenReady(function(detail) {
-  HTMLImports.ready = true;
-  HTMLImports.readyTime = new Date().getTime();
+  window.HTMLImports.ready = true;
+  window.HTMLImports.readyTime = new Date().getTime();
   var evt = rootDocument.createEvent("CustomEvent");
   evt.initCustomEvent("HTMLImportsLoaded", true, true, detail);
   rootDocument.dispatchEvent(evt);
@@ -2460,7 +2470,7 @@ scope.rootDocument = rootDocument;
 scope.whenReady = whenReady;
 scope.isIE = isIE;
 
-})(HTMLImports);
+})(window.HTMLImports);
 
 /* ../node_modules/webcomponents.js/src/HTMLImports/base.js end */
 
@@ -2492,7 +2502,7 @@ var initializeModules = function() {
 scope.addModule = addModule;
 scope.initializeModules = initializeModules;
 
-})(HTMLImports);
+})(window.HTMLImports);
 
 
 /* ../node_modules/webcomponents.js/src/HTMLImports/module.js end */
@@ -2507,7 +2517,7 @@ scope.initializeModules = initializeModules;
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-HTMLImports.addModule(function(scope) {
+window.HTMLImports.addModule(function(scope) {
 
 var CSS_URL_REGEXP = /(url\()([^)]*)(\))/g;
 var CSS_IMPORT_REGEXP = /(@import[\s]+(?!url\())([^;]*)(;)/g;
@@ -2560,7 +2570,7 @@ scope.path = path;
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-HTMLImports.addModule(function(scope) {
+window.HTMLImports.addModule(function(scope) {
 
 /*
   xhr processor.
@@ -2622,7 +2632,7 @@ scope.xhr = xhr;
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-HTMLImports.addModule(function(scope) {
+window.HTMLImports.addModule(function(scope) {
 
 // imports
 var xhr = scope.xhr;
@@ -2766,7 +2776,7 @@ scope.Loader = Loader;
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-HTMLImports.addModule(function(scope) {
+window.HTMLImports.addModule(function(scope) {
 
 /*
   Use a mutation observer to call a callback for all added nodes.
@@ -2821,7 +2831,7 @@ scope.Observer = Observer;
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-HTMLImports.addModule(function(scope) {
+window.HTMLImports.addModule(function(scope) {
 
 // imports
 var path = scope.path;
@@ -2924,8 +2934,8 @@ var importParser = {
     // TODO(sorvell): consider if there's a better way to do this;
     // expose an imports parsing hook; this is needed, for example, by the
     // CustomElements polyfill.
-    if (HTMLImports.__importsParsingHook) {
-      HTMLImports.__importsParsingHook(elt);
+    if (window.HTMLImports.__importsParsingHook) {
+      window.HTMLImports.__importsParsingHook(elt);
     }
     if (elt.import) {
       elt.import.__importParsed = true;
@@ -3160,7 +3170,7 @@ scope.IMPORT_SELECTOR = IMPORT_SELECTOR;
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-HTMLImports.addModule(function(scope) {
+window.HTMLImports.addModule(function(scope) {
 
 // imports
 var flags = scope.flags;
@@ -3337,7 +3347,7 @@ scope.importLoader = importLoader;
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-HTMLImports.addModule(function(scope) {
+window.HTMLImports.addModule(function(scope) {
 
 // imports
 var parser = scope.parser;
@@ -3432,6 +3442,16 @@ if (isIE && (typeof window.CustomEvent !== 'function')) {
     params = params || {};
     var e = document.createEvent('CustomEvent');
     e.initCustomEvent(inType, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
+    // IE does not set `defaultPrevented` when `preventDefault()` is called on
+    // CustomEvents
+    // http://stackoverflow.com/questions/23349191/event-preventdefault-is-not-working-in-ie-11-for-custom-events
+    e.preventDefault = function() {
+      Object.defineProperty(this, 'defaultPrevented', {
+        get: function() {
+          return true;
+        }
+      });
+    };
     return e;
   };
   window.CustomEvent.prototype = window.Event.prototype;
@@ -3450,7 +3470,7 @@ var rootDocument = scope.rootDocument;
   Bootstrap the imports machine.
 */
 function bootstrap() {
-  HTMLImports.importer.bootDocument(rootDocument);
+  window.HTMLImports.importer.bootDocument(rootDocument);
 }
 
 // TODO(sorvell): SD polyfill does *not* generate mutations for nodes added
@@ -3463,7 +3483,7 @@ if (document.readyState === 'complete' ||
   document.addEventListener('DOMContentLoaded', bootstrap);
 }
 
-})(HTMLImports);
+})(window.HTMLImports);
 
 /* ../node_modules/webcomponents.js/src/HTMLImports/boot.js end */
 
@@ -4584,7 +4604,7 @@ if (document.readyState === 'complete' ||
 
     mixins: {},
     prefix: prefix,
-    captureEvents: ['focus', 'blur', 'scroll', 'underflow', 'overflow', 'overflowchanged', 'DOMMouseScroll'],
+    captureEvents: { focus: 1, blur: 1, scroll: 1, DOMMouseScroll: 1 },
     customEvents: {
       animationstart: {
         attach: [prefix.dom + 'AnimationStart']
@@ -4612,9 +4632,17 @@ if (document.readyState === 'complete' ||
         }
       },
       tap: {
-        attach: ['pointerup'],
-        condition: touchFilter
-      }, 
+        attach: ['pointerdown', 'pointerup'],
+        condition: function(event, custom){
+          if (event.type == 'pointerdown') {
+            custom.startX = event.clientX;
+            custom.startY = event.clientY;
+          }
+          else if (event.button == 0 &&
+                   Math.abs(custom.startX - event.clientX) < 10 &&
+                   Math.abs(custom.startY - event.clientY) < 10) return true;
+        }
+      },
       tapstart: {
         attach: ['pointerdown'],
         condition: touchFilter
@@ -4698,6 +4726,11 @@ if (document.readyState === 'complete' ||
       },
       duration: {
         onAdd: function(pseudo){ pseudo.source.duration = Number(pseudo.value) }
+      },
+      capture: {
+        onCompiled: function(fn, pseudo){
+          if (pseudo.source) pseudo.source.capture = true;
+        }
       }
     },
 
@@ -4919,6 +4952,7 @@ if (document.readyState === 'complete' ||
             type: key,
             stack: noop,
             condition: trueop,
+            capture: xtag.captureEvents[key],
             attach: [],
             _attach: [],
             pseudos: '',
@@ -4974,7 +5008,7 @@ if (document.readyState === 'complete' ||
         xtag.addEvent(element, obj.type, obj);
       });
       event.onAdd.call(element, event, event.listener);
-      element.addEventListener(event.type, event.stack, capture || xtag.captureEvents.indexOf(event.type) > -1);
+      element.addEventListener(event.type, event.stack, capture || event.capture);
       return event;
     },
 
