@@ -39,4 +39,9 @@ describe('xblocks.utils.merge ->', function() {
         var obj = this.util(true, null, { a: { b: 2 } }, { a: { c: 3 } });
         expect(obj).to.be.eql({ a: { b: 2, c: 3 } });
     });
+
+    it('undefined значения при мерже теряются', function() {
+        var obj = this.util({}, { a: 1, b: undefined }, { a: undefined, c: undefined });
+        expect(obj).to.be.eql({ a: 1 });
+    });
 });

@@ -18,6 +18,7 @@ xblocks.utils.SELECTOR_CONTENT = 'script[type="text/x-template"]:not([ref]),temp
 /*! borschik:include:utils/isPlainObject.js */
 /*! borschik:include:utils/pristine.js */
 /*! borschik:include:utils/merge.js */
+/*! borschik:include:utils/assign.js */
 /*! borschik:include:utils/lazy.js */
 /*! borschik:include:utils/equals.js */
 /*! borschik:include:utils/propTypes.js */

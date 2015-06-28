@@ -1,32 +1,20 @@
 /* global xblocks */
 /* jshint strict: false */
 
-/**
- * Combining objects
- *
- * @example
- * var target = { a: 1 };
- * xblocks.utils.merge(target, { b: 2 })
- * // { a: 1, b: 2 }
- *
- * xblocks.utils.merge({ a: 1 }, { b: 2 }, { c: 3 })
- * // { a: 1, b: 2, c: 3 }
- *
- * xblocks.utils.merge(true, { a: 1 }, { b: { c: 2 } }, { b: { d: 3 } })
- * // { a: 1, b: { c: 2, d: 3 } }
- *
- * @returns {object}
- */
-xblocks.utils.merge = function() {
+var _utilsMergeCheckCopy = function(value) {
+    return (value !== undefined);
+};
+
+var _utilsMerge = function(checkСopy, args) {
     var options;
     var name;
     var src;
     var copy;
     var copyIsArray;
     var clone;
-    var target = arguments[0] || {};
+    var target = args[0] || {};
     var i = 1;
-    var length = arguments.length;
+    var length = args.length;
     var deep = false;
 
     // Handle a deep copy situation
@@ -34,7 +22,7 @@ xblocks.utils.merge = function() {
         deep = target;
 
         // Skip the boolean and the target
-        target = arguments[ i ] || {};
+        target = args[ i ] || {};
         i++;
     }
 
@@ -51,7 +39,7 @@ xblocks.utils.merge = function() {
 
     for (; i < length; i++) {
         // Only deal with non-null/undefined values
-        if ((options = arguments[ i ]) != null) {
+        if ((options = args[ i ]) != null) {
             // Extend the base object
             for (name in options) {
                 src = target[ name ];
@@ -63,8 +51,7 @@ xblocks.utils.merge = function() {
                 }
 
                 // Recurse if we're merging plain objects or arrays
-                if (deep && copy && (xblocks.utils.isPlainObject(copy) ||
-                    (copyIsArray = Array.isArray(copy)))) {
+                if (deep && copy && (xblocks.utils.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
 
                     if (copyIsArray) {
                         copyIsArray = false;
@@ -77,8 +64,7 @@ xblocks.utils.merge = function() {
                     // Never move original objects, clone them
                     target[ name ] = xblocks.utils.merge( deep, clone, copy );
 
-                // Don't bring in undefined values
-                } else if (copy !== undefined) {
+                } else if (checkСopy(copy)) {
                     target[ name ] = copy;
                 }
             }
@@ -87,4 +73,27 @@ xblocks.utils.merge = function() {
 
     // Return the modified object
     return target;
+};
+
+/**
+ * Combining objects
+ *
+ * @example
+ * var target = { a: 1 };
+ * xblocks.utils.merge(target, { b: 2 })
+ * // { a: 1, b: 2 }
+ *
+ * xblocks.utils.merge({ a: 1 }, { b: 2 }, { c: 3 })
+ * // { a: 1, b: 2, c: 3 }
+ *
+ * xblocks.utils.merge(true, { a: 1 }, { b: { c: 2 } }, { b: { d: 3 } })
+ * // { a: 1, b: { c: 2, d: 3 } }
+ *
+ * xblocks.utils.merge({}, { a: 1, b: undefined }, { a: undefined, c: undefined })
+ * // { a: 1 }
+ *
+ * @returns {object}
+ */
+xblocks.utils.merge = function() {
+    return _utilsMerge.call(this, _utilsMergeCheckCopy, arguments);
 };
