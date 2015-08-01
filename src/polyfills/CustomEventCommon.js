@@ -1,4 +1,6 @@
+//jscs:disable
 /* global global */
+//jscs:enable
 
 var CustomEventCommon;
 var doc = global.document;

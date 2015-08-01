@@ -1,5 +1,7 @@
+//jscs:disable
 /* global xblocks, global */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * Deferred execution

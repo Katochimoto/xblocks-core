@@ -1,5 +1,7 @@
+//jscs:disable
 /* global xblocks, __forEach */
 /* jshint strict: false */
+//jscs:enable
 
 var _blockStatic = {
     'init': function(element) {

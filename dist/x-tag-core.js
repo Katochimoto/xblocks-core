@@ -1078,36 +1078,29 @@ var forDocumentTree = scope.forDocumentTree;
 // manage lifecycle on added node and it's subtree; upgrade the node and
 // entire subtree if necessary and process attached for the node and entire
 // subtree
-function addedNode(node) {
-  return added(node) || addedSubtree(node);
+function addedNode(node, isAttached) {
+  return added(node, isAttached) || addedSubtree(node, isAttached);
 }
 
 // manage lifecycle on added node; upgrade if necessary and process attached
-function added(node) {
-  if (scope.upgrade(node)) {
+function added(node, isAttached) {
+  if (scope.upgrade(node, isAttached)) {
+    // Return true to indicate
     return true;
   }
-  attached(node);
+  if (isAttached) {
+    attached(node);
+  }
 }
 
 // manage lifecycle on added node's subtree only; allows the entire subtree
 // to upgrade if necessary and process attached
-function addedSubtree(node) {
+function addedSubtree(node, isAttached) {
   forSubtree(node, function(e) {
-    if (added(e)) {
+    if (added(e, isAttached)) {
       return true;
     }
   });
-}
-
-function attachedNode(node) {
-  attached(node);
-  // only check subtree if node is actually in document
-  if (inDocument(node)) {
-    forSubtree(node, function(e) {
-      attached(e);
-    });
-  }
 }
 
 // On platforms without MutationObserver, mutations may not be
@@ -1153,15 +1146,11 @@ function attached(element) {
 // multiple times so we protect against extra processing here.
 function _attached(element) {
   // track element for insertion if it's upgraded and cares about insertion
-  if (element.__upgraded__ &&
-    (element.attachedCallback || element.detachedCallback)) {
-    // bail if the element is already marked as attached and proceed only
-    // if it's actually in the document at this moment.
-    if (!element.__attached && inDocument(element)) {
-      element.__attached = true;
-      if (element.attachedCallback) {
-        element.attachedCallback();
-      }
+  // bail if the element is already marked as attached
+  if (element.__upgraded__ && !element.__attached) {
+    element.__attached = true;
+    if (element.attachedCallback) {
+      element.attachedCallback();
     }
   }
 }
@@ -1193,15 +1182,11 @@ function detached(element) {
 // multiple times so we protect against extra processing here.
 function _detached(element) {
   // track element for removal if it's upgraded and cares about removal
-  if (element.__upgraded__ &&
-    (element.attachedCallback || element.detachedCallback)) {
-    // bail if the element is already marked as not attached and proceed only
-    // if it's actually *not* in the document at this moment.
-    if (element.__attached && !inDocument(element)) {
-      element.__attached = false;
-      if (element.detachedCallback) {
-        element.detachedCallback();
-      }
+  // bail if the element is already marked as not attached
+  if (element.__upgraded__ && element.__attached) {
+    element.__attached = false;
+    if (element.detachedCallback) {
+      element.detachedCallback();
     }
   }
 }
@@ -1246,8 +1231,12 @@ function watchShadow(node) {
   (2) In this case, child will get its own mutation record:
 
       node.appendChild(div).appendChild(child);
+
+  We cannot know ahead of time if we need to walk into the node in (1) so we
+  do and see child; however, if it was added via case (2) then it will have its
+  own record and therefore be seen 2x.
 */
-function handler(mutations) {
+function handler(root, mutations) {
   // for logging only
   if (flags.dom) {
     var mx = mutations[0];
@@ -1264,13 +1253,18 @@ function handler(mutations) {
     console.group('mutations (%d) [%s]', mutations.length, u || '');
   }
   // handle mutations
+  // NOTE: do an `inDocument` check dynamically here. It's possible that `root`
+  // is a document in which case the answer here can never change; however 
+  // `root` may be an element like a shadowRoot that can be added/removed
+  // from the main document.
+  var isAttached = inDocument(root);
   mutations.forEach(function(mx) {
     if (mx.type === 'childList') {
       forEach(mx.addedNodes, function(n) {
         if (!n.localName) {
           return;
         }
-        addedNode(n);
+        addedNode(n, isAttached);
       });
       forEach(mx.removedNodes, function(n) {
         if (!n.localName) {
@@ -1301,7 +1295,7 @@ function takeRecords(node) {
   }
   var observer = node.__observer;
   if (observer) {
-    handler(observer.takeRecords());
+    handler(node, observer.takeRecords());
     takeMutations();
   }
 }
@@ -1316,7 +1310,9 @@ function observe(inRoot) {
   }
   // For each ShadowRoot, we create a new MutationObserver, so the root can be
   // garbage collected once all references to the `inRoot` node are gone.
-  var observer = new MutationObserver(handler);
+  // Give the handler access to the root so that an 'in document' check can
+  // be done.
+  var observer = new MutationObserver(handler.bind(this, inRoot));
   observer.observe(inRoot, {childList: true, subtree: true});
   inRoot.__observer = observer;
 }
@@ -1325,7 +1321,8 @@ function observe(inRoot) {
 function upgradeDocument(doc) {
   doc = window.wrap(doc);
   flags.dom && console.group('upgradeDocument: ', (doc.baseURI).split('/').pop());
-  addedNode(doc);
+  var isMainDocument = (doc === window.wrap(document));
+  addedNode(doc, isMainDocument);
   observe(doc);
   flags.dom && console.groupEnd();
 }
@@ -1354,9 +1351,10 @@ if (originalCreateShadowRoot) {
 // exports
 scope.watchShadow = watchShadow;
 scope.upgradeDocumentTree = upgradeDocumentTree;
+scope.upgradeDocument = upgradeDocument;
 scope.upgradeSubtree = addedSubtree;
 scope.upgradeAll = addedNode;
-scope.attachedNode = attachedNode;
+scope.attached = attached;
 scope.takeRecords = takeRecords;
 
 });
@@ -1398,21 +1396,25 @@ var flags = scope.flags;
  * @return {Element} The upgraded element.
  */
 // Upgrade a node if it can be upgraded and is not already.
-function upgrade(node) {
+function upgrade(node, isAttached) {
   if (!node.__upgraded__ && (node.nodeType === Node.ELEMENT_NODE)) {
     var is = node.getAttribute('is');
-    var definition = scope.getRegisteredDefinition(is || node.localName);
+    // find definition first by localName and secondarily by is attribute
+    var definition = scope.getRegisteredDefinition(node.localName) ||
+      scope.getRegisteredDefinition(is);
     if (definition) {
-      if (is && definition.tag == node.localName) {
-        return upgradeWithDefinition(node, definition);
-      } else if (!is && !definition.extends) {
-        return upgradeWithDefinition(node, definition);
+      // upgrade with is iff the definition tag matches the element tag
+      // and don't upgrade if there's an is and the definition does not extend
+      // a native element
+      if ((is && definition.tag == node.localName) ||
+        (!is && !definition.extends)) {
+        return upgradeWithDefinition(node, definition, isAttached);
       }
     }
   }
 }
 
-function upgradeWithDefinition(element, definition) {
+function upgradeWithDefinition(element, definition, isAttached) {
   flags.upgrade && console.group('upgrade:', element.localName);
   // some definitions specify an 'is' attribute
   if (definition.is) {
@@ -1425,9 +1427,11 @@ function upgradeWithDefinition(element, definition) {
   // lifecycle management
   created(element);
   // attachedCallback fires in tree order, call before recursing
-  scope.attachedNode(element);
+  if (isAttached) {
+    scope.attached(element);
+  }
   // there should never be a shadow root on element at this point
-  scope.upgradeSubtree(element);
+  scope.upgradeSubtree(element, isAttached);
   flags.upgrade && console.groupEnd();
   // OUTPUT
   return element;
@@ -1688,11 +1692,7 @@ function resolvePrototypeChain(definition) {
     // work out prototype when using type-extension
     if (definition.is) {
       var inst = document.createElement(definition.tag);
-      var expectedPrototype = Object.getPrototypeOf(inst);
-      // only set nativePrototype if it will actually appear in the definition's chain
-      if (expectedPrototype === definition.prototype) {
-        nativePrototype = expectedPrototype;
-      }
+      nativePrototype = Object.getPrototypeOf(inst);
     }
     // ensure __proto__ reference is installed at each point on the prototype
     // chain.
@@ -1700,10 +1700,22 @@ function resolvePrototypeChain(definition) {
     // of prototype swizzling. In this case, this generated __proto__ provides
     // limited support for prototype traversal.
     var proto = definition.prototype, ancestor;
-    while (proto && (proto !== nativePrototype)) {
+    var foundPrototype = false;
+    while (proto) {
+      if (proto == nativePrototype) {
+        foundPrototype = true;
+      }
       ancestor = Object.getPrototypeOf(proto);
-      proto.__proto__ = ancestor;
+      if (ancestor) {
+        proto.__proto__ = ancestor;
+      }
       proto = ancestor;
+    }
+    if (!foundPrototype) {
+      // Note the spec actually allows this, but it results in broken elements
+      // and is difficult to polyfill correctly, so we throw
+      console.warn(definition.tag + ' prototype not found in prototype chain for ' +
+        definition.is);
     }
     // cache this in case of mixin
     definition.native = nativePrototype;
@@ -1795,6 +1807,10 @@ var domCreateElementNS = document.createElementNS.bind(document);
 var isInstance;
 if (!Object.__proto__ && !useNative) {
   isInstance = function(obj, ctor) {
+    // Allows instanceof(<div>, HTMLElement.prototype) to work
+    if (obj instanceof ctor) {
+      return true;
+    }
     var p = obj;
     while (p) {
       // NOTE: this is not technically correct since we're not checking if
@@ -1813,7 +1829,7 @@ if (!Object.__proto__ && !useNative) {
   };
 }
 
-// wrap a dom object method that works on nodes such that it forces upgrade 
+// wrap a dom object method that works on nodes such that it forces upgrade
 function wrapDomMethodToForceUpgrade(obj, methodName) {
   var orig = obj[methodName];
   obj[methodName] = function() {
@@ -1844,7 +1860,7 @@ if (isIE11OrOlder) {
         return n;
       }
     };
-  })();  
+  })();
 }
 
 // exports
@@ -1909,6 +1925,7 @@ if (useNative) {
 
 // imports
 var upgradeDocumentTree = scope.upgradeDocumentTree;
+var upgradeDocument = scope.upgradeDocument;
 
 // ShadowDOM polyfill wraps elements but some elements like `document`
 // cannot be wrapped so we help the polyfill by wrapping some elements.
@@ -1923,18 +1940,20 @@ if (!window.wrap) {
   }
 }
 
+// eagarly upgrade imported documents
+if (window.HTMLImports) {
+  window.HTMLImports.__importsParsingHook = function(elt) {
+    if (elt.import) {
+      upgradeDocument(wrap(elt.import));
+    }
+  };
+}
 
 // bootstrap parsing
 function bootstrap() {
-  // parse document
+  // one more upgrade to catch out of order registrations
   upgradeDocumentTree(window.wrap(document));
   // install upgrade hook if HTMLImports are available
-  if (window.HTMLImports) {
-    window.HTMLImports.__importsParsingHook = function(elt) {
-      upgradeDocumentTree(window.wrap(elt.import));
-      //CustomElements.parser.parse(elt.import);
-    };
-  }
   // set internal 'ready' flag, now document.registerElement will trigger
   // synchronous upgrades
   window.CustomElements.ready = true;
@@ -2611,7 +2630,7 @@ window.HTMLImports.addModule(function(scope) {
 var path = scope.path;
 var rootDocument = scope.rootDocument;
 var flags = scope.flags;
-var isIE = scope.isIE;
+var isIE11OrOlder = scope.isIE11OrOlder;
 var IMPORT_LINK_TYPE = scope.IMPORT_LINK_TYPE;
 var IMPORT_SELECTOR = 'link[rel=' + IMPORT_LINK_TYPE + ']';
 
@@ -2630,8 +2649,8 @@ var importParser = {
   // parse selectors for import document elements
   importsSelectors: [
     IMPORT_SELECTOR,
-    'link[rel=stylesheet]',
-    'style',
+    'link[rel=stylesheet]:not([type])',
+    'style:not([type])',
     'script:not([type])',
     'script[type="application/javascript"]',
     'script[type="text/javascript"]'
@@ -2705,9 +2724,7 @@ var importParser = {
   },
 
   parseImport: function(elt) {
-    // TODO(sorvell): consider if there's a better way to do this;
-    // expose an imports parsing hook; this is needed, for example, by the
-    // CustomElements polyfill.
+    elt.import = elt.__doc;
     if (window.HTMLImports.__importsParsingHook) {
       window.HTMLImports.__importsParsingHook(elt);
     }
@@ -2776,6 +2793,10 @@ var importParser = {
   trackElement: function(elt, callback) {
     var self = this;
     var done = function(e) {
+      // make sure we don't get multiple load/error signals (FF seems to do
+      // this sometimes when <style> elments change)
+      elt.removeEventListener('load', done);
+      elt.removeEventListener('error', done);
       if (callback) {
         callback(e);
       }
@@ -2787,7 +2808,7 @@ var importParser = {
 
     // NOTE: IE does not fire "load" event for styles that have already loaded
     // This is in violation of the spec, so we try our hardest to work around it
-    if (isIE && elt.localName === 'style') {
+    if (isIE11OrOlder && elt.localName === 'style') {
       var fakeLoad = false;
       // If there's not @import in the textContent, assume it has loaded
       if (elt.textContent.indexOf('@import') == -1) {
@@ -2827,7 +2848,9 @@ var importParser = {
     // keep track of executing script to help polyfill `document.currentScript`
     scope.currentScript = scriptElt;
     this.trackElement(script, function(e) {
-      script.parentNode.removeChild(script);
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
       scope.currentScript = null;
     });
     this.addElementToDocument(script);
@@ -2852,7 +2875,7 @@ var importParser = {
       for (var i=0, l=nodes.length, p=0, n; (i<l) && (n=nodes[i]); i++) {
         if (!this.isParsed(n)) {
           if (this.hasResource(n)) {
-            return nodeIsImport(n) ? this.nextToParseInDoc(n.import, n) : n;
+            return nodeIsImport(n) ? this.nextToParseInDoc(n.__doc, n) : n;
           } else {
             return;
           }
@@ -2884,7 +2907,7 @@ var importParser = {
   },
 
   hasResource: function(node) {
-    if (nodeIsImport(node) && (node.import === undefined)) {
+    if (nodeIsImport(node) && (node.__doc === undefined)) {
       return false;
     }
     return true;
@@ -3021,7 +3044,7 @@ var importer = {
       }
       // don't store import record until we're actually loaded
       // store document resource
-      elt.import = doc;
+      elt.__doc = doc;
     }
     parser.parseNext();
   },

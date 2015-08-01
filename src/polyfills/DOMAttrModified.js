@@ -1,4 +1,6 @@
+//jscs:disable
 /* jshint -W067 */
+//jscs:enable
 /**
  * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
  */

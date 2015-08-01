@@ -1,5 +1,7 @@
+//jscs:disable
 /* global xblocks, __toString */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * The definition of the data type

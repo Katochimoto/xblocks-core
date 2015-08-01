@@ -1,5 +1,7 @@
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * Check to see if an object is a plain object (created using "{}" or "new Object")

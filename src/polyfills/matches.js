@@ -1,4 +1,7 @@
+//jscs:disable
 /* jshint -W067 */
+//jscs:enable
+
 (function(global) {
     'use strict';
 

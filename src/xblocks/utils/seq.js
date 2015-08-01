@@ -1,5 +1,7 @@
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * The generator is a unique sequence of positive numbers

@@ -1,5 +1,7 @@
+//jscs:disable
 /* global xblocks, _utilsMerge */
 /* jshint strict: false */
+//jscs:enable
 
 var _utilsAssignCheckCopy = function() {
     return true;

@@ -1,5 +1,7 @@
+//jscs:disable
 /* global xblocks, React, __forEach */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * To obtain the specified attributes

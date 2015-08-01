@@ -1,5 +1,7 @@
+//jscs:disable
 /* global xblocks, global, __noop */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @function xblocks.dom.upgradeAll

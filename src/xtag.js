@@ -1,4 +1,6 @@
+//jscs:disable
 /* jshint unused: false */
+//jscs:enable
 
 window.Platform = {};
 var logFlags = {

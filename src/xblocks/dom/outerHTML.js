@@ -1,5 +1,7 @@
+//jscs:disable
 /* global xblocks, global, __doc */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @prop {object} xblocks.dom.outerHTML

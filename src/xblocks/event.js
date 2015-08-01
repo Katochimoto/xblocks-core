@@ -1,5 +1,7 @@
+//jscs:disable
 /* global xblocks, global, CustomEventCommon */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @namespace
