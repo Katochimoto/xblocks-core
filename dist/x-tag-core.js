@@ -1,4 +1,6 @@
+//jscs:disable
 /* jshint unused: false */
+//jscs:enable
 
 window.Platform = {};
 var logFlags = {
@@ -7,7 +9,10 @@ var logFlags = {
 };
 
 /* polyfills/performance.js begin */
+//jscs:disable
 /* jshint -W067 */
+//jscs:enable
+
 (function(global) {
     'use strict';
 
@@ -37,7 +42,10 @@ var logFlags = {
 /* polyfills/performance.js end */
 
 /* polyfills/matches.js begin */
+//jscs:disable
 /* jshint -W067 */
+//jscs:enable
+
 (function(global) {
     'use strict';
 
@@ -61,8 +69,10 @@ var logFlags = {
 /* polyfills/matches.js end */
 
 /* polyfills/CustomEvent.js begin */
+//jscs:disable
 /* global CustomEventCommon */
 /* jshint -W067 */
+//jscs:enable
 /**
  * strange commit, checks CustomEvent only in IE
  * https://github.com/webcomponents/webcomponentsjs/commit/8d6a38aa6e3d03ff54a41db9e9725401bbc1446c
@@ -76,7 +86,9 @@ var logFlags = {
 
     global.CustomEvent = (function() {
         /* polyfills/CustomEventCommon.js begin */
+//jscs:disable
 /* global global */
+//jscs:enable
 
 var CustomEventCommon;
 var doc = global.document;
@@ -130,7 +142,9 @@ CustomEventCommon.prototype = global.Event.prototype;
 /* polyfills/CustomEvent.js end */
 
 /* polyfills/DOMAttrModified.js begin */
+//jscs:disable
 /* jshint -W067 */
+//jscs:enable
 /**
  * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
  */

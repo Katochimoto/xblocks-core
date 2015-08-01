@@ -224,7 +224,9 @@ Timer.polifill.setTimeout = function() {
 }(function() {
     return this || (1, eval)('this');
 }()));
+//jscs:disable
 /* jshint unused: false */
+//jscs:enable
 
 window.Platform = {};
 var logFlags = {
@@ -233,7 +235,10 @@ var logFlags = {
 };
 
 /* polyfills/performance.js begin */
+//jscs:disable
 /* jshint -W067 */
+//jscs:enable
+
 (function(global) {
     'use strict';
 
@@ -263,7 +268,10 @@ var logFlags = {
 /* polyfills/performance.js end */
 
 /* polyfills/matches.js begin */
+//jscs:disable
 /* jshint -W067 */
+//jscs:enable
+
 (function(global) {
     'use strict';
 
@@ -287,8 +295,10 @@ var logFlags = {
 /* polyfills/matches.js end */
 
 /* polyfills/CustomEvent.js begin */
+//jscs:disable
 /* global CustomEventCommon */
 /* jshint -W067 */
+//jscs:enable
 /**
  * strange commit, checks CustomEvent only in IE
  * https://github.com/webcomponents/webcomponentsjs/commit/8d6a38aa6e3d03ff54a41db9e9725401bbc1446c
@@ -302,7 +312,9 @@ var logFlags = {
 
     global.CustomEvent = (function() {
         /* polyfills/CustomEventCommon.js begin */
+//jscs:disable
 /* global global */
+//jscs:enable
 
 var CustomEventCommon;
 var doc = global.document;
@@ -356,7 +368,9 @@ CustomEventCommon.prototype = global.Event.prototype;
 /* polyfills/CustomEvent.js end */
 
 /* polyfills/DOMAttrModified.js begin */
+//jscs:disable
 /* jshint -W067 */
+//jscs:enable
 /**
  * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
  */
@@ -5130,8 +5144,11 @@ if (document.readyState === 'complete' ||
 
 /* ../node_modules/x-tag-core/src/core.js end */
 
+//jscs:disable
 /* jshint -W067 */
 /* jshint unused: false */
+//jscs:enable
+
 (function(global, undefined) {
     'use strict';
 
@@ -5150,8 +5167,10 @@ if (document.readyState === 'complete' ||
     var __noop = function() {};
 
     /* xblocks/utils.js begin */
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @namespace
@@ -5165,8 +5184,10 @@ xblocks.utils.SELECTOR_TMPL = 'script[type="text/x-template"][ref],template[ref]
 xblocks.utils.SELECTOR_CONTENT = 'script[type="text/x-template"]:not([ref]),template:not([ref])';
 
 /* xblocks/utils/log.js begin */
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 xblocks.utils.log = {};
 
@@ -5187,8 +5208,10 @@ xblocks.utils.log.time = function(/*element, name*/) {
 /* xblocks/utils/log.js end */
 
 /* xblocks/utils/seq.js begin */
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * The generator is a unique sequence of positive numbers
@@ -5212,8 +5235,10 @@ xblocks.utils.seq = (function() {
 /* xblocks/utils/seq.js end */
 
 /* xblocks/utils/type.js begin */
+//jscs:disable
 /* global xblocks, __toString */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * The definition of the data type
@@ -5253,8 +5278,10 @@ xblocks.utils.type = function(param) {
 /* xblocks/utils/type.js end */
 
 /* xblocks/utils/isPlainObject.js begin */
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * Check to see if an object is a plain object (created using "{}" or "new Object")
@@ -5283,8 +5310,10 @@ xblocks.utils.isPlainObject = function(value) {
 /* xblocks/utils/isPlainObject.js end */
 
 /* xblocks/utils/pristine.js begin */
+//jscs:disable
 /* global xblocks, global */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * Check the override method
@@ -5330,8 +5359,10 @@ xblocks.utils.pristine = function(methodName) {
 /* xblocks/utils/pristine.js end */
 
 /* xblocks/utils/merge.js begin */
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 var _utilsMergeCheckCopy = function(value) {
     return (value !== undefined);
@@ -5433,8 +5464,10 @@ xblocks.utils.merge = function() {
 /* xblocks/utils/merge.js end */
 
 /* xblocks/utils/assign.js begin */
+//jscs:disable
 /* global xblocks, _utilsMerge */
 /* jshint strict: false */
+//jscs:enable
 
 var _utilsAssignCheckCopy = function() {
     return true;
@@ -5456,8 +5489,10 @@ xblocks.utils.assign = function() {
 /* xblocks/utils/assign.js end */
 
 /* xblocks/utils/lazy.js begin */
+//jscs:disable
 /* global xblocks, global */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * Deferred execution
@@ -5500,8 +5535,10 @@ xblocks.utils.lazy = function(callback, args) {
 /* xblocks/utils/lazy.js end */
 
 /* xblocks/utils/equals.js begin */
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @param {*} x
@@ -5600,8 +5637,10 @@ xblocks.utils.equals = function(x, y) {
 /* xblocks/utils/equals.js end */
 
 /* xblocks/utils/propTypes.js begin */
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @param {string} tagName
@@ -5628,8 +5667,10 @@ xblocks.utils.propTypes = function(tagName) {
 /* xblocks/utils/propTypes.js end */
 
 /* xblocks/utils/tmpl.js begin */
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 (function() {
 
@@ -5669,8 +5710,10 @@ xblocks.utils.propTypes = function(tagName) {
 /* xblocks/utils.js end */
 
     /* xblocks/dom.js begin */
+//jscs:disable
 /* global xblocks, global */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @namespace
@@ -5711,8 +5754,10 @@ xblocks.dom.attrs.XB_ATTRS = {
 xblocks.dom.ELEMENT_PROTO = (global.HTMLElement || global.Element).prototype;
 
 /* xblocks/dom/attrs.js begin */
+//jscs:disable
 /* global xblocks, React, __forEach */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * To obtain the specified attributes
@@ -5862,8 +5907,10 @@ xblocks.dom.attrs.typeConversion = function(props, propTypes) {
 /* xblocks/dom/attrs.js end */
 
 /* xblocks/dom/contentNode.js begin */
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @param {HTMLElement} node
@@ -5886,8 +5933,10 @@ xblocks.dom.contentNode = function(node) {
 /* xblocks/dom/contentNode.js end */
 
 /* xblocks/dom/upgrade.js begin */
+//jscs:disable
 /* global xblocks, global, __noop */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @function xblocks.dom.upgrade
@@ -5904,8 +5953,10 @@ xblocks.dom.upgrade = (function() {
 /* xblocks/dom/upgrade.js end */
 
 /* xblocks/dom/upgradeAll.js begin */
+//jscs:disable
 /* global xblocks, global, __noop */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @function xblocks.dom.upgradeAll
@@ -5922,8 +5973,10 @@ xblocks.dom.upgradeAll = (function() {
 /* xblocks/dom/upgradeAll.js end */
 
 /* xblocks/dom/cloneNode.js begin */
+//jscs:disable
 /* global xblocks */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * Cloning node
@@ -5951,8 +6004,10 @@ xblocks.dom.cloneNode = function(node, deep) {
 /* xblocks/dom/cloneNode.js end */
 
 /* xblocks/dom/outerHTML.js begin */
+//jscs:disable
 /* global xblocks, global, __doc */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @prop {object} xblocks.dom.outerHTML
@@ -6025,8 +6080,10 @@ xblocks.dom.outerHTML = (function() {
 /* xblocks/dom.js end */
 
     /* xblocks/event.js begin */
+//jscs:disable
 /* global xblocks, global, CustomEventCommon */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @namespace
@@ -6053,7 +6110,9 @@ xblocks.event.Custom = (function() {
 
     return (function() {
         /* polyfills/CustomEventCommon.js begin */
+//jscs:disable
 /* global global */
+//jscs:enable
 
 var CustomEventCommon;
 var doc = global.document;
@@ -6122,8 +6181,10 @@ xblocks.event.dispatch = function(element, name, params) {
 /* xblocks/event.js end */
 
     /* xblocks/react.js begin */
+//jscs:disable
 /* global xblocks, React */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * NOTE check after update React !!
@@ -6159,8 +6220,10 @@ xblocks.react.render = function(nextElement, container, callback) {
 /* xblocks/react.js end */
 
     /* xblocks/tag.js begin */
+//jscs:disable
 /* global xblocks, global */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @namespace
@@ -6171,8 +6234,10 @@ xblocks.tag = global.xtag;
 /* xblocks/tag.js end */
 
     /* xblocks/view.js begin */
+//jscs:disable
 /* global xblocks, React */
 /* jshint strict: false */
+//jscs:enable
 
 /**
  * @namespace
@@ -6324,8 +6389,10 @@ xblocks.view.getClass = function(blockName) {
 /* xblocks/view.js end */
 
     /* xblocks/block.js begin */
+//jscs:disable
 /* global xblocks, __forEach */
 /* jshint strict: false */
+//jscs:enable
 
 var _blockStatic = {
     'init': function(element) {
@@ -6549,8 +6616,10 @@ xblocks.create = function(blockName, options) {
 /* xblocks/block.js end */
 
     /* xblocks/element.js begin */
+//jscs:disable
 /* global xblocks, global */
 /* jshint strict: false */
+//jscs:enable
 
 var _elementStatic = {
     /**
