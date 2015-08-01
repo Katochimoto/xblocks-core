@@ -1,6 +1,6 @@
 {
     "name": "xblocks-core",
-    "version": "0.7.0",
+    "version": "0.7.1",
     "main": [
         "dist/xblocks-core.js",
         "dist/xblocks-core.min.js",

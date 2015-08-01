@@ -1,6 +1,7 @@
-/** @jsx React.DOM */
 /* global React, xv */
 /* jshint strict: false */
+
+'use strict';
 
 xblocks.view.register('x-element-create', {
     propTypes: {
@@ -8,10 +9,8 @@ xblocks.view.register('x-element-create', {
         'number-attr': React.PropTypes.number
     },
 
-    render: function() {
-        return (
-            React.createElement("div", null)
-        );
+    render: function render() {
+        return React.createElement('div', null);
     }
 });
 

@@ -1,6 +1,7 @@
-/** @jsx React.DOM */
 /* global React, xv */
 /* jshint strict: false */
+
+'use strict';
 
 xblocks.view.register('x-element-update', {
     propTypes: {
@@ -8,18 +9,16 @@ xblocks.view.register('x-element-update', {
         'number-attr': React.PropTypes.number
     },
 
-    render: function() {
+    render: function render() {
         var classes = {};
 
-        if (this.props[ 'bool-attr' ]) {
-            classes[ 'bool' ] = true;
+        if (this.props['bool-attr']) {
+            classes['bool'] = true;
         }
 
         classes = classNames(classes);
 
-        return (
-            React.createElement("div", {className: classes})
-        );
+        return React.createElement('div', { className: classes });
     }
 });
 

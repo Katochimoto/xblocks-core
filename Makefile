@@ -32,10 +32,10 @@ clean:
 	rm -f dist/xblocks-core-full.min.js
 	rm -f dist/x-tag-core.js
 	rm -f dist/x-tag-core.min.js
-	find src -type f -name "*.jsx.js" -exec rm -f {} \;
+	find test src -type f -name "*.jsx.js" -exec rm -f {} \;
 
 $(src_jsx_js): %.jsx.js: %.jsx node_modules
-	$(NPM_BIN)/jsx --no-cache-dir --strip-types --harmony $< > $@
+	$(NPM_BIN)/babel $< -o $@
 
 dist/xblocks-core.js: node_modules $(src_jsx_js) $(src_js)
 	cat node_modules/setimmediate2/setImmediate.js > $@

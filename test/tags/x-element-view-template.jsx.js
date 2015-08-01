@@ -1,11 +1,14 @@
-/** @jsx React.DOM */
 /* global React, xv */
 /* jshint strict: false */
 
+'use strict';
+
 xblocks.view.register('x-element-view-template', {
-    render: function() {
-        return (
-            React.createElement("div", null, this.template('test'))
+    render: function render() {
+        return React.createElement(
+            'div',
+            null,
+            this.template('test')
         );
     }
 });
