@@ -40,7 +40,7 @@ module.exports = function(config) {
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
             '**/*.js': [ 'borschik' ],
-            '**/*.jsx': [ 'react-jsx' ],
+            '**/*.jsx': [ 'babel' ],
             '**/src/xblocks.js': 'coverage'
         },
 

@@ -1149,7 +1149,7 @@ if (typeof WeakMap === 'undefined') {
     global.MutationObserver = JsMutationObserver;
 
 
-})(this);
+})(self);
 
 /* ../node_modules/webcomponents.js/src/MutationObserver/MutationObserver.js end */
 
@@ -1188,6 +1188,7 @@ var initializeModules = function() {
 scope.addModule = addModule;
 scope.initializeModules = initializeModules;
 scope.hasNative = Boolean(document.registerElement);
+scope.isIE = /Trident/.test(navigator.userAgent);
 
 // NOTE: For consistent timing, use native custom elements only when not
 // polyfilling other key related web components features.
@@ -1753,7 +1754,7 @@ scope.implementPrototype = implementPrototype;
 window.CustomElements.addModule(function(scope) {
 
 // imports
-var isIE11OrOlder = scope.isIE11OrOlder;
+var isIE = scope.isIE;
 var upgradeDocumentTree = scope.upgradeDocumentTree;
 var upgradeAll = scope.upgradeAll;
 var upgradeWithDefinition = scope.upgradeWithDefinition;
@@ -2085,7 +2086,7 @@ wrapDomMethodToForceUpgrade(document, 'importNode');
 // Patch document.importNode to work around IE11 bug that
 // casues children of a document fragment imported while
 // there is a mutation observer to not have a parentNode (!?!)
-if (isIE11OrOlder) {
+if (isIE) {
   (function() {
     var importNode = document.importNode;
     document.importNode = function() {
@@ -2135,7 +2136,7 @@ document.register = document.registerElement;
 var useNative = scope.useNative;
 var initializeModules = scope.initializeModules;
 
-var isIE11OrOlder = /Trident/.test(navigator.userAgent);
+var isIE = scope.isIE;
 
 // If native, setup stub api and bail.
 // NOTE: we fire `WebComponentsReady` under native for api compatibility
@@ -2200,22 +2201,34 @@ function bootstrap() {
   // async to ensure *native* custom elements upgrade prior to this
   // DOMContentLoaded can fire before elements upgrade (e.g. when there's
   // an external script)
-  setTimeout(function() {
-    // capture blunt profiling data
-    window.CustomElements.readyTime = Date.now();
-    if (window.HTMLImports) {
-      window.CustomElements.elapsed = window.CustomElements.readyTime - window.HTMLImports.readyTime;
-    }
-    // notify the system that we are bootstrapped
-    document.dispatchEvent(
-      new CustomEvent('WebComponentsReady', {bubbles: true})
-    );
+  // Delay doubly to help workaround
+  // https://code.google.com/p/chromium/issues/detail?id=516550.
+  // CustomElements must use requestAnimationFrame in attachedCallback
+  // to query style/layout data. The WebComponentsReady event is intended
+  // to convey overall readiness, which ideally should be after elements
+  // are attached. Adding a slight extra delay to WebComponentsReady
+  // helps preserve this guarantee.
+  var requestAnimationFrame = window.requestAnimationFrame || function(f) {
+    setTimeout(f, 16);
+  };
+  requestAnimationFrame(function() {
+    setTimeout(function() {
+      // capture blunt profiling data
+      window.CustomElements.readyTime = Date.now();
+      if (window.HTMLImports) {
+        window.CustomElements.elapsed = window.CustomElements.readyTime - window.HTMLImports.readyTime;
+      }
+      // notify the system that we are bootstrapped
+      document.dispatchEvent(
+        new CustomEvent('WebComponentsReady', {bubbles: true})
+      );
+    });
   });
 }
 
 // CustomEvent shim for IE <= 11
 // NOTE: we explicitly test for IE since Safari has a type `object` CustomEvent
-if (isIE11OrOlder && (typeof window.CustomEvent !== 'function')) {
+if (isIE && (typeof window.CustomEvent !== 'function')) {
   window.CustomEvent = function(inType, params) {
     params = params || {};
     var e = document.createEvent('CustomEvent');
@@ -2252,9 +2265,6 @@ if (document.readyState === 'complete' || scope.flags.eager) {
       'HTMLImportsLoaded' : 'DOMContentLoaded';
   window.addEventListener(loadEvent, bootstrap);
 }
-
-// exports
-scope.isIE11OrOlder = isIE11OrOlder;
 
 })(window.CustomElements);
 
@@ -2870,7 +2880,7 @@ window.HTMLImports.addModule(function(scope) {
 var path = scope.path;
 var rootDocument = scope.rootDocument;
 var flags = scope.flags;
-var isIE11OrOlder = scope.isIE11OrOlder;
+var isIE = scope.isIE;
 var IMPORT_LINK_TYPE = scope.IMPORT_LINK_TYPE;
 var IMPORT_SELECTOR = 'link[rel=' + IMPORT_LINK_TYPE + ']';
 
@@ -3048,7 +3058,7 @@ var importParser = {
 
     // NOTE: IE does not fire "load" event for styles that have already loaded
     // This is in violation of the spec, so we try our hardest to work around it
-    if (isIE11OrOlder && elt.localName === 'style') {
+    if (isIE && elt.localName === 'style') {
       var fakeLoad = false;
       // If there's not @import in the textContent, assume it has loaded
       if (elt.textContent.indexOf('@import') == -1) {
@@ -4327,7 +4337,7 @@ if (document.readyState === 'complete' ||
     else source[key] = clone(current, type);
     return source;
   }
-  
+
   function mergeMixin(tag, original, mixin, name) {
     var key, keys = {};
     for (var z in original) keys[z.split(':')[0]] = z;
@@ -4347,14 +4357,14 @@ if (document.readyState === 'complete' ||
       }
     }
   }
-  
+
   var uniqueMixinCount = 0;
   function addMixin(tag, original, mixin){
     for (var z in mixin){
       original[z + ':__mixin__(' + (uniqueMixinCount++) + ')'] = xtag.applyPseudos(z, mixin[z], tag.pseudos);
     }
   }
-  
+
   function resolveMixins(mixins, output){
     var index = mixins.length;
     while (index--){
@@ -4363,7 +4373,7 @@ if (document.readyState === 'complete' ||
     }
     return output;
   }
-  
+
   function applyMixins(tag) {
     resolveMixins(tag.mixins, []).forEach(function(name){
       var mixin = xtag.mixins[name];
@@ -4381,7 +4391,7 @@ if (document.readyState === 'complete' ||
                 if (!original[z]) original[z] = item[z];
                 else mergeMixin(tag, original[z], item[z], name);
               }
-              break;             
+              break;
             default: mergeMixin(tag, original, item, name);
           }
         }
@@ -4440,7 +4450,7 @@ if (document.readyState === 'complete' ||
       while (index--) nodes[index][method](name, value);
     }
   }
-  
+
   function attachProperties(tag, prop, z, accessor, attr, name){
     var key = z.split(':'), type = key[0];
     if (type == 'get') {
@@ -4537,7 +4547,7 @@ if (document.readyState === 'complete' ||
       var basePrototype = options.prototype;
       delete options.prototype;
       var tag = xtag.tags[_name].compiled = applyMixins(xtag.merge({}, xtag.defaultOptions, options));
-      
+
       for (var z in tag.events) tag.events[z] = xtag.parseEvent(z, tag.events[z]);
       for (z in tag.lifecycle) tag.lifecycle[z.split(':')[0]] = xtag.applyPseudos(z, tag.lifecycle[z], tag.pseudos, tag.lifecycle[z]);
       for (z in tag.methods) tag.prototype[z.split(':')[0]] = { value: xtag.applyPseudos(z, tag.methods[z], tag.pseudos, tag.methods[z]), enumerable: true };
@@ -4556,9 +4566,10 @@ if (document.readyState === 'complete' ||
           var output = ready ? ready.apply(this, arguments) : null;
           for (var name in tag.attributes) {
             var attr = tag.attributes[name],
-                hasAttr = this.hasAttribute(name);
-            if (hasAttr || attr.boolean) {
-              this[attr.key] = attr.boolean ? hasAttr : this.getAttribute(name);
+                hasAttr = this.hasAttribute(name),
+                hasDefault = attr.def !== undefined;
+            if (hasAttr || attr.boolean || hasDefault) {
+              this[attr.key] = attr.boolean ? hasAttr : !hasAttr && hasDefault ? attr.def : this.getAttribute(name);
             }
           }
           tag.pseudos.forEach(function(obj){
@@ -4692,7 +4703,7 @@ if (document.readyState === 'complete' ||
         attach: ['pointerdown', 'pointerup'],
         condition: function(event, custom){
           if (event.type == 'pointerdown') {
-            if (!custom.moveListener) custom.moveListener = xtag.addEvent(this, 'pointermove', custom.listener);    
+            if (!custom.moveListener) custom.moveListener = xtag.addEvent(this, 'pointermove', custom.listener);
           }
           else if (event.type == 'pointerup') {
             xtag.removeEvent(this, custom.moveListener);
@@ -4708,7 +4719,7 @@ if (document.readyState === 'complete' ||
             (custom.pointers = custom.pointers || {})[event.pointerId] = setTimeout(
               xtag.fireEvent.bind(null, this, 'taphold'),
               custom.duration || 1000
-            );   
+            );
           }
           else if (event.type == 'pointerup') {
             if (custom.pointers) {
@@ -4729,7 +4740,7 @@ if (document.readyState === 'complete' ||
             case null: case '': case 'before': return function(){
               mixin.apply(this, arguments);
               return fn.apply(this, arguments);
-            }; 
+            };
             case 'after': return function(){
               var returns = fn.apply(this, arguments);
               mixin.apply(this, arguments);
