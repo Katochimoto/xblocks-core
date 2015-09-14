@@ -1,16 +1,9 @@
-//jscs:disable
-/* global xblocks, React */
-/* jshint strict: false */
-//jscs:enable
+'use strict';
 
-/**
- * @namespace
- */
-xblocks.view = {};
-
-var _viewComponentsClass = {};
-
-var _viewCommon = {
+var React = require('react');
+var merge = require('./utils/merge');
+var viewComponentsClass = {};
+var viewCommon = {
 
     /**
      * Required attributes
@@ -18,7 +11,7 @@ var _viewCommon = {
      * @memberOf ReactElement.prototype
      * @type {object}
      */
-    'propTypes': {
+    propTypes: {
         '_uid':         React.PropTypes.node,
         '_container':   React.PropTypes.any,  // Bad way ;(
         'children':     React.PropTypes.node,
@@ -33,13 +26,13 @@ var _viewCommon = {
      * @param {object} [props] the attributes of a node
      * @returns {?ReactElement}
      */
-    'template': function(ref, props) {
+    template: function(ref, props) {
         var xtmpl = this.props._container && this.props._container.xtmpl;
 
         if (typeof(xtmpl) === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
             props = props || {};
             props.dangerouslySetInnerHTML = {
-                '__html': this._templatePrepare(xtmpl[ ref ])
+                '__html': this.templatePrepare(xtmpl[ ref ])
             };
 
             return React.createElement('div', props);
@@ -52,13 +45,13 @@ var _viewCommon = {
      * Get the node associated with the view
      * @returns {HTMLElement}
      */
-    'container': function() {
+    container: function() {
         return this.props._container;
     }
 };
 
-var _viewCommonUser = {
-    '_templatePrepare': function(tmplString) {
+var viewCommonUser = {
+    templatePrepare: function(tmplString) {
         return tmplString;
     }
 };
@@ -67,7 +60,9 @@ var _viewCommonUser = {
  * Create class view node
  *
  * @example
- * var XBButtonContent = xblocks.view.create({
+ * var view = require('./view');
+ *
+ * var XBButtonContent = view.create({
  *     'displayName': 'XBButtonContent',
  *     'render': function() {
  *         return (
@@ -76,7 +71,7 @@ var _viewCommonUser = {
  *     }
  * });
  *
- * xblocks.view.register('xb-button', {
+ * view.register('xb-button', {
  *     'displayName': 'xb-button',
  *     'render': function() {
  *         return (
@@ -91,19 +86,14 @@ var _viewCommonUser = {
  * @param {object|array} component settings view creation
  * @returns {function}
  */
-xblocks.view.create = function(component) {
-    component = Array.isArray(component) ? component : [ component ];
-    component.unshift(true, {}, _viewCommonUser);
-    component.push(_viewCommon);
-
-    return React.createClass(xblocks.utils.merge.apply({}, component));
-};
+exports.create = create;
 
 /**
  * Registration of a new node
  *
  * @example
- * xblocks.view.register('xb-button', {
+ * var view = require('./view');
+ * view.register('xb-button', {
  *     'displayName': 'xb-button',
  *     'render': function() {
  *         return (
@@ -117,13 +107,13 @@ xblocks.view.create = function(component) {
  * @param {object|array} component settings view creation
  * @returns {function}
  */
-xblocks.view.register = function(blockName, component) {
+exports.register = function(blockName, component) {
     if (React.DOM.hasOwnProperty(blockName)) {
         throw 'Specified item "' + blockName + '" is already defined';
     }
 
-    var componentClass = xblocks.view.create(component);
-    _viewComponentsClass[ blockName ] = componentClass;
+    var componentClass = create(component);
+    viewComponentsClass[ blockName ] = componentClass;
 
     React.DOM[ blockName ] = React.createFactory(componentClass);
 
@@ -136,7 +126,7 @@ xblocks.view.register = function(blockName, component) {
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
-xblocks.view.getFactory = function(blockName) {
+exports.getFactory = function(blockName) {
     return React.DOM[ blockName ];
 };
 
@@ -146,6 +136,14 @@ xblocks.view.getFactory = function(blockName) {
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
-xblocks.view.getClass = function(blockName) {
-    return _viewComponentsClass[ blockName ];
+exports.getClass = function(blockName) {
+    return viewComponentsClass[ blockName ];
 };
+
+function create(component) {
+    component = Array.isArray(component) ? component : [ component ];
+    component.unshift(true, {}, viewCommonUser);
+    component.push(viewCommon);
+
+    return React.createClass(merge.apply({}, component));
+}

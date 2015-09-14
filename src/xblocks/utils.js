@@ -1,27 +1,13 @@
-//jscs:disable
-/* global xblocks */
-/* jshint strict: false */
-//jscs:enable
+'use strict';
 
-/**
- * @namespace
- */
-xblocks.utils = xblocks.utils || {};
-
-xblocks.utils.REG_TYPE_EXTRACT = /\s([a-zA-Z]+)/;
-xblocks.utils.REG_PRISTINE = /^[\$_a-z][\$\w]*$/i;
-
-xblocks.utils.SELECTOR_TMPL = 'script[type="text/x-template"][ref],template[ref]';
-xblocks.utils.SELECTOR_CONTENT = 'script[type="text/x-template"]:not([ref]),template:not([ref])';
-
-/*! borschik:include:utils/log.js */
-/*! borschik:include:utils/seq.js */
-/*! borschik:include:utils/type.js */
-/*! borschik:include:utils/isPlainObject.js */
-/*! borschik:include:utils/pristine.js */
-/*! borschik:include:utils/merge.js */
-/*! borschik:include:utils/assign.js */
-/*! borschik:include:utils/lazy.js */
-/*! borschik:include:utils/equals.js */
-/*! borschik:include:utils/propTypes.js */
-/*! borschik:include:utils/tmpl.js */
+exports.assign = require('./utils/assign');
+exports.equals = require('./utils/equals');
+exports.isPlainObject = require('./utils/isPlainObject');
+exports.lazy = require('./utils/lazy');
+exports.log = require('./utils/log');
+exports.merge = require('./utils/merge');
+exports.pristine = require('./utils/pristine');
+exports.propTypes = require('./utils/propTypes');
+exports.seq = require('./utils/seq');
+exports.tmpl = require('./utils/tmpl');
+exports.type = require('./utils/type');

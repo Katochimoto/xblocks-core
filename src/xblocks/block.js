@@ -1,58 +1,61 @@
-//jscs:disable
-/* global xblocks, __forEach */
-/* jshint strict: false */
-//jscs:enable
+'use strict';
 
-var _blockStatic = {
-    'init': function(element) {
-        if (!element.xtagName) {
-            element.xtagName = element.tagName.toLowerCase();
-            element.xtmpl = {};
-            element.xuid = xblocks.utils.seq();
-            element.xprops = xblocks.utils.propTypes(element.xtagName);
-            element.xinserted = false;
+var dom = require('./dom');
+var utils = require('./utils');
+var Element = require('./element');
+var xtag = require('xtag');
+var forEach = Array.prototype.forEach;
+
+var blockStatic = {
+    init: function(node) {
+        if (!node.xtagName) {
+            node.xtagName = node.tagName.toLowerCase();
+            node.xtmpl = {};
+            node.xuid = utils.seq();
+            node.xprops = utils.propTypes(node.xtagName);
+            node.xinserted = false;
             return true;
         }
 
         return false;
     },
 
-    'tmplCompile': function(tmplElement) {
-        this.xtmpl[ tmplElement.getAttribute('ref') ] = tmplElement.innerHTML;
+    tmplCompile: function(tmplNode) {
+        this.xtmpl[ tmplNode.getAttribute('ref') ] = tmplNode.innerHTML;
     },
 
-    'create': function(element) {
-        if (element.hasChildNodes()) {
-            __forEach.call(
-                element.querySelectorAll(xblocks.utils.SELECTOR_TMPL),
-                _blockStatic.tmplCompile,
-                element
+    create: function(node) {
+        if (node.hasChildNodes()) {
+            forEach.call(
+                node.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
+                blockStatic.tmplCompile,
+                node
             );
         }
 
-        element.xblock = new xblocks.Element(element);
+        node.xblock = new Element(node);
     },
 
-    'createLazy': function(elements) {
-        elements.forEach(_blockStatic.create);
+    createLazy: function(nodes) {
+        nodes.forEach(blockStatic.create);
     }
 };
 
-var _blockCommon = {
-    'lifecycle': {
-        'created': function() {
-            xblocks.utils.log.time(this, 'xb_init');
-            xblocks.utils.log.time(this, 'dom_inserted');
+var blockCommon = {
+    lifecycle: {
+        created: function() {
+            utils.log.time(this, 'xb_init');
+            utils.log.time(this, 'dom_inserted');
 
-            _blockStatic.init(this);
+            blockStatic.init(this);
         },
 
-        'inserted': function() {
+        inserted: function() {
             if (this.xinserted) {
                 return;
             }
 
-            _blockStatic.init(this);
+            blockStatic.init(this);
 
             this.xinserted = true;
 
@@ -61,16 +64,16 @@ var _blockCommon = {
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>
             if (isScriptContent) {
-                xblocks.utils.lazy(_blockStatic.createLazy, this);
+                utils.lazy(blockStatic.createLazy, this);
 
             } else {
-                _blockStatic.create(this);
+                blockStatic.create(this);
             }
 
-            xblocks.utils.log.time(this, 'dom_inserted');
+            utils.log.time(this, 'dom_inserted');
         },
 
-        'removed': function() {
+        removed: function() {
             this.xinserted = false;
 
             // replace initial content after destroy react component
@@ -85,9 +88,9 @@ var _blockCommon = {
             }
         },
 
-        'attributeChanged': function(attrName, oldValue, newValue) {
+        attributeChanged: function(attrName, oldValue, newValue) {
             // removeAttribute('xb-static')
-            if (attrName === xblocks.dom.attrs.XB_ATTRS.STATIC &&
+            if (attrName === 'xb-static' &&
                 newValue === null &&
                 this.xblock &&
                 !this.mounted) {
@@ -97,48 +100,48 @@ var _blockCommon = {
         }
     },
 
-    'accessors': {
+    accessors: {
         // check mounted react
-        'mounted': {
-            'get': function() {
+        mounted: {
+            get: function() {
                 return Boolean(this.xblock && this.xblock.isMounted());
             }
         },
 
-        'content': {
-            'get': function() {
+        content: {
+            get: function() {
                 if (this.mounted) {
                     return this.xblock.getMountedContent();
                 }
 
-                return xblocks.dom.contentNode(this).innerHTML;
+                return dom.contentNode(this).innerHTML;
             },
 
-            'set': function(content) {
+            set: function(content) {
                 if (this.mounted) {
                     this.xblock.setMountedContent(content);
 
                 } else {
-                    xblocks.dom.contentNode(this).innerHTML = content;
+                    dom.contentNode(this).innerHTML = content;
                     this.upgrade();
                 }
             }
         },
 
         // getting object attributes
-        'attrs': {
-            'get': function() {
-                return xblocks.dom.attrs.toObject(this);
+        attrs: {
+            get: function() {
+                return dom.attrs.toObject(this);
             }
         },
 
-        'state': {
-            'get': function() {
+        state: {
+            get: function() {
                 var prop;
-                var props = xblocks.dom.attrs.toObject(this);
+                var props = dom.attrs.toObject(this);
                 var xprops = this.xprops;
-                var eprops = xblocks.tag.tags[ this.xtagName ].accessors;
-                var common = _blockCommon.accessors;
+                var eprops = xtag.tags[ this.xtagName ].accessors;
+                var common = blockCommon.accessors;
 
                 for (prop in eprops) {
                     if (xprops.hasOwnProperty(prop) &&
@@ -149,23 +152,23 @@ var _blockCommon = {
                     }
                 }
 
-                xblocks.dom.attrs.typeConversion(props, xprops);
+                dom.attrs.typeConversion(props, xprops);
                 return props;
             }
         },
 
-        'outerHTML': xblocks.dom.outerHTML
+        outerHTML: dom.outerHTML
     },
 
-    'methods': {
-        'upgrade': function() {
-            xblocks.dom.upgradeAll(this);
+    methods: {
+        upgrade: function() {
+            dom.upgradeAll(this);
         },
 
-        'cloneNode': function(deep) {
+        cloneNode: function(deep) {
             // not to clone the contents
-            var node = xblocks.dom.cloneNode(this, false);
-            xblocks.dom.upgrade(node);
+            var node = dom.cloneNode(this, false);
+            dom.upgrade(node);
 
             node.xtmpl = this.xtmpl;
             node.xinserted = false;
@@ -190,10 +193,10 @@ var _blockCommon = {
  * @param {?object|array} options settings tag creation
  * @returns {HTMLElement}
  */
-xblocks.create = function(blockName, options) {
+exports.create = function(blockName, options) {
     options = Array.isArray(options) ? options : [ options ];
     options.unshift(true, {});
-    options.push(_blockCommon);
+    options.push(blockCommon);
 
     // error when merging prototype in FireFox <=19
     var proto;
@@ -204,7 +207,7 @@ xblocks.create = function(blockName, options) {
     for (; i < l; i++) {
         o = options[ i ];
 
-        if (xblocks.utils.isPlainObject(o)) {
+        if (utils.isPlainObject(o)) {
             if (!proto && o.prototype) {
                 proto = o.prototype;
             }
@@ -213,11 +216,11 @@ xblocks.create = function(blockName, options) {
         }
     }
 
-    options = xblocks.utils.merge.apply({}, options);
+    options = utils.merge.apply({}, options);
 
     if (proto) {
         options.prototype = proto;
     }
 
-    return xblocks.tag.register(blockName, options);
+    return xtag.register(blockName, options);
 };

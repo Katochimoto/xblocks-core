@@ -18,7 +18,7 @@ module.exports = function(config) {
             'test/helpers/setup.js',
 
             'node_modules/classnames/index.js',
-            'node_modules/setimmediate2/setImmediate.js',
+            'node_modules/setimmediate2/dist/setImmediate.js',
             'bower_components/vow/vow.min.js',
             'bower_components/es5-shim/es5-shim.js',
             'bower_components/react/react-with-addons.js',

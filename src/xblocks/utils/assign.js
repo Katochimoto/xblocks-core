@@ -1,11 +1,6 @@
-//jscs:disable
-/* global xblocks, _utilsMerge */
-/* jshint strict: false */
-//jscs:enable
+'use strict';
 
-var _utilsAssignCheckCopy = function() {
-    return true;
-};
+var mergeBase = require('./mergeBase');
 
 /**
  * Combining objects with undefined params
@@ -14,8 +9,13 @@ var _utilsAssignCheckCopy = function() {
  * xblocks.utils.assign({}, { a: 1, b: undefined }, { a: undefined, c: undefined })
  * // { a: undefined, b: undefined, c: undefined }
  *
+ * @function xblocks.utils.assign
  * @returns {object}
  */
-xblocks.utils.assign = function() {
-    return _utilsMerge.call(this, _utilsAssignCheckCopy, arguments);
+module.exports = function() {
+    return mergeBase.call(this, utilsAssignCheckCopy, arguments);
 };
+
+function utilsAssignCheckCopy() {
+    return true;
+}

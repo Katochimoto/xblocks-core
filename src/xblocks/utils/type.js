@@ -1,14 +1,15 @@
-//jscs:disable
-/* global xblocks, __toString */
-/* jshint strict: false */
-//jscs:enable
+'use strict';
+
+var toString = Object.prototype.toString;
+var regType = /\s([a-zA-Z]+)/;
 
 /**
  * The definition of the data type
+ * @function xblocks.utils.type
  * @param {*} param
  * @returns {string}
  */
-xblocks.utils.type = function(param) {
+module.exports = function(param) {
     if (param === undefined) {
         return 'undefined';
     }
@@ -20,8 +21,8 @@ xblocks.utils.type = function(param) {
     var type = typeof(param);
 
     if (type === 'object') {
-        type = __toString.call(param)
-            .match(xblocks.utils.REG_TYPE_EXTRACT)[1]
+        type = toString.call(param)
+            .match(regType)[1]
             .toLowerCase();
     }
 

@@ -1,11 +1,6 @@
-//jscs:disable
-/* global xblocks */
-/* jshint strict: false */
-//jscs:enable
+'use strict';
 
-xblocks.utils.log = {};
-
-xblocks.utils.log.time = function(/*element, name*/) {
+exports.time = function(/*element, name*/) {
     /*
     if (!element._xtimers) {
         element._xtimers = {};

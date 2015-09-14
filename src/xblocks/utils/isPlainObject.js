@@ -1,7 +1,6 @@
-//jscs:disable
-/* global xblocks */
-/* jshint strict: false */
-//jscs:enable
+'use strict';
+
+var type = require('./type');
 
 /**
  * Check to see if an object is a plain object (created using "{}" or "new Object")
@@ -12,11 +11,12 @@
  * xblocks.utils.isPlainObject(test)
  * // false
  *
+ * @function xblocks.utils.isPlainObject
  * @param {*} value the value to test
  * @returns {boolean}
  */
-xblocks.utils.isPlainObject = function(value) {
-    if (xblocks.utils.type(value) !== 'object') {
+module.exports = function(value) {
+    if (type(value) !== 'object') {
         return false;
     }
 

@@ -1,25 +1,26 @@
-//jscs:disable
-/* global xblocks, global */
-/* jshint strict: false */
-//jscs:enable
+'use strict';
+
+var context = require('../../context');
+var regPristine = /^[\$_a-z][\$\w]*$/i;
 
 /**
  * Check the override method
+ * @function xblocks.utils.pristine
  * @param {string} methodName method name
  * @returns {boolean} true if the method is not overridden
  */
-xblocks.utils.pristine = function(methodName) {
+module.exports = function(methodName) {
     if (!methodName) {
         return false;
     }
 
-    var method = global[ methodName ];
+    var method = context[ methodName ];
 
     if (!method) {
         return false;
     }
 
-    if (!xblocks.utils.REG_PRISTINE.test(methodName)) {
+    if (!regPristine.test(methodName)) {
         return false;
     }
 

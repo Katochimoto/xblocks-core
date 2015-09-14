@@ -1,17 +1,15 @@
-//jscs:disable
-/* jshint unused: false */
-//jscs:enable
+var context = require('./context');
 
-window.Platform = {};
+context.Platform = {};
 var logFlags = {
     //dom: true
     //data: true
 };
 
-/*! borschik:include:polyfills/performance.js */
-/*! borschik:include:polyfills/matches.js */
-/*! borschik:include:polyfills/CustomEvent.js */
-/*! borschik:include:polyfills/DOMAttrModified.js */
+require('./polyfills/performance');
+require('./polyfills/matches');
+require('./polyfills/CustomEvent');
+require('./polyfills/DOMAttrModified');
 
 /*! borschik:include:../node_modules/dom-token-list-polyfill/src/token-list.js */
 /*! borschik:include:../node_modules/webcomponents.js/src/WeakMap/WeakMap.js */

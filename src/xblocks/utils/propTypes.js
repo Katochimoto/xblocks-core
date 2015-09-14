@@ -1,14 +1,14 @@
-//jscs:disable
-/* global xblocks */
-/* jshint strict: false */
-//jscs:enable
+'use strict';
+
+var view = require('../view');
 
 /**
+ * @function xblocks.utils.propTypes
  * @param {string} tagName
  * @returns {object}
  */
-xblocks.utils.propTypes = function(tagName) {
-    var view = xblocks.view.getClass(tagName);
+module.exports = function(tagName) {
+    var view = view.getClass(tagName);
 
     if (!view) {
         return {};

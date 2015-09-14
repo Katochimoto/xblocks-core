@@ -1,9 +1,8 @@
-//jscs:disable
-/* global global */
-//jscs:enable
+'use strict';
 
+var context = require('../context');
 var CustomEventCommon;
-var doc = global.document;
+var doc = context.document;
 var issetCustomEvent = false;
 
 try {
@@ -40,4 +39,6 @@ if (issetCustomEvent) {
     };
 }
 
-CustomEventCommon.prototype = global.Event.prototype;
+CustomEventCommon.prototype = context.Event.prototype;
+
+module.exports = CustomEventCommon;

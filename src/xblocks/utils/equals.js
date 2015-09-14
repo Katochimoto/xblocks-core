@@ -1,7 +1,6 @@
-//jscs:disable
-/* global xblocks */
-/* jshint strict: false */
-//jscs:enable
+'use strict';
+
+var type = require('./type');
 
 /**
  * @param {*} x
@@ -9,7 +8,7 @@
  * @returns {boolean}
  * @private
  */
-xblocks.utils._equal = {
+var equal = {
     'array': function(x, y) {
         var i = 0;
         var l = x.length;
@@ -74,24 +73,25 @@ xblocks.utils._equal = {
  * xblocks.utils.equals({ a: 1 }, { a: 2 })
  * // false
  *
+ * @function xblocks.utils.equals
  * @param {*} x that compared
  * @param {*} y compared to
  * @returns {boolean}
  */
-xblocks.utils.equals = function(x, y) {
+modile.exports = function(x, y) {
     if (x === y) {
         return true;
     }
 
-    var xType = xblocks.utils.type(x);
-    var yType = xblocks.utils.type(y);
+    var xType = type(x);
+    var yType = type(y);
 
     if (xType !== yType) {
         return false;
     }
 
-    if (xblocks.utils._equal.hasOwnProperty(xType)) {
-        return xblocks.utils._equal[ xType ](x, y);
+    if (equal.hasOwnProperty(xType)) {
+        return equal[ xType ](x, y);
     }
 
     return x == y;

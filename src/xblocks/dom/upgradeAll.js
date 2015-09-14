@@ -1,14 +1,13 @@
-//jscs:disable
-/* global xblocks, global, __noop */
-/* jshint strict: false */
-//jscs:enable
+'use strict';
+
+var context = require('../../context');
 
 /**
  * @function xblocks.dom.upgradeAll
  */
-xblocks.dom.upgradeAll = (function() {
-    if (global.CustomElements && typeof(global.CustomElements.upgradeAll) === 'function') {
-        return global.CustomElements.upgradeAll;
+module.exports = (function() {
+    if (context.CustomElements && typeof(context.CustomElements.upgradeAll) === 'function') {
+        return context.CustomElements.upgradeAll;
 
     } else {
         return __noop;

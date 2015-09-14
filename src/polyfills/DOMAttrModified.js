@@ -1,29 +1,24 @@
-//jscs:disable
-/* jshint -W067 */
-//jscs:enable
 /**
  * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
  */
-(function(global) {
-    'use strict';
 
-    var attrModifiedWorks = false;
-    var listener = function() {
-        attrModifiedWorks = true;
-    };
+'use strict';
 
-    var doc = global.document;
-    var htmlElement = doc.documentElement;
-    htmlElement.addEventListener('DOMAttrModified', listener, false);
-    htmlElement.setAttribute('___TEST___', true);
-    htmlElement.removeEventListener('DOMAttrModified', listener, false);
-    htmlElement.removeAttribute('___TEST___', true);
+var context = require('../context');
+var attrModifiedWorks = false;
+var listener = function() {
+    attrModifiedWorks = true;
+};
 
-    if (attrModifiedWorks) {
-        return;
-    }
+var doc = context.document;
+var htmlElement = doc.documentElement;
+htmlElement.addEventListener('DOMAttrModified', listener, false);
+htmlElement.setAttribute('___TEST___', true);
+htmlElement.removeEventListener('DOMAttrModified', listener, false);
+htmlElement.removeAttribute('___TEST___', true);
 
-    var proto = global.Element.prototype;
+if (!attrModifiedWorks) {
+    var proto = context.Element.prototype;
 
     proto.__setAttribute = proto.setAttribute;
     proto.setAttribute = function(attrName, newVal) {
@@ -63,7 +58,4 @@
         );
         this.dispatchEvent(evt);
     };
-
-}(function() {
-    return this || (1, eval)('this');
-}()));
+}
