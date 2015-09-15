@@ -30,10 +30,11 @@ var viewCommon = {
         var xtmpl = this.props._container && this.props._container.xtmpl;
 
         if (typeof(xtmpl) === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
-            props = props || {};
-            props.dangerouslySetInnerHTML = {
-                '__html': this.templatePrepare(xtmpl[ ref ])
-            };
+            props = merge.apply({}, props, {
+                'dangerouslySetInnerHTML': {
+                    '__html': this.templatePrepare(xtmpl[ ref ])
+                }
+            });
 
             return React.createElement('div', props);
         }

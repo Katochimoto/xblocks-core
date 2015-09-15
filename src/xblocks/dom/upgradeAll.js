@@ -10,6 +10,6 @@ module.exports = (function() {
         return context.CustomElements.upgradeAll;
 
     } else {
-        return __noop;
+        return function() {};
     }
 }());

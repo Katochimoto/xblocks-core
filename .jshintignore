@@ -3,3 +3,5 @@ bower_components
 test
 coverage
 dist
+samples
+webpack.config.js

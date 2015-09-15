@@ -45,7 +45,7 @@
     "karma-safari-launcher": "~0.1.x",
     "karma-sinon-expect": "~0.1.x",
     "mocha": "2.2.5",
-    "setimmediate2": "2.0.0",
+    "setimmediate2": "2.0.1",
     "sinon": "1.15.4",
     "webcomponents.js": "webcomponents/webcomponentsjs.git",
     "webpack": "^1.12.1",

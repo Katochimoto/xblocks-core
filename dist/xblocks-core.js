@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory(require("React"), require("xtag"));
+	else if(typeof define === 'function' && define.amd)
+		define(["React", "xtag"], factory);
+	else if(typeof exports === 'object')
+		exports["xblocks"] = factory(require("React"), require("xtag"));
+	else
+		root["xblocks"] = factory(root["React"], root["xtag"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_38__) {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -44,46 +54,13 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	//jscs:disable
-	/* jshint -W067 */
-	/* jshint unused: false */
-	//jscs:enable
-
 	'use strict';
 
-	var Block = __webpack_require__(1);
-
-	exports.create = Block.create;
-
-
-	/*
-	(function(global, undefined) {
-
-
-	    var React = global.React;
-
-	    global.xblocks = global.xblocks || {};
-
-	    // @namespace xblocks
-	    var xblocks = global.xblocks;
-
-	    var __doc = global.document;
-	    var __toString = Object.prototype.toString;
-	    var __forEach = Array.prototype.forEach;
-	    var __noop = function() {};
-
-	    // borschik:include:xblocks/utils.js
-	    // borschik:include:xblocks/dom.js
-	    // borschik:include:xblocks/event.js
-	    // borschik:include:xblocks/react.js
-	    // borschik:include:xblocks/view.js
-	    // borschik:include:xblocks/block.js
-	    // borschik:include:xblocks/element.js
-
-	}(function() {
-	    return this || (1, eval)('this');
-	}()));
-	*/
+	exports.create = __webpack_require__(1).create;
+	exports.dom = __webpack_require__(2);
+	exports.event = __webpack_require__(36);
+	exports.utils = __webpack_require__(11);
+	exports.view = __webpack_require__(32);
 
 
 /***/ },
@@ -94,8 +71,8 @@
 
 	var dom = __webpack_require__(2);
 	var utils = __webpack_require__(11);
-	var Element = __webpack_require__(26);
-	var xtag = __webpack_require__(28);
+	var Element = __webpack_require__(35);
+	var xtag = __webpack_require__(38);
 	var forEach = Array.prototype.forEach;
 
 	var blockStatic = {
@@ -331,24 +308,6 @@
 	exports.upgrade = __webpack_require__(9);
 	exports.upgradeAll = __webpack_require__(10);
 
-	/**
-	 * @namespace
-	 */
-	xblocks.dom = xblocks.dom || {};
-
-	/**
-	 * @namespace
-	 */
-	xblocks.dom.attrs = xblocks.dom.attrs || {};
-
-	/**
-	 * A set of special attributes
-	 * @type {object}
-	 */
-	xblocks.dom.attrs.XB_ATTRS = {
-	    'STATIC': 'xb-static'
-	};
-
 
 /***/ },
 /* 3 */
@@ -357,6 +316,7 @@
 	'use strict';
 
 	var React = __webpack_require__(4);
+	var forEach = Array.prototype.forEach;
 
 	/**
 	 * A set of boolean attributes
@@ -437,7 +397,7 @@
 	    var attrs = {};
 
 	    if (element.nodeType === 1 && element.hasAttributes()) {
-	        Array.prototype.forEach.call(element.attributes, toObjectIterator, attrs);
+	        forEach.call(element.attributes, toObjectIterator, attrs);
 	    }
 
 	    return attrs;
@@ -532,7 +492,7 @@
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = React;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
 
 /***/ },
 /* 5 */
@@ -622,7 +582,7 @@
 	 */
 	module.exports = (function() {
 
-	    var container = __doc.createElementNS('http://www.w3.org/1999/xhtml', '_');
+	    var container = context.document.createElementNS('http://www.w3.org/1999/xhtml', '_');
 	    var getter;
 	    var setter;
 
@@ -697,7 +657,7 @@
 	        return context.CustomElements.upgrade;
 
 	    } else {
-	        return __noop;
+	        return function() {};
 	    }
 	}());
 
@@ -718,7 +678,7 @@
 	        return context.CustomElements.upgradeAll;
 
 	    } else {
-	        return __noop;
+	        return function() {};
 	    }
 	}());
 
@@ -730,15 +690,15 @@
 	'use strict';
 
 	exports.assign = __webpack_require__(12);
-	exports.equals = __webpack_require__(14);
-	exports.isPlainObject = __webpack_require__(16);
-	exports.lazy = __webpack_require__(17);
-	exports.log = __webpack_require__(19);
-	exports.merge = __webpack_require__(20);
-	exports.pristine = __webpack_require__(21);
-	exports.propTypes = __webpack_require__(22);
-	exports.seq = __webpack_require__(24);
-	exports.tmpl = __webpack_require__(25);
+	exports.equals = __webpack_require__(17);
+	exports.isPlainObject = __webpack_require__(14);
+	exports.lazy = __webpack_require__(18);
+	exports.log = __webpack_require__(29);
+	exports.merge = __webpack_require__(16);
+	exports.pristine = __webpack_require__(30);
+	exports.propTypes = __webpack_require__(31);
+	exports.seq = __webpack_require__(33);
+	exports.tmpl = __webpack_require__(34);
 	exports.type = __webpack_require__(15);
 
 
@@ -771,9 +731,12 @@
 
 /***/ },
 /* 13 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	var isPlainObject = __webpack_require__(14);
+	var merge = __webpack_require__(16);
 
 	module.exports = function(checkСopy, args) {
 	    var options;
@@ -821,18 +784,18 @@
 	                }
 
 	                // Recurse if we're merging plain objects or arrays
-	                if (deep && copy && (xblocks.utils.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
+	                if (deep && copy && (isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
 
 	                    if (copyIsArray) {
 	                        copyIsArray = false;
 	                        clone = src && Array.isArray(src) ? src : [];
 
 	                    } else {
-	                        clone = src && xblocks.utils.isPlainObject(src) ? src : {};
+	                        clone = src && isPlainObject(src) ? src : {};
 	                    }
 
 	                    // Never move original objects, clone them
-	                    target[ name ] = xblocks.utils.merge( deep, clone, copy );
+	                    target[ name ] = merge( deep, clone, copy );
 
 	                } else if (checkСopy(copy)) {
 	                    target[ name ] = copy;
@@ -855,98 +818,28 @@
 	var type = __webpack_require__(15);
 
 	/**
-	 * @param {*} x
-	 * @param {*} y
-	 * @returns {boolean}
-	 * @private
-	 */
-	var equal = {
-	    'array': function(x, y) {
-	        var i = 0;
-	        var l = x.length;
-
-	        if (l !== y.length) {
-	            return false;
-	        }
-
-	        for (; i < l; i++) {
-	            if (!xblocks.utils.equals(x[i], y[i])) {
-	                return false;
-	            }
-	        }
-
-	        return true;
-	    },
-
-	    'object': function(x, y) {
-	        var i;
-
-	        for (i in x) {
-	            if (y.hasOwnProperty(i)) {
-	                if (!xblocks.utils.equals(x[i], y[i])) {
-	                    return false;
-	                }
-
-	            } else {
-	                return false;
-	            }
-	    	}
-
-	        for (i in y) {
-	            if (!x.hasOwnProperty(i)) {
-	                return false;
-	            }
-	        }
-
-	    	return true;
-	    },
-
-	    'date': function(x, y) {
-	        return x.getTime() === y.getTime();
-	    },
-
-	    'regexp': function(x, y) {
-	        return x.toString() === y.toString();
-	    },
-
-	    'function': function(x, y) {
-	        return x.toString() === y.toString();
-	    }
-	};
-
-	/**
-	 * Comparison
+	 * Check to see if an object is a plain object (created using "{}" or "new Object")
 	 *
 	 * @example
-	 * xblocks.utils.equals(1, 1)
+	 * xblocks.utils.isPlainObject({})
 	 * // true
-	 * xblocks.utils.equals({ a: 1 }, { a: 1 })
-	 * // true
-	 * xblocks.utils.equals({ a: 1 }, { a: 2 })
+	 * xblocks.utils.isPlainObject(test)
 	 * // false
 	 *
-	 * @function xblocks.utils.equals
-	 * @param {*} x that compared
-	 * @param {*} y compared to
+	 * @function xblocks.utils.isPlainObject
+	 * @param {*} value the value to test
 	 * @returns {boolean}
 	 */
-	modile.exports = function(x, y) {
-	    if (x === y) {
-	        return true;
-	    }
-
-	    var xType = type(x);
-	    var yType = type(y);
-
-	    if (xType !== yType) {
+	module.exports = function(value) {
+	    if (type(value) !== 'object') {
 	        return false;
 	    }
 
-	    if (equal.hasOwnProperty(xType)) {
-	        return equal[ xType ](x, y);
+	    if (value.constructor && !value.constructor.prototype.hasOwnProperty('isPrototypeOf')) {
+	        return false;
 	    }
 
-	    return x == y;
+	    return true;
 	};
 
 
@@ -1002,32 +895,35 @@
 
 	'use strict';
 
-	var type = __webpack_require__(15);
+	var mergeBase = __webpack_require__(13);
 
 	/**
-	 * Check to see if an object is a plain object (created using "{}" or "new Object")
+	 * Combining objects
 	 *
 	 * @example
-	 * xblocks.utils.isPlainObject({})
-	 * // true
-	 * xblocks.utils.isPlainObject(test)
-	 * // false
+	 * var target = { a: 1 };
+	 * xblocks.utils.merge(target, { b: 2 })
+	 * // { a: 1, b: 2 }
 	 *
-	 * @function xblocks.utils.isPlainObject
-	 * @param {*} value the value to test
-	 * @returns {boolean}
+	 * xblocks.utils.merge({ a: 1 }, { b: 2 }, { c: 3 })
+	 * // { a: 1, b: 2, c: 3 }
+	 *
+	 * xblocks.utils.merge(true, { a: 1 }, { b: { c: 2 } }, { b: { d: 3 } })
+	 * // { a: 1, b: { c: 2, d: 3 } }
+	 *
+	 * xblocks.utils.merge({}, { a: 1, b: undefined }, { a: undefined, c: undefined })
+	 * // { a: 1 }
+	 *
+	 * @function xblocks.utils.merge
+	 * @returns {object}
 	 */
-	module.exports = function(value) {
-	    if (type(value) !== 'object') {
-	        return false;
-	    }
-
-	    if (value.constructor && !value.constructor.prototype.hasOwnProperty('isPrototypeOf')) {
-	        return false;
-	    }
-
-	    return true;
+	module.exports = function() {
+	    return mergeBase.call(this, utilsMergeCheckCopy, arguments);
 	};
+
+	function utilsMergeCheckCopy(value) {
+	    return (value !== undefined);
+	}
 
 
 /***/ },
@@ -1036,7 +932,113 @@
 
 	'use strict';
 
-	var immediate = __webpack_require__(18);
+	var type = __webpack_require__(15);
+
+	/**
+	 * @param {*} x
+	 * @param {*} y
+	 * @returns {boolean}
+	 * @private
+	 */
+	var equal = {
+	    'array': function(x, y) {
+	        var i = 0;
+	        var l = x.length;
+
+	        if (l !== y.length) {
+	            return false;
+	        }
+
+	        for (; i < l; i++) {
+	            if (!equals(x[i], y[i])) {
+	                return false;
+	            }
+	        }
+
+	        return true;
+	    },
+
+	    'object': function(x, y) {
+	        var i;
+
+	        for (i in x) {
+	            if (y.hasOwnProperty(i)) {
+	                if (!equals(x[i], y[i])) {
+	                    return false;
+	                }
+
+	            } else {
+	                return false;
+	            }
+	    	}
+
+	        for (i in y) {
+	            if (!x.hasOwnProperty(i)) {
+	                return false;
+	            }
+	        }
+
+	    	return true;
+	    },
+
+	    'date': function(x, y) {
+	        return x.getTime() === y.getTime();
+	    },
+
+	    'regexp': function(x, y) {
+	        return x.toString() === y.toString();
+	    },
+
+	    'function': function(x, y) {
+	        return x.toString() === y.toString();
+	    }
+	};
+
+	function equals(x, y) {
+	    if (x === y) {
+	        return true;
+	    }
+
+	    var xType = type(x);
+	    var yType = type(y);
+
+	    if (xType !== yType) {
+	        return false;
+	    }
+
+	    if (equal.hasOwnProperty(xType)) {
+	        return equal[ xType ](x, y);
+	    }
+
+	    return x == y;
+	}
+
+	/**
+	 * Comparison
+	 *
+	 * @example
+	 * xblocks.utils.equals(1, 1)
+	 * // true
+	 * xblocks.utils.equals({ a: 1 }, { a: 1 })
+	 * // true
+	 * xblocks.utils.equals({ a: 1 }, { a: 2 })
+	 * // false
+	 *
+	 * @function xblocks.utils.equals
+	 * @param {*} x that compared
+	 * @param {*} y compared to
+	 * @returns {boolean}
+	 */
+	module.exports = equals;
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var immediate = __webpack_require__(19);
 
 	/**
 	 * Deferred execution
@@ -1079,399 +1081,338 @@
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	(function webpackUniversalModuleDefinition(root, factory) {
-		if(true)
-			module.exports = factory();
-		else if(typeof define === 'function' && define.amd)
-			define([], factory);
-		else {
-			var a = factory();
-			for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
-		}
-	})(this, function() {
-	return /******/ (function(modules) { // webpackBootstrap
-	/******/ 	// The module cache
-	/******/ 	var installedModules = {};
+	'use strict';
+
+	var context = __webpack_require__(20);
+	var useNative = __webpack_require__(21);
+	var Timer = __webpack_require__(22);
+	var setTimeoutPolifill = __webpack_require__(23);
+	var polifills = [
+	    __webpack_require__(24),
+	    __webpack_require__(25),
+	    __webpack_require__(26),
+	    __webpack_require__(27),
+	    __webpack_require__(28)
+	];
+	var setImmediate;
+	var clearImmediate;
+
+	if (useNative()) {
+	    setImmediate = context.setImmediate ||
+	        context.msSetImmediate ||
+	        usePolifill(polifills, setTimeoutPolifill);
+
+	    clearImmediate = context.clearImmediate ||
+	        context.msClearImmediate ||
+	        Timer.clear;
+
+	} else {
+	    setImmediate = setTimeoutPolifill.init();
+	    clearImmediate = Timer.clear;
+	}
+
+	exports.setImmediate = setImmediate;
+	exports.clearImmediate = clearImmediate;
+
+	exports.msSetImmediate = setImmediate;
+	exports.msClearImmediate = clearImmediate;
+
+	function usePolifill(polifills, def) {
+	    for (var i = 0; i < polifills.length; i++) {
+	        var polifill = polifills[ i ];
+	        if (polifill.canUse()) {
+	            return polifill.init();
+	        }
+	    }
+
+	    return def.init();
+	}
 
-	/******/ 	// The require function
-	/******/ 	function __webpack_require__(moduleId) {
-
-	/******/ 		// Check if module is in cache
-	/******/ 		if(installedModules[moduleId])
-	/******/ 			return installedModules[moduleId].exports;
-
-	/******/ 		// Create a new module (and put it into the cache)
-	/******/ 		var module = installedModules[moduleId] = {
-	/******/ 			exports: {},
-	/******/ 			id: moduleId,
-	/******/ 			loaded: false
-	/******/ 		};
-
-	/******/ 		// Execute the module function
-	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
-	/******/ 		// Flag the module as loaded
-	/******/ 		module.loaded = true;
-
-	/******/ 		// Return the exports of the module
-	/******/ 		return module.exports;
-	/******/ 	}
-
-
-	/******/ 	// expose the modules object (__webpack_modules__)
-	/******/ 	__webpack_require__.m = modules;
-
-	/******/ 	// expose the module cache
-	/******/ 	__webpack_require__.c = installedModules;
-
-	/******/ 	// __webpack_public_path__
-	/******/ 	__webpack_require__.p = "";
-
-	/******/ 	// Load entry module and return exports
-	/******/ 	return __webpack_require__(0);
-	/******/ })
-	/************************************************************************/
-	/******/ ([
-	/* 0 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		var context = __webpack_require__(1);
-		var useNative = __webpack_require__(2);
-		var Timer = __webpack_require__(3);
-		var setTimeoutPolifill = __webpack_require__(4);
-		var polifills = [
-		    __webpack_require__(5),
-		    __webpack_require__(6),
-		    __webpack_require__(7),
-		    __webpack_require__(8),
-		    __webpack_require__(9)
-		];
-		var setImmediate;
-		var clearImmediate;
-
-		if (useNative()) {
-		    setImmediate = context.setImmediate ||
-		        context.msSetImmediate ||
-		        usePolifill(polifills, setTimeoutPolifill);
-
-		    clearImmediate = context.clearImmediate ||
-		        context.msClearImmediate ||
-		        Timer.clear;
-
-		} else {
-		    setImmediate = setTimeoutPolifill.init();
-		    clearImmediate = Timer.clear;
-		}
-
-		exports.setImmediate = setImmediate;
-		exports.clearImmediate = clearImmediate;
-
-		exports.msSetImmediate = setImmediate;
-		exports.msClearImmediate = clearImmediate;
-
-		function usePolifill(polifills, def) {
-		    for (var i = 0; i < polifills.length; i++) {
-		        var polifill = polifills[ i ];
-		        if (polifill.canUse()) {
-		            return polifill.init();
-		        }
-		    }
-
-		    return def.init();
-		}
-
-
-	/***/ },
-	/* 1 */
-	/***/ function(module, exports) {
-
-		/*jshint -W067*/
-		'use strict';
-
-		module.exports = (function() {
-		    return this || (1, eval)('this');
-		})();
-
-
-	/***/ },
-	/* 2 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		var context = __webpack_require__(1);
-
-		// @see http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
-		module.exports = function() {
-		    return !(context.navigator && /Trident|Edge/.test(context.navigator.userAgent));
-		};
-
-
-	/***/ },
-	/* 3 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		var context = __webpack_require__(1);
-
-		var nextId = 1;
-		var tasks = {};
-		var lock = false;
-
-		function wrap(handler) {
-		    var args = Array.prototype.slice.call(arguments, 1);
-
-		    return function() {
-		        handler.apply(undefined, args);
-		    };
-		}
-
-		function create(args) {
-		    tasks[ nextId ] = wrap.apply(undefined, args);
-		    return nextId++;
-		}
-
-		function clear(handleId) {
-		    delete tasks[ handleId ];
-		}
-
-		function run(handleId) {
-		    if (lock) {
-		        context.setTimeout( wrap( run, handleId ), 0 );
-
-		    } else {
-		        var task = tasks[ handleId ];
-
-		        if (task) {
-		            lock = true;
-
-		            try {
-		                task();
-
-		            } finally {
-		                clear( handleId );
-		                lock = false;
-		            }
-		        }
-		    }
-		}
-
-		exports.run = run;
-		exports.wrap = wrap;
-		exports.create = create;
-		exports.clear = clear;
-
-
-	/***/ },
-	/* 4 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		var context = __webpack_require__(1);
-		var Timer = __webpack_require__(3);
-
-		exports.init = function() {
-		    var polifill = function() {
-		        var handleId = Timer.create(arguments);
-		        context.setTimeout( Timer.wrap( Timer.run, handleId ), 0 );
-		        return handleId;
-		    };
-		    polifill.usePolifill = 'setTimeout';
-		    return polifill;
-		};
-
-		exports.canUse = function() {
-		    return true;
-		};
-
-
-	/***/ },
-	/* 5 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		var context = __webpack_require__(1);
-		var Timer = __webpack_require__(3);
-
-		exports.init = function() {
-		    var polifill = function() {
-		        var handleId = Timer.create(arguments);
-		        context.process.nextTick( Timer.wrap( Timer.run, handleId ) );
-		        return handleId;
-		    };
-		    polifill.usePolifill = 'nextTick';
-		    return polifill;
-		};
-
-		// Don't get fooled by e.g. browserify environments.
-		// For Node.js before 0.9
-		exports.canUse = function() {
-		    return (Object.prototype.toString.call(context.process) === '[object process]');
-		};
-
-
-	/***/ },
-	/* 6 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		var context = __webpack_require__(1);
-		var Timer = __webpack_require__(3);
-
-		exports.init = function() {
-		    var messagePrefix = 'setImmediate$' + Math.random() + '$';
-
-		    var onGlobalMessage = function(event) {
-		        if (event.source === context &&
-		            typeof(event.data) === 'string' &&
-		            event.data.indexOf(messagePrefix) === 0) {
-
-		            Timer.run(Number(event.data.slice(messagePrefix.length)));
-		        }
-		    };
-
-		    if (context.addEventListener) {
-		        context.addEventListener('message', onGlobalMessage, false);
-
-		    } else {
-		        context.attachEvent('onmessage', onGlobalMessage);
-		    }
-
-		    var polifill = function() {
-		        var handleId = Timer.create(arguments);
-		        context.postMessage(messagePrefix + handleId, '*');
-		        return handleId;
-		    };
-		    polifill.usePolifill = 'postMessage';
-		    return polifill;
-		};
-
-		// For non-IE10 modern browsers
-		exports.canUse = function() {
-		    if (context.importScripts || !context.postMessage) {
-		        return false;
-		    }
-
-		    var asynch = true;
-		    var oldOnMessage = context.onmessage;
-		    context.onmessage = function() {
-		        asynch = false;
-		    };
-
-		    context.postMessage('', '*');
-		    context.onmessage = oldOnMessage;
-		    return asynch;
-		};
-
-
-	/***/ },
-	/* 7 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		var context = __webpack_require__(1);
-		var Timer = __webpack_require__(3);
-
-		exports.init = function() {
-		    var channel = new context.MessageChannel();
-
-		    channel.port1.onmessage = function(event) {
-		        Timer.run(Number(event.data));
-		    };
-
-		    var polifill = function() {
-		        var handleId = Timer.create(arguments);
-		        channel.port2.postMessage(handleId);
-		        return handleId;
-		    };
-		    polifill.usePolifill = 'messageChannel';
-		    return polifill;
-		};
-
-		// For web workers, where supported
-		exports.canUse = function() {
-		    return Boolean(context.MessageChannel);
-		};
-
-
-	/***/ },
-	/* 8 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		var context = __webpack_require__(1);
-		var Timer = __webpack_require__(3);
-
-		exports.init = function() {
-		    var html = context.document.documentElement;
-		    var polifill = function() {
-		        var handleId = Timer.create(arguments);
-		        var script = context.document.createElement('script');
-
-		        script.onreadystatechange = function() {
-		            Timer.run(handleId);
-		            script.onreadystatechange = null;
-		            html.removeChild(script);
-		            script = null;
-		        };
-
-		        html.appendChild(script);
-		        return handleId;
-		    };
-
-		    polifill.usePolifill = 'readyStateChange';
-		    return polifill;
-		};
-
-		// For IE 6–8
-		exports.canUse = function() {
-		    return (context.document && ('onreadystatechange' in context.document.createElement('script')));
-		};
-
-
-	/***/ },
-	/* 9 */
-	/***/ function(module, exports, __webpack_require__) {
-
-		'use strict';
-
-		var context = __webpack_require__(1);
-		var Timer = __webpack_require__(3);
-
-		exports.init = function() {
-		    var polifill = function() {
-		        var handleId = Timer.create(arguments);
-		        var img = new context.Image();
-		        img.onload = img.onerror = Timer.wrap( Timer.run, handleId );
-		        img.src = '';
-
-		        return handleId;
-		    };
-		    polifill.usePolifill = 'image';
-		    return polifill;
-		};
-
-		exports.canUse = function() {
-		    return Boolean(context.window && context.Image);
-		};
-
-
-	/***/ }
-	/******/ ])
-	});
-	;
 
 /***/ },
-/* 19 */
+/* 20 */
+/***/ function(module, exports) {
+
+	/*jshint -W067*/
+	'use strict';
+
+	module.exports = (function() {
+	    return this || (1, eval)('this');
+	})();
+
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var context = __webpack_require__(20);
+
+	// @see http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
+	module.exports = function() {
+	    return !(context.navigator && /Trident|Edge/.test(context.navigator.userAgent));
+	};
+
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(20);
+
+	var nextId = 1;
+	var tasks = {};
+	var lock = false;
+
+	function wrap(handler) {
+	    var args = Array.prototype.slice.call(arguments, 1);
+
+	    return function() {
+	        handler.apply(undefined, args);
+	    };
+	}
+
+	function create(args) {
+	    tasks[ nextId ] = wrap.apply(undefined, args);
+	    return nextId++;
+	}
+
+	function clear(handleId) {
+	    delete tasks[ handleId ];
+	}
+
+	function run(handleId) {
+	    if (lock) {
+	        context.setTimeout( wrap( run, handleId ), 0 );
+
+	    } else {
+	        var task = tasks[ handleId ];
+
+	        if (task) {
+	            lock = true;
+
+	            try {
+	                task();
+
+	            } finally {
+	                clear( handleId );
+	                lock = false;
+	            }
+	        }
+	    }
+	}
+
+	exports.run = run;
+	exports.wrap = wrap;
+	exports.create = create;
+	exports.clear = clear;
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(20);
+	var Timer = __webpack_require__(22);
+
+	exports.init = function() {
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        context.setTimeout( Timer.wrap( Timer.run, handleId ), 0 );
+	        return handleId;
+	    };
+	    polifill.usePolifill = 'setTimeout';
+	    return polifill;
+	};
+
+	exports.canUse = function() {
+	    return true;
+	};
+
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(20);
+	var Timer = __webpack_require__(22);
+
+	exports.init = function() {
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        context.process.nextTick( Timer.wrap( Timer.run, handleId ) );
+	        return handleId;
+	    };
+	    polifill.usePolifill = 'nextTick';
+	    return polifill;
+	};
+
+	// Don't get fooled by e.g. browserify environments.
+	// For Node.js before 0.9
+	exports.canUse = function() {
+	    return (Object.prototype.toString.call(context.process) === '[object process]');
+	};
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(20);
+	var Timer = __webpack_require__(22);
+
+	exports.init = function() {
+	    var messagePrefix = 'setImmediate$' + Math.random() + '$';
+
+	    var onGlobalMessage = function(event) {
+	        if (event.source === context &&
+	            typeof(event.data) === 'string' &&
+	            event.data.indexOf(messagePrefix) === 0) {
+
+	            Timer.run(Number(event.data.slice(messagePrefix.length)));
+	        }
+	    };
+
+	    if (context.addEventListener) {
+	        context.addEventListener('message', onGlobalMessage, false);
+
+	    } else {
+	        context.attachEvent('onmessage', onGlobalMessage);
+	    }
+
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        context.postMessage(messagePrefix + handleId, '*');
+	        return handleId;
+	    };
+	    polifill.usePolifill = 'postMessage';
+	    return polifill;
+	};
+
+	// For non-IE10 modern browsers
+	exports.canUse = function() {
+	    if (context.importScripts || !context.postMessage) {
+	        return false;
+	    }
+
+	    var asynch = true;
+	    var oldOnMessage = context.onmessage;
+	    context.onmessage = function() {
+	        asynch = false;
+	    };
+
+	    context.postMessage('', '*');
+	    context.onmessage = oldOnMessage;
+	    return asynch;
+	};
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(20);
+	var Timer = __webpack_require__(22);
+
+	exports.init = function() {
+	    var channel = new context.MessageChannel();
+
+	    channel.port1.onmessage = function(event) {
+	        Timer.run(Number(event.data));
+	    };
+
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        channel.port2.postMessage(handleId);
+	        return handleId;
+	    };
+	    polifill.usePolifill = 'messageChannel';
+	    return polifill;
+	};
+
+	// For web workers, where supported
+	exports.canUse = function() {
+	    return Boolean(context.MessageChannel);
+	};
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(20);
+	var Timer = __webpack_require__(22);
+
+	exports.init = function() {
+	    var html = context.document.documentElement;
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        var script = context.document.createElement('script');
+
+	        script.onreadystatechange = function() {
+	            Timer.run(handleId);
+	            script.onreadystatechange = null;
+	            html.removeChild(script);
+	            script = null;
+	        };
+
+	        html.appendChild(script);
+	        return handleId;
+	    };
+
+	    polifill.usePolifill = 'readyStateChange';
+	    return polifill;
+	};
+
+	// For IE 6–8
+	exports.canUse = function() {
+	    return (context.document && ('onreadystatechange' in context.document.createElement('script')));
+	};
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(20);
+	var Timer = __webpack_require__(22);
+
+	exports.init = function() {
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        var img = new context.Image();
+	        img.onload = img.onerror = Timer.wrap( Timer.run, handleId );
+	        img.src = '';
+
+	        return handleId;
+	    };
+	    polifill.usePolifill = 'image';
+	    return polifill;
+	};
+
+	exports.canUse = function() {
+	    return Boolean(context.window && context.Image);
+	};
+
+
+/***/ },
+/* 29 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1492,44 +1433,7 @@
 
 
 /***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var mergeBase = __webpack_require__(13);
-
-	/**
-	 * Combining objects
-	 *
-	 * @example
-	 * var target = { a: 1 };
-	 * xblocks.utils.merge(target, { b: 2 })
-	 * // { a: 1, b: 2 }
-	 *
-	 * xblocks.utils.merge({ a: 1 }, { b: 2 }, { c: 3 })
-	 * // { a: 1, b: 2, c: 3 }
-	 *
-	 * xblocks.utils.merge(true, { a: 1 }, { b: { c: 2 } }, { b: { d: 3 } })
-	 * // { a: 1, b: { c: 2, d: 3 } }
-	 *
-	 * xblocks.utils.merge({}, { a: 1, b: undefined }, { a: undefined, c: undefined })
-	 * // { a: 1 }
-	 *
-	 * @function xblocks.utils.merge
-	 * @returns {object}
-	 */
-	module.exports = function() {
-	    return mergeBase.call(this, utilsMergeCheckCopy, arguments);
-	};
-
-	function utilsMergeCheckCopy(value) {
-	    return (value !== undefined);
-	}
-
-
-/***/ },
-/* 21 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1581,12 +1485,12 @@
 
 
 /***/ },
-/* 22 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var view = __webpack_require__(23);
+	var view = __webpack_require__(32);
 
 	/**
 	 * @function xblocks.utils.propTypes
@@ -1613,22 +1517,15 @@
 
 
 /***/ },
-/* 23 */
-/***/ function(module, exports) {
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
 
-	//jscs:disable
-	/* global xblocks, React */
-	/* jshint strict: false */
-	//jscs:enable
+	'use strict';
 
-	/**
-	 * @namespace
-	 */
-	xblocks.view = {};
-
-	var _viewComponentsClass = {};
-
-	var _viewCommon = {
+	var React = __webpack_require__(4);
+	var merge = __webpack_require__(16);
+	var viewComponentsClass = {};
+	var viewCommon = {
 
 	    /**
 	     * Required attributes
@@ -1636,7 +1533,7 @@
 	     * @memberOf ReactElement.prototype
 	     * @type {object}
 	     */
-	    'propTypes': {
+	    propTypes: {
 	        '_uid':         React.PropTypes.node,
 	        '_container':   React.PropTypes.any,  // Bad way ;(
 	        'children':     React.PropTypes.node,
@@ -1651,14 +1548,15 @@
 	     * @param {object} [props] the attributes of a node
 	     * @returns {?ReactElement}
 	     */
-	    'template': function(ref, props) {
+	    template: function(ref, props) {
 	        var xtmpl = this.props._container && this.props._container.xtmpl;
 
 	        if (typeof(xtmpl) === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
-	            props = props || {};
-	            props.dangerouslySetInnerHTML = {
-	                '__html': this._templatePrepare(xtmpl[ ref ])
-	            };
+	            props = merge.apply({}, props, {
+	                'dangerouslySetInnerHTML': {
+	                    '__html': this.templatePrepare(xtmpl[ ref ])
+	                }
+	            });
 
 	            return React.createElement('div', props);
 	        }
@@ -1670,13 +1568,13 @@
 	     * Get the node associated with the view
 	     * @returns {HTMLElement}
 	     */
-	    'container': function() {
+	    container: function() {
 	        return this.props._container;
 	    }
 	};
 
-	var _viewCommonUser = {
-	    '_templatePrepare': function(tmplString) {
+	var viewCommonUser = {
+	    templatePrepare: function(tmplString) {
 	        return tmplString;
 	    }
 	};
@@ -1685,7 +1583,9 @@
 	 * Create class view node
 	 *
 	 * @example
-	 * var XBButtonContent = xblocks.view.create({
+	 * var view = require('./view');
+	 *
+	 * var XBButtonContent = view.create({
 	 *     'displayName': 'XBButtonContent',
 	 *     'render': function() {
 	 *         return (
@@ -1694,7 +1594,7 @@
 	 *     }
 	 * });
 	 *
-	 * xblocks.view.register('xb-button', {
+	 * view.register('xb-button', {
 	 *     'displayName': 'xb-button',
 	 *     'render': function() {
 	 *         return (
@@ -1709,19 +1609,14 @@
 	 * @param {object|array} component settings view creation
 	 * @returns {function}
 	 */
-	xblocks.view.create = function(component) {
-	    component = Array.isArray(component) ? component : [ component ];
-	    component.unshift(true, {}, _viewCommonUser);
-	    component.push(_viewCommon);
-
-	    return React.createClass(xblocks.utils.merge.apply({}, component));
-	};
+	exports.create = create;
 
 	/**
 	 * Registration of a new node
 	 *
 	 * @example
-	 * xblocks.view.register('xb-button', {
+	 * var view = require('./view');
+	 * view.register('xb-button', {
 	 *     'displayName': 'xb-button',
 	 *     'render': function() {
 	 *         return (
@@ -1735,13 +1630,13 @@
 	 * @param {object|array} component settings view creation
 	 * @returns {function}
 	 */
-	xblocks.view.register = function(blockName, component) {
+	exports.register = function(blockName, component) {
 	    if (React.DOM.hasOwnProperty(blockName)) {
 	        throw 'Specified item "' + blockName + '" is already defined';
 	    }
 
-	    var componentClass = xblocks.view.create(component);
-	    _viewComponentsClass[ blockName ] = componentClass;
+	    var componentClass = create(component);
+	    viewComponentsClass[ blockName ] = componentClass;
 
 	    React.DOM[ blockName ] = React.createFactory(componentClass);
 
@@ -1754,7 +1649,7 @@
 	 * @param {string} blockName the name of the new node
 	 * @returns {function}
 	 */
-	xblocks.view.getFactory = function(blockName) {
+	exports.getFactory = function(blockName) {
 	    return React.DOM[ blockName ];
 	};
 
@@ -1764,13 +1659,21 @@
 	 * @param {string} blockName the name of the new node
 	 * @returns {function}
 	 */
-	xblocks.view.getClass = function(blockName) {
-	    return _viewComponentsClass[ blockName ];
+	exports.getClass = function(blockName) {
+	    return viewComponentsClass[ blockName ];
 	};
+
+	function create(component) {
+	    component = Array.isArray(component) ? component : [ component ];
+	    component.unshift(true, {}, viewCommonUser);
+	    component.push(viewCommon);
+
+	    return React.createClass(merge.apply({}, component));
+	}
 
 
 /***/ },
-/* 24 */
+/* 33 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1795,7 +1698,7 @@
 
 
 /***/ },
-/* 25 */
+/* 34 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1831,17 +1734,17 @@
 
 
 /***/ },
-/* 26 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var context = __webpack_require__(6);
 	var dom = __webpack_require__(2);
-	var event = __webpack_require__(27);
+	var event = __webpack_require__(36);
 	var React = __webpack_require__(4);
 	var utils = __webpack_require__(11);
-	var view = __webpack_require__(23);
+	var view = __webpack_require__(32);
 
 	module.exports = Element;
 
@@ -1916,7 +1819,7 @@
 	    node.xblock = this;
 	    this._node = node;
 	    this._init(node.state, node.content, this._callbackInit);
-	};
+	}
 
 	/**
 	 * The node of a custom element
@@ -2239,15 +2142,21 @@
 
 
 /***/ },
-/* 27 */
-/***/ function(module, exports) {
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	'use strict';
 
-	/**
-	 * @namespace
-	 */
-	xblocks.event = xblocks.event || {};
+	var context = __webpack_require__(6);
+	var pristine = __webpack_require__(30);
+	var CustomEventCommon = __webpack_require__(37);
+	var Custom = (function() {
+	    if (pristine('CustomEvent')) {
+	        return context.CustomEvent;
+	    }
+
+	    return CustomEventCommon;
+	}());
 
 	/**
 	 * Designer events
@@ -2262,16 +2171,7 @@
 	 * @constructor
 	 * @memberOf xblocks.event
 	 */
-	xblocks.event.Custom = (function() {
-	    if (xblocks.utils.pristine('CustomEvent')) {
-	        return global.CustomEvent;
-	    }
-
-	    return (function() {
-	        /*! borschik:include:../polyfills/CustomEventCommon.js */
-	        return CustomEventCommon;
-	    }());
-	}());
+	exports.Custom = Custom;
 
 	/**
 	 * Dispatch event
@@ -2287,17 +2187,68 @@
 	 * @param {string} name event name
 	 * @param {object} params the event parameters
 	 */
-	xblocks.event.dispatch = function(element, name, params) {
-	    element.dispatchEvent(new xblocks.event.Custom(name, params || {}));
+	exports.dispatch = function(element, name, params) {
+	    element.dispatchEvent(new Custom(name, params || {}));
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 28 */
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(6);
+	var CustomEventCommon;
+	var doc = context.document;
+	var issetCustomEvent = false;
+
+	try {
+	    issetCustomEvent = Boolean(doc.createEvent('CustomEvent'));
+	} catch(e) {
+	    // do nothing
+	}
+
+	if (issetCustomEvent) {
+	    CustomEventCommon = function(eventName, params) {
+	        params = params || {};
+
+	        var bubbles = Boolean(params.bubbles);
+	        var cancelable = Boolean(params.cancelable);
+	        var evt = doc.createEvent('CustomEvent');
+
+	        evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
+
+	        return evt;
+	    };
+
+	} else {
+	    CustomEventCommon = function(eventName, params) {
+	        params = params || {};
+
+	        var bubbles = Boolean(params.bubbles);
+	        var cancelable = Boolean(params.cancelable);
+	        var evt = doc.createEvent('Event');
+
+	        evt.initEvent(eventName, bubbles, cancelable);
+	        evt.detail = params.detail;
+
+	        return evt;
+	    };
+	}
+
+	CustomEventCommon.prototype = context.Event.prototype;
+
+	module.exports = CustomEventCommon;
+
+
+/***/ },
+/* 38 */
 /***/ function(module, exports) {
 
-	module.exports = xtag;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_38__;
 
 /***/ }
-/******/ ]);
+/******/ ])
+});
+;

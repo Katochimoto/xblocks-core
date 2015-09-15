@@ -18,7 +18,7 @@ var equal = {
         }
 
         for (; i < l; i++) {
-            if (!xblocks.utils.equals(x[i], y[i])) {
+            if (!equals(x[i], y[i])) {
                 return false;
             }
         }
@@ -31,7 +31,7 @@ var equal = {
 
         for (i in x) {
             if (y.hasOwnProperty(i)) {
-                if (!xblocks.utils.equals(x[i], y[i])) {
+                if (!equals(x[i], y[i])) {
                     return false;
                 }
 
@@ -62,23 +62,7 @@ var equal = {
     }
 };
 
-/**
- * Comparison
- *
- * @example
- * xblocks.utils.equals(1, 1)
- * // true
- * xblocks.utils.equals({ a: 1 }, { a: 1 })
- * // true
- * xblocks.utils.equals({ a: 1 }, { a: 2 })
- * // false
- *
- * @function xblocks.utils.equals
- * @param {*} x that compared
- * @param {*} y compared to
- * @returns {boolean}
- */
-modile.exports = function(x, y) {
+function equals(x, y) {
     if (x === y) {
         return true;
     }
@@ -95,4 +79,22 @@ modile.exports = function(x, y) {
     }
 
     return x == y;
-};
+}
+
+/**
+ * Comparison
+ *
+ * @example
+ * xblocks.utils.equals(1, 1)
+ * // true
+ * xblocks.utils.equals({ a: 1 }, { a: 1 })
+ * // true
+ * xblocks.utils.equals({ a: 1 }, { a: 2 })
+ * // false
+ *
+ * @function xblocks.utils.equals
+ * @param {*} x that compared
+ * @param {*} y compared to
+ * @returns {boolean}
+ */
+module.exports = equals;

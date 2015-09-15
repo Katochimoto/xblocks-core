@@ -2,10 +2,10 @@ var path = require('path');
 
 module.exports = {
     'context': path.join(__dirname, 'src'),
-    'entry': './xblocks',
     'output': {
         'path': path.join(__dirname, 'dist'),
-        'filename': 'xblocks-core.js'
+        'library': 'xblocks',
+        'libraryTarget': 'umd'
     },
     'externals': {
         'react': 'React',
@@ -13,7 +13,7 @@ module.exports = {
     },
     'resolve': {
         'alias': {
-            'setImmediate': 'setImmediate2/dist/setImmediate.js'
+            'setImmediate': 'setImmediate2/src/index.js'
         }
     }
 };

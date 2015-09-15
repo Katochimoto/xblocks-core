@@ -80,7 +80,7 @@ function Element(node) {
     node.xblock = this;
     this._node = node;
     this._init(node.state, node.content, this._callbackInit);
-};
+}
 
 /**
  * The node of a custom element

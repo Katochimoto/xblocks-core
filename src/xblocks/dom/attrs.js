@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var forEach = Array.prototype.forEach;
 
 /**
  * A set of boolean attributes
@@ -81,7 +82,7 @@ exports.toObject = function(element) {
     var attrs = {};
 
     if (element.nodeType === 1 && element.hasAttributes()) {
-        Array.prototype.forEach.call(element.attributes, toObjectIterator, attrs);
+        forEach.call(element.attributes, toObjectIterator, attrs);
     }
 
     return attrs;

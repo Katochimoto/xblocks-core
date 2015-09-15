@@ -1,5 +1,8 @@
 'use strict';
 
+var isPlainObject = require('./isPlainObject');
+var merge = require('./merge');
+
 module.exports = function(checkСopy, args) {
     var options;
     var name;
@@ -46,18 +49,18 @@ module.exports = function(checkСopy, args) {
                 }
 
                 // Recurse if we're merging plain objects or arrays
-                if (deep && copy && (xblocks.utils.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
+                if (deep && copy && (isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
 
                     if (copyIsArray) {
                         copyIsArray = false;
                         clone = src && Array.isArray(src) ? src : [];
 
                     } else {
-                        clone = src && xblocks.utils.isPlainObject(src) ? src : {};
+                        clone = src && isPlainObject(src) ? src : {};
                     }
 
                     // Never move original objects, clone them
-                    target[ name ] = xblocks.utils.merge( deep, clone, copy );
+                    target[ name ] = merge( deep, clone, copy );
 
                 } else if (checkСopy(copy)) {
                     target[ name ] = copy;

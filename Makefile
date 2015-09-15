@@ -9,11 +9,6 @@ src_jsx_js := $(addsuffix .js, $(src_jsx))
 all: node_modules \
 	bower_components \
 	dist/xblocks-core.js \
-	dist/xblocks-core.min.js \
-	dist/xblocks-core-full.js \
-	dist/xblocks-core-full.min.js \
-	dist/x-tag-core.js \
-	dist/x-tag-core.min.js \
 	$(src_jsx_js)
 
 
@@ -26,37 +21,29 @@ bower_components: bower.json
 	touch bower_components
 
 clean:
-	rm -f dist/xblocks-core.js
-	rm -f dist/xblocks-core.min.js
-	rm -f dist/xblocks-core-full.js
-	rm -f dist/xblocks-core-full.min.js
-	rm -f dist/x-tag-core.js
-	rm -f dist/x-tag-core.min.js
+	rm -rf dist
 	find test src -type f -name "*.jsx.js" -exec rm -f {} \;
 
 $(src_jsx_js): %.jsx.js: %.jsx node_modules
 	$(NPM_BIN)/babel $< -o $@
 
 dist/xblocks-core.js: node_modules $(src_jsx_js) $(src_js)
-	cat node_modules/setimmediate2/setImmediate.js > $@
-	$(NPM_BIN)/borschik -m no -i src/xblocks.js >> $@
+	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.js
+	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.min.js --optimize-minimize
 
-dist/xblocks-core.min.js: dist/xblocks-core.js
-	$(NPM_BIN)/borschik -i $< -o $@
+#dist/xblocks-core-full.js: node_modules $(src_jsx_js) $(src_js)
+#	cat node_modules/setimmediate2/setImmediate.js > $@
+#	$(NPM_BIN)/borschik -m no -i src/xtag.js >> $@
+#	$(NPM_BIN)/borschik -m no -i src/xblocks.js >> $@
 
-dist/xblocks-core-full.js: node_modules $(src_jsx_js) $(src_js)
-	cat node_modules/setimmediate2/setImmediate.js > $@
-	$(NPM_BIN)/borschik -m no -i src/xtag.js >> $@
-	$(NPM_BIN)/borschik -m no -i src/xblocks.js >> $@
+#dist/xblocks-core-full.min.js: dist/xblocks-core-full.js
+#	$(NPM_BIN)/borschik -i $< -o $@
 
-dist/xblocks-core-full.min.js: dist/xblocks-core-full.js
-	$(NPM_BIN)/borschik -i $< -o $@
+#dist/x-tag-core.js: src/xtag.js node_modules $(polyfills_js)
+#	$(NPM_BIN)/borschik -m no -i $< > $@
 
-dist/x-tag-core.js: src/xtag.js node_modules $(polyfills_js)
-	$(NPM_BIN)/borschik -m no -i $< > $@
-
-dist/x-tag-core.min.js: dist/x-tag-core.js
-	$(NPM_BIN)/borschik -i $< -o $@
+#dist/x-tag-core.min.js: dist/x-tag-core.js
+#	$(NPM_BIN)/borschik -i $< -o $@
 
 test: node_modules bower_components
 	$(NPM_BIN)/jshint .
