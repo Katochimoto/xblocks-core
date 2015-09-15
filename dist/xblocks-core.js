@@ -1594,7 +1594,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {object|array} component settings view creation
 	 * @returns {function}
 	 */
-	exports.create = create;
+	exports.create = createClass;
 
 	/**
 	 * Registration of a new node
@@ -1620,7 +1620,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        throw 'Specified item "' + blockName + '" is already defined';
 	    }
 
-	    var componentClass = create(component);
+	    var componentClass = createClass(component);
 	    viewComponentsClass[ blockName ] = componentClass;
 
 	    React.DOM[ blockName ] = React.createFactory(componentClass);
@@ -1648,7 +1648,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return viewComponentsClass[ blockName ];
 	};
 
-	function create(component) {
+	function createClass(component) {
 	    component = Array.isArray(component) ? component : [ component ];
 	    component.unshift(true, {}, viewCommonUser);
 	    component.push(viewCommon);
