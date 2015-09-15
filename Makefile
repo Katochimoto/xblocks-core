@@ -9,6 +9,7 @@ src_jsx_js := $(addsuffix .js, $(src_jsx))
 all: node_modules \
 	bower_components \
 	dist/xblocks-core.js \
+	dist/x-tag-core.js \
 	$(src_jsx_js)
 
 
@@ -39,11 +40,10 @@ dist/xblocks-core.js: node_modules $(src_jsx_js) $(src_js)
 #dist/xblocks-core-full.min.js: dist/xblocks-core-full.js
 #	$(NPM_BIN)/borschik -i $< -o $@
 
-#dist/x-tag-core.js: src/xtag.js node_modules $(polyfills_js)
-#	$(NPM_BIN)/borschik -m no -i $< > $@
-
-#dist/x-tag-core.min.js: dist/x-tag-core.js
-#	$(NPM_BIN)/borschik -i $< -o $@
+dist/x-tag-core.js: src/xtag.js node_modules $(polyfills_js)
+	$(NPM_BIN)/borschik -m no -i $< > $@
+	$(NPM_BIN)/webpack src/xtag.js dist/x-tag-core.js --config webpack.config.xtag.js
+	$(NPM_BIN)/webpack src/xtag.js dist/x-tag-core.min.js --optimize-minimize --config webpack.config.xtag.js
 
 test: node_modules bower_components
 	$(NPM_BIN)/jshint .

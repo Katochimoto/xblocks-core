@@ -8,18 +8,18 @@ var view = require('../view');
  * @returns {object}
  */
 module.exports = function(tagName) {
-    var view = view.getClass(tagName);
+    var viewClass = view.getClass(tagName);
 
-    if (!view) {
+    if (!viewClass) {
         return {};
     }
 
-    if (view.propTypes) {
-        return view.propTypes;
+    if (viewClass.propTypes) {
+        return viewClass.propTypes;
     }
 
-    if (view.originalSpec && view.originalSpec.propTypes) {
-        return view.originalSpec.propTypes;
+    if (viewClass.originalSpec && viewClass.originalSpec.propTypes) {
+        return viewClass.originalSpec.propTypes;
     }
 
     return {};

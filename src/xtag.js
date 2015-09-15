@@ -10,32 +10,31 @@ require('./polyfills/performance');
 require('./polyfills/matches');
 require('./polyfills/CustomEvent');
 require('./polyfills/DOMAttrModified');
-
-/*! borschik:include:../node_modules/dom-token-list-polyfill/src/token-list.js */
-/*! borschik:include:../node_modules/webcomponents.js/src/WeakMap/WeakMap.js */
-/*! borschik:include:../node_modules/webcomponents.js/src/MutationObserver/MutationObserver.js */
+require('token-list');
+require('WeakMap');
+require('MutationObserver');
 
 (function() {
-    /*! borschik:include:../node_modules/webcomponents.js/src/CustomElements/base.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/CustomElements/traverse.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/CustomElements/observe.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/CustomElements/upgrade.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/CustomElements/register.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/CustomElements/boot.js */
+    require('webcomponents.js/src/CustomElements/base.js');
+    require('webcomponents.js/src/CustomElements/traverse.js');
+    require('webcomponents.js/src/CustomElements/observe.js');
+    require('webcomponents.js/src/CustomElements/upgrade.js');
+    require('webcomponents.js/src/CustomElements/register.js');
+    require('webcomponents.js/src/CustomElements/boot.js');
 }());
 
 (function() {
-    /*! borschik:include:../node_modules/webcomponents.js/src/HTMLImports/base.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/HTMLImports/module.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/HTMLImports/path.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/HTMLImports/xhr.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/HTMLImports/Loader.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/HTMLImports/Observer.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/HTMLImports/parser.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/HTMLImports/importer.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/HTMLImports/dynamic.js */
-    /*! borschik:include:../node_modules/webcomponents.js/src/HTMLImports/boot.js */
+    require('webcomponents.js/src/HTMLImports/base.js');
+    require('webcomponents.js/src/HTMLImports/module.js');
+    require('webcomponents.js/src/HTMLImports/path.js');
+    require('webcomponents.js/src/HTMLImports/xhr.js');
+    require('webcomponents.js/src/HTMLImports/Loader.js');
+    require('webcomponents.js/src/HTMLImports/Observer.js');
+    require('webcomponents.js/src/HTMLImports/parser.js');
+    require('webcomponents.js/src/HTMLImports/importer.js');
+    require('webcomponents.js/src/HTMLImports/dynamic.js');
+    require('webcomponents.js/src/HTMLImports/boot.js');
 }());
 
-/*! borschik:include:../node_modules/handjs/hand.base.js */
-/*! borschik:include:../node_modules/x-tag-core/src/core.js */
+require('handjs');
+require('x-tag-core');

@@ -2,11 +2,10 @@
 
 var context = require('../context');
 var CustomEventCommon;
-var doc = context.document;
 var issetCustomEvent = false;
 
 try {
-    issetCustomEvent = Boolean(doc.createEvent('CustomEvent'));
+    issetCustomEvent = Boolean(context.document.createEvent('CustomEvent'));
 } catch(e) {
     // do nothing
 }
@@ -17,7 +16,7 @@ if (issetCustomEvent) {
 
         var bubbles = Boolean(params.bubbles);
         var cancelable = Boolean(params.cancelable);
-        var evt = doc.createEvent('CustomEvent');
+        var evt = context.document.createEvent('CustomEvent');
 
         evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
@@ -30,7 +29,7 @@ if (issetCustomEvent) {
 
         var bubbles = Boolean(params.bubbles);
         var cancelable = Boolean(params.cancelable);
-        var evt = doc.createEvent('Event');
+        var evt = context.document.createEvent('Event');
 
         evt.initEvent(eventName, bubbles, cancelable);
         evt.detail = params.detail;

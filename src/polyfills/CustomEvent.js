@@ -6,8 +6,7 @@
 'use strict';
 
 var context = require('../context');
-var CustomEventCommon = require('./CustomEventCommon');
 
 if (typeof(context.CustomEvent) !== 'function') {
-    context.CustomEvent = CustomEventCommon;
+    context.CustomEvent = require('./CustomEventCommon');
 }

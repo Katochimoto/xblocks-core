@@ -1498,18 +1498,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {object}
 	 */
 	module.exports = function(tagName) {
-	    var view = view.getClass(tagName);
+	    var viewClass = view.getClass(tagName);
 
-	    if (!view) {
+	    if (!viewClass) {
 	        return {};
 	    }
 
-	    if (view.propTypes) {
-	        return view.propTypes;
+	    if (viewClass.propTypes) {
+	        return viewClass.propTypes;
 	    }
 
-	    if (view.originalSpec && view.originalSpec.propTypes) {
-	        return view.originalSpec.propTypes;
+	    if (viewClass.originalSpec && viewClass.originalSpec.propTypes) {
+	        return viewClass.originalSpec.propTypes;
 	    }
 
 	    return {};
@@ -2200,11 +2200,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var context = __webpack_require__(6);
 	var CustomEventCommon;
-	var doc = context.document;
 	var issetCustomEvent = false;
 
 	try {
-	    issetCustomEvent = Boolean(doc.createEvent('CustomEvent'));
+	    issetCustomEvent = Boolean(context.document.createEvent('CustomEvent'));
 	} catch(e) {
 	    // do nothing
 	}
@@ -2215,7 +2214,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var bubbles = Boolean(params.bubbles);
 	        var cancelable = Boolean(params.cancelable);
-	        var evt = doc.createEvent('CustomEvent');
+	        var evt = context.document.createEvent('CustomEvent');
 
 	        evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
@@ -2228,7 +2227,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var bubbles = Boolean(params.bubbles);
 	        var cancelable = Boolean(params.cancelable);
-	        var evt = doc.createEvent('Event');
+	        var evt = context.document.createEvent('Event');
 
 	        evt.initEvent(eventName, bubbles, cancelable);
 	        evt.detail = params.detail;
