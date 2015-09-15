@@ -21,7 +21,7 @@
     ],
     "dependencies": {
         "es5-shim": "4.1.11",
-        "react": "0.13.3",
+        "react": "0.14.0-rc1",
         "vow": "0.4.10"
     },
     "homepage": "http://xblocks.ru",

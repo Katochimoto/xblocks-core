@@ -3,7 +3,7 @@
 var context = require('../context');
 var dom = require('./dom');
 var event = require('./event');
-var React = require('react');
+var ReactDOM = require('react-dom');
 var utils = require('./utils');
 var view = require('./view');
 
@@ -111,7 +111,7 @@ Element.prototype._observer = null;
  * @fires xblocks.Element~event:xb-destroy
  */
 Element.prototype.destroy = function() {
-    React.unmountComponentAtNode(this._node);
+    ReactDOM.unmountComponentAtNode(this._node);
     this.unmount();
     event.dispatch(this._node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
 };
@@ -168,13 +168,10 @@ Element.prototype.update = function(props, removeProps, callback) {
         }
     }
 
-    if (nextProps.hasOwnProperty('xb-static')) {
-        this.repaint(callback);
+    dom.attrs.typeConversion(nextProps, this._node.xprops);
 
-    } else {
-        dom.attrs.typeConversion(nextProps, this._node.xprops);
-        this._component[ action ](nextProps, this._callbackUpdate.bind(this, callback));
-    }
+    // FIXME отказаться от использования setProps и replaceProps
+    this._component[ action ](nextProps, this._callbackUpdate.bind(this, callback));
 };
 
 /**
@@ -261,30 +258,17 @@ Element.prototype._init = function(props, children, callback) {
 
     var proxyConstructor = view.getFactory(this._node.xtagName)(props, children);
 
-    if (props.hasOwnProperty('xb-static')) {
-        this.unmount();
-        utils.log.time(this._node, 'react_render');
-        this._node.innerHTML = React.renderToStaticMarkup(proxyConstructor);
-        utils.log.time(this._node, 'react_render');
-        this._node.upgrade();
-
-        if (callback) {
-            callback.call(this);
+    DEBUG && utils.log.time(this._node, 'react_render');
+    var that = this;
+    this._component = ReactDOM.render(
+        proxyConstructor,
+        this._node,
+        function() {
+            DEBUG && utils.log.time(that._node, 'react_render');
+            that._component = this;
+            that._callbackRender(callback);
         }
-
-    } else {
-        utils.log.time(this._node, 'react_render');
-        var that = this;
-        this._component = React.render(
-            proxyConstructor,
-            this._node,
-            function() {
-                utils.log.time(that._node, 'react_render');
-                that._component = this;
-                that._callbackRender(callback);
-            }
-        );
-    }
+    );
 };
 
 /**
@@ -294,7 +278,7 @@ Element.prototype._init = function(props, children, callback) {
 Element.prototype._callbackInit = function() {
     event.dispatch(this._node, 'xb-created');
     utils.lazy(elementStatic.globalInitEvent, this._node);
-    utils.log.time(this._node, 'xb_init');
+    DEBUG && utils.log.time(this._node, 'xb_init');
 };
 
 /**
@@ -323,13 +307,13 @@ Element.prototype._callbackRender = function(callback) {
     }
 
     this._observer.observe(this._node, {
-        'attributes': true,
-        'childList': true,
-        'characterData': true,
-        'subtree': false,
+        'attributeFilter': Object.keys(this._node.xprops),
         'attributeOldValue': false,
+        'attributes': true,
+        'characterData': true,
         'characterDataOldValue': false,
-        'attributeFilter': Object.keys(this._node.xprops)
+        'childList': true,
+        'subtree': false
     });
 
     if (callback) {

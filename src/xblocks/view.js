@@ -14,8 +14,7 @@ var viewCommon = {
     propTypes: {
         '_uid':         React.PropTypes.node,
         '_container':   React.PropTypes.any,  // Bad way ;(
-        'children':     React.PropTypes.node,
-        'xb-static':    React.PropTypes.bool
+        'children':     React.PropTypes.node
     },
 
     /**
@@ -87,7 +86,7 @@ var viewCommonUser = {
  * @param {object|array} component settings view creation
  * @returns {function}
  */
-exports.create = create;
+exports.create = createClass;
 
 /**
  * Registration of a new node
@@ -113,7 +112,7 @@ exports.register = function(blockName, component) {
         throw 'Specified item "' + blockName + '" is already defined';
     }
 
-    var componentClass = create(component);
+    var componentClass = createClass(component);
     viewComponentsClass[ blockName ] = componentClass;
 
     React.DOM[ blockName ] = React.createFactory(componentClass);
@@ -141,7 +140,7 @@ exports.getClass = function(blockName) {
     return viewComponentsClass[ blockName ];
 };
 
-function create(component) {
+function createClass(component) {
     component = Array.isArray(component) ? component : [ component ];
     component.unshift(true, {}, viewCommonUser);
     component.push(viewCommon);

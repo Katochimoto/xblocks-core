@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("React"), require("xtag"));
+		module.exports = factory(require("React"), require("ReactDOM"), require("xtag"));
 	else if(typeof define === 'function' && define.amd)
-		define(["React", "xtag"], factory);
+		define(["React", "ReactDOM", "xtag"], factory);
 	else if(typeof exports === 'object')
-		exports["xblocks"] = factory(require("React"), require("xtag"));
+		exports["xblocks"] = factory(require("React"), require("ReactDOM"), require("xtag"));
 	else
-		root["xblocks"] = factory(root["React"], root["xtag"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_38__) {
+		root["xblocks"] = factory(root["React"], root["ReactDOM"], root["xtag"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_38__, __WEBPACK_EXTERNAL_MODULE_39__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -72,7 +72,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var dom = __webpack_require__(2);
 	var utils = __webpack_require__(11);
 	var Element = __webpack_require__(35);
-	var xtag = __webpack_require__(38);
+	var xtag = __webpack_require__(39);
 	var forEach = Array.prototype.forEach;
 
 	var blockStatic = {
@@ -113,8 +113,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var blockCommon = {
 	    lifecycle: {
 	        created: function() {
-	            utils.log.time(this, 'xb_init');
-	            utils.log.time(this, 'dom_inserted');
+	            (false) && utils.log.time(this, 'xb_init');
+	            (false) && utils.log.time(this, 'dom_inserted');
 
 	            blockStatic.init(this);
 	        },
@@ -139,7 +139,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                blockStatic.create(this);
 	            }
 
-	            utils.log.time(this, 'dom_inserted');
+	            (false) && utils.log.time(this, 'dom_inserted');
 	        },
 
 	        removed: function() {
@@ -154,17 +154,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                this.xblock.destroy();
 	                this.xblock = undefined;
 	                this.content = content;
-	            }
-	        },
-
-	        attributeChanged: function(attrName, oldValue, newValue) {
-	            // removeAttribute('xb-static')
-	            if (attrName === 'xb-static' &&
-	                newValue === null &&
-	                this.xblock &&
-	                !this.mounted) {
-
-	                this.xblock.repaint();
 	            }
 	        }
 	    },
@@ -332,8 +321,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'multiple',
 	    'readonly',
 	    'required',
-	    'selected',
-	    'xb-static'
+	    'selected'
 	];
 
 	/**
@@ -1417,8 +1405,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	exports.time = function(/*element, name*/) {
-	    /*
+	exports.time = function(element, name) {
 	    if (!element._xtimers) {
 	        element._xtimers = {};
 	    }
@@ -1428,7 +1415,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    element._xtimers[ name ].push(performance.now());
-	    */
 	};
 
 
@@ -1536,8 +1522,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    propTypes: {
 	        '_uid':         React.PropTypes.node,
 	        '_container':   React.PropTypes.any,  // Bad way ;(
-	        'children':     React.PropTypes.node,
-	        'xb-static':    React.PropTypes.bool
+	        'children':     React.PropTypes.node
 	    },
 
 	    /**
@@ -1742,7 +1727,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var context = __webpack_require__(6);
 	var dom = __webpack_require__(2);
 	var event = __webpack_require__(36);
-	var React = __webpack_require__(4);
+	var ReactDOM = __webpack_require__(38);
 	var utils = __webpack_require__(11);
 	var view = __webpack_require__(32);
 
@@ -1850,7 +1835,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @fires xblocks.Element~event:xb-destroy
 	 */
 	Element.prototype.destroy = function() {
-	    React.unmountComponentAtNode(this._node);
+	    ReactDOM.unmountComponentAtNode(this._node);
 	    this.unmount();
 	    event.dispatch(this._node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
 	};
@@ -1907,13 +1892,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 
-	    if (nextProps.hasOwnProperty('xb-static')) {
-	        this.repaint(callback);
+	    dom.attrs.typeConversion(nextProps, this._node.xprops);
 
-	    } else {
-	        dom.attrs.typeConversion(nextProps, this._node.xprops);
-	        this._component[ action ](nextProps, this._callbackUpdate.bind(this, callback));
-	    }
+	    // FIXME отказаться от использования setProps и replaceProps
+	    this._component[ action ](nextProps, this._callbackUpdate.bind(this, callback));
 	};
 
 	/**
@@ -2000,30 +1982,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var proxyConstructor = view.getFactory(this._node.xtagName)(props, children);
 
-	    if (props.hasOwnProperty('xb-static')) {
-	        this.unmount();
-	        utils.log.time(this._node, 'react_render');
-	        this._node.innerHTML = React.renderToStaticMarkup(proxyConstructor);
-	        utils.log.time(this._node, 'react_render');
-	        this._node.upgrade();
-
-	        if (callback) {
-	            callback.call(this);
+	    (false) && utils.log.time(this._node, 'react_render');
+	    var that = this;
+	    this._component = ReactDOM.render(
+	        proxyConstructor,
+	        this._node,
+	        function() {
+	            (false) && utils.log.time(that._node, 'react_render');
+	            that._component = this;
+	            that._callbackRender(callback);
 	        }
-
-	    } else {
-	        utils.log.time(this._node, 'react_render');
-	        var that = this;
-	        this._component = React.render(
-	            proxyConstructor,
-	            this._node,
-	            function() {
-	                utils.log.time(that._node, 'react_render');
-	                that._component = this;
-	                that._callbackRender(callback);
-	            }
-	        );
-	    }
+	    );
 	};
 
 	/**
@@ -2033,7 +2002,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Element.prototype._callbackInit = function() {
 	    event.dispatch(this._node, 'xb-created');
 	    utils.lazy(elementStatic.globalInitEvent, this._node);
-	    utils.log.time(this._node, 'xb_init');
+	    (false) && utils.log.time(this._node, 'xb_init');
 	};
 
 	/**
@@ -2062,13 +2031,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    this._observer.observe(this._node, {
-	        'attributes': true,
-	        'childList': true,
-	        'characterData': true,
-	        'subtree': false,
+	        'attributeFilter': Object.keys(this._node.xprops),
 	        'attributeOldValue': false,
+	        'attributes': true,
+	        'characterData': true,
 	        'characterDataOldValue': false,
-	        'attributeFilter': Object.keys(this._node.xprops)
+	        'childList': true,
+	        'subtree': false
 	    });
 
 	    if (callback) {
@@ -2246,6 +2215,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_38__;
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_39__;
 
 /***/ }
 /******/ ])

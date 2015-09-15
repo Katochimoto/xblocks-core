@@ -44,8 +44,8 @@ var blockStatic = {
 var blockCommon = {
     lifecycle: {
         created: function() {
-            utils.log.time(this, 'xb_init');
-            utils.log.time(this, 'dom_inserted');
+            DEBUG && utils.log.time(this, 'xb_init');
+            DEBUG && utils.log.time(this, 'dom_inserted');
 
             blockStatic.init(this);
         },
@@ -70,7 +70,7 @@ var blockCommon = {
                 blockStatic.create(this);
             }
 
-            utils.log.time(this, 'dom_inserted');
+            DEBUG && utils.log.time(this, 'dom_inserted');
         },
 
         removed: function() {
@@ -85,17 +85,6 @@ var blockCommon = {
                 this.xblock.destroy();
                 this.xblock = undefined;
                 this.content = content;
-            }
-        },
-
-        attributeChanged: function(attrName, oldValue, newValue) {
-            // removeAttribute('xb-static')
-            if (attrName === 'xb-static' &&
-                newValue === null &&
-                this.xblock &&
-                !this.mounted) {
-
-                this.xblock.repaint();
             }
         }
     },

@@ -22,7 +22,7 @@ describe('xblocks - Создание ->', function() {
 
     it('свойство xprops', function() {
         expect(this.xElement.xprops).to.be.an('object');
-        expect(this.xElement.xprops).to.have.keys([ '_uid', 'children', 'xb-static' ]);
+        expect(this.xElement.xprops).to.have.keys([ '_uid', 'children' ]);
     });
 
     it('свойство mounted', function() {

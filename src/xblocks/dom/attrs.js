@@ -17,8 +17,7 @@ var attrsBoolean = [
     'multiple',
     'readonly',
     'required',
-    'selected',
-    'xb-static'
+    'selected'
 ];
 
 /**
