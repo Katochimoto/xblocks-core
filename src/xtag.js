@@ -10,9 +10,10 @@ require('./polyfills/performance');
 require('./polyfills/matches');
 require('./polyfills/CustomEvent');
 require('./polyfills/DOMAttrModified');
-require('token-list');
-require('WeakMap');
-require('MutationObserver');
+
+require('dom-token-list-polyfill/src/token-list.js');
+require('webcomponents.js/src/WeakMap/WeakMap.js');
+require('webcomponents.js/src/MutationObserver/MutationObserver.js');
 
 (function() {
     require('webcomponents.js/src/CustomElements/base.js');
@@ -36,5 +37,5 @@ require('MutationObserver');
     require('webcomponents.js/src/HTMLImports/boot.js');
 }());
 
-require('handjs');
-require('x-tag-core');
+require('handjs/hand.base.js');
+require('x-tag-core/src/core.js');
