@@ -1,5 +1,4 @@
-/* global describe, it, expect, xblocks, beforeEach */
-/* jshint strict: false */
+var xblocks = require('../../../src/xblocks.js');
 
 describe('xblocks.utils.equals ->', function() {
 
@@ -32,7 +31,7 @@ describe('xblocks.utils.equals ->', function() {
         var test = {};
         expect(this.util(test, test)).to.be.ok();
     });
-    
+
     it('Массив эквивалентен самому себе', function() {
         var test = [];
         expect(this.util(test, test)).to.be.ok();

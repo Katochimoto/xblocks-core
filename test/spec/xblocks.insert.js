@@ -1,5 +1,4 @@
-/* global describe, it, expect, xblocks, beforeEach, afterEach, vow */
-/* jshint strict: false */
+var xblocks = require('../../src/xblocks.js');
 
 describe('xblocks - Вставка в DOM ->', function() {
 
@@ -21,8 +20,8 @@ describe('xblocks - Вставка в DOM ->', function() {
                 that.xElement.removeEventListener('xb-created', _onXbCreated);
 
                 expect(this.xblock).to.be.a(xblocks.Element);
-                expect(this.mounted).to.be(true);
-                expect(this.xinserted).to.be(true);
+                expect(this.mounted).to.equal(true);
+                expect(this.xinserted).to.equal(true);
                 resolve();
             });
 

@@ -1,6 +1,3 @@
-/* global describe, it, expect, xblocks, beforeEach, afterEach, vow */
-/* jshint strict: false */
-
 describe('xblocks - Изменение атрибутов ->', function() {
 
     beforeEach(function() {
@@ -20,15 +17,15 @@ describe('xblocks - Изменение атрибутов ->', function() {
             that.xElement.addEventListener('xb-update', function _onXbUpdate() {
                 that.xElement.removeEventListener('xb-update', _onXbUpdate);
 
-                expect(this.getAttribute('bool-attr')).to.be('true');
-                expect(this.querySelector('.bool')).not.to.be(null);
+                expect(this.getAttribute('bool-attr')).to.equal('true');
+                expect(this.querySelector('.bool')).not.to.equal(null);
                 resolve();
             });
 
             that.xElement.addEventListener('xb-created', function _onXbCreated() {
                 that.xElement.removeEventListener('xb-created', _onXbCreated);
 
-                expect(this.querySelector('.bool')).to.be(null);
+                expect(this.querySelector('.bool')).to.equal(null);
                 that.xElement.setAttribute('bool-attr', 'true');
             });
 

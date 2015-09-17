@@ -1,4 +1,4 @@
-/* global describe, it, expect, xblocks, beforeEach */
+var xblocks = require('../../../src/xblocks.js');
 
 describe('xblocks.utils.assign ->', function() {
     beforeEach(function() {

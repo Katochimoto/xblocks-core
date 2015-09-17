@@ -1,6 +1,3 @@
-/* global describe, it, expect, xblocks, beforeEach, afterEach, vow */
-/* jshint strict: false */
-
 describe('xblocks - клонирование ->', function() {
 
     beforeEach(function() {
@@ -22,7 +19,7 @@ describe('xblocks - клонирование ->', function() {
 
                 var cloneElement = this.cloneNode();
 
-                expect(cloneElement.xblock).to.be(undefined);
+                expect(cloneElement.xblock).to.equal(undefined);
                 resolve();
             });
 
@@ -39,7 +36,7 @@ describe('xblocks - клонирование ->', function() {
 
                 var cloneElement = this.cloneNode();
 
-                expect(cloneElement.mounted).to.be(false);
+                expect(cloneElement.mounted).to.equal(false);
                 resolve();
             });
 
@@ -56,7 +53,7 @@ describe('xblocks - клонирование ->', function() {
 
                 var cloneElement = this.cloneNode();
 
-                expect(cloneElement.xinserted).to.be(false);
+                expect(cloneElement.xinserted).to.equal(false);
                 resolve();
             });
 
@@ -73,7 +70,7 @@ describe('xblocks - клонирование ->', function() {
 
                 var cloneElement = this.cloneNode();
 
-                expect(cloneElement.content).to.be('');
+                expect(cloneElement.content).to.equal('');
                 resolve();
             });
 

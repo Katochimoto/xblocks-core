@@ -1,6 +1,3 @@
-/* global xdescribe */
-/* jshint strict: false */
-
 xdescribe('xblocks', function() {
 
 

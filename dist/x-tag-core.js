@@ -48,10 +48,10 @@
 
 	context.Platform = {};
 
-	/* jshint -W098 */
+	/* eslint no-unused-vars:0 */
 	var logFlags = {
-	    //dom: true
-	    //data: true
+	    // dom: true
+	    // data: true
 	};
 
 	__webpack_require__(2);
@@ -63,7 +63,7 @@
 	__webpack_require__(8);
 	__webpack_require__(9);
 
-	(function() {
+	(function () {
 	    __webpack_require__(10);
 	    __webpack_require__(11);
 	    __webpack_require__(12);
@@ -72,7 +72,7 @@
 	    __webpack_require__(15);
 	}());
 
-	(function() {
+	(function () {
 	    __webpack_require__(16);
 	    __webpack_require__(17);
 	    __webpack_require__(18);
@@ -93,10 +93,9 @@
 /* 1 */
 /***/ function(module, exports) {
 
-	/*jshint -W067*/
 	'use strict';
 
-	module.exports = (function() {
+	module.exports = (function () {
 	    return this || (1, eval)('this');
 	})();
 
@@ -109,7 +108,7 @@
 
 	var context = __webpack_require__(1);
 
-	if (typeof(context.performance) === 'undefined') {
+	if (typeof context.performance === 'undefined') {
 	    context.performance = {};
 	}
 
@@ -123,7 +122,7 @@
 	        nowOffset = Date.now();
 	    }
 
-	    context.performance.now = function() {
+	    context.performance.now = function () {
 	        return (Date.now() - nowOffset);
 	    };
 	}
@@ -145,7 +144,7 @@
 	    proto.mozMatchesSelector ||
 	    proto.msMatchesSelector ||
 	    proto.oMatchesSelector ||
-	    function(selector) {
+	    function (selector) {
 	        return (indexOf.call((this.parentNode || this.ownerDocument).querySelectorAll(selector), this) !== -1);
 	    };
 
@@ -165,7 +164,7 @@
 
 	var context = __webpack_require__(1);
 
-	if (typeof(context.CustomEvent) !== 'function') {
+	if (typeof context.CustomEvent !== 'function') {
 	    context.CustomEvent = __webpack_require__(5);
 	}
 
@@ -182,12 +181,12 @@
 
 	try {
 	    issetCustomEvent = Boolean(context.document.createEvent('CustomEvent'));
-	} catch(e) {
+	} catch (e) {
 	    // do nothing
 	}
 
 	if (issetCustomEvent) {
-	    CustomEventCommon = function(eventName, params) {
+	    CustomEventCommon = function (eventName, params) {
 	        params = params || {};
 
 	        var bubbles = Boolean(params.bubbles);
@@ -200,7 +199,7 @@
 	    };
 
 	} else {
-	    CustomEventCommon = function(eventName, params) {
+	    CustomEventCommon = function (eventName, params) {
 	        params = params || {};
 
 	        var bubbles = Boolean(params.bubbles);
@@ -231,7 +230,7 @@
 
 	var context = __webpack_require__(1);
 	var attrModifiedWorks = false;
-	var listener = function() {
+	var listener = function () {
 	    attrModifiedWorks = true;
 	};
 
@@ -245,11 +244,11 @@
 	    var proto = context.Element.prototype;
 
 	    proto.__setAttribute = proto.setAttribute;
-	    proto.setAttribute = function(attrName, newVal) {
+	    proto.setAttribute = function (attrName, newVal) {
 	        var prevVal = this.getAttribute(attrName);
 	        this.__setAttribute(attrName, newVal);
 	        newVal = this.getAttribute(attrName);
-	        if (newVal != prevVal) {
+	        if (newVal !== prevVal) {
 	            var evt = context.document.createEvent('MutationEvent');
 	            evt.initMutationEvent(
 	                'DOMAttrModified',
@@ -259,14 +258,14 @@
 	                prevVal || '',
 	                newVal || '',
 	                attrName,
-	                (prevVal == null) ? evt.ADDITION : evt.MODIFICATION
+	                (prevVal === null) ? evt.ADDITION : evt.MODIFICATION
 	            );
 	            this.dispatchEvent(evt);
 	        }
 	    };
 
 	    proto.__removeAttribute = proto.removeAttribute;
-	    proto.removeAttribute = function(attrName) {
+	    proto.removeAttribute = function (attrName) {
 	        var prevVal = this.getAttribute(attrName);
 	        this.__removeAttribute(attrName);
 	        var evt = context.document.createEvent('MutationEvent');

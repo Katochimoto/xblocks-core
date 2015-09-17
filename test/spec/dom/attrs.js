@@ -1,3 +1,5 @@
+var xblocks = require('../../../src/xblocks.js');
+
 describe('xblocks.dom.attrs', function() {
 
     beforeEach(function() {

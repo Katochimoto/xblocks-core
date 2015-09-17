@@ -1,6 +1,3 @@
-/* global describe, it, expect, xblocks, beforeEach */
-/* jshint strict: false */
-
 describe('xblocks - Создание ->', function() {
 
     beforeEach(function() {
@@ -8,7 +5,7 @@ describe('xblocks - Создание ->', function() {
     });
 
     it('свойство xtagName', function() {
-        expect(this.xElement.xtagName).to.be('x-element-create');
+        expect(this.xElement.xtagName).to.equal('x-element-create');
     });
 
     it('свойство xtmpl', function() {
@@ -27,22 +24,22 @@ describe('xblocks - Создание ->', function() {
 
     it('свойство mounted', function() {
         expect(this.xElement.mounted).to.be.a('boolean');
-        expect(this.xElement.mounted).to.be(false);
+        expect(this.xElement.mounted).to.equal(false);
     });
 
     it('свойство content', function() {
         expect(this.xElement.content).to.be.a('string');
-        expect(this.xElement.content).to.be('');
+        expect(this.xElement.content).to.equal('');
     });
 
     it('свойство innerHTML', function() {
         expect(this.xElement.innerHTML).to.be.a('string');
-        expect(this.xElement.innerHTML).to.be('');
+        expect(this.xElement.innerHTML).to.equal('');
     });
 
     it('свойство outerHTML', function() {
         expect(this.xElement.outerHTML).to.be.a('string');
-        expect(this.xElement.outerHTML).to.be('<x-element-create></x-element-create>');
+        expect(this.xElement.outerHTML).to.equal('<x-element-create></x-element-create>');
     });
 
     it('свойство attrs', function() {
@@ -71,6 +68,6 @@ describe('xblocks - Создание ->', function() {
 
     it('свойство xinserted', function() {
         expect(this.xElement.xinserted).to.be.a('boolean');
-        expect(this.xElement.xinserted).to.be(false);
+        expect(this.xElement.xinserted).to.equal(false);
     });
 });

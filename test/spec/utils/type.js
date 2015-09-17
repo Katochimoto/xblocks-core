@@ -1,4 +1,4 @@
-/* global describe, it, expect, xblocks, beforeEach */
+var xblocks = require('../../../src/xblocks.js');
 
 describe('xblocks.utils.type ->', function() {
     beforeEach(function() {
@@ -24,7 +24,7 @@ describe('xblocks.utils.type ->', function() {
         [ Math, 'math' ]
     ].forEach(function(params) {
             it('Должен вернуть строку с типом: ' + JSON.stringify(params), function() {
-                expect(this.util(params[0])).to.be(params[1]);
+                expect(this.util(params[0])).to.equal(params[1]);
             });
         });
 });

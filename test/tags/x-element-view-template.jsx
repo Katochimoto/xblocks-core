@@ -1,5 +1,4 @@
-/* global React, xv */
-/* jshint strict: false */
+var xblocks = require('../../src/xblocks');
 
 xblocks.view.register('x-element-view-template', {
     render: function() {

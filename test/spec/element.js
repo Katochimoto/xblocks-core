@@ -1,5 +1,4 @@
-/* global describe, it, expect, xblocks, beforeEach */
-/* jshint strict: false */
+var xblocks = require('../../src/xblocks.js');
 
 describe('xblocks.element', function() {
 
@@ -17,11 +16,11 @@ describe('xblocks.element', function() {
         });
 
         it('узел сожержит свойство xblock с созданным объектом', function() {
-            expect(this.node.xblock).to.be(this.element);
+            expect(this.node.xblock).to.equal(this.element);
         });
 
         it('объект содержит свойство _node с узлом', function() {
-            expect(this.element._node).to.be(this.node);
+            expect(this.element._node).to.equal(this.node);
         });
 
         it('выполняется вызов метода инициализации', function() {

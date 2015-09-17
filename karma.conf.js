@@ -1,5 +1,4 @@
-// Karma configuration
-// Generated on Tue Jun 03 2014 00:28:29 GMT+0400 (MSK)
+var webpack = require('webpack');
 
 module.exports = function(config) {
     config.set({
@@ -18,14 +17,13 @@ module.exports = function(config) {
             'test/helpers/setup.js',
 
             'node_modules/classnames/index.js',
-            'node_modules/setimmediate2/dist/setImmediate.js',
             'bower_components/vow/vow.min.js',
             'bower_components/es5-shim/es5-shim.js',
             'bower_components/react/react-with-addons.js',
             'bower_components/react/react-dom.js',
 
             'src/xtag.js',
-            'src/xblocks.js',
+
             'test/tags/**/*.js',
             'test/spec/**/*.js'
         ],
@@ -40,9 +38,30 @@ module.exports = function(config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            '**/*.js': [ 'webpack' ],
+            'test/**/*.js': [ 'webpack' ],
+            'src/**/*.js': [ 'webpack' ],
             '**/*.jsx': [ 'babel' ],
             '**/src/xblocks.js': 'coverage'
+        },
+
+        webpack: {
+            'externals': {
+                'react': 'React',
+                'react-dom': 'ReactDOM',
+                'xtag': 'xtag'
+            },
+            'resolve': {
+                'alias': {
+                    'setImmediate': 'setImmediate2/src/index.js'
+                }
+            },
+            'plugins': [
+                new webpack.DefinePlugin({
+                    'DEBUG': false,
+                    'DEBUG_TIME': false,
+                    'NODE_ENV': 'production'
+                })
+            ]
         },
 
 

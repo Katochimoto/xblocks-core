@@ -1,5 +1,4 @@
-/* global React, xv */
-/* jshint strict: false */
+var xblocks = require('../../src/xblocks.js');
 
 xblocks.view.register('x-element-clone', {
     render: function() {

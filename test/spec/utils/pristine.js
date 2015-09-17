@@ -1,5 +1,4 @@
-/* global describe, it, expect, xblocks, beforeEach */
-/* jshint strict: false */
+var xblocks = require('../../../src/xblocks.js');
 
 describe('xblocks.utils.pristine ->', function() {
     beforeEach(function() {

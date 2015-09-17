@@ -1,4 +1,4 @@
-/* global describe, it, expect, xblocks */
+var xblocks = require('../../src/xblocks.js');
 
 describe('xblocks.dom', function() {
     describe('xblocks.dom.attrs', function() {

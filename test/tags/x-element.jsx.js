@@ -1,7 +1,6 @@
-/* global React, xv */
-/* jshint strict: false */
-
 'use strict';
+
+var xblocks = require('../../src/xblocks');
 
 xblocks.view.register('x-element', {
     propTypes: {

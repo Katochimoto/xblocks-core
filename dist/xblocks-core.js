@@ -67,20 +67,17 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* global DEBUG_TIME */
-
 	'use strict';
 
 	var dom = __webpack_require__(2);
 	var utils = __webpack_require__(11);
 	var XBElement = __webpack_require__(35);
-	/* jshint -W079 */
 	var xtag = __webpack_require__(39);
 	var forEach = Array.prototype.forEach;
 
 	var blockCommon = {
 	    lifecycle: {
-	        created: function() {
+	        created: function () {
 	            if (false) {
 	                utils.log.time(this, 'xb_init');
 	                utils.log.time(this, 'dom_inserted');
@@ -89,7 +86,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            blockInit(this);
 	        },
 
-	        inserted: function() {
+	        inserted: function () {
 	            if (this.xinserted) {
 	                return;
 	            }
@@ -114,7 +111,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        },
 
-	        removed: function() {
+	        removed: function () {
 	            this.xinserted = false;
 
 	            if (this.xblock) {
@@ -127,13 +124,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    accessors: {
 	        // check mounted react
 	        mounted: {
-	            get: function() {
+	            get: function () {
 	                return Boolean(this.xblock && this.xblock.isMounted());
 	            }
 	        },
 
 	        content: {
-	            get: function() {
+	            get: function () {
 	                if (this.mounted) {
 	                    return this.xblock.getMountedContent();
 	                }
@@ -141,7 +138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return dom.contentNode(this).innerHTML;
 	            },
 
-	            set: function(content) {
+	            set: function (content) {
 	                if (this.mounted) {
 	                    this.xblock.setMountedContent(content);
 
@@ -154,13 +151,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        // getting object attributes
 	        attrs: {
-	            get: function() {
+	            get: function () {
 	                return dom.attrs.toObject(this);
 	            }
 	        },
 
 	        props: {
-	            get: function() {
+	            get: function () {
 	                var prop;
 	                var props = dom.attrs.toObject(this);
 	                var xprops = this.xprops;
@@ -185,11 +182,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    methods: {
-	        upgrade: function() {
+	        upgrade: function () {
 	            dom.upgradeAll(this);
 	        },
 
-	        cloneNode: function(deep) {
+	        cloneNode: function (deep) {
 	            // not to clone the contents
 	            var node = dom.cloneNode(this, false);
 	            dom.upgrade(node);
@@ -201,8 +198,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                node.content = this.content;
 	            }
 
-	            //???
-	            //if ('checked' in this) clone.checked = this.checked;
+	            // ???
+	            // if ('checked' in this) clone.checked = this.checked;
 
 	            return node;
 	        }
@@ -217,7 +214,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {?object|array} options settings tag creation
 	 * @returns {HTMLElement}
 	 */
-	exports.create = function(blockName, options) {
+	exports.create = function (blockName, options) {
 	    options = Array.isArray(options) ? options : [ options ];
 	    options.unshift(true, {});
 	    options.push(blockCommon);
@@ -279,7 +276,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function tmplCompileIterator(tmplNode) {
-	    /* jshint -W040 */
 	    this.xtmpl[ tmplNode.getAttribute('ref') ] = tmplNode.innerHTML;
 	}
 
@@ -304,7 +300,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	/* jshint -W079 */
 	var React = __webpack_require__(4);
 	var forEach = Array.prototype.forEach;
 
@@ -344,7 +339,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {object} attrs the set of derived attributes (+default values)
 	 * @return {object}
 	 */
-	exports.get = function(element, attrs) {
+	exports.get = function (element, attrs) {
 	    if (element.nodeType !== 1 || !element.hasAttributes()) {
 	        return attrs;
 	    }
@@ -352,7 +347,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var attrName;
 	    for (attrName in attrs) {
 	        if (attrs.hasOwnProperty(attrName) && element.hasAttribute(attrName)) {
-	            if (typeof(attrs[ attrName ]) === 'boolean') {
+	            if (typeof attrs[ attrName ] === 'boolean') {
 	                attrs[ attrName ] = valueConversion(
 	                    attrName,
 	                    element.getAttribute(attrName),
@@ -382,7 +377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {HTMLElement} element
 	 * @return {object}
 	 */
-	exports.toObject = function(element) {
+	exports.toObject = function (element) {
 	    var attrs = {};
 
 	    if (element.nodeType === 1 && element.hasAttributes()) {
@@ -429,7 +424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {object} [propTypes] the set of attribute types
 	 * @returns {object}
 	 */
-	exports.typeConversion = function(props, propTypes) {
+	exports.typeConversion = function (props, propTypes) {
 	    propTypes = propTypes || {};
 
 	    var prop;
@@ -451,7 +446,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @private
 	 */
 	function toObjectIterator(attr) {
-	    /* jshint -W040 */
 	    this[ attr.nodeName ] = attr.value;
 	}
 
@@ -463,17 +457,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    switch (type) {
-	        case React.PropTypes.bool:
-	            return Boolean(value === true || value === '' || prop === value || value === 'true');
+	    case React.PropTypes.bool:
+	        return Boolean(value === true || value === '' || prop === value || value === 'true');
 
-	        case React.PropTypes.string:
-	            return String(value);
+	    case React.PropTypes.string:
+	        return String(value);
 
-	        case React.PropTypes.number:
-	            return Number(value);
+	    case React.PropTypes.number:
+	        return Number(value);
 
-	        default:
-	            return value;
+	    default:
+	        return value;
 	    }
 	}
 
@@ -498,10 +492,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @see https://developer.mozilla.org/en-US/docs/Web/API/Node.cloneNode
 	 * @function xblocks.dom.cloneNode
 	 * @param {HTMLElement} node the node to be cloned
-	 * @param {boolean} deep true if the children of the node should also be cloned, or false to clone only the specified node.
+	 * @param {boolean} deep true if the children of the node should also be cloned,
+	 * or false to clone only the specified node.
 	 * @returns {HTMLElement} The new node that will be a clone of node
 	 */
-	module.exports = function(node, deep) {
+	module.exports = function (node, deep) {
 	    // FireFox19 cannot use native cloneNode the Node object
 	    return elementProto.cloneNode.call(node, deep);
 
@@ -511,7 +506,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return elementProto.cloneNode.call(node, deep);
 	    } catch(e) {
 	        // FireFox <=13
-	        // uncaught exception: [Exception... "Could not convert JavaScript argument"  nsresult: "0x80570009 (NS_ERROR_XPC_BAD_CONVERT_JS)"
+	        // uncaught exception: [Exception... "Could not convert JavaScript argument"
+	        // nsresult: "0x80570009 (NS_ERROR_XPC_BAD_CONVERT_JS)"
 	        return node.ownerDocument.importNode(node, deep);
 	    }
 	    */
@@ -522,10 +518,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 6 */
 /***/ function(module, exports) {
 
-	/*jshint -W067*/
 	'use strict';
 
-	module.exports = (function() {
+	module.exports = (function () {
 	    return this || (1, eval)('this');
 	})();
 
@@ -541,7 +536,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {HTMLElement} node
 	 * @returns {HTMLElement}
 	 */
-	module.exports = function(node) {
+	module.exports = function (node) {
 	    var element;
 
 	    if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
@@ -570,18 +565,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @prop {function} xblocks.dom.outerHTML.get
 	 * @prop {function} xblocks.dom.outerHTML.set
 	 */
-	module.exports = (function() {
+	module.exports = (function () {
 
 	    var container = context.document.createElementNS('http://www.w3.org/1999/xhtml', '_');
 	    var getter;
 	    var setter;
 
 	    if (container.hasOwnProperty('outerHTML')) {
-	        getter = function() {
+	        getter = function () {
 	            return this.outerHTML;
 	        };
 
-	        setter = function(html) {
+	        setter = function (html) {
 	            this.outerHTML = html;
 	        };
 
@@ -590,12 +585,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var xmlns = /\sxmlns=\"[^\"]+\"/;
 
 	        if (serializer) {
-	            getter = function() {
+	            getter = function () {
 	                return serializer.serializeToString(this).replace(xmlns, '');
 	            };
 
 	        } else {
-	            getter = function() {
+	            getter = function () {
 	                container.appendChild(this.cloneNode(false));
 	                var html = container.innerHTML.replace('><', '>' + this.innerHTML + '<');
 	                container.innerHTML = '';
@@ -603,7 +598,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            };
 	        }
 
-	        setter = function(html) {
+	        setter = function (html) {
 	            var node = this;
 	            var parent = node.parentNode;
 	            var child;
@@ -642,12 +637,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * @function xblocks.dom.upgrade
 	 */
-	module.exports = (function() {
-	    if (context.CustomElements && typeof(context.CustomElements.upgrade) === 'function') {
+	module.exports = (function () {
+	    if (context.CustomElements && typeof context.CustomElements.upgrade === 'function') {
 	        return context.CustomElements.upgrade;
 
 	    } else {
-	        return function() {};
+	        return function () {};
 	    }
 	}());
 
@@ -663,12 +658,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * @function xblocks.dom.upgradeAll
 	 */
-	module.exports = (function() {
-	    if (context.CustomElements && typeof(context.CustomElements.upgradeAll) === 'function') {
+	module.exports = (function () {
+	    if (context.CustomElements && typeof context.CustomElements.upgradeAll === 'function') {
 	        return context.CustomElements.upgradeAll;
 
 	    } else {
-	        return function() {};
+	        return function () {};
 	    }
 	}());
 
@@ -710,7 +705,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @function xblocks.utils.assign
 	 * @returns {object}
 	 */
-	module.exports = function() {
+	module.exports = function () {
 	    return mergeBase.call(this, utilsAssignCheckCopy, arguments);
 	};
 
@@ -742,7 +737,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var deep = false;
 
 	    // Handle a deep copy situation
-	    if (typeof(target) === 'boolean') {
+	    if (typeof target === 'boolean') {
 	        deep = target;
 
 	        // Skip the boolean and the target
@@ -751,19 +746,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    // Handle case when target is a string or something (possible in deep copy)
-	    if (typeof(target) !== 'object' && typeof(target) !== 'function') {
+	    if (typeof target !== 'object' && typeof target !== 'function') {
 	        target = {};
 	    }
 
 	    // Extend jQuery itself if only one argument is passed
 	    if (i === length) {
-	        /* jshint -W040 */
 	        target = this;
 	        i--;
 	    }
 
 	    for (; i < length; i++) {
 	        // Only deal with non-null/undefined values
+	        /* eslint eqeqeq:0 */
 	        if ((options = args[ i ]) != null) {
 	            // Extend the base object
 	            for (name in options) {
@@ -822,7 +817,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {*} value the value to test
 	 * @returns {boolean}
 	 */
-	module.exports = function(value) {
+	module.exports = function (value) {
 	    if (type(value) !== 'object') {
 	        return false;
 	    }
@@ -841,7 +836,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var toString = Object.prototype.toString;
 	var regType = /\s([a-zA-Z]+)/;
 
 	/**
@@ -850,7 +844,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {*} param
 	 * @returns {string}
 	 */
-	module.exports = function(param) {
+	module.exports = function (param) {
 	    if (param === undefined) {
 	        return 'undefined';
 	    }
@@ -859,10 +853,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return 'null';
 	    }
 
-	    var type = typeof(param);
+	    var type = typeof param;
 
 	    if (type === 'object') {
-	        type = toString.call(param)
+	        type = Object.prototype.toString.call(param)
 	            .match(regType)[1]
 	            .toLowerCase();
 	    }
@@ -896,7 +890,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @private
 	 */
 	var equal = {
-	    'array': function(x, y) {
+	    'array': function (x, y) {
 	        var i = 0;
 	        var l = x.length;
 
@@ -913,7 +907,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return true;
 	    },
 
-	    'object': function(x, y) {
+	    'object': function (x, y) {
 	        var i;
 
 	        for (i in x) {
@@ -925,7 +919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            } else {
 	                return false;
 	            }
-	    	}
+	        }
 
 	        for (i in y) {
 	            if (!x.hasOwnProperty(i)) {
@@ -933,18 +927,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 
-	    	return true;
+	        return true;
 	    },
 
-	    'date': function(x, y) {
+	    'date': function (x, y) {
 	        return x.getTime() === y.getTime();
 	    },
 
-	    'regexp': function(x, y) {
+	    'regexp': function (x, y) {
 	        return x.toString() === y.toString();
 	    },
 
-	    'function': function(x, y) {
+	    'function': function (x, y) {
 	        return x.toString() === y.toString();
 	    }
 	};
@@ -965,6 +959,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return equal[ xType ](x, y);
 	    }
 
+	    /* eslint eqeqeq:0 */
 	    return x == y;
 	}
 
@@ -999,7 +994,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Deferred execution
 	 *
 	 * @example
-	 * var lazyCallback = function() {
+	 * var lazyCallback = function () {
 	 *     console.log(arguments);
 	 * };
 	 * xblocks.utils.lazy(lazyCallback, 'a');
@@ -1013,7 +1008,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {*} args
 	 * @returns {function}
 	 */
-	module.exports = function(callback, args) {
+	module.exports = function (callback, args) {
 	    if (!callback._args) {
 	        callback._args = [];
 	    }
@@ -1021,13 +1016,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    callback._args.push(args);
 
 	    if (!callback._timer) {
-	        callback._timer = immediate.setImmediate(function() {
+	        callback._timer = immediate.setImmediate(function () {
 	            callback._timer = 0;
 
-	            var args = callback._args;
+	            var saveArgs = callback._args;
 	            callback._args = [];
 
-	            callback(args);
+	            callback(saveArgs);
 	        });
 	    }
 
@@ -1374,7 +1369,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var context = __webpack_require__(6);
 
-	exports.time = function(element, name) {
+	exports.time = function (element, name) {
 	    if (!element._xtimers) {
 	        element._xtimers = {};
 	    }
@@ -1386,7 +1381,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    element._xtimers[ name ].push(context.performance.now());
 	};
 
-	exports.info = function() {
+	exports.info = function () {
 	    context.console.info.apply(context.console, arguments);
 	};
 
@@ -1419,7 +1414,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @function xblocks.utils.merge
 	 * @returns {object}
 	 */
-	module.exports = function() {
+	module.exports = function () {
 	    return mergeBase.call(this, utilsMergeCheckCopy, arguments);
 	};
 
@@ -1443,7 +1438,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {string} methodName method name
 	 * @returns {boolean} true if the method is not overridden
 	 */
-	module.exports = function(methodName) {
+	module.exports = function (methodName) {
 	    if (!methodName) {
 	        return false;
 	    }
@@ -1458,13 +1453,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return false;
 	    }
 
-	    var type = typeof(method);
+	    var type = typeof method;
 
 	    if (type !== 'function' && type !== 'object') {
 	        return false;
 	    }
 
-	    var re = new RegExp("function\\s+" + methodName + "\\(\\s*\\)\\s*{\\s*\\[native code\\]\\s*}");
+	    var re = new RegExp('function\\s+' + methodName + '\\(\\s*\\)\\s*{\\s*\\[native code\\]\\s*}');
 
 	    if (!re.test(method)) {
 	        return false;
@@ -1493,7 +1488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {string} tagName
 	 * @returns {object}
 	 */
-	module.exports = function(tagName) {
+	module.exports = function (tagName) {
 	    var viewClass = view.getClass(tagName);
 
 	    if (!viewClass) {
@@ -1518,7 +1513,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	/* jshint -W079 */
 	var React = __webpack_require__(4);
 	var merge = __webpack_require__(29);
 	var viewComponentsClass = {};
@@ -1542,10 +1536,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {object} [props] the attributes of a node
 	     * @returns {?ReactElement}
 	     */
-	    template: function(ref, props) {
+	    template: function (ref, props) {
 	        var xtmpl = this.props._container && this.props._container.xtmpl;
 
-	        if (typeof(xtmpl) === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
+	        if (typeof xtmpl === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
 	            props = merge.apply({}, props, {
 	                'dangerouslySetInnerHTML': {
 	                    '__html': this.templatePrepare(xtmpl[ ref ])
@@ -1562,13 +1556,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Get the node associated with the view
 	     * @returns {HTMLElement}
 	     */
-	    container: function() {
+	    container: function () {
 	        return this.props._container;
 	    }
 	};
 
 	var viewCommonUser = {
-	    templatePrepare: function(tmplString) {
+	    templatePrepare: function (tmplString) {
 	        return tmplString;
 	    }
 	};
@@ -1581,7 +1575,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * var XBButtonContent = view.create({
 	 *     'displayName': 'XBButtonContent',
-	 *     'render': function() {
+	 *     'render': function () {
 	 *         return (
 	 *             &lt;span {...this.props}&gt;{this.props.children}&lt;/span&gt;
 	 *         );
@@ -1590,7 +1584,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * view.register('xb-button', {
 	 *     'displayName': 'xb-button',
-	 *     'render': function() {
+	 *     'render': function () {
 	 *         return (
 	 *             &lt;button&gt;
 	 *                 &lt;XBButtonContent {...this.props} /&gt;
@@ -1612,7 +1606,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * var view = require('./view');
 	 * view.register('xb-button', {
 	 *     'displayName': 'xb-button',
-	 *     'render': function() {
+	 *     'render': function () {
 	 *         return (
 	 *             &lt;button {...this.props}&gt;{this.props.children}&lt;/button&gt;
 	 *         );
@@ -1624,8 +1618,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {object|array} component settings view creation
 	 * @returns {function}
 	 */
-	exports.register = function(blockName, component) {
+	exports.register = function (blockName, component) {
 	    if (React.DOM.hasOwnProperty(blockName)) {
+	        /* eslint no-throw-literal:0 */
 	        throw 'Specified item "' + blockName + '" is already defined';
 	    }
 
@@ -1642,7 +1637,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {string} blockName the name of the new node
 	 * @returns {function}
 	 */
-	exports.getFactory = function(blockName) {
+	exports.getFactory = function (blockName) {
 	    return React.DOM[ blockName ];
 	};
 
@@ -1651,7 +1646,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {string} blockName the name of the new node
 	 * @returns {function}
 	 */
-	exports.getClass = function(blockName) {
+	exports.getClass = function (blockName) {
 	    return viewComponentsClass[ blockName ];
 	};
 
@@ -1684,7 +1679,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @function xblocks.utils.seq
 	 * @returns {number} a unique, incremental positive number
 	 */
-	module.exports = function() {
+	module.exports = function () {
 	    return ++i;
 	};
 
@@ -1705,20 +1700,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {string}
 	 * @see http://ejohn.org/blog/javascript-micro-templating/
 	 */
-	module.exports = function(str, data) {
+	module.exports = function (str, data) {
 	    if (!cache.hasOwnProperty(str)) {
-	        /* jshint -W054 */
-	        cache[ str ] = new Function('obj',
-	           "var p=[],print=function(){p.push.apply(p,arguments);};" +
-	           "with(obj){p.push('" +
-	           str.replace(/[\r\t\n]/g, " ")
-	               .split("<%").join("\t")
-	               .replace(/((^|%>)[^\t]*)'/g, "$1\r")
-	               .replace(/\t=(.*?)%>/g, "',$1,'")
-	               .split("\t").join("');")
-	               .split("%>").join("p.push('")
-	               .split("\r").join("\\'") +
-	               "');}return p.join('');");
+	        /* eslint no-spaced-func:0 */
+	        cache[ str ] = new Function ('obj',
+	           'var p=[],print=function(){p.push.apply(p,arguments);};' +
+	           'with(obj){p.push(\'' +
+	           str.replace(/[\r\t\n]/g, ' ')
+	               .split('<%').join('\t')
+	               .replace(/((^|%>)[^\t]*)'/g, '$1\r')
+	               .replace(/\t=(.*?)%>/g, '\',$1,\'')
+	               .split('\t').join('\');')
+	               .split('%>').join('p.push(\'')
+	               .split('\r').join('\\\'') +
+	               '\');}return p.join(\'\');');
 	    }
 
 	    return data ? cache[ str ](data) : cache[ str ];
@@ -1729,26 +1724,23 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* global DEBUG, DEBUG_TIME */
-
 	'use strict';
 
 	var context = __webpack_require__(6);
 	var dom = __webpack_require__(2);
-	/* jshint -W079 */
-	var Event = __webpack_require__(36);
+	var XBEvent = __webpack_require__(36);
 	var ReactDOM = __webpack_require__(38);
 	var utils = __webpack_require__(11);
 	var view = __webpack_require__(32);
 
-	module.exports = Element;
+	module.exports = XBElement;
 
 	/**
 	 * Xblock element constructor
 	 * @param {HTMLElement} node the node of a custom element
 	 * @constructor
 	 */
-	function Element(node) {
+	function XBElement(node) {
 	    node.xblock = this;
 
 	    this._callbackMutation = this._callbackMutation.bind(this);
@@ -1772,27 +1764,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @type {HTMLElement}
 	 * @protected
 	 */
-	Element.prototype._node = null;
+	XBElement.prototype._node = null;
 
 	/**
 	 * React component
 	 * @type {Constructor}
 	 * @protected
 	 */
-	Element.prototype._component = null;
+	XBElement.prototype._component = null;
 
 	/**
 	 * Instance MutationObserver
 	 * @type {MutationObserver}
 	 * @protected
 	 */
-	Element.prototype._observer = null;
+	XBElement.prototype._observer = null;
 
 	/**
 	 * Unmounts a component and removes it from the DOM
 	 * @fires xblocks.Element~event:xb-destroy
 	 */
-	Element.prototype.destroy = function() {
+	XBElement.prototype.destroy = function () {
 	    var node = this._node;
 	    var content = node.content;
 
@@ -1810,7 +1802,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    node.content = content;
 	    node.xblock = undefined;
 
-	    Event.dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
+	    XBEvent.dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
 
 	    if (true) {
 	        utils.log.info('element destroy: %O', this);
@@ -1823,7 +1815,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {array} [removeProps] remote attributes
 	 * @param {function} [callback] the callback function
 	 */
-	Element.prototype.update = function(props, removeProps, callback) {
+	XBElement.prototype.update = function (props, removeProps, callback) {
 	    var nextProps = utils.merge(true, {}, this.getMountedProps(), this._node.props, props);
 
 	    // merge of new and current properties
@@ -1841,7 +1833,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var proxyConstructor = view.getFactory(this._node.xtagName)(nextProps);
 	    var that = this;
-	    var renderCallback = function() {
+	    var renderCallback = function () {
 	        that._component = this;
 	        that._callbackUpdate(callback);
 	    };
@@ -1859,7 +1851,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @see http://facebook.github.io/react/docs/component-api.html#ismounted
 	 * @returns {boolean}
 	 */
-	Element.prototype.isMounted = function() {
+	XBElement.prototype.isMounted = function () {
 	    return Boolean(this._component && this._component.isMounted());
 	};
 
@@ -1867,7 +1859,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Installing a new content react component
 	 * @param {string} content
 	 */
-	Element.prototype.setMountedContent = function(content) {
+	XBElement.prototype.setMountedContent = function (content) {
 	    if (this.isMounted()) {
 	        this.update({ 'children': content });
 	    }
@@ -1877,7 +1869,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Receiving the content components react
 	 * @returns {?string}
 	 */
-	Element.prototype.getMountedContent = function() {
+	XBElement.prototype.getMountedContent = function () {
 	    if (this.isMounted()) {
 	        return this._component.props.children;
 	    }
@@ -1887,7 +1879,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Get components react
 	 * @returns {?ReactCompositeComponent.createClass.Constructor}
 	 */
-	Element.prototype.getMountedComponent = function() {
+	XBElement.prototype.getMountedComponent = function () {
 	    if (this.isMounted()) {
 	        return this._component;
 	    }
@@ -1897,14 +1889,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Gets the attributes of the components
 	 * @returns {?object}
 	 */
-	Element.prototype.getMountedProps = function() {
+	XBElement.prototype.getMountedProps = function () {
 	    return this.isMounted() ? this._component.props : null;
 	};
 
 	/**
 	 * @protected
 	 */
-	Element.prototype._init = function() {
+	XBElement.prototype._init = function () {
 	    var children = this._node.content;
 	    var props = utils.merge(true, {}, this._node.props, {
 	        '_uid': this._node.xuid,
@@ -1915,7 +1907,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var proxyConstructor = view.getFactory(this._node.xtagName)(props, children);
 	    var that = this;
-	    var renderCallback = function() {
+	    var renderCallback = function () {
 	        that._component = this;
 	        that._callbackInit();
 	    };
@@ -1931,12 +1923,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 * @fires xblocks.Element~event:xb-created
 	 */
-	Element.prototype._callbackInit = function() {
+	XBElement.prototype._callbackInit = function () {
 	    this._node.upgrade();
 	    this._observer = new context.MutationObserver(this._callbackMutation);
 	    this._observer.observe(this._node, this._observerOptions);
 
-	    Event.dispatch(this._node, 'xb-created');
+	    XBEvent.dispatch(this._node, 'xb-created');
 	    utils.lazy(globalInitEvent, this._node);
 
 	    if (false) {
@@ -1949,11 +1941,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 * @fires xblocks.Element~event:xb-update
 	 */
-	Element.prototype._callbackUpdate = function(callback) {
+	XBElement.prototype._callbackUpdate = function (callback) {
 	    this._node.upgrade();
 	    this._observer.observe(this._node, this._observerOptions);
 
-	    Event.dispatch(this._node, 'xb-update');
+	    XBEvent.dispatch(this._node, 'xb-update');
 	    utils.lazy(globalUpdateEvent, this._node);
 
 	    if (callback) {
@@ -1965,7 +1957,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {MutationRecord[]} records
 	 * @protected
 	 */
-	Element.prototype._callbackMutation = function(records) {
+	XBElement.prototype._callbackMutation = function (records) {
 	    var removeAttrs = records
 	        .filter(filterAttributesRemove, this)
 	        .map(mapAttributesName);
@@ -1979,7 +1971,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	function filterAttributesRemove(record) {
-	    /* jshint -W040 */
 	    return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
 	}
 
@@ -1997,7 +1988,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	function globalInitEvent(records) {
-	    Event.dispatch(context, 'xb-created', { 'detail': { 'records': records } });
+	    XBEvent.dispatch(context, 'xb-created', { 'detail': { 'records': records } });
 	}
 
 	/**
@@ -2005,7 +1996,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	function globalUpdateEvent(records) {
-	    Event.dispatch(context, 'xb-update', { 'detail': { 'records': records } });
+	    XBEvent.dispatch(context, 'xb-update', { 'detail': { 'records': records } });
 	}
 
 	/**
@@ -2036,7 +2027,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var context = __webpack_require__(6);
 	var pristine = __webpack_require__(30);
 	var CustomEventCommon = __webpack_require__(37);
-	var Custom = (function() {
+	var Custom = (function () {
 	    if (pristine('CustomEvent')) {
 	        return context.CustomEvent;
 	    }
@@ -2073,7 +2064,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {string} name event name
 	 * @param {object} params the event parameters
 	 */
-	exports.dispatch = function(element, name, params) {
+	exports.dispatch = function (element, name, params) {
 	    element.dispatchEvent(new Custom(name, params || {}));
 	};
 
@@ -2090,12 +2081,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	try {
 	    issetCustomEvent = Boolean(context.document.createEvent('CustomEvent'));
-	} catch(e) {
+	} catch (e) {
 	    // do nothing
 	}
 
 	if (issetCustomEvent) {
-	    CustomEventCommon = function(eventName, params) {
+	    CustomEventCommon = function (eventName, params) {
 	        params = params || {};
 
 	        var bubbles = Boolean(params.bubbles);
@@ -2108,7 +2099,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	} else {
-	    CustomEventCommon = function(eventName, params) {
+	    CustomEventCommon = function (eventName, params) {
 	        params = params || {};
 
 	        var bubbles = Boolean(params.bubbles);

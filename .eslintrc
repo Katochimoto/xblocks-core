@@ -53,6 +53,11 @@
         "exports": false,
         "require": false,
         "DEBUG_TIME": false,
-        "DEBUG": false
+        "DEBUG": false,
+        "describe": false,
+        "it": false,
+        "expect": false,
+        "beforeEach": false,
+        "afterEach": false
     }
 }
