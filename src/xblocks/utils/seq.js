@@ -14,6 +14,6 @@ var i = 0;
  * @function xblocks.utils.seq
  * @returns {number} a unique, incremental positive number
  */
-module.exports = function() {
+module.exports = function () {
     return ++i;
 };

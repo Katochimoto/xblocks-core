@@ -7,6 +7,6 @@
 
 var context = require('../context');
 
-if (typeof(context.CustomEvent) !== 'function') {
+if (typeof context.CustomEvent !== 'function') {
     context.CustomEvent = require('./CustomEventCommon');
 }

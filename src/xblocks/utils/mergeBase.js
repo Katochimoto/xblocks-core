@@ -17,7 +17,7 @@ function mergeBase(checkСopy, args) {
     var deep = false;
 
     // Handle a deep copy situation
-    if (typeof(target) === 'boolean') {
+    if (typeof target === 'boolean') {
         deep = target;
 
         // Skip the boolean and the target
@@ -26,7 +26,7 @@ function mergeBase(checkСopy, args) {
     }
 
     // Handle case when target is a string or something (possible in deep copy)
-    if (typeof(target) !== 'object' && typeof(target) !== 'function') {
+    if (typeof target !== 'object' && typeof target !== 'function') {
         target = {};
     }
 
@@ -38,6 +38,7 @@ function mergeBase(checkСopy, args) {
 
     for (; i < length; i++) {
         // Only deal with non-null/undefined values
+        /* eslint eqeqeq:0 */
         if ((options = args[ i ]) != null) {
             // Extend the base object
             for (name in options) {

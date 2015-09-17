@@ -5,7 +5,7 @@
  * @param {HTMLElement} node
  * @returns {HTMLElement}
  */
-module.exports = function(node) {
+module.exports = function (node) {
     var element;
 
     if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {

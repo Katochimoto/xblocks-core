@@ -9,7 +9,7 @@ var type = require('./type');
  * @private
  */
 var equal = {
-    'array': function(x, y) {
+    'array': function (x, y) {
         var i = 0;
         var l = x.length;
 
@@ -26,7 +26,7 @@ var equal = {
         return true;
     },
 
-    'object': function(x, y) {
+    'object': function (x, y) {
         var i;
 
         for (i in x) {
@@ -38,7 +38,7 @@ var equal = {
             } else {
                 return false;
             }
-    	}
+        }
 
         for (i in y) {
             if (!x.hasOwnProperty(i)) {
@@ -46,18 +46,18 @@ var equal = {
             }
         }
 
-    	return true;
+        return true;
     },
 
-    'date': function(x, y) {
+    'date': function (x, y) {
         return x.getTime() === y.getTime();
     },
 
-    'regexp': function(x, y) {
+    'regexp': function (x, y) {
         return x.toString() === y.toString();
     },
 
-    'function': function(x, y) {
+    'function': function (x, y) {
         return x.toString() === y.toString();
     }
 };
@@ -78,6 +78,7 @@ function equals(x, y) {
         return equal[ xType ](x, y);
     }
 
+    /* eslint eqeqeq:0 */
     return x == y;
 }
 

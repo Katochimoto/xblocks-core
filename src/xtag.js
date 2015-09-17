@@ -1,9 +1,11 @@
 var context = require('./context');
 
 context.Platform = {};
+
+/* eslint no-unused-vars:0 */
 var logFlags = {
-    //dom: true
-    //data: true
+    // dom: true
+    // data: true
 };
 
 require('./polyfills/performance');
@@ -15,7 +17,7 @@ require('dom-token-list-polyfill/src/token-list.js');
 require('webcomponents.js/src/WeakMap/WeakMap.js');
 require('webcomponents.js/src/MutationObserver/MutationObserver.js');
 
-(function() {
+(function () {
     require('webcomponents.js/src/CustomElements/base.js');
     require('webcomponents.js/src/CustomElements/traverse.js');
     require('webcomponents.js/src/CustomElements/observe.js');
@@ -24,7 +26,7 @@ require('webcomponents.js/src/MutationObserver/MutationObserver.js');
     require('webcomponents.js/src/CustomElements/boot.js');
 }());
 
-(function() {
+(function () {
     require('webcomponents.js/src/HTMLImports/base.js');
     require('webcomponents.js/src/HTMLImports/module.js');
     require('webcomponents.js/src/HTMLImports/path.js');

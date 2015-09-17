@@ -1,6 +1,8 @@
 'use strict';
 
-exports.time = function(element, name) {
+var context = require('../../context');
+
+exports.time = function (element, name) {
     if (!element._xtimers) {
         element._xtimers = {};
     }
@@ -9,9 +11,9 @@ exports.time = function(element, name) {
         element._xtimers[ name ] = [];
     }
 
-    element._xtimers[ name ].push(performance.now());
+    element._xtimers[ name ].push(context.performance.now());
 };
 
-exports.info = function() {
-    console.info.apply(console, arguments);
+exports.info = function () {
+    context.console.info.apply(context.console, arguments);
 };

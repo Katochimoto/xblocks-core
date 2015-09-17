@@ -1,5 +1,4 @@
 /* global describe, it, expect, xblocks, beforeEach */
-/* jshint strict: false */
 
 describe('xblocks.utils.type ->', function() {
     beforeEach(function() {
@@ -17,12 +16,9 @@ describe('xblocks.utils.type ->', function() {
         [ undefined, 'undefined' ],
         [ NaN, 'NaN' ],
         [ /123/, 'regexp' ],
-        /* jshint -W053 */
         [ (new String('')), 'string' ],
-        /* jshint -W010 */
         [ (new Object()), 'object' ],
         [ (new RegExp('123')), 'regexp' ],
-        /* jshint -W054 */
         [ (new Function('')), 'function' ],
         [ (new Date()), 'date' ],
         [ Math, 'math' ]

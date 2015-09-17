@@ -1,5 +1,4 @@
 /* global describe, it, expect, xblocks, beforeEach, afterEach, vow */
-/* jshint strict: false */
 
 describe('xblocks.view', function() {
 

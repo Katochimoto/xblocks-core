@@ -22,7 +22,7 @@ var mergeBase = require('./mergeBase');
  * @function xblocks.utils.merge
  * @returns {object}
  */
-module.exports = function() {
+module.exports = function () {
     return mergeBase.call(this, utilsMergeCheckCopy, arguments);
 };
 

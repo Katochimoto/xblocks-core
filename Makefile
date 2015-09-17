@@ -32,27 +32,16 @@ dist/xblocks-core.js: node_modules $(src_jsx_js) $(src_js)
 	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.js
 	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.min.js --optimize-minimize
 
-#dist/xblocks-core-full.js: node_modules $(src_jsx_js) $(src_js)
-#	cat node_modules/setimmediate2/setImmediate.js > $@
-#	$(NPM_BIN)/borschik -m no -i src/xtag.js >> $@
-#	$(NPM_BIN)/borschik -m no -i src/xblocks.js >> $@
-
-#dist/xblocks-core-full.min.js: dist/xblocks-core-full.js
-#	$(NPM_BIN)/borschik -i $< -o $@
-
 dist/x-tag-core.js: src/xtag.js node_modules $(polyfills_js)
-	$(NPM_BIN)/borschik -m no -i $< > $@
 	$(NPM_BIN)/webpack src/xtag.js dist/x-tag-core.js --config webpack.config.xtag.js
 	$(NPM_BIN)/webpack src/xtag.js dist/x-tag-core.min.js --optimize-minimize --config webpack.config.xtag.js
 
 test: node_modules bower_components
-	$(NPM_BIN)/jshint .
-	$(NPM_BIN)/jscs .
+	$(NPM_BIN)/eslint .
 	./node_modules/karma/bin/karma start --single-run --browsers PhantomJS
 
 testall: node_modules bower_components
-	$(NPM_BIN)/jshint .
-	$(NPM_BIN)/jscs .
+	$(NPM_BIN)/eslint .
 	./node_modules/karma/bin/karma start --single-run
 
 codeclimate: test

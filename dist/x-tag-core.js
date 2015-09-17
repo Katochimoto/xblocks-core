@@ -47,6 +47,8 @@
 	var context = __webpack_require__(1);
 
 	context.Platform = {};
+
+	/* jshint -W098 */
 	var logFlags = {
 	    //dom: true
 	    //data: true

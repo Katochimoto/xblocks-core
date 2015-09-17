@@ -2,20 +2,22 @@
 
 var dom = require('./dom');
 var utils = require('./utils');
-var Element = require('./element');
+var XBElement = require('./element');
 var xtag = require('xtag');
 var forEach = Array.prototype.forEach;
 
 var blockCommon = {
     lifecycle: {
-        created: function() {
-            DEBUG_TIME && utils.log.time(this, 'xb_init');
-            DEBUG_TIME && utils.log.time(this, 'dom_inserted');
+        created: function () {
+            if (DEBUG_TIME) {
+                utils.log.time(this, 'xb_init');
+                utils.log.time(this, 'dom_inserted');
+            }
 
             blockInit(this);
         },
 
-        inserted: function() {
+        inserted: function () {
             if (this.xinserted) {
                 return;
             }
@@ -35,10 +37,12 @@ var blockCommon = {
                 blockCreate(this);
             }
 
-            DEBUG_TIME && utils.log.time(this, 'dom_inserted');
+            if (DEBUG_TIME) {
+                utils.log.time(this, 'dom_inserted');
+            }
         },
 
-        removed: function() {
+        removed: function () {
             this.xinserted = false;
 
             if (this.xblock) {
@@ -51,13 +55,13 @@ var blockCommon = {
     accessors: {
         // check mounted react
         mounted: {
-            get: function() {
+            get: function () {
                 return Boolean(this.xblock && this.xblock.isMounted());
             }
         },
 
         content: {
-            get: function() {
+            get: function () {
                 if (this.mounted) {
                     return this.xblock.getMountedContent();
                 }
@@ -65,7 +69,7 @@ var blockCommon = {
                 return dom.contentNode(this).innerHTML;
             },
 
-            set: function(content) {
+            set: function (content) {
                 if (this.mounted) {
                     this.xblock.setMountedContent(content);
 
@@ -78,13 +82,13 @@ var blockCommon = {
 
         // getting object attributes
         attrs: {
-            get: function() {
+            get: function () {
                 return dom.attrs.toObject(this);
             }
         },
 
         props: {
-            get: function() {
+            get: function () {
                 var prop;
                 var props = dom.attrs.toObject(this);
                 var xprops = this.xprops;
@@ -109,11 +113,11 @@ var blockCommon = {
     },
 
     methods: {
-        upgrade: function() {
+        upgrade: function () {
             dom.upgradeAll(this);
         },
 
-        cloneNode: function(deep) {
+        cloneNode: function (deep) {
             // not to clone the contents
             var node = dom.cloneNode(this, false);
             dom.upgrade(node);
@@ -125,8 +129,8 @@ var blockCommon = {
                 node.content = this.content;
             }
 
-            //???
-            //if ('checked' in this) clone.checked = this.checked;
+            // ???
+            // if ('checked' in this) clone.checked = this.checked;
 
             return node;
         }
@@ -141,7 +145,7 @@ var blockCommon = {
  * @param {?object|array} options settings tag creation
  * @returns {HTMLElement}
  */
-exports.create = function(blockName, options) {
+exports.create = function (blockName, options) {
     options = Array.isArray(options) ? options : [ options ];
     options.unshift(true, {});
     options.push(blockCommon);
@@ -195,7 +199,7 @@ function blockCreate(node) {
         );
     }
 
-    node.xblock = new Element(node);
+    node.xblock = new XBElement(node);
 }
 
 function blockCreateLazy(nodes) {

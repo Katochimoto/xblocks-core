@@ -7,7 +7,7 @@ var view = require('../view');
  * @param {string} tagName
  * @returns {object}
  */
-module.exports = function(tagName) {
+module.exports = function (tagName) {
     var viewClass = view.getClass(tagName);
 
     if (!viewClass) {

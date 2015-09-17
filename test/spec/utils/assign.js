@@ -1,5 +1,4 @@
 /* global describe, it, expect, xblocks, beforeEach */
-/* jshint strict: false */
 
 describe('xblocks.utils.assign ->', function() {
     beforeEach(function() {

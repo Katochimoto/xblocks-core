@@ -9,7 +9,7 @@ var regPristine = /^[\$_a-z][\$\w]*$/i;
  * @param {string} methodName method name
  * @returns {boolean} true if the method is not overridden
  */
-module.exports = function(methodName) {
+module.exports = function (methodName) {
     if (!methodName) {
         return false;
     }
@@ -24,13 +24,13 @@ module.exports = function(methodName) {
         return false;
     }
 
-    var type = typeof(method);
+    var type = typeof method;
 
     if (type !== 'function' && type !== 'object') {
         return false;
     }
 
-    var re = new RegExp("function\\s+" + methodName + "\\(\\s*\\)\\s*{\\s*\\[native code\\]\\s*}");
+    var re = new RegExp('function\\s+' + methodName + '\\(\\s*\\)\\s*{\\s*\\[native code\\]\\s*}');
 
     if (!re.test(method)) {
         return false;

@@ -8,18 +8,18 @@ var context = require('../../context');
  * @prop {function} xblocks.dom.outerHTML.get
  * @prop {function} xblocks.dom.outerHTML.set
  */
-module.exports = (function() {
+module.exports = (function () {
 
     var container = context.document.createElementNS('http://www.w3.org/1999/xhtml', '_');
     var getter;
     var setter;
 
     if (container.hasOwnProperty('outerHTML')) {
-        getter = function() {
+        getter = function () {
             return this.outerHTML;
         };
 
-        setter = function(html) {
+        setter = function (html) {
             this.outerHTML = html;
         };
 
@@ -28,12 +28,12 @@ module.exports = (function() {
         var xmlns = /\sxmlns=\"[^\"]+\"/;
 
         if (serializer) {
-            getter = function() {
+            getter = function () {
                 return serializer.serializeToString(this).replace(xmlns, '');
             };
 
         } else {
-            getter = function() {
+            getter = function () {
                 container.appendChild(this.cloneNode(false));
                 var html = container.innerHTML.replace('><', '>' + this.innerHTML + '<');
                 container.innerHTML = '';
@@ -41,7 +41,7 @@ module.exports = (function() {
             };
         }
 
-        setter = function(html) {
+        setter = function (html) {
             var node = this;
             var parent = node.parentNode;
             var child;

@@ -1,5 +1,4 @@
 /* global describe, it, expect, xblocks */
-/* jshint strict: false */
 
 describe('xblocks.dom', function() {
     describe('xblocks.dom.attrs', function() {

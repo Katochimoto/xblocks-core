@@ -1,6 +1,5 @@
 'use strict';
 
-var toString = Object.prototype.toString;
 var regType = /\s([a-zA-Z]+)/;
 
 /**
@@ -9,7 +8,7 @@ var regType = /\s([a-zA-Z]+)/;
  * @param {*} param
  * @returns {string}
  */
-module.exports = function(param) {
+module.exports = function (param) {
     if (param === undefined) {
         return 'undefined';
     }
@@ -18,10 +17,10 @@ module.exports = function(param) {
         return 'null';
     }
 
-    var type = typeof(param);
+    var type = typeof param;
 
     if (type === 'object') {
-        type = toString.call(param)
+        type = Object.prototype.toString.call(param)
             .match(regType)[1]
             .toLowerCase();
     }

@@ -3,7 +3,7 @@
 var context = require('../context');
 var pristine = require('./utils/pristine');
 var CustomEventCommon = require('../polyfills/CustomEventCommon');
-var Custom = (function() {
+var Custom = (function () {
     if (pristine('CustomEvent')) {
         return context.CustomEvent;
     }
@@ -40,6 +40,6 @@ exports.Custom = Custom;
  * @param {string} name event name
  * @param {object} params the event parameters
  */
-exports.dispatch = function(element, name, params) {
+exports.dispatch = function (element, name, params) {
     element.dispatchEvent(new Custom(name, params || {}));
 };

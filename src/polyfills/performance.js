@@ -2,7 +2,7 @@
 
 var context = require('../context');
 
-if (typeof(context.performance) === 'undefined') {
+if (typeof context.performance === 'undefined') {
     context.performance = {};
 }
 
@@ -16,7 +16,7 @@ if (!context.performance.now) {
         nowOffset = Date.now();
     }
 
-    context.performance.now = function() {
+    context.performance.now = function () {
         return (Date.now() - nowOffset);
     };
 }

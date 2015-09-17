@@ -10,7 +10,7 @@ proto.matches = proto.matches ||
     proto.mozMatchesSelector ||
     proto.msMatchesSelector ||
     proto.oMatchesSelector ||
-    function(selector) {
+    function (selector) {
         return (indexOf.call((this.parentNode || this.ownerDocument).querySelectorAll(selector), this) !== -1);
     };
 

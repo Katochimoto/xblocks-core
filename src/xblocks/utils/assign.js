@@ -12,7 +12,7 @@ var mergeBase = require('./mergeBase');
  * @function xblocks.utils.assign
  * @returns {object}
  */
-module.exports = function() {
+module.exports = function () {
     return mergeBase.call(this, utilsAssignCheckCopy, arguments);
 };
 

@@ -67,19 +67,24 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* global DEBUG_TIME */
+
 	'use strict';
 
 	var dom = __webpack_require__(2);
 	var utils = __webpack_require__(11);
-	var Element = __webpack_require__(35);
+	var XBElement = __webpack_require__(35);
+	/* jshint -W079 */
 	var xtag = __webpack_require__(39);
 	var forEach = Array.prototype.forEach;
 
 	var blockCommon = {
 	    lifecycle: {
 	        created: function() {
-	            (false) && utils.log.time(this, 'xb_init');
-	            (false) && utils.log.time(this, 'dom_inserted');
+	            if (false) {
+	                utils.log.time(this, 'xb_init');
+	                utils.log.time(this, 'dom_inserted');
+	            }
 
 	            blockInit(this);
 	        },
@@ -104,7 +109,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                blockCreate(this);
 	            }
 
-	            (false) && utils.log.time(this, 'dom_inserted');
+	            if (false) {
+	                utils.log.time(this, 'dom_inserted');
+	            }
 	        },
 
 	        removed: function() {
@@ -264,7 +271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        );
 	    }
 
-	    node.xblock = new Element(node);
+	    node.xblock = new XBElement(node);
 	}
 
 	function blockCreateLazy(nodes) {
@@ -272,6 +279,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function tmplCompileIterator(tmplNode) {
+	    /* jshint -W040 */
 	    this.xtmpl[ tmplNode.getAttribute('ref') ] = tmplNode.innerHTML;
 	}
 
@@ -296,6 +304,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	/* jshint -W079 */
 	var React = __webpack_require__(4);
 	var forEach = Array.prototype.forEach;
 
@@ -442,6 +451,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @private
 	 */
 	function toObjectIterator(attr) {
+	    /* jshint -W040 */
 	    this[ attr.nodeName ] = attr.value;
 	}
 
@@ -747,6 +757,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    // Extend jQuery itself if only one argument is passed
 	    if (i === length) {
+	        /* jshint -W040 */
 	        target = this;
 	        i--;
 	    }
@@ -1357,9 +1368,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 28 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	var context = __webpack_require__(6);
 
 	exports.time = function(element, name) {
 	    if (!element._xtimers) {
@@ -1370,11 +1383,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        element._xtimers[ name ] = [];
 	    }
 
-	    element._xtimers[ name ].push(performance.now());
+	    element._xtimers[ name ].push(context.performance.now());
 	};
 
 	exports.info = function() {
-	    console.info.apply(console, arguments);
+	    context.console.info.apply(context.console, arguments);
 	};
 
 
@@ -1505,6 +1518,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	/* jshint -W079 */
 	var React = __webpack_require__(4);
 	var merge = __webpack_require__(29);
 	var viewComponentsClass = {};
@@ -1715,11 +1729,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* global DEBUG, DEBUG_TIME */
+
 	'use strict';
 
 	var context = __webpack_require__(6);
 	var dom = __webpack_require__(2);
-	var event = __webpack_require__(36);
+	/* jshint -W079 */
+	var Event = __webpack_require__(36);
 	var ReactDOM = __webpack_require__(38);
 	var utils = __webpack_require__(11);
 	var view = __webpack_require__(32);
@@ -1793,9 +1810,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    node.content = content;
 	    node.xblock = undefined;
 
-	    event.dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
+	    Event.dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
 
-	    (true) && utils.log.info('element destroy: %O', this);
+	    if (true) {
+	        utils.log.info('element destroy: %O', this);
+	    }
 	};
 
 	/**
@@ -1830,7 +1849,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._observer.disconnect();
 	    this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
 
-	    (true) && utils.log.info('element update: %O, props: %O', this, nextProps);
+	    if (true) {
+	        utils.log.info('element update: %O, props: %O', this, nextProps);
+	    }
 	};
 
 	/**
@@ -1901,7 +1922,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
 
-	    (true) && utils.log.info('element init: %O', this);
+	    if (true) {
+	        utils.log.info('element init: %O', this);
+	    }
 	};
 
 	/**
@@ -1913,10 +1936,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._observer = new context.MutationObserver(this._callbackMutation);
 	    this._observer.observe(this._node, this._observerOptions);
 
-	    event.dispatch(this._node, 'xb-created');
+	    Event.dispatch(this._node, 'xb-created');
 	    utils.lazy(globalInitEvent, this._node);
 
-	    (false) && utils.log.time(this._node, 'xb_init');
+	    if (false) {
+	        utils.log.time(this._node, 'xb_init');
+	    }
 	};
 
 	/**
@@ -1928,7 +1953,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._node.upgrade();
 	    this._observer.observe(this._node, this._observerOptions);
 
-	    event.dispatch(this._node, 'xb-update');
+	    Event.dispatch(this._node, 'xb-update');
 	    utils.lazy(globalUpdateEvent, this._node);
 
 	    if (callback) {
@@ -1954,6 +1979,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	function filterAttributesRemove(record) {
+	    /* jshint -W040 */
 	    return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
 	}
 
@@ -1971,7 +1997,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	function globalInitEvent(records) {
-	    event.dispatch(context, 'xb-created', { 'detail': { 'records': records } });
+	    Event.dispatch(context, 'xb-created', { 'detail': { 'records': records } });
 	}
 
 	/**
@@ -1979,7 +2005,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	function globalUpdateEvent(records) {
-	    event.dispatch(context, 'xb-update', { 'detail': { 'records': records } });
+	    Event.dispatch(context, 'xb-update', { 'detail': { 'records': records } });
 	}
 
 	/**

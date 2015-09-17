@@ -15,7 +15,7 @@ var type = require('./type');
  * @param {*} value the value to test
  * @returns {boolean}
  */
-module.exports = function(value) {
+module.exports = function (value) {
     if (type(value) !== 'object') {
         return false;
     }

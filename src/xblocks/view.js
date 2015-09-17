@@ -23,10 +23,10 @@ var viewCommon = {
      * @param {object} [props] the attributes of a node
      * @returns {?ReactElement}
      */
-    template: function(ref, props) {
+    template: function (ref, props) {
         var xtmpl = this.props._container && this.props._container.xtmpl;
 
-        if (typeof(xtmpl) === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
+        if (typeof xtmpl === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
             props = merge.apply({}, props, {
                 'dangerouslySetInnerHTML': {
                     '__html': this.templatePrepare(xtmpl[ ref ])
@@ -43,13 +43,13 @@ var viewCommon = {
      * Get the node associated with the view
      * @returns {HTMLElement}
      */
-    container: function() {
+    container: function () {
         return this.props._container;
     }
 };
 
 var viewCommonUser = {
-    templatePrepare: function(tmplString) {
+    templatePrepare: function (tmplString) {
         return tmplString;
     }
 };
@@ -62,7 +62,7 @@ var viewCommonUser = {
  *
  * var XBButtonContent = view.create({
  *     'displayName': 'XBButtonContent',
- *     'render': function() {
+ *     'render': function () {
  *         return (
  *             &lt;span {...this.props}&gt;{this.props.children}&lt;/span&gt;
  *         );
@@ -71,7 +71,7 @@ var viewCommonUser = {
  *
  * view.register('xb-button', {
  *     'displayName': 'xb-button',
- *     'render': function() {
+ *     'render': function () {
  *         return (
  *             &lt;button&gt;
  *                 &lt;XBButtonContent {...this.props} /&gt;
@@ -93,7 +93,7 @@ exports.create = createClass;
  * var view = require('./view');
  * view.register('xb-button', {
  *     'displayName': 'xb-button',
- *     'render': function() {
+ *     'render': function () {
  *         return (
  *             &lt;button {...this.props}&gt;{this.props.children}&lt;/button&gt;
  *         );
@@ -105,8 +105,9 @@ exports.create = createClass;
  * @param {object|array} component settings view creation
  * @returns {function}
  */
-exports.register = function(blockName, component) {
+exports.register = function (blockName, component) {
     if (React.DOM.hasOwnProperty(blockName)) {
+        /* eslint no-throw-literal:0 */
         throw 'Specified item "' + blockName + '" is already defined';
     }
 
@@ -123,7 +124,7 @@ exports.register = function(blockName, component) {
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
-exports.getFactory = function(blockName) {
+exports.getFactory = function (blockName) {
     return React.DOM[ blockName ];
 };
 
@@ -132,7 +133,7 @@ exports.getFactory = function(blockName) {
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
-exports.getClass = function(blockName) {
+exports.getClass = function (blockName) {
     return viewComponentsClass[ blockName ];
 };
 

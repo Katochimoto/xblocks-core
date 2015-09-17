@@ -39,7 +39,7 @@ var attrsBoolean = [
  * @param {object} attrs the set of derived attributes (+default values)
  * @return {object}
  */
-exports.get = function(element, attrs) {
+exports.get = function (element, attrs) {
     if (element.nodeType !== 1 || !element.hasAttributes()) {
         return attrs;
     }
@@ -47,7 +47,7 @@ exports.get = function(element, attrs) {
     var attrName;
     for (attrName in attrs) {
         if (attrs.hasOwnProperty(attrName) && element.hasAttribute(attrName)) {
-            if (typeof(attrs[ attrName ]) === 'boolean') {
+            if (typeof attrs[ attrName ] === 'boolean') {
                 attrs[ attrName ] = valueConversion(
                     attrName,
                     element.getAttribute(attrName),
@@ -77,7 +77,7 @@ exports.get = function(element, attrs) {
  * @param {HTMLElement} element
  * @return {object}
  */
-exports.toObject = function(element) {
+exports.toObject = function (element) {
     var attrs = {};
 
     if (element.nodeType === 1 && element.hasAttributes()) {
@@ -124,7 +124,7 @@ exports.valueConversion = valueConversion;
  * @param {object} [propTypes] the set of attribute types
  * @returns {object}
  */
-exports.typeConversion = function(props, propTypes) {
+exports.typeConversion = function (props, propTypes) {
     propTypes = propTypes || {};
 
     var prop;
@@ -157,16 +157,16 @@ function valueConversion(prop, value, type) {
     }
 
     switch (type) {
-        case React.PropTypes.bool:
-            return Boolean(value === true || value === '' || prop === value || value === 'true');
+    case React.PropTypes.bool:
+        return Boolean(value === true || value === '' || prop === value || value === 'true');
 
-        case React.PropTypes.string:
-            return String(value);
+    case React.PropTypes.string:
+        return String(value);
 
-        case React.PropTypes.number:
-            return Number(value);
+    case React.PropTypes.number:
+        return Number(value);
 
-        default:
-            return value;
+    default:
+        return value;
     }
 }

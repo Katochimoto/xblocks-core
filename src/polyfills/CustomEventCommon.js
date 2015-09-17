@@ -6,12 +6,12 @@ var issetCustomEvent = false;
 
 try {
     issetCustomEvent = Boolean(context.document.createEvent('CustomEvent'));
-} catch(e) {
+} catch (e) {
     // do nothing
 }
 
 if (issetCustomEvent) {
-    CustomEventCommon = function(eventName, params) {
+    CustomEventCommon = function (eventName, params) {
         params = params || {};
 
         var bubbles = Boolean(params.bubbles);
@@ -24,7 +24,7 @@ if (issetCustomEvent) {
     };
 
 } else {
-    CustomEventCommon = function(eventName, params) {
+    CustomEventCommon = function (eventName, params) {
         params = params || {};
 
         var bubbles = Boolean(params.bubbles);
