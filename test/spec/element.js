@@ -1,7 +1,7 @@
 var xblocks = require('../../src/xblocks');
 var XBElement = require('../../src/xblocks/element');
 
-describe('xblocks.element', function() {
+xdescribe('xblocks.element', function() {
 
     describe('.create ->', function() {
 
@@ -32,22 +32,24 @@ describe('xblocks.element', function() {
     describe('#destroy ->', function() {
 
         beforeEach(function() {
-            this.sinon.stub(XBElement.prototype, '_init');
-
             this.node = document.createElement('div');
 
-            this._stubUnmount = this.sinon.stub(XBElement.prototype, 'unmount');
-            this._stubReactUmount = this.sinon.stub(xblocks.react, 'unmountComponentAtNode').withArgs(this.node);
+            this._stubReactUmount = this.sinon.stub(ReactDOM, 'unmountComponentAtNode').withArgs(this.node);
 
             this.element = new XBElement(this.node);
+
+            var that = this;
+            return new vow.Promise(function(resolve) {
+                that.node.addEventListener('xb-created', function _onXbCreated() {
+                    that.node.removeEventListener('xb-created', _onXbCreated);
+                    resolve();
+                });
+            });
+        });
+
+        it('должен быть вызван метод ReactDOM.unmountComponentAtNode', function() {
             this.element.destroy();
-        });
-
-        it('должен быть вызван метод unmount', function() {
-            expect(this._stubUnmount.calledOnce).to.be.ok;
-        });
-
-        it('должен быть вызван метод xblocks.react.unmountComponentAtNode', function() {
+            console.log(this._stubReactUmount.calledOnce);
             expect(this._stubReactUmount.calledOnce).to.be.ok;
         });
     });

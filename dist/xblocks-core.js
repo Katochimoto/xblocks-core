@@ -1746,7 +1746,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._callbackMutation = this._callbackMutation.bind(this);
 
 	    this._observerOptions = {
-	        'attributeFilter': Object.keys(node.xprops),
+	        'attributeFilter': Object.keys(node.xprops || {}),
 	        'attributeOldValue': false,
 	        'attributes': true,
 	        'characterData': true,
