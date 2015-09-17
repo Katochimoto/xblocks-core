@@ -18,7 +18,7 @@ describe('xblocks - Изменение атрибутов ->', function() {
                 that.xElement.removeEventListener('xb-update', _onXbUpdate);
 
                 expect(this.getAttribute('bool-attr')).to.equal('true');
-                expect(this.querySelector('.bool')).not.to.equal(null);
+                expect(this.querySelector('.bool')).to.not.equal(null);
                 resolve();
             });
 

@@ -47,7 +47,7 @@ describe('xblocks - Создание ->', function() {
     });
 
     it('свойство state', function() {
-        expect(this.xElement.state).to.be.an('object');
+        expect(this.xElement.props).to.be.an('object');
     });
 
     it('метод upgrade', function() {
@@ -59,7 +59,7 @@ describe('xblocks - Создание ->', function() {
     });
 
     it('является потомком HTMLElement', function() {
-        expect(this.xElement instanceof HTMLElement).to.be.ok();
+        expect(this.xElement instanceof HTMLElement).to.be.ok;
     });
 
     it('свойство xblock отсутствует на момент создания элемента', function() {

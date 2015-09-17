@@ -7,7 +7,18 @@ describe('xblocks.dom', function() {
                 var expectAttrs = {};
 
                 var element = document.createElement('div');
-                xblocks.dom.attrs.ARRTS_BOOLEAN.forEach(function(attrName) {
+                [
+                    'active',
+                    'autofocus',
+                    'checked',
+                    'defer',
+                    'disabled',
+                    'ismap',
+                    'multiple',
+                    'readonly',
+                    'required',
+                    'selected'
+                ].forEach(function(attrName) {
                     expectAttrs[ attrName ] = attrName;
                     element.setAttribute(attrName, attrName);
                 });

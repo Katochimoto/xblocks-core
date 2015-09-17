@@ -29,10 +29,10 @@ describe('xblocks.create ->', function() {
 
         this.sinon.stub(xblocks.tag, 'register', function(name, params) {
             expect(name).to.equal('xb-test2');
-            expect(params.lifecycle.created).not.to.equal(created);
-            expect(params.lifecycle.inserted).not.to.equal(inserted);
-            expect(params.lifecycle.removed).not.to.equal(removed);
-            expect(params.lifecycle.attributeChanged).not.to.equal(attributeChanged);
+            expect(params.lifecycle.created).to.not.equal(created);
+            expect(params.lifecycle.inserted).to.not.equal(inserted);
+            expect(params.lifecycle.removed).to.not.equal(removed);
+            expect(params.lifecycle.attributeChanged).to.not.equal(attributeChanged);
         });
 
         xblocks.create('xb-test2', {
