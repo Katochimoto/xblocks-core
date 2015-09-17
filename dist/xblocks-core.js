@@ -75,48 +75,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var xtag = __webpack_require__(39);
 	var forEach = Array.prototype.forEach;
 
-	var blockStatic = {
-	    init: function(node) {
-	        if (!node.xtagName) {
-	            node.xtagName = node.tagName.toLowerCase();
-	            node.xtmpl = {};
-	            node.xuid = utils.seq();
-	            node.xprops = utils.propTypes(node.xtagName);
-	            node.xinserted = false;
-	            return true;
-	        }
-
-	        return false;
-	    },
-
-	    tmplCompile: function(tmplNode) {
-	        this.xtmpl[ tmplNode.getAttribute('ref') ] = tmplNode.innerHTML;
-	    },
-
-	    create: function(node) {
-	        if (node.hasChildNodes()) {
-	            forEach.call(
-	                node.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
-	                blockStatic.tmplCompile,
-	                node
-	            );
-	        }
-
-	        node.xblock = new Element(node);
-	    },
-
-	    createLazy: function(nodes) {
-	        nodes.forEach(blockStatic.create);
-	    }
-	};
-
 	var blockCommon = {
 	    lifecycle: {
 	        created: function() {
 	            (false) && utils.log.time(this, 'xb_init');
 	            (false) && utils.log.time(this, 'dom_inserted');
 
-	            blockStatic.init(this);
+	            blockInit(this);
 	        },
 
 	        inserted: function() {
@@ -124,7 +89,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return;
 	            }
 
-	            blockStatic.init(this);
+	            blockInit(this);
 
 	            this.xinserted = true;
 
@@ -133,10 +98,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // asynchronous read content
 	            // <xb-test><script>...</script><div>not found</div></xb-test>
 	            if (isScriptContent) {
-	                utils.lazy(blockStatic.createLazy, this);
+	                utils.lazy(blockCreateLazy, this);
 
 	            } else {
-	                blockStatic.create(this);
+	                blockCreate(this);
 	            }
 
 	            (false) && utils.log.time(this, 'dom_inserted');
@@ -147,6 +112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            if (this.xblock) {
 	                this.xblock.destroy();
+	                this.xblock = undefined;
 	            }
 	        }
 	    },
@@ -186,7 +152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        },
 
-	        state: {
+	        props: {
 	            get: function() {
 	                var prop;
 	                var props = dom.attrs.toObject(this);
@@ -275,6 +241,39 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return xtag.register(blockName, options);
 	};
+
+	function blockInit(node) {
+	    if (!node.xtagName) {
+	        node.xtagName = node.tagName.toLowerCase();
+	        node.xtmpl = {};
+	        node.xuid = utils.seq();
+	        node.xprops = utils.propTypes(node.xtagName);
+	        node.xinserted = false;
+	        return true;
+	    }
+
+	    return false;
+	}
+
+	function blockCreate(node) {
+	    if (node.hasChildNodes()) {
+	        forEach.call(
+	            node.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
+	            tmplCompileIterator,
+	            node
+	        );
+	    }
+
+	    node.xblock = new Element(node);
+	}
+
+	function blockCreateLazy(nodes) {
+	    nodes.forEach(blockCreate);
+	}
+
+	function tmplCompileIterator(tmplNode) {
+	    this.xtmpl[ tmplNode.getAttribute('ref') ] = tmplNode.innerHTML;
+	}
 
 
 /***/ },
@@ -1513,7 +1512,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Required attributes
-	     *
 	     * @memberOf ReactElement.prototype
 	     * @type {object}
 	     */
@@ -1525,7 +1523,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Create node by template
-	     *
 	     * @memberOf ReactElement.prototype
 	     * @param {string} ref template name
 	     * @param {object} [props] the attributes of a node
@@ -1628,7 +1625,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Get factory view node
-	 *
 	 * @param {string} blockName the name of the new node
 	 * @returns {function}
 	 */
@@ -1638,7 +1634,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Get class view node
-	 *
 	 * @param {string} blockName the name of the new node
 	 * @returns {function}
 	 */
@@ -1810,7 +1805,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {function} [callback] the callback function
 	 */
 	Element.prototype.update = function(props, removeProps, callback) {
-	    var nextProps = utils.merge(true, {}, this.getMountedProps(), this._node.state, props);
+	    var nextProps = utils.merge(true, {}, this.getMountedProps(), this._node.props, props);
 
 	    // merge of new and current properties
 	    // and the exclusion of remote properties
@@ -1890,7 +1885,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	Element.prototype._init = function() {
 	    var children = this._node.content;
-	    var props = utils.merge(true, {}, this._node.state, {
+	    var props = utils.merge(true, {}, this._node.props, {
 	        '_uid': this._node.xuid,
 	        '_container': this._node
 	    });

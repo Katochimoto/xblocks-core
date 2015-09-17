@@ -88,7 +88,7 @@ Element.prototype.destroy = function() {
  * @param {function} [callback] the callback function
  */
 Element.prototype.update = function(props, removeProps, callback) {
-    var nextProps = utils.merge(true, {}, this.getMountedProps(), this._node.state, props);
+    var nextProps = utils.merge(true, {}, this.getMountedProps(), this._node.props, props);
 
     // merge of new and current properties
     // and the exclusion of remote properties
@@ -168,7 +168,7 @@ Element.prototype.getMountedProps = function() {
  */
 Element.prototype._init = function() {
     var children = this._node.content;
-    var props = utils.merge(true, {}, this._node.state, {
+    var props = utils.merge(true, {}, this._node.props, {
         '_uid': this._node.xuid,
         '_container': this._node
     });

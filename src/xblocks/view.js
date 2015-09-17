@@ -7,7 +7,6 @@ var viewCommon = {
 
     /**
      * Required attributes
-     *
      * @memberOf ReactElement.prototype
      * @type {object}
      */
@@ -19,7 +18,6 @@ var viewCommon = {
 
     /**
      * Create node by template
-     *
      * @memberOf ReactElement.prototype
      * @param {string} ref template name
      * @param {object} [props] the attributes of a node
@@ -122,7 +120,6 @@ exports.register = function(blockName, component) {
 
 /**
  * Get factory view node
- *
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
@@ -132,7 +129,6 @@ exports.getFactory = function(blockName) {
 
 /**
  * Get class view node
- *
  * @param {string} blockName the name of the new node
  * @returns {function}
  */

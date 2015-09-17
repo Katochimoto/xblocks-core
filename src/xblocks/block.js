@@ -6,48 +6,13 @@ var Element = require('./element');
 var xtag = require('xtag');
 var forEach = Array.prototype.forEach;
 
-var blockStatic = {
-    init: function(node) {
-        if (!node.xtagName) {
-            node.xtagName = node.tagName.toLowerCase();
-            node.xtmpl = {};
-            node.xuid = utils.seq();
-            node.xprops = utils.propTypes(node.xtagName);
-            node.xinserted = false;
-            return true;
-        }
-
-        return false;
-    },
-
-    tmplCompile: function(tmplNode) {
-        this.xtmpl[ tmplNode.getAttribute('ref') ] = tmplNode.innerHTML;
-    },
-
-    create: function(node) {
-        if (node.hasChildNodes()) {
-            forEach.call(
-                node.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
-                blockStatic.tmplCompile,
-                node
-            );
-        }
-
-        node.xblock = new Element(node);
-    },
-
-    createLazy: function(nodes) {
-        nodes.forEach(blockStatic.create);
-    }
-};
-
 var blockCommon = {
     lifecycle: {
         created: function() {
             DEBUG_TIME && utils.log.time(this, 'xb_init');
             DEBUG_TIME && utils.log.time(this, 'dom_inserted');
 
-            blockStatic.init(this);
+            blockInit(this);
         },
 
         inserted: function() {
@@ -55,7 +20,7 @@ var blockCommon = {
                 return;
             }
 
-            blockStatic.init(this);
+            blockInit(this);
 
             this.xinserted = true;
 
@@ -64,10 +29,10 @@ var blockCommon = {
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>
             if (isScriptContent) {
-                utils.lazy(blockStatic.createLazy, this);
+                utils.lazy(blockCreateLazy, this);
 
             } else {
-                blockStatic.create(this);
+                blockCreate(this);
             }
 
             DEBUG_TIME && utils.log.time(this, 'dom_inserted');
@@ -78,6 +43,7 @@ var blockCommon = {
 
             if (this.xblock) {
                 this.xblock.destroy();
+                this.xblock = undefined;
             }
         }
     },
@@ -117,7 +83,7 @@ var blockCommon = {
             }
         },
 
-        state: {
+        props: {
             get: function() {
                 var prop;
                 var props = dom.attrs.toObject(this);
@@ -206,3 +172,36 @@ exports.create = function(blockName, options) {
 
     return xtag.register(blockName, options);
 };
+
+function blockInit(node) {
+    if (!node.xtagName) {
+        node.xtagName = node.tagName.toLowerCase();
+        node.xtmpl = {};
+        node.xuid = utils.seq();
+        node.xprops = utils.propTypes(node.xtagName);
+        node.xinserted = false;
+        return true;
+    }
+
+    return false;
+}
+
+function blockCreate(node) {
+    if (node.hasChildNodes()) {
+        forEach.call(
+            node.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
+            tmplCompileIterator,
+            node
+        );
+    }
+
+    node.xblock = new Element(node);
+}
+
+function blockCreateLazy(nodes) {
+    nodes.forEach(blockCreate);
+}
+
+function tmplCompileIterator(tmplNode) {
+    this.xtmpl[ tmplNode.getAttribute('ref') ] = tmplNode.innerHTML;
+}
