@@ -145,15 +145,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        removed: function() {
 	            this.xinserted = false;
 
-	            // replace initial content after destroy react component
-	            // fix:
-	            // element.parentNode.removeChild(element);
-	            // document.body.appendChild(element);
 	            if (this.xblock) {
-	                var content = this.content;
 	                this.xblock.destroy();
-	                this.xblock = undefined;
-	                this.content = content;
 	            }
 	        }
 	    },
@@ -678,11 +671,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	exports.assign = __webpack_require__(12);
-	exports.equals = __webpack_require__(17);
+	exports.equals = __webpack_require__(16);
 	exports.isPlainObject = __webpack_require__(14);
-	exports.lazy = __webpack_require__(18);
-	exports.log = __webpack_require__(29);
-	exports.merge = __webpack_require__(16);
+	exports.lazy = __webpack_require__(17);
+	exports.log = __webpack_require__(28);
+	exports.merge = __webpack_require__(29);
 	exports.pristine = __webpack_require__(30);
 	exports.propTypes = __webpack_require__(31);
 	exports.seq = __webpack_require__(33);
@@ -724,9 +717,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var isPlainObject = __webpack_require__(14);
-	var merge = __webpack_require__(16);
 
-	module.exports = function(checkСopy, args) {
+	module.exports = mergeBase;
+
+	function mergeBase(checkСopy, args) {
 	    var options;
 	    var name;
 	    var src;
@@ -783,7 +777,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 
 	                    // Never move original objects, clone them
-	                    target[ name ] = merge( deep, clone, copy );
+	                    target[ name ] = mergeBase(checkСopy, [ deep, clone, copy ]);
 
 	                } else if (checkСopy(copy)) {
 	                    target[ name ] = copy;
@@ -794,7 +788,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    // Return the modified object
 	    return target;
-	};
+	}
 
 
 /***/ },
@@ -879,43 +873,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var mergeBase = __webpack_require__(13);
-
-	/**
-	 * Combining objects
-	 *
-	 * @example
-	 * var target = { a: 1 };
-	 * xblocks.utils.merge(target, { b: 2 })
-	 * // { a: 1, b: 2 }
-	 *
-	 * xblocks.utils.merge({ a: 1 }, { b: 2 }, { c: 3 })
-	 * // { a: 1, b: 2, c: 3 }
-	 *
-	 * xblocks.utils.merge(true, { a: 1 }, { b: { c: 2 } }, { b: { d: 3 } })
-	 * // { a: 1, b: { c: 2, d: 3 } }
-	 *
-	 * xblocks.utils.merge({}, { a: 1, b: undefined }, { a: undefined, c: undefined })
-	 * // { a: 1 }
-	 *
-	 * @function xblocks.utils.merge
-	 * @returns {object}
-	 */
-	module.exports = function() {
-	    return mergeBase.call(this, utilsMergeCheckCopy, arguments);
-	};
-
-	function utilsMergeCheckCopy(value) {
-	    return (value !== undefined);
-	}
-
-
-/***/ },
-/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1021,12 +978,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var immediate = __webpack_require__(19);
+	var immediate = __webpack_require__(18);
 
 	/**
 	 * Deferred execution
@@ -1069,21 +1026,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(20);
-	var useNative = __webpack_require__(21);
-	var Timer = __webpack_require__(22);
-	var setTimeoutPolifill = __webpack_require__(23);
+	var context = __webpack_require__(19);
+	var useNative = __webpack_require__(20);
+	var Timer = __webpack_require__(21);
+	var setTimeoutPolifill = __webpack_require__(22);
 	var polifills = [
+	    __webpack_require__(23),
 	    __webpack_require__(24),
 	    __webpack_require__(25),
 	    __webpack_require__(26),
-	    __webpack_require__(27),
-	    __webpack_require__(28)
+	    __webpack_require__(27)
 	];
 	var setImmediate;
 	var clearImmediate;
@@ -1121,7 +1078,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports) {
 
 	/*jshint -W067*/
@@ -1133,10 +1090,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var context = __webpack_require__(20);
+	var context = __webpack_require__(19);
 
 	// @see http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
 	module.exports = function() {
@@ -1145,12 +1102,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(20);
+	var context = __webpack_require__(19);
 
 	var nextId = 1;
 	var tasks = {};
@@ -1201,13 +1158,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(20);
-	var Timer = __webpack_require__(22);
+	var context = __webpack_require__(19);
+	var Timer = __webpack_require__(21);
 
 	exports.init = function() {
 	    var polifill = function() {
@@ -1225,13 +1182,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(20);
-	var Timer = __webpack_require__(22);
+	var context = __webpack_require__(19);
+	var Timer = __webpack_require__(21);
 
 	exports.init = function() {
 	    var polifill = function() {
@@ -1251,13 +1208,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(20);
-	var Timer = __webpack_require__(22);
+	var context = __webpack_require__(19);
+	var Timer = __webpack_require__(21);
 
 	exports.init = function() {
 	    var messagePrefix = 'setImmediate$' + Math.random() + '$';
@@ -1306,13 +1263,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(20);
-	var Timer = __webpack_require__(22);
+	var context = __webpack_require__(19);
+	var Timer = __webpack_require__(21);
 
 	exports.init = function() {
 	    var channel = new context.MessageChannel();
@@ -1337,13 +1294,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(20);
-	var Timer = __webpack_require__(22);
+	var context = __webpack_require__(19);
+	var Timer = __webpack_require__(21);
 
 	exports.init = function() {
 	    var html = context.document.documentElement;
@@ -1373,13 +1330,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(20);
-	var Timer = __webpack_require__(22);
+	var context = __webpack_require__(19);
+	var Timer = __webpack_require__(21);
 
 	exports.init = function() {
 	    var polifill = function() {
@@ -1400,7 +1357,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1416,6 +1373,47 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    element._xtimers[ name ].push(performance.now());
 	};
+
+	exports.info = function() {
+	    console.info.apply(console, arguments);
+	};
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var mergeBase = __webpack_require__(13);
+
+	/**
+	 * Combining objects
+	 *
+	 * @example
+	 * var target = { a: 1 };
+	 * xblocks.utils.merge(target, { b: 2 })
+	 * // { a: 1, b: 2 }
+	 *
+	 * xblocks.utils.merge({ a: 1 }, { b: 2 }, { c: 3 })
+	 * // { a: 1, b: 2, c: 3 }
+	 *
+	 * xblocks.utils.merge(true, { a: 1 }, { b: { c: 2 } }, { b: { d: 3 } })
+	 * // { a: 1, b: { c: 2, d: 3 } }
+	 *
+	 * xblocks.utils.merge({}, { a: 1, b: undefined }, { a: undefined, c: undefined })
+	 * // { a: 1 }
+	 *
+	 * @function xblocks.utils.merge
+	 * @returns {object}
+	 */
+	module.exports = function() {
+	    return mergeBase.call(this, utilsMergeCheckCopy, arguments);
+	};
+
+	function utilsMergeCheckCopy(value) {
+	    return (value !== undefined);
+	}
 
 
 /***/ },
@@ -1509,7 +1507,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(4);
-	var merge = __webpack_require__(16);
+	var merge = __webpack_require__(29);
 	var viewComponentsClass = {};
 	var viewCommon = {
 
@@ -1733,68 +1731,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Element;
 
-	var elementStatic = {
-	    /**
-	     * @param {MutationRecord} record
-	     * @returns {boolean}
-	     * @protected
-	     */
-	    checkNodeChange: function(record) {
-	        return (record.type === 'childList');
-	    },
-
-	    /**
-	     * @param {MutationRecord} record
-	     * @returns {boolean}
-	     * @protected
-	     */
-	    checkAttributesChange: function(record) {
-	        return (record.type === 'attributes');
-	    },
-
-	    /**
-	     * @param {MutationRecord} record
-	     * @returns {boolean}
-	     * @protected
-	     */
-	    filterAttributesRemove: function(record) {
-	        return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
-	    },
-
-	    /**
-	     * @param {MutationRecord} record
-	     * @returns {string}
-	     * @protected
-	     */
-	    mapAttributesName: function(record) {
-	        return record.attributeName;
-	    },
-
-	    /**
-	     * @param {array} records
-	     * @protected
-	     */
-	    globalInitEvent: function(records) {
-	        event.dispatch(context, 'xb-created', { 'detail': { 'records': records } });
-	    },
-
-	    /**
-	     * @param {array} records
-	     * @protected
-	     */
-	    globalRepaintEvent: function(records) {
-	        event.dispatch(context, 'xb-repaint', { 'detail': { 'records': records } });
-	    }
-
-	    /**
-	     * @param {array} records
-	     * @protected
-	     */
-	    //globalUpdateEvent: function(records) {
-	    //    event.dispatch(context, 'xb-update', { 'detail': { 'records': records } });
-	    //}
-	};
-
 	/**
 	 * Xblock element constructor
 	 * @param {HTMLElement} node the node of a custom element
@@ -1802,13 +1738,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	function Element(node) {
 	    node.xblock = this;
+
+	    this._callbackMutation = this._callbackMutation.bind(this);
+
+	    this._observerOptions = {
+	        'attributeFilter': Object.keys(node.xprops),
+	        'attributeOldValue': false,
+	        'attributes': true,
+	        'characterData': true,
+	        'characterDataOldValue': false,
+	        'childList': true,
+	        'subtree': false
+	    };
+
 	    this._node = node;
-	    this._init(node.state, node.content, this._callbackInit);
+	    this._init();
 	}
 
 	/**
 	 * The node of a custom element
-	 *
 	 * @type {HTMLElement}
 	 * @protected
 	 */
@@ -1816,7 +1764,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * React component
-	 *
 	 * @type {Constructor}
 	 * @protected
 	 */
@@ -1824,7 +1771,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Instance MutationObserver
-	 *
 	 * @type {MutationObserver}
 	 * @protected
 	 */
@@ -1835,24 +1781,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @fires xblocks.Element~event:xb-destroy
 	 */
 	Element.prototype.destroy = function() {
-	    ReactDOM.unmountComponentAtNode(this._node);
-	    this.unmount();
-	    event.dispatch(this._node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
-	};
+	    var node = this._node;
+	    var content = node.content;
 
-	/**
-	 * Unmounts a component
-	 */
-	Element.prototype.unmount = function() {
-	    if (this._observer) {
-	        this._observer.disconnect();
-	    }
-
-	    if (this.isMounted()) {
-	        this._component.unmountComponent();
-	    }
-
+	    this._observer.disconnect();
+	    this._observer = null;
 	    this._component = null;
+	    this._node = null;
+
+	    ReactDOM.unmountComponentAtNode(node);
+
+	    // replace initial content after destroy react component
+	    // fix:
+	    // element.parentNode.removeChild(element);
+	    // document.body.appendChild(element);
+	    node.content = content;
+	    node.xblock = undefined;
+
+	    event.dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
+
+	    (true) && utils.log.info('element destroy: %O', this);
 	};
 
 	/**
@@ -1862,28 +1810,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {function} [callback] the callback function
 	 */
 	Element.prototype.update = function(props, removeProps, callback) {
-	    if (!this.isMounted()) {
-	        return;
-	    }
-
-	    var nextProps = this._node.state;
-	    var action = 'setProps';
-
-	    if (typeof(props) === 'object') {
-	        var prop;
-	        for (prop in props) {
-	            if (props.hasOwnProperty(prop)) {
-	                nextProps[ prop ] = props[ prop ];
-	            }
-	        }
-	    }
+	    var nextProps = utils.merge(true, {}, this.getMountedProps(), this._node.state, props);
 
 	    // merge of new and current properties
 	    // and the exclusion of remote properties
 	    if (Array.isArray(removeProps) && removeProps.length) {
-	        action = 'replaceProps';
-	        nextProps = utils.merge(true, {}, this.getMountedProps(), nextProps);
-
 	        var l = removeProps.length;
 	        while (l--) {
 	            if (nextProps.hasOwnProperty(removeProps[ l ])) {
@@ -1894,28 +1825,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    dom.attrs.typeConversion(nextProps, this._node.xprops);
 
-	    // FIXME отказаться от использования setProps и replaceProps
-	    this._component[ action ](nextProps, this._callbackUpdate.bind(this, callback));
-	};
+	    var proxyConstructor = view.getFactory(this._node.xtagName)(nextProps);
+	    var that = this;
+	    var renderCallback = function() {
+	        that._component = this;
+	        that._callbackUpdate(callback);
+	    };
 
-	/**
-	 * Redrawing react view
-	 * @param {function} [callback] the callback function
-	 */
-	Element.prototype.repaint = function(callback) {
-	    var children = this._node.content;
-	    var props = this._node.state;
-	    var mprops = this.getMountedProps() || {};
-	    var prop;
+	    this._observer.disconnect();
+	    this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
 
-	    for (prop in mprops) {
-	        if (mprops.hasOwnProperty(prop)) {
-	            props[ prop ] = mprops[ prop ];
-	        }
-	    }
-
-	    this.destroy();
-	    this._init(props, children, this._callbackRepaint.bind(this, callback));
+	    (true) && utils.log.info('element update: %O, props: %O', this, nextProps);
 	};
 
 	/**
@@ -1966,33 +1886,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	/**
-	 * @param {object} [props]
-	 * @param {string} [children]
-	 * @param {function} [callback] the callback function
 	 * @protected
 	 */
-	Element.prototype._init = function(props, children, callback) {
-	    if (this.isMounted()) {
-	        return;
-	    }
+	Element.prototype._init = function() {
+	    var children = this._node.content;
+	    var props = utils.merge(true, {}, this._node.state, {
+	        '_uid': this._node.xuid,
+	        '_container': this._node
+	    });
 
-	    props._uid = this._node.xuid;
-	    props._container = this._node;
 	    dom.attrs.typeConversion(props, this._node.xprops);
 
 	    var proxyConstructor = view.getFactory(this._node.xtagName)(props, children);
-
-	    (false) && utils.log.time(this._node, 'react_render');
 	    var that = this;
-	    this._component = ReactDOM.render(
-	        proxyConstructor,
-	        this._node,
-	        function() {
-	            (false) && utils.log.time(that._node, 'react_render');
-	            that._component = this;
-	            that._callbackRender(callback);
-	        }
-	    );
+	    var renderCallback = function() {
+	        that._component = this;
+	        that._callbackInit();
+	    };
+
+	    this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
+
+	    (true) && utils.log.info('element init: %O', this);
 	};
 
 	/**
@@ -2000,45 +1914,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @fires xblocks.Element~event:xb-created
 	 */
 	Element.prototype._callbackInit = function() {
+	    this._node.upgrade();
+	    this._observer = new context.MutationObserver(this._callbackMutation);
+	    this._observer.observe(this._node, this._observerOptions);
+
 	    event.dispatch(this._node, 'xb-created');
-	    utils.lazy(elementStatic.globalInitEvent, this._node);
+	    utils.lazy(globalInitEvent, this._node);
+
 	    (false) && utils.log.time(this._node, 'xb_init');
 	};
 
 	/**
 	 * @param {function} [callback] the callback function
 	 * @protected
-	 * @fires xblocks.Element~event:xb-repaint
+	 * @fires xblocks.Element~event:xb-update
 	 */
-	Element.prototype._callbackRepaint = function(callback) {
-	    event.dispatch(this._node, 'xb-repaint');
-	    utils.lazy(elementStatic.globalRepaintEvent, this._node);
-
-	    if (callback) {
-	        callback.call(this);
-	    }
-	};
-
-	/**
-	 * @param {function} [callback] the callback function
-	 * @protected
-	 */
-	Element.prototype._callbackRender = function(callback) {
+	Element.prototype._callbackUpdate = function(callback) {
 	    this._node.upgrade();
+	    this._observer.observe(this._node, this._observerOptions);
 
-	    if (!this._observer) {
-	        this._observer = new context.MutationObserver(this._callbackMutation.bind(this));
-	    }
-
-	    this._observer.observe(this._node, {
-	        'attributeFilter': Object.keys(this._node.xprops),
-	        'attributeOldValue': false,
-	        'attributes': true,
-	        'characterData': true,
-	        'characterDataOldValue': false,
-	        'childList': true,
-	        'subtree': false
-	    });
+	    event.dispatch(this._node, 'xb-update');
+	    utils.lazy(globalUpdateEvent, this._node);
 
 	    if (callback) {
 	        callback.call(this);
@@ -2050,40 +1946,46 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	Element.prototype._callbackMutation = function(records) {
-	    if (!this.isMounted()) {
-	        return;
-	    }
+	    var removeAttrs = records
+	        .filter(filterAttributesRemove, this)
+	        .map(mapAttributesName);
 
-	    // full repaint
-	    if (records.some(elementStatic.checkNodeChange)) {
-	        this.repaint();
-
-	    } else if (records.some(elementStatic.checkAttributesChange)) {
-
-	        var removeAttrs = records
-	            .filter(elementStatic.filterAttributesRemove, this)
-	            .map(elementStatic.mapAttributesName);
-
-	        this.update(null, removeAttrs);
-	    }
+	    this.update(null, removeAttrs);
 	};
 
 	/**
-	 * @param {function} [callback] the callback function
+	 * @param {MutationRecord} record
+	 * @returns {boolean}
 	 * @protected
-	 * @fires xblocks.Element~event:xb-update
 	 */
-	Element.prototype._callbackUpdate = function(callback) {
-	    this._node.upgrade();
+	function filterAttributesRemove(record) {
+	    return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
+	}
 
-	    event.dispatch(this._node, 'xb-update');
-	    //utils.lazy(elementStatic.globalUpdateEvent, this._node);
+	/**
+	 * @param {MutationRecord} record
+	 * @returns {string}
+	 * @protected
+	 */
+	function mapAttributesName(record) {
+	    return record.attributeName;
+	}
 
-	    if (callback) {
-	        callback.call(this);
-	    }
-	};
+	/**
+	 * @param {array} records
+	 * @protected
+	 */
+	function globalInitEvent(records) {
+	    event.dispatch(context, 'xb-created', { 'detail': { 'records': records } });
+	}
 
+	/**
+	 * @param {array} records
+	 * @protected
+	 */
+	function globalUpdateEvent(records) {
+	    event.dispatch(context, 'xb-update', { 'detail': { 'records': records } });
+	}
 
 	/**
 	 * Created event
@@ -2100,12 +2002,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Updated event
 	 * @event xblocks.Element~event:xb-update
-	 * @type {xblocks.event.Custom}
-	 */
-
-	/**
-	 * Repaint event
-	 * @event xblocks.Element~event:xb-repaint
 	 * @type {xblocks.event.Custom}
 	 */
 

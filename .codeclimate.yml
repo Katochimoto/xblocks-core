@@ -4,3 +4,4 @@ exclude_paths:
 - "dist/*"
 - "test/*"
 - "karma.conf.js"
+- "webpack.config.js"

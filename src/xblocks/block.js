@@ -44,8 +44,8 @@ var blockStatic = {
 var blockCommon = {
     lifecycle: {
         created: function() {
-            DEBUG && utils.log.time(this, 'xb_init');
-            DEBUG && utils.log.time(this, 'dom_inserted');
+            DEBUG_TIME && utils.log.time(this, 'xb_init');
+            DEBUG_TIME && utils.log.time(this, 'dom_inserted');
 
             blockStatic.init(this);
         },
@@ -70,21 +70,14 @@ var blockCommon = {
                 blockStatic.create(this);
             }
 
-            DEBUG && utils.log.time(this, 'dom_inserted');
+            DEBUG_TIME && utils.log.time(this, 'dom_inserted');
         },
 
         removed: function() {
             this.xinserted = false;
 
-            // replace initial content after destroy react component
-            // fix:
-            // element.parentNode.removeChild(element);
-            // document.body.appendChild(element);
             if (this.xblock) {
-                var content = this.content;
                 this.xblock.destroy();
-                this.xblock = undefined;
-                this.content = content;
             }
         }
     },

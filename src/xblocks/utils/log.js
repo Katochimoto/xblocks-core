@@ -11,3 +11,7 @@ exports.time = function(element, name) {
 
     element._xtimers[ name ].push(performance.now());
 };
+
+exports.info = function() {
+    console.info.apply(console, arguments);
+};

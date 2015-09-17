@@ -1,9 +1,10 @@
 'use strict';
 
 var isPlainObject = require('./isPlainObject');
-var merge = require('./merge');
 
-module.exports = function(checkСopy, args) {
+module.exports = mergeBase;
+
+function mergeBase(checkСopy, args) {
     var options;
     var name;
     var src;
@@ -60,7 +61,7 @@ module.exports = function(checkСopy, args) {
                     }
 
                     // Never move original objects, clone them
-                    target[ name ] = merge( deep, clone, copy );
+                    target[ name ] = mergeBase(checkСopy, [ deep, clone, copy ]);
 
                 } else if (checkСopy(copy)) {
                     target[ name ] = copy;
@@ -71,4 +72,4 @@ module.exports = function(checkСopy, args) {
 
     // Return the modified object
     return target;
-};
+}
