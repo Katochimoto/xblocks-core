@@ -7,7 +7,9 @@ polyfills_js := $(shell find src/polyfills -type f -name "*.js")
 all: node_modules \
 	bower_components \
 	dist/xblocks-core.js \
-	dist/x-tag-core.js
+	dist/x-tag-core.js \
+	dist/xblocks-core-full.js \
+	dist/xblocks-core-full.min.js
 
 node_modules: package.json
 	npm install
@@ -27,6 +29,16 @@ dist/xblocks-core.js: node_modules $(src_js)
 dist/x-tag-core.js: src/xtag.js node_modules $(polyfills_js)
 	$(NPM_BIN)/webpack src/xtag.js dist/x-tag-core.js --config webpack.config.xtag.js
 	$(NPM_BIN)/webpack src/xtag.js dist/x-tag-core.min.js --optimize-minimize --config webpack.config.xtag.js
+
+dist/xblocks-core-full.js: dist/xblocks-core.js dist/x-tag-core.js
+	cat dist/x-tag-core.js > $@
+	echo "\n/*********/\n" >> $@
+	cat dist/xblocks-core.js >> $@
+
+dist/xblocks-core-full.min.js: dist/xblocks-core.min.js dist/x-tag-core.min.js
+	cat dist/x-tag-core.min.js > $@
+	echo "\n/*********/\n" >> $@
+	cat dist/xblocks-core.min.js >> $@
 
 test: node_modules bower_components
 	$(NPM_BIN)/eslint .
