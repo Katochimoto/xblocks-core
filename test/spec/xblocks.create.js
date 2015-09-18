@@ -1,3 +1,5 @@
+require('../tags/x-element-create.jsx');
+
 describe('xblocks - Создание ->', function() {
 
     beforeEach(function() {

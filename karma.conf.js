@@ -24,7 +24,6 @@ module.exports = function(config) {
 
             'src/xtag.js',
 
-            'test/tags/**/*.js',
             'test/spec/**/*.js'
         ],
 
@@ -48,7 +47,8 @@ module.exports = function(config) {
             'externals': {
                 'react': 'React',
                 'react-dom': 'ReactDOM',
-                'xtag': 'xtag'
+                'xtag': 'xtag',
+                'vow': 'vow'
             },
             'resolve': {
                 'alias': {
@@ -61,7 +61,16 @@ module.exports = function(config) {
                     'DEBUG_TIME': false,
                     'NODE_ENV': 'production'
                 })
-            ]
+            ],
+            'module': {
+                'loaders': [
+                    {
+                        'test': /\.jsx?$/,
+                        'exclude': /(node_modules|bower_components)/,
+                        'loader': 'babel'
+                    }
+                ]
+            }
         },
 
 

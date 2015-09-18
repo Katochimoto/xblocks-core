@@ -1,3 +1,5 @@
+require('../tags/x-element-update.jsx');
+
 describe('xblocks - Изменение атрибутов ->', function() {
 
     beforeEach(function() {

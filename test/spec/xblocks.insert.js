@@ -1,3 +1,4 @@
+require('../tags/x-element-insert.jsx');
 var xblocks = require('../../src/xblocks.js');
 var XBElement = require('../../src/xblocks/element');
 

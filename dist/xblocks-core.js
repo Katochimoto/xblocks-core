@@ -1540,7 +1540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var xtmpl = this.props._container && this.props._container.xtmpl;
 
 	        if (typeof xtmpl === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
-	            props = merge.apply({}, props, {
+	            props = merge({}, props, {
 	                'dangerouslySetInnerHTML': {
 	                    '__html': this.templatePrepare(xtmpl[ ref ])
 	                }

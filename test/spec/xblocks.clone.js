@@ -1,3 +1,5 @@
+require('../tags/x-element-clone.jsx');
+
 describe('xblocks - клонирование ->', function() {
 
     beforeEach(function() {

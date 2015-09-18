@@ -3,15 +3,11 @@ export NPM_BIN
 
 src_js := $(shell find src -type f -name "*.js")
 polyfills_js := $(shell find src/polyfills -type f -name "*.js")
-src_jsx := $(shell find test src -type f -name "*.jsx")
-src_jsx_js := $(addsuffix .js, $(src_jsx))
 
 all: node_modules \
 	bower_components \
 	dist/xblocks-core.js \
-	dist/x-tag-core.js \
-	$(src_jsx_js)
-
+	dist/x-tag-core.js
 
 node_modules: package.json
 	npm install
@@ -23,12 +19,8 @@ bower_components: bower.json
 
 clean:
 	rm -rf dist
-	find test src -type f -name "*.jsx.js" -exec rm -f {} \;
 
-$(src_jsx_js): %.jsx.js: %.jsx node_modules
-	$(NPM_BIN)/babel $< -o $@
-
-dist/xblocks-core.js: node_modules $(src_jsx_js) $(src_js)
+dist/xblocks-core.js: node_modules $(src_js)
 	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.js
 	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.min.js --optimize-minimize
 

@@ -1,3 +1,5 @@
+require('../tags/x-element.jsx');
+
 describe('xblocks - работа с атрибутами ->', function() {
 
     beforeEach(function() {

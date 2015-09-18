@@ -1,9 +1,6 @@
-var xblocks = require('../../../src/xblocks.js');
+var util = require('../../../src/xblocks/utils/type');
 
 describe('xblocks.utils.type ->', function() {
-    beforeEach(function() {
-        this.util = xblocks.utils.type;
-    });
 
     [
         [ '', 'string' ],
@@ -23,8 +20,8 @@ describe('xblocks.utils.type ->', function() {
         [ (new Date()), 'date' ],
         [ Math, 'math' ]
     ].forEach(function(params) {
-            it('Должен вернуть строку с типом: ' + JSON.stringify(params), function() {
-                expect(this.util(params[0])).to.equal(params[1]);
-            });
+        it('Должен вернуть строку с типом: ' + JSON.stringify(params), function() {
+            expect(util(params[0])).to.equal(params[1]);
         });
+    });
 });
