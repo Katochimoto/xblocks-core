@@ -20,7 +20,7 @@ describe('xblocks.view', function() {
             var that = this;
             return new vow.Promise(function(resolve) {
                 that.xElement.addEventListener('xb-created', function _onXbCreated() {
-                    that.xElement.removeEventListener('xb-created', _onXbCreated);
+                    this.removeEventListener('xb-created', _onXbCreated);
                     expect(this.querySelector('.test')).not.to.be.null;
                     resolve();
                 });
