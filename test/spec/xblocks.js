@@ -7,34 +7,34 @@ require('../tags/x-element-update.jsx');
 var vow = require('vow');
 var XBElement = require('../../src/xblocks/element');
 
-describe('xblocks', function() {
+describe('xblocks', function () {
 
-    describe('работа с атрибутами', function() {
-        beforeEach(function() {
+    describe('работа с атрибутами', function () {
+        beforeEach(function () {
             this.xElement = document.createElement('x-element');
         });
 
-        afterEach(function() {
+        afterEach(function () {
             delete this.xElement;
         });
 
-        it('при добавлении атрибута, он должен быть доступен при вызове getAttribute', function() {
+        it('при добавлении атрибута, он должен быть доступен при вызове getAttribute', function () {
             this.xElement.setAttribute('test', '123');
             expect(this.xElement.getAttribute('test')).to.equal('123');
         });
 
-        it('при добавлении атрибута, он должен быть доступен в свойстве attrs', function() {
+        it('при добавлении атрибута, он должен быть доступен в свойстве attrs', function () {
             this.xElement.setAttribute('test', '123');
             expect(this.xElement.attrs['test']).to.equal('123');
         });
 
-        it('при добавлении атрибута, он должен быть доступен в свойстве state', function() {
+        it('при добавлении атрибута, он должен быть доступен в свойстве state', function () {
             this.xElement.setAttribute('test', '123');
             expect(this.xElement.props['test']).to.equal('123');
         });
 
 
-        describe('приведение к типу boolean атрибутов ->', function() {
+        describe('приведение к типу boolean атрибутов ->', function () {
             [
                 'active',
                 'autofocus',
@@ -46,100 +46,102 @@ describe('xblocks', function() {
                 'readonly',
                 'required',
                 'selected'
-            ].forEach(function(attrName) {
-                it.call(this, attrName + 'checked - state: строка "true" приводится к true', function() {
+            ].forEach(function (attrName) {
+                it.call(this, attrName + 'checked - state: строка "true" приводится к true', function () {
                     this.xElement.setAttribute(attrName, 'true');
                     expect(this.xElement.props[attrName]).to.equal(true);
                 });
 
-                it.call(this, attrName + ' - state: строка "false" приводится к false', function() {
+                it.call(this, attrName + ' - state: строка "false" приводится к false', function () {
                     this.xElement.setAttribute(attrName, 'false');
                     expect(this.xElement.props[attrName]).to.equal(false);
                 });
 
-                it.call(this, attrName + ' - state: пустая строка приводится к true', function() {
+                it.call(this, attrName + ' - state: пустая строка приводится к true', function () {
                     this.xElement.setAttribute(attrName, '');
                     expect(this.xElement.props[attrName]).to.equal(true);
                 });
 
-                it.call(this, attrName + ' - state: значение, равное названию, приводится к true', function() {
+                it.call(this, attrName + ' - state: значение, равное названию, приводится к true', function () {
                     this.xElement.setAttribute(attrName, attrName);
                     expect(this.xElement.props[attrName]).to.equal(true);
                 });
 
-                it.call(this, attrName + ' - attrs: строка "true" не изменяет значения', function() {
+                it.call(this, attrName + ' - attrs: строка "true" не изменяет значения', function () {
                     this.xElement.setAttribute(attrName, 'true');
                     expect(this.xElement.attrs[attrName]).to.equal('true');
                 });
 
-                it.call(this, attrName + ' - attrs: строка "false" не изменяет значения', function() {
+                it.call(this, attrName + ' - attrs: строка "false" не изменяет значения', function () {
                     this.xElement.setAttribute(attrName, 'false');
                     expect(this.xElement.attrs[attrName]).to.equal('false');
                 });
 
-                it.call(this, attrName + ' - attrs: пустая строка не изменяет значения', function() {
+                it.call(this, attrName + ' - attrs: пустая строка не изменяет значения', function () {
                     this.xElement.setAttribute(attrName, '');
                     expect(this.xElement.attrs[attrName]).to.equal('');
                 });
 
-                it.call(this, attrName + ' - attrs: значение, равное названию, не изменяет значения', function() {
+                it.call(this, attrName + ' - attrs: значение, равное названию, не изменяет значения', function () {
                     this.xElement.setAttribute(attrName, attrName);
                     expect(this.xElement.attrs[attrName]).to.equal(attrName);
                 });
             }, this);
         });
 
-        describe('атрибуты приводятся к типу, указанному в объекте propTypes вида ->', function() {
-            it('значение "true" приводится к true в state и не меняется в attrs', function() {
+        describe('атрибуты приводятся к типу, указанному в объекте propTypes вида ->', function () {
+            it('значение "true" приводится к true в state и не меняется в attrs', function () {
                 this.xElement.setAttribute('bool-attr', 'true');
                 expect(this.xElement.getAttribute('bool-attr')).to.equal('true');
                 expect(this.xElement.attrs['bool-attr']).to.equal('true');
                 expect(this.xElement.props['bool-attr']).to.equal(true);
             });
 
-            it('значение "false" приводится к false в state и не меняется в attrs', function() {
+            it('значение "false" приводится к false в state и не меняется в attrs', function () {
                 this.xElement.setAttribute('bool-attr', 'false');
                 expect(this.xElement.getAttribute('bool-attr')).to.equal('false');
                 expect(this.xElement.attrs['bool-attr']).to.equal('false');
                 expect(this.xElement.props['bool-attr']).to.equal(false);
             });
 
-            it('пустая строка приводится к true в state и не меняется в attrs', function() {
+            it('пустая строка приводится к true в state и не меняется в attrs', function () {
                 this.xElement.setAttribute('bool-attr', '');
                 expect(this.xElement.getAttribute('bool-attr')).to.equal('');
                 expect(this.xElement.attrs['bool-attr']).to.equal('');
                 expect(this.xElement.props['bool-attr']).to.equal(true);
             });
 
-            it('значение, равное названию, приводится к true в state и не меняется в attrs', function() {
+            it('значение, равное названию, приводится к true в state и не меняется в attrs', function () {
                 this.xElement.setAttribute('bool-attr', 'bool-attr');
                 expect(this.xElement.getAttribute('bool-attr')).to.equal('bool-attr');
                 expect(this.xElement.attrs['bool-attr']).to.equal('bool-attr');
                 expect(this.xElement.props['bool-attr']).to.equal(true);
             });
 
-            it('значение "on" или любое зругое, приводится к false в state и не меняется в attrs', function() {
+            it('значение "on" или любое зругое, приводится к false в state и не меняется в attrs', function () {
                 this.xElement.setAttribute('bool-attr', 'on');
                 expect(this.xElement.getAttribute('bool-attr')).to.equal('on');
                 expect(this.xElement.attrs['bool-attr']).to.equal('on');
                 expect(this.xElement.props['bool-attr']).to.equal(false);
             });
 
-            it('числовое значение приводится к числу в state и остаетя строкой в attrs', function() {
+            it('числовое значение приводится к числу в state и остаетя строкой в attrs', function () {
                 this.xElement.setAttribute('number-attr', '100500');
                 expect(this.xElement.getAttribute('number-attr')).to.equal('100500');
                 expect(this.xElement.attrs['number-attr']).to.equal('100500');
                 expect(this.xElement.props['number-attr']).to.equal(100500);
             });
 
-            it('числовое значение приводится к числу в state и остаетя строкой в attrs (отрицательное значение)', function() {
+            it('числовое значение приводится к числу в state и остаетя строкой' +
+                ' в attrs (отрицательное значение)', function () {
                 this.xElement.setAttribute('number-attr', '-100500');
                 expect(this.xElement.getAttribute('number-attr')).to.equal('-100500');
                 expect(this.xElement.attrs['number-attr']).to.equal('-100500');
                 expect(this.xElement.props['number-attr']).to.equal(-100500);
             });
 
-            it('числовое значение приводится к числу в state и остаетя строкой в attrs (дробное значение)', function() {
+            it('числовое значение приводится к числу в state и остаетя строкой' +
+                ' в attrs (дробное значение)', function () {
                 this.xElement.setAttribute('number-attr', '100.500');
                 expect(this.xElement.getAttribute('number-attr')).to.equal('100.500');
                 expect(this.xElement.attrs['number-attr']).to.equal('100.500');
@@ -148,21 +150,21 @@ describe('xblocks', function() {
         });
     });
 
-    describe('клонирование', function() {
-        beforeEach(function() {
+    describe('клонирование', function () {
+        beforeEach(function () {
             this.xElement = document.createElement('x-element-clone');
         });
 
-        afterEach(function() {
+        afterEach(function () {
             if (this.xElement.parentNode) {
                 this.xElement.parentNode.removeChild(this.xElement);
             }
         });
 
-        it('Клонированный элемент не инициализирован 1', function() {
+        it('Клонированный элемент не инициализирован 1', function () {
             var that = this;
 
-            return new vow.Promise(function(resolve) {
+            return new vow.Promise(function (resolve) {
                 that.xElement.addEventListener('xb-created', function _onXbCreated() {
                     this.removeEventListener('xb-created', _onXbCreated);
 
@@ -176,10 +178,10 @@ describe('xblocks', function() {
             });
         });
 
-        it('Клонированный элемент не инициализирован 2', function() {
+        it('Клонированный элемент не инициализирован 2', function () {
             var that = this;
 
-            return new vow.Promise(function(resolve) {
+            return new vow.Promise(function (resolve) {
                 that.xElement.addEventListener('xb-created', function _onXbCreated() {
                     this.removeEventListener('xb-created', _onXbCreated);
 
@@ -193,10 +195,10 @@ describe('xblocks', function() {
             });
         });
 
-        it('Клонированный элемент не инициализирован 3', function() {
+        it('Клонированный элемент не инициализирован 3', function () {
             var that = this;
 
-            return new vow.Promise(function(resolve) {
+            return new vow.Promise(function (resolve) {
                 that.xElement.addEventListener('xb-created', function _onXbCreated() {
                     this.removeEventListener('xb-created', _onXbCreated);
 
@@ -210,10 +212,10 @@ describe('xblocks', function() {
             });
         });
 
-        it('Клонированный элемент не инициализирован 4', function() {
+        it('Клонированный элемент не инициализирован 4', function () {
             var that = this;
 
-            return new vow.Promise(function(resolve) {
+            return new vow.Promise(function (resolve) {
                 that.xElement.addEventListener('xb-created', function _onXbCreated() {
                     this.removeEventListener('xb-created', _onXbCreated);
 
@@ -228,94 +230,94 @@ describe('xblocks', function() {
         });
     });
 
-    describe('создание', function() {
-        beforeEach(function() {
+    describe('создание', function () {
+        beforeEach(function () {
             this.xElement = document.createElement('x-element-create');
         });
 
-        it('свойство xtagName', function() {
+        it('свойство xtagName', function () {
             expect(this.xElement.xtagName).to.equal('x-element-create');
         });
 
-        it('свойство xtmpl', function() {
+        it('свойство xtmpl', function () {
             expect(this.xElement.xtmpl).to.be.an('object');
         });
 
-        it('свойство xuid', function() {
+        it('свойство xuid', function () {
             expect(this.xElement.xuid).to.be.a('number');
             expect(this.xElement.xuid).to.be.above(0);
         });
 
-        it('свойство xprops', function() {
+        it('свойство xprops', function () {
             expect(this.xElement.xprops).to.be.an('object');
             expect(this.xElement.xprops).to.contain.all.keys([ '_uid', 'children' ]);
         });
 
-        it('свойство mounted', function() {
+        it('свойство mounted', function () {
             expect(this.xElement.mounted).to.be.a('boolean');
             expect(this.xElement.mounted).to.equal(false);
         });
 
-        it('свойство content', function() {
+        it('свойство content', function () {
             expect(this.xElement.content).to.be.a('string');
             expect(this.xElement.content).to.equal('');
         });
 
-        it('свойство innerHTML', function() {
+        it('свойство innerHTML', function () {
             expect(this.xElement.innerHTML).to.be.a('string');
             expect(this.xElement.innerHTML).to.equal('');
         });
 
-        it('свойство outerHTML', function() {
+        it('свойство outerHTML', function () {
             expect(this.xElement.outerHTML).to.be.a('string');
             expect(this.xElement.outerHTML).to.equal('<x-element-create></x-element-create>');
         });
 
-        it('свойство attrs', function() {
+        it('свойство attrs', function () {
             expect(this.xElement.attrs).to.be.an('object');
         });
 
-        it('свойство state', function() {
+        it('свойство state', function () {
             expect(this.xElement.props).to.be.an('object');
         });
 
-        it('метод upgrade', function() {
+        it('метод upgrade', function () {
             expect(this.xElement.upgrade).to.be.an('function');
         });
 
-        it('метод cloneNode', function() {
+        it('метод cloneNode', function () {
             expect(this.xElement.cloneNode).to.be.an('function');
         });
 
-        it('является потомком HTMLElement', function() {
+        it('является потомком HTMLElement', function () {
             expect(this.xElement instanceof HTMLElement).to.be.ok;
         });
 
-        it('свойство xblock отсутствует на момент создания элемента', function() {
+        it('свойство xblock отсутствует на момент создания элемента', function () {
             expect(this.xElement.xblock).to.be.a('undefined');
         });
 
-        it('свойство xinserted', function() {
+        it('свойство xinserted', function () {
             expect(this.xElement.xinserted).to.be.a('boolean');
             expect(this.xElement.xinserted).to.equal(false);
         });
     });
 
-    describe('вставка в DOM', function() {
-        beforeEach(function() {
+    describe('вставка в DOM', function () {
+        beforeEach(function () {
             this.xElement = document.createElement('x-element-insert');
         });
 
-        afterEach(function() {
+        afterEach(function () {
             if (this.xElement.parentNode) {
                 this.xElement.parentNode.removeChild(this.xElement);
             }
         });
 
-        it('Инициализация xblocks выполняется после вставки в DOM', function() {
+        it('Инициализация xblocks выполняется после вставки в DOM', function () {
             var that = this;
 
-            return new vow.Promise(function(resolve) {
+            return new vow.Promise(function (resolve) {
                 that.xElement.addEventListener('xb-created', function _onXbCreated() {
                     this.removeEventListener('xb-created', _onXbCreated);
 
@@ -329,10 +331,10 @@ describe('xblocks', function() {
             });
         });
 
-        it('событие xb-created срабатывает для группы элементов на window', function() {
+        it('событие xb-created срабатывает для группы элементов на window', function () {
             var that = this;
 
-            return new vow.Promise(function(resolve) {
+            return new vow.Promise(function (resolve) {
                 window.addEventListener('xb-created', function _onXbCreated(event) {
                     window.removeEventListener('xb-created', _onXbCreated);
 
@@ -345,21 +347,21 @@ describe('xblocks', function() {
         });
     });
 
-    describe('изменение атрибутов', function() {
-        beforeEach(function() {
+    describe('изменение атрибутов', function () {
+        beforeEach(function () {
             this.xElement = document.createElement('x-element-update');
         });
 
-        afterEach(function() {
+        afterEach(function () {
             if (this.xElement.parentNode) {
                 this.xElement.parentNode.removeChild(this.xElement);
             }
         });
 
-        it('Добавление атрибута вызывает перерисовку', function() {
+        it('Добавление атрибута вызывает перерисовку', function () {
             var that = this;
 
-            return new vow.Promise(function(resolve) {
+            return new vow.Promise(function (resolve) {
                 that.xElement.addEventListener('xb-update', function _onXbUpdate() {
                     this.removeEventListener('xb-update', _onXbUpdate);
 
