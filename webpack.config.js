@@ -20,7 +20,7 @@ module.exports = {
     },
     'plugins': [
         new webpack.DefinePlugin({
-            'DEBUG': true,
+            'DEBUG': false,
             'DEBUG_TIME': false,
             'NODE_ENV': 'production'
         })

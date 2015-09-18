@@ -6843,7 +6843,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    XBEvent.dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
 
-	    if (true) {
+	    if (false) {
 	        utils.log.info('element destroy: %O', this);
 	    }
 	};
@@ -6880,7 +6880,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._observer.disconnect();
 	    this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
 
-	    if (true) {
+	    if (false) {
 	        utils.log.info('element update: %O, props: %O', this, nextProps);
 	    }
 	};
@@ -6953,7 +6953,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
 
-	    if (true) {
+	    if (false) {
 	        utils.log.info('element init: %O', this);
 	    }
 	};

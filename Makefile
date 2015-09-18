@@ -22,11 +22,11 @@ bower_components: bower.json
 clean:
 	rm -rf dist
 
-dist/xblocks-core.js: node_modules $(src_js)
+dist/xblocks-core.js: node_modules $(src_js) webpack.config.js
 	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.js
 	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.min.js --optimize-minimize
 
-dist/x-tag-core.js: src/xtag.js node_modules $(polyfills_js)
+dist/x-tag-core.js: src/xtag.js node_modules $(polyfills_js) webpack.config.xtag.js
 	$(NPM_BIN)/webpack src/xtag.js dist/x-tag-core.js --config webpack.config.xtag.js
 	$(NPM_BIN)/webpack src/xtag.js dist/x-tag-core.min.js --optimize-minimize --config webpack.config.xtag.js
 
