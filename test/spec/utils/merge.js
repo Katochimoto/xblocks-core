@@ -1,4 +1,4 @@
-var util = require('../../../src/xblocks/utils/merge');
+var util = require('utils/merge');
 
 describe('xblocks.utils.merge ->', function () {
     it('Должен вернуть объединенный объект', function () {

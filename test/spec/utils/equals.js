@@ -1,4 +1,4 @@
-var util = require('../../../src/xblocks/utils/equals');
+var util = require('utils/equals');
 
 describe('xblocks.utils.equals ->', function () {
 

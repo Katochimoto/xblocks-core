@@ -1,4 +1,4 @@
-var testable = require('../../src/xblocks/block').create;
+var testable = require('block').create;
 var xtag = require('xtag');
 
 describe('xblocks', function () {

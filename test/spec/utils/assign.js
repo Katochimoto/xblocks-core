@@ -1,4 +1,4 @@
-var util = require('../../../src/xblocks/utils/assign');
+var util = require('utils/assign');
 
 describe('xblocks.utils.assign ->', function () {
     it('Должен вернуть объединенный объект', function () {

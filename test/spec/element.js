@@ -1,6 +1,6 @@
 require('../tags/x-element1.jsx');
 
-var XBElement = require('../../src/xblocks/element');
+var XBElement = require('element');
 var vow = require('vow');
 var ReactDOM = require('react-dom');
 

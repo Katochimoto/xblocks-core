@@ -1,4 +1,4 @@
-var testable = require('../../../src/xblocks/dom/attrs');
+var testable = require('dom/attrs');
 var React = require('react');
 
 describe('xblocks.dom.attrs', function () {

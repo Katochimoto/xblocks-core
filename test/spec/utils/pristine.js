@@ -1,4 +1,4 @@
-var util = require('../../../src/xblocks/utils/pristine');
+var util = require('utils/pristine');
 
 describe('xblocks.utils.pristine ->', function () {
     it('Должна вернуть true, если глобальный объект не переопределен', function () {

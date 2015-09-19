@@ -1,4 +1,4 @@
-var util = require('../../../src/xblocks/utils/type');
+var util = require('utils/type');
 
 describe('xblocks.utils.type ->', function () {
 
