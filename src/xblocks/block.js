@@ -1,8 +1,8 @@
 'use strict';
 
-var dom = require('./dom');
-var utils = require('./utils');
-var XBElement = require('./element');
+var dom = require('dom');
+var utils = require('utils');
+var XBElement = require('element');
 var xtag = require('xtag');
 var forEach = Array.prototype.forEach;
 

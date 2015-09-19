@@ -1,6 +1,6 @@
 'use strict';
 
-var isPlainObject = require('./isPlainObject');
+var isPlainObject = require('utils/isPlainObject');
 
 module.exports = mergeBase;
 

@@ -1,11 +1,11 @@
 'use strict';
 
-var context = require('../context');
-var dom = require('./dom');
-var XBEvent = require('./event');
 var ReactDOM = require('react-dom');
-var utils = require('./utils');
-var view = require('./view');
+var context = require('context');
+var dom = require('dom');
+var XBEvent = require('event');
+var utils = require('utils');
+var view = require('view');
 
 module.exports = XBElement;
 

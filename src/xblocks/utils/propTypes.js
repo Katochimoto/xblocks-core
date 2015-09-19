@@ -1,6 +1,6 @@
 'use strict';
 
-var view = require('../view');
+var view = require('view');
 
 /**
  * @function xblocks.utils.propTypes

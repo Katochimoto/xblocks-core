@@ -5046,7 +5046,7 @@
 		exports["xblocks"] = factory(require("React"), require("ReactDOM"), require("xtag"));
 	else
 		root["xblocks"] = factory(root["React"], root["ReactDOM"], root["xtag"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_38__, __WEBPACK_EXTERNAL_MODULE_39__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_36__, __WEBPACK_EXTERNAL_MODULE_39__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -5097,7 +5097,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.create = __webpack_require__(1).create;
 	exports.dom = __webpack_require__(2);
-	exports.event = __webpack_require__(36);
+	exports.event = __webpack_require__(37);
 	exports.utils = __webpack_require__(11);
 	exports.view = __webpack_require__(32);
 
@@ -6765,10 +6765,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var ReactDOM = __webpack_require__(36);
 	var context = __webpack_require__(6);
 	var dom = __webpack_require__(2);
-	var XBEvent = __webpack_require__(36);
-	var ReactDOM = __webpack_require__(38);
+	var XBEvent = __webpack_require__(37);
 	var utils = __webpack_require__(11);
 	var view = __webpack_require__(32);
 
@@ -7059,13 +7059,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 36 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_36__;
+
+/***/ },
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var context = __webpack_require__(6);
 	var pristine = __webpack_require__(30);
-	var CustomEventCommon = __webpack_require__(37);
+	var CustomEventCommon = __webpack_require__(38);
 	var Custom = (function () {
 	    if (pristine('CustomEvent')) {
 	        return context.CustomEvent;
@@ -7109,7 +7115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7156,12 +7162,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = CustomEventCommon;
 
-
-/***/ },
-/* 38 */
-/***/ function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_38__;
 
 /***/ },
 /* 39 */

@@ -1,6 +1,6 @@
 'use strict';
 
-var type = require('./type');
+var type = require('utils/type');
 
 /**
  * Check to see if an object is a plain object (created using "{}" or "new Object")

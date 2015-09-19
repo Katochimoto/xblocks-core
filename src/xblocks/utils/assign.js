@@ -1,6 +1,6 @@
 'use strict';
 
-var mergeBase = require('./mergeBase');
+var mergeBase = require('utils/mergeBase');
 
 /**
  * Combining objects with undefined params

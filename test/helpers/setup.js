@@ -1,4 +1,3 @@
-/* global afterEach, beforeEach, sinon */
 (function () {
 
     function clearTestContext(context) {
