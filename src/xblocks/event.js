@@ -1,8 +1,8 @@
 'use strict';
 
-var context = require('context');
-var pristine = require('utils/pristine');
-var CustomEventCommon = require('polyfills/CustomEventCommon');
+var context = require('../context');
+var pristine = require('./utils/pristine');
+var CustomEventCommon = require('../polyfills/CustomEventCommon');
 var Custom = (function () {
     if (pristine('CustomEvent')) {
         return context.CustomEvent;

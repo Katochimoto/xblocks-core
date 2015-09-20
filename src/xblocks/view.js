@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var merge = require('utils/merge');
+var merge = require('./utils/merge');
 var viewComponentsClass = {};
 var viewCommon = {
 

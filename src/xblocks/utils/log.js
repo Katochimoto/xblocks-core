@@ -1,6 +1,6 @@
 'use strict';
 
-var context = require('context');
+var context = require('../../context');
 
 exports.time = function (element, name) {
     if (!element._xtimers) {

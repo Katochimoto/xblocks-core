@@ -1,6 +1,6 @@
 'use strict';
 
-var type = require('utils/type');
+var type = require('./type');
 
 /**
  * @param {*} x
