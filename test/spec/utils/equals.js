@@ -9,9 +9,7 @@ describe('xblocks.utils.equals ->', function () {
         [ null, null ],
         [ undefined, undefined ]
     ].forEach(function (params) {
-        it(
-            'Должен вернуть true для элементов одного типа и одинакового значения: ' +
-            JSON.stringify(params), function () {
+        it('Должен вернуть true для элементов одного типа и одинакового значения: ' + JSON.stringify(params), function () {
             expect(util(params[0], params[1])).to.be.ok;
         });
     });

@@ -132,16 +132,14 @@ describe('xblocks', function () {
                 expect(this.xElement.props['number-attr']).to.equal(100500);
             });
 
-            it('числовое значение приводится к числу в state и остаетя строкой' +
-                ' в attrs (отрицательное значение)', function () {
+            it('числовое значение приводится к числу в state и остаетя строкой в attrs (отрицательное значение)', function () {
                 this.xElement.setAttribute('number-attr', '-100500');
                 expect(this.xElement.getAttribute('number-attr')).to.equal('-100500');
                 expect(this.xElement.attrs['number-attr']).to.equal('-100500');
                 expect(this.xElement.props['number-attr']).to.equal(-100500);
             });
 
-            it('числовое значение приводится к числу в state и остаетя строкой' +
-                ' в attrs (дробное значение)', function () {
+            it('числовое значение приводится к числу в state и остаетя строкой в attrs (дробное значение)', function () {
                 this.xElement.setAttribute('number-attr', '100.500');
                 expect(this.xElement.getAttribute('number-attr')).to.equal('100.500');
                 expect(this.xElement.attrs['number-attr']).to.equal('100.500');
