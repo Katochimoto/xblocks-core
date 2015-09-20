@@ -55,8 +55,6 @@ module.exports = function(config) {
             },
             'resolve': {
                 'alias': {
-                    'setImmediate': 'setImmediate2/src/index.js',
-
                     'context': path.join(src, 'context'),
                     'polyfills': path.join(src, 'polyfills'),
 

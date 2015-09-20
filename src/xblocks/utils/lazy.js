@@ -1,6 +1,6 @@
 'use strict';
 
-var immediate = require('setImmediate');
+var immediate = require('setImmediate2/src');
 
 /**
  * Deferred execution

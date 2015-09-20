@@ -13,11 +13,6 @@ module.exports = {
         'react-dom': 'ReactDOM',
         'xtag': 'xtag'
     },
-    'resolve': {
-        'alias': {
-            'setImmediate': 'setImmediate2/src/index.js'
-        }
-    },
     'plugins': [
         new webpack.DefinePlugin({
             'DEBUG': false,
