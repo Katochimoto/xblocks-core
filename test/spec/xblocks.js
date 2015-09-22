@@ -242,7 +242,7 @@ describe('xblocks', function () {
         });
 
         it('свойство xuid', function () {
-            expect(this.xElement.xuid).to.be.a('number');
+            expect(this.xElement.xuid).to.be.a('string');
             expect(this.xElement.xuid).to.be.above(0);
         });
 

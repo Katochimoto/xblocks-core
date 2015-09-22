@@ -6,6 +6,7 @@ polyfills_js := $(shell find src/polyfills -type f -name "*.js")
 
 all: node_modules \
 	bower_components \
+	lodash \
 	dist/xblocks-core.js \
 	dist/x-tag-core.js \
 	dist/xblocks-core-full.js \
@@ -21,8 +22,13 @@ bower_components: bower.json
 
 clean:
 	rm -rf dist
+	rm -rf lodash
 
-dist/xblocks-core.js: node_modules $(src_js) webpack.config.js
+lodash: node_modules Makefile
+	$(NPM_BIN)/lodash exports=umd include=assign,merge,isPlainObject,clone,cloneDeep,uniqueId,isNative,keys modularize -o $@
+	touch lodash
+
+dist/xblocks-core.js: node_modules lodash $(src_js) webpack.config.js
 	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.js
 	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.min.js --optimize-minimize
 

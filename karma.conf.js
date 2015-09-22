@@ -63,7 +63,8 @@ module.exports = function(config) {
                     'element': path.join(srcLib, 'element'),
                     'event': path.join(srcLib, 'event'),
                     'utils': path.join(srcLib, 'utils'),
-                    'view': path.join(srcLib, 'view')
+                    'view': path.join(srcLib, 'view'),
+                    '_': path.join(__dirname, 'lodash')
                 }
             },
             'plugins': [

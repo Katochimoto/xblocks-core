@@ -13,6 +13,11 @@ module.exports = {
         'react-dom': 'ReactDOM',
         'xtag': 'xtag'
     },
+    'resolve': {
+        'alias': {
+            '_': path.join(__dirname, 'lodash'),
+        }
+    },
     'plugins': [
         new webpack.DefinePlugin({
             'DEBUG': false,

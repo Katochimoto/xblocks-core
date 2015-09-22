@@ -10,6 +10,8 @@ build
 test
 coverage
 samples
+lodash
+src
 Makefile
 bower.json
 karma.conf.js

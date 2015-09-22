@@ -1,19 +1,20 @@
 'use strict';
 
 var dom = require('./dom');
-var utils = require('./utils');
+var view = require('./view');
 var XBElement = require('./element');
 var xtag = require('xtag');
+var lazy = require('./utils/lazy');
+var isPlainObject = require('_/lang/isPlainObject');
+var merge = require('_/object/merge');
+var uniqueId = require('_/utility/uniqueId');
+var isArray = require('_/lang/isArray');
+
 var forEach = Array.prototype.forEach;
 
 var blockCommon = {
     lifecycle: {
         created: function () {
-            if (DEBUG_TIME) {
-                utils.log.time(this, 'xb_init');
-                utils.log.time(this, 'dom_inserted');
-            }
-
             blockInit(this);
         },
 
@@ -31,14 +32,10 @@ var blockCommon = {
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>
             if (isScriptContent) {
-                utils.lazy(blockCreateLazy, this);
+                lazy(blockCreateLazy, this);
 
             } else {
                 blockCreate(this);
-            }
-
-            if (DEBUG_TIME) {
-                utils.log.time(this, 'dom_inserted');
             }
         },
 
@@ -109,6 +106,26 @@ var blockCommon = {
             }
         },
 
+        xprops: {
+            get: function () {
+                var viewClass = this.xtagName && view.getClass(this.xtagName);
+
+                if (!viewClass) {
+                    return {};
+                }
+
+                if (viewClass.propTypes) {
+                    return viewClass.propTypes;
+                }
+
+                if (viewClass.originalSpec && viewClass.originalSpec.propTypes) {
+                    return viewClass.originalSpec.propTypes;
+                }
+
+                return {};
+            }
+        },
+
         outerHTML: dom.outerHTML
     },
 
@@ -146,20 +163,20 @@ var blockCommon = {
  * @returns {HTMLElement}
  */
 exports.create = function (blockName, options) {
-    options = Array.isArray(options) ? options : [ options ];
-    options.unshift(true, {});
+    options = isArray(options) ? options : [ options ];
+    options.unshift({});
     options.push(blockCommon);
 
     // error when merging prototype in FireFox <=19
     var proto;
     var o;
-    var i = 2;
+    var i = 1;
     var l = options.length;
 
     for (; i < l; i++) {
         o = options[ i ];
 
-        if (utils.isPlainObject(o)) {
+        if (isPlainObject(o)) {
             if (!proto && o.prototype) {
                 proto = o.prototype;
             }
@@ -168,7 +185,7 @@ exports.create = function (blockName, options) {
         }
     }
 
-    options = utils.merge.apply({}, options);
+    options = merge.apply({}, options);
 
     if (proto) {
         options.prototype = proto;
@@ -181,8 +198,7 @@ function blockInit(node) {
     if (!node.xtagName) {
         node.xtagName = node.tagName.toLowerCase();
         node.xtmpl = {};
-        node.xuid = utils.seq();
-        node.xprops = utils.propTypes(node.xtagName);
+        node.xuid = uniqueId();
         node.xinserted = false;
         return true;
     }

@@ -1,10 +1,10 @@
 'use strict';
 
 var context = require('../context');
-var pristine = require('./utils/pristine');
+var isNative = require('_/lang/isNative');
 var CustomEventCommon = require('../polyfills/CustomEventCommon');
 var Custom = (function () {
-    if (pristine('CustomEvent')) {
+    if (isNative('CustomEvent')) {
         return context.CustomEvent;
     }
 

@@ -4,8 +4,12 @@ var ReactDOM = require('react-dom');
 var context = require('../context');
 var dom = require('./dom');
 var XBEvent = require('./event');
-var utils = require('./utils');
 var view = require('./view');
+var lazy = require('./utils/lazy');
+var assign = require('_/object/assign');
+var merge = require('_/object/merge');
+var keys = require('_/object/keys');
+var isArray = require('_/lang/isArray');
 
 module.exports = XBElement;
 
@@ -20,7 +24,7 @@ function XBElement(node) {
     this._callbackMutation = this._callbackMutation.bind(this);
 
     this._observerOptions = {
-        'attributeFilter': Object.keys(node.xprops || {}),
+        'attributeFilter': keys(node.xprops),
         'attributeOldValue': false,
         'attributes': true,
         'characterData': true,
@@ -77,10 +81,6 @@ XBElement.prototype.destroy = function () {
     node.xblock = undefined;
 
     XBEvent.dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
-
-    if (DEBUG) {
-        utils.log.info('element destroy: %O', this);
-    }
 };
 
 /**
@@ -90,11 +90,11 @@ XBElement.prototype.destroy = function () {
  * @param {function} [callback] the callback function
  */
 XBElement.prototype.update = function (props, removeProps, callback) {
-    var nextProps = utils.merge(true, {}, this.getMountedProps(), this._node.props, props);
+    var nextProps = merge({}, this.getMountedProps(), this._node.props, props);
 
     // merge of new and current properties
     // and the exclusion of remote properties
-    if (Array.isArray(removeProps) && removeProps.length) {
+    if (isArray(removeProps) && removeProps.length) {
         var l = removeProps.length;
         while (l--) {
             if (nextProps.hasOwnProperty(removeProps[ l ])) {
@@ -114,10 +114,6 @@ XBElement.prototype.update = function (props, removeProps, callback) {
 
     this._observer.disconnect();
     this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
-
-    if (DEBUG) {
-        utils.log.info('element update: %O, props: %O', this, nextProps);
-    }
 };
 
 /**
@@ -172,7 +168,7 @@ XBElement.prototype.getMountedProps = function () {
  */
 XBElement.prototype._init = function () {
     var children = this._node.content;
-    var props = utils.merge(true, {}, this._node.props, {
+    var props = assign({}, this._node.props, {
         '_uid': this._node.xuid,
         '_container': this._node
     });
@@ -187,10 +183,6 @@ XBElement.prototype._init = function () {
     };
 
     this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
-
-    if (DEBUG) {
-        utils.log.info('element init: %O', this);
-    }
 };
 
 /**
@@ -203,11 +195,7 @@ XBElement.prototype._callbackInit = function () {
     this._observer.observe(this._node, this._observerOptions);
 
     XBEvent.dispatch(this._node, 'xb-created');
-    utils.lazy(globalInitEvent, this._node);
-
-    if (DEBUG_TIME) {
-        utils.log.time(this._node, 'xb_init');
-    }
+    lazy(globalInitEvent, this._node);
 };
 
 /**
@@ -220,7 +208,7 @@ XBElement.prototype._callbackUpdate = function (callback) {
     this._observer.observe(this._node, this._observerOptions);
 
     XBEvent.dispatch(this._node, 'xb-update');
-    utils.lazy(globalUpdateEvent, this._node);
+    lazy(globalUpdateEvent, this._node);
 
     if (callback) {
         callback.call(this);

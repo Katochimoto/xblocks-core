@@ -1,7 +1,9 @@
 'use strict';
 
 var React = require('react');
-var merge = require('./utils/merge');
+var assign = require('_/object/assign');
+var merge = require('_/object/merge');
+var isArray = require('_/lang/isArray');
 var viewComponentsClass = {};
 var viewCommon = {
 
@@ -27,7 +29,7 @@ var viewCommon = {
         var xtmpl = this.props._container && this.props._container.xtmpl;
 
         if (typeof xtmpl === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
-            props = merge({}, props, {
+            props = assign({}, props, {
                 'dangerouslySetInnerHTML': {
                     '__html': this.templatePrepare(xtmpl[ ref ])
                 }
@@ -138,8 +140,8 @@ exports.getClass = function (blockName) {
 };
 
 function createClass(component) {
-    component = Array.isArray(component) ? component : [ component ];
-    component.unshift(true, {}, viewCommonUser);
+    component = isArray(component) ? component : [ component ];
+    component.unshift({}, viewCommonUser);
     component.push(viewCommon);
 
     return React.createClass(merge.apply({}, component));

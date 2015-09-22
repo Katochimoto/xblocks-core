@@ -16,11 +16,13 @@
         "test",
         "Makefile",
         "src",
+        "lodash",
         "package.json",
-        "karma.conf.js"
+        "karma.conf.js",
+        "webpack.config.js",
+        "webpack.config.xtag.js"
     ],
     "dependencies": {
-        "es5-shim": "4.1.11",
         "react": "0.14.0-rc1",
         "vow": "0.4.10"
     },

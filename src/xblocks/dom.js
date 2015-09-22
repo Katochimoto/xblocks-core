@@ -1,8 +1,8 @@
-'use strict';
-
-exports.attrs = require('./dom/attrs');
-exports.cloneNode = require('./dom/cloneNode');
-exports.contentNode = require('./dom/contentNode');
-exports.outerHTML = require('./dom/outerHTML');
-exports.upgrade = require('./dom/upgrade');
-exports.upgradeAll = require('./dom/upgradeAll');
+module.exports = {
+    'attrs': require('./dom/attrs'),
+    'cloneNode': require('./dom/cloneNode'),
+    'contentNode': require('./dom/contentNode'),
+    'outerHTML': require('./dom/outerHTML'),
+    'upgrade': require('./dom/upgrade'),
+    'upgradeAll': require('./dom/upgradeAll')
+};
