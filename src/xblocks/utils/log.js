@@ -3,10 +3,6 @@
 var context = require('../../context');
 
 exports.time = function (element, name) {
-    if (!DEBUG_TIME) {
-        return;
-    }
-
     if (!element._xtimers) {
         element._xtimers = {};
     }
@@ -19,9 +15,5 @@ exports.time = function (element, name) {
 };
 
 exports.info = function () {
-    if (!DEBUG) {
-        return;
-    }
-
     context.console.info.apply(context.console, arguments);
 };

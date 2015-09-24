@@ -16,6 +16,5 @@ Makefile
 bower.json
 karma.conf.js
 webpack.config.js
-webpack.config.xtag.js
 .eslintignore
 .eslintrc

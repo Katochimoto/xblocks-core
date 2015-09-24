@@ -19,8 +19,7 @@
         "lodash",
         "package.json",
         "karma.conf.js",
-        "webpack.config.js",
-        "webpack.config.xtag.js"
+        "webpack.config.js"
     ],
     "dependencies": {
         "react": "0.14.0-rc1",

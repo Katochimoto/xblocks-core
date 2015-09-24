@@ -2,13 +2,11 @@ NPM_BIN=$(CURDIR)/node_modules/.bin
 export NPM_BIN
 
 src_js := $(shell find src -type f -name "*.js")
-polyfills_js := $(shell find src/polyfills -type f -name "*.js")
 
 all: node_modules \
 	bower_components \
 	lodash \
-	dist/xblocks-core.js \
-	dist/x-tag-core.js \
+	dist \
 	dist/xblocks-core-full.js \
 	dist/xblocks-core-full.min.js
 
@@ -28,29 +26,25 @@ lodash: node_modules Makefile
 	$(NPM_BIN)/lodash exports=umd include=assign,merge,isPlainObject,clone,cloneDeep,uniqueId,isNative,keys modularize -o $@
 	touch lodash
 
-dist/xblocks-core.js: node_modules lodash $(src_js) webpack.config.js
-	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.js
-	$(NPM_BIN)/webpack src/xblocks.js dist/xblocks-core.min.js --optimize-minimize
+dist: node_modules lodash $(src_js) webpack.config.js
+	$(NPM_BIN)/webpack
+	touch dist
 
-dist/x-tag-core.js: src/xtag.js node_modules $(polyfills_js) webpack.config.xtag.js
-	$(NPM_BIN)/webpack src/xtag.js dist/x-tag-core.js --config webpack.config.xtag.js
-	$(NPM_BIN)/webpack src/xtag.js dist/x-tag-core.min.js --optimize-minimize --config webpack.config.xtag.js
-
-dist/xblocks-core-full.js: dist/xblocks-core.js dist/x-tag-core.js
+dist/xblocks-core-full.js: dist
 	cat dist/x-tag-core.js > $@
-	echo "\n/*********/\n" >> $@
+	echo "\n\n" >> $@
 	cat dist/xblocks-core.js >> $@
 
-dist/xblocks-core-full.min.js: dist/xblocks-core.min.js dist/x-tag-core.min.js
+dist/xblocks-core-full.min.js: dist
 	cat dist/x-tag-core.min.js > $@
-	echo "\n/*********/\n" >> $@
+	echo "\n\n" >> $@
 	cat dist/xblocks-core.min.js >> $@
 
-test: node_modules bower_components
+test: node_modules bower_components lodash
 	$(NPM_BIN)/eslint .
 	./node_modules/karma/bin/karma start --single-run --browsers PhantomJS
 
-testall: node_modules bower_components
+testall: node_modules bower_components lodash
 	$(NPM_BIN)/eslint .
 	./node_modules/karma/bin/karma start --single-run
 

@@ -1,10 +1,16 @@
 var path = require('path');
 var webpack = require('webpack');
+var objectAssign = require('object-assign');
 
-module.exports = {
-    'context': path.join(__dirname, 'src'),
+var src = path.join(__dirname, 'src');
+var dist = path.join(__dirname, 'dist');
+
+var params = {
+    'entry': './xblocks.js',
+    'context': src,
     'output': {
-        'path': path.join(__dirname, 'dist'),
+        'path': dist,
+        'filename': 'xblocks-core.js',
         'library': 'xblocks',
         'libraryTarget': 'umd'
     },
@@ -20,9 +26,20 @@ module.exports = {
     },
     'plugins': [
         new webpack.DefinePlugin({
-            'DEBUG': false,
-            'DEBUG_TIME': false,
             'NODE_ENV': 'production'
         })
     ]
 };
+
+module.exports = [
+    objectAssign({}, params),
+    //objectAssign({}, params, {})
+    {
+        'entry': './xtag.js',
+        'context': src,
+        'output': {
+            'filename': 'x-tag-core.js',
+            'path': dist,
+        }
+    }
+];

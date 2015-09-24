@@ -3445,10 +3445,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var context = __webpack_require__(6);
 
 	exports.time = function (element, name) {
-	    if (true) {
-	        return;
-	    }
-
 	    if (!element._xtimers) {
 	        element._xtimers = {};
 	    }
@@ -3461,10 +3457,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	exports.info = function () {
-	    if (true) {
-	        return;
-	    }
-
 	    context.console.info.apply(context.console, arguments);
 	};
 

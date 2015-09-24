@@ -7,7 +7,6 @@ lodash/
 node_modules/
 samples/
 webpack.config.js
-webpack.config.xtag.js
 karma.conf.js
 bower.json
 package.json
