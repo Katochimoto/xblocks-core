@@ -32,12 +32,12 @@ dist: node_modules lodash $(src_js) webpack.config.js
 
 dist/xblocks-core-full.js: dist
 	cat dist/x-tag-core.js > $@
-	echo "\n\n" >> $@
+	echo "\n" >> $@
 	cat dist/xblocks-core.js >> $@
 
 dist/xblocks-core-full.min.js: dist
 	cat dist/x-tag-core.min.js > $@
-	echo "\n\n" >> $@
+	echo "\n" >> $@
 	cat dist/xblocks-core.min.js >> $@
 
 test: node_modules bower_components lodash
