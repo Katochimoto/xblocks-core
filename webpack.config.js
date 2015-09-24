@@ -1,11 +1,11 @@
 var path = require('path');
 var webpack = require('webpack');
-var objectAssign = require('object-assign');
+var merge = require('./lodash/object/merge');
 
 var src = path.join(__dirname, 'src');
 var dist = path.join(__dirname, 'dist');
 
-var params = {
+var paramsXblocks = {
     'entry': './xblocks.js',
     'context': src,
     'output': {
@@ -31,15 +31,27 @@ var params = {
     ]
 };
 
-module.exports = [
-    objectAssign({}, params),
-    //objectAssign({}, params, {})
-    {
-        'entry': './xtag.js',
-        'context': src,
-        'output': {
-            'filename': 'x-tag-core.js',
-            'path': dist,
-        }
+var paramsXtag = {
+    'entry': './xtag.js',
+    'context': src,
+    'output': {
+        'filename': 'x-tag-core.js',
+        'path': dist,
     }
+};
+
+module.exports = [
+    merge({}, paramsXblocks),
+    merge({}, paramsXblocks, {
+        'output': {
+            'filename': 'xblocks-core.min.js'
+        }
+    }),
+
+    merge({}, paramsXtag),
+    merge({}, paramsXtag, {
+        'output': {
+            'filename': 'x-tag-core.min.js'
+        }
+    }),
 ];

@@ -49,7 +49,6 @@
     "karma-webpack": "^1.7.0",
     "lodash-cli": "^3.10.1",
     "mocha": "2.3.2",
-    "object-assign": "^4.0.1",
     "setimmediate2": "2.0.1",
     "webcomponents.js": "webcomponents/webcomponentsjs.git",
     "webpack": "^1.12.1",
