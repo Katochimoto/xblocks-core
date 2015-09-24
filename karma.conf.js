@@ -57,7 +57,6 @@ module.exports = function(config) {
                 'alias': {
                     'context': path.join(src, 'context'),
                     'polyfills': path.join(src, 'polyfills'),
-
                     'block': path.join(srcLib, 'block'),
                     'dom': path.join(srcLib, 'dom'),
                     'element': path.join(srcLib, 'element'),

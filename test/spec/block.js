@@ -1,4 +1,4 @@
-var testable = require('block').create;
+var create = require('block').create;
 var xtag = require('xtag');
 
 describe('xblocks', function () {
@@ -10,7 +10,7 @@ describe('xblocks', function () {
                 expect(params.methods).to.contain.all.keys('test1', 'test2');
             });
 
-            testable('xb-test1', [ {
+            create('xb-test1', [ {
                 methods: {
                     test1: function () {}
                 }
@@ -37,7 +37,7 @@ describe('xblocks', function () {
                 // expect(params.lifecycle.attributeChanged).to.not.equal(attributeChanged);
             });
 
-            testable('xb-test2', {
+            create('xb-test2', {
                 lifecycle: {
                     created: created,
                     inserted: inserted,
