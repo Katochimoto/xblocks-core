@@ -1,5 +1,3 @@
-'use strict';
-
 var context = require('../../context');
 
 exports.time = function (element, name) {

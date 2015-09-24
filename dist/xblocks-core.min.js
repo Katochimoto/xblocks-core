@@ -56,12 +56,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	exports.create = __webpack_require__(1).create;
-	exports.dom = __webpack_require__(2);
-	exports.event = __webpack_require__(53);
-	exports.utils = __webpack_require__(69);
-	exports.view = __webpack_require__(11);
-
+	module.exports = {
+	    'create': __webpack_require__(1).create,
+	    'dom': __webpack_require__(2),
+	    'event': __webpack_require__(53),
+	    'utils': __webpack_require__(69),
+	    'view': __webpack_require__(11)
+	};
 
 /***/ },
 /* 1 */
@@ -83,11 +84,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var blockCommon = {
 	    lifecycle: {
-	        created: function () {
+	        created: function created() {
 	            blockInit(this);
 	        },
 
-	        inserted: function () {
+	        inserted: function inserted() {
 	            if (this.xinserted) {
 	                return;
 	            }
@@ -102,13 +103,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // <xb-test><script>...</script><div>not found</div></xb-test>
 	            if (isScriptContent) {
 	                lazy(blockCreateLazy, this);
-
 	            } else {
 	                blockCreate(this);
 	            }
 	        },
 
-	        removed: function () {
+	        removed: function removed() {
 	            this.xinserted = false;
 
 	            if (this.xblock) {
@@ -121,13 +121,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    accessors: {
 	        // check mounted react
 	        mounted: {
-	            get: function () {
+	            get: function get() {
 	                return Boolean(this.xblock && this.xblock.isMounted());
 	            }
 	        },
 
 	        content: {
-	            get: function () {
+	            get: function get() {
 	                if (this.mounted) {
 	                    return this.xblock.getMountedContent();
 	                }
@@ -135,10 +135,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return dom.contentNode(this).innerHTML;
 	            },
 
-	            set: function (content) {
+	            set: function set(content) {
 	                if (this.mounted) {
 	                    this.xblock.setMountedContent(content);
-
 	                } else {
 	                    dom.contentNode(this).innerHTML = content;
 	                    this.upgrade();
@@ -148,25 +147,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        // getting object attributes
 	        attrs: {
-	            get: function () {
+	            get: function get() {
 	                return dom.attrs.toObject(this);
 	            }
 	        },
 
 	        props: {
-	            get: function () {
+	            get: function get() {
 	                var prop;
 	                var props = dom.attrs.toObject(this);
 	                var xprops = this.xprops;
-	                var eprops = xtag.tags[ this.xtagName ].accessors;
+	                var eprops = xtag.tags[this.xtagName].accessors;
 	                var common = blockCommon.accessors;
 
 	                for (prop in eprops) {
-	                    if (xprops.hasOwnProperty(prop) &&
-	                        eprops.hasOwnProperty(prop) &&
-	                        !common.hasOwnProperty(prop)) {
+	                    if (xprops.hasOwnProperty(prop) && eprops.hasOwnProperty(prop) && !common.hasOwnProperty(prop)) {
 
-	                        props[ prop ] = this[ prop ];
+	                        props[prop] = this[prop];
 	                    }
 	                }
 
@@ -176,7 +173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        },
 
 	        xprops: {
-	            get: function () {
+	            get: function get() {
 	                var viewClass = this.xtagName && view.getClass(this.xtagName);
 
 	                if (!viewClass) {
@@ -199,11 +196,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    methods: {
-	        upgrade: function () {
+	        upgrade: function upgrade() {
 	            dom.upgradeAll(this);
 	        },
 
-	        cloneNode: function (deep) {
+	        cloneNode: function cloneNode(deep) {
 	            // not to clone the contents
 	            var node = dom.cloneNode(this, false);
 	            dom.upgrade(node);
@@ -232,7 +229,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {HTMLElement}
 	 */
 	exports.create = function (blockName, options) {
-	    options = isArray(options) ? options : [ options ];
+	    options = isArray(options) ? options : [options];
 	    options.unshift({});
 	    options.push(blockCommon);
 
@@ -243,7 +240,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var l = options.length;
 
 	    for (; i < l; i++) {
-	        o = options[ i ];
+	        o = options[i];
 
 	        if (isPlainObject(o)) {
 	            if (!proto && o.prototype) {
@@ -277,11 +274,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function blockCreate(node) {
 	    if (node.hasChildNodes()) {
-	        forEach.call(
-	            node.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
-	            tmplCompileIterator,
-	            node
-	        );
+	        forEach.call(node.querySelectorAll('script[type="text/x-template"][ref],template[ref]'), tmplCompileIterator, node);
 	    }
 
 	    node.xblock = new XBElement(node);
@@ -292,13 +285,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function tmplCompileIterator(tmplNode) {
-	    this.xtmpl[ tmplNode.getAttribute('ref') ] = tmplNode.innerHTML;
+	    this.xtmpl[tmplNode.getAttribute('ref')] = tmplNode.innerHTML;
 	}
-
 
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 
 	module.exports = {
 	    'attrs': __webpack_require__(3),
@@ -308,7 +302,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'upgrade': __webpack_require__(9),
 	    'upgradeAll': __webpack_require__(10)
 	};
-
 
 /***/ },
 /* 3 */
@@ -323,18 +316,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * A set of boolean attributes
 	 * @type {string[]}
 	 */
-	var attrsBoolean = [
-	    'active',
-	    'autofocus',
-	    'checked',
-	    'defer',
-	    'disabled',
-	    'ismap',
-	    'multiple',
-	    'readonly',
-	    'required',
-	    'selected'
-	];
+	var attrsBoolean = ['active', 'autofocus', 'checked', 'defer', 'disabled', 'ismap', 'multiple', 'readonly', 'required', 'selected'];
 
 	/**
 	 * To obtain the specified attributes
@@ -363,15 +345,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var attrName;
 	    for (attrName in attrs) {
 	        if (attrs.hasOwnProperty(attrName) && element.hasAttribute(attrName)) {
-	            if (typeof attrs[ attrName ] === 'boolean') {
-	                attrs[ attrName ] = valueConversion(
-	                    attrName,
-	                    element.getAttribute(attrName),
-	                    React.PropTypes.bool
-	                );
-
+	            if (typeof attrs[attrName] === 'boolean') {
+	                attrs[attrName] = valueConversion(attrName, element.getAttribute(attrName), React.PropTypes.bool);
 	            } else {
-	                attrs[ attrName ] = element.getAttribute(attrName);
+	                attrs[attrName] = element.getAttribute(attrName);
 	            }
 	        }
 	    }
@@ -446,11 +423,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var prop;
 	    for (prop in props) {
 	        if (props.hasOwnProperty(prop)) {
-	            props[ prop ] = valueConversion(
-	                prop,
-	                props[ prop ],
-	                propTypes[ prop ]
-	            );
+	            props[prop] = valueConversion(prop, props[prop], propTypes[prop]);
 	        }
 	    }
 
@@ -462,7 +435,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @private
 	 */
 	function toObjectIterator(attr) {
-	    this[ attr.nodeName ] = attr.value;
+	    this[attr.nodeName] = attr.value;
 	}
 
 	function valueConversion(prop, value, type) {
@@ -473,20 +446,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    switch (type) {
-	    case React.PropTypes.bool:
-	        return Boolean(value === true || value === '' || prop === value || value === 'true');
+	        case React.PropTypes.bool:
+	            return Boolean(value === true || value === '' || prop === value || value === 'true');
 
-	    case React.PropTypes.string:
-	        return String(value);
+	        case React.PropTypes.string:
+	            return String(value);
 
-	    case React.PropTypes.number:
-	        return Number(value);
+	        case React.PropTypes.number:
+	            return Number(value);
 
-	    default:
-	        return value;
+	        default:
+	            return value;
 	    }
 	}
-
 
 /***/ },
 /* 4 */
@@ -529,7 +501,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    */
 	};
 
-
 /***/ },
 /* 6 */
 /***/ function(module, exports) {
@@ -540,18 +511,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this || (1, eval)('this');
 	})();
 
-
 /***/ },
 /* 7 */
 /***/ function(module, exports) {
-
-	'use strict';
 
 	/**
 	 * @function xblocks.dom.contentNode
 	 * @param {HTMLElement} node
 	 * @returns {HTMLElement}
 	 */
+	'use strict';
+
 	module.exports = function (node) {
 	    var element;
 
@@ -565,7 +535,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return element || node;
 	};
-
 
 /***/ },
 /* 8 */
@@ -595,16 +564,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        setter = function (html) {
 	            this.outerHTML = html;
 	        };
-
 	    } else {
-	        var serializer = context.XMLSerializer && (new context.XMLSerializer());
+	        var serializer = context.XMLSerializer && new context.XMLSerializer();
 	        var xmlns = /\sxmlns=\"[^\"]+\"/;
 
 	        if (serializer) {
 	            getter = function () {
 	                return serializer.serializeToString(this).replace(xmlns, '');
 	            };
-
 	        } else {
 	            getter = function () {
 	                container.appendChild(this.cloneNode(false));
@@ -626,7 +593,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            container.innerHTML = html;
 
-	            while ((child = container.firstChild)) {
+	            while (child = container.firstChild) {
 	                parent.insertBefore(child, node);
 	            }
 
@@ -638,9 +605,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'get': getter,
 	        'set': setter
 	    };
-
-	}());
-
+	})();
 
 /***/ },
 /* 9 */
@@ -656,12 +621,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = (function () {
 	    if (context.CustomElements && typeof context.CustomElements.upgrade === 'function') {
 	        return context.CustomElements.upgrade;
-
 	    } else {
 	        return function () {};
 	    }
-	}());
-
+	})();
 
 /***/ },
 /* 10 */
@@ -677,18 +640,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = (function () {
 	    if (context.CustomElements && typeof context.CustomElements.upgradeAll === 'function') {
 	        return context.CustomElements.upgradeAll;
-
 	    } else {
 	        return function () {};
 	    }
-	}());
-
+	})();
 
 /***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var React = __webpack_require__(4);
 	var assign = __webpack_require__(12);
@@ -703,9 +666,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @type {object}
 	     */
 	    propTypes: {
-	        '_uid':         React.PropTypes.node,
-	        '_container':   React.PropTypes.any,  // Bad way ;(
-	        'children':     React.PropTypes.node
+	        '_uid': React.PropTypes.node,
+	        '_container': React.PropTypes.any, // Bad way ;(
+	        'children': React.PropTypes.node
 	    },
 
 	    /**
@@ -715,17 +678,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {object} [props] the attributes of a node
 	     * @returns {?ReactElement}
 	     */
-	    template: function (ref, props) {
+	    template: function template(ref, props) {
 	        var xtmpl = this.props._container && this.props._container.xtmpl;
 
 	        if (typeof xtmpl === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
-	            props = assign({}, props, {
+	            /*props = assign({}, props, {
 	                'dangerouslySetInnerHTML': {
 	                    '__html': this.templatePrepare(xtmpl[ ref ])
 	                }
-	            });
+	            });*/
 
-	            return React.createElement('div', props);
+	            return React.createElement('div', _extends({}, props, { dangerouslySetInnerHTML: { '__html': this.templatePrepare(xtmpl[ref]) } }));
+	            // React.createElement('div', props);
 	        }
 
 	        return null;
@@ -735,13 +699,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Get the node associated with the view
 	     * @returns {HTMLElement}
 	     */
-	    container: function () {
+	    container: function container() {
 	        return this.props._container;
 	    }
 	};
 
 	var viewCommonUser = {
-	    templatePrepare: function (tmplString) {
+	    templatePrepare: function templatePrepare(tmplString) {
 	        return tmplString;
 	    }
 	};
@@ -804,9 +768,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    var componentClass = createClass(component);
-	    viewComponentsClass[ blockName ] = componentClass;
+	    viewComponentsClass[blockName] = componentClass;
 
-	    React.DOM[ blockName ] = React.createFactory(componentClass);
+	    React.DOM[blockName] = React.createFactory(componentClass);
 
 	    return componentClass;
 	};
@@ -817,7 +781,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {function}
 	 */
 	exports.getFactory = function (blockName) {
-	    return React.DOM[ blockName ];
+	    return React.DOM[blockName];
 	};
 
 	/**
@@ -826,17 +790,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {function}
 	 */
 	exports.getClass = function (blockName) {
-	    return viewComponentsClass[ blockName ];
+	    return viewComponentsClass[blockName];
 	};
 
 	function createClass(component) {
-	    component = isArray(component) ? component : [ component ];
+	    component = isArray(component) ? component : [component];
 	    component.unshift({}, viewCommonUser);
 	    component.push(viewCommon);
 
 	    return React.createClass(merge.apply({}, component));
 	}
-
 
 /***/ },
 /* 12 */
@@ -2692,8 +2655,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (isArray(removeProps) && removeProps.length) {
 	        var l = removeProps.length;
 	        while (l--) {
-	            if (nextProps.hasOwnProperty(removeProps[ l ])) {
-	                delete nextProps[ removeProps[ l ] ];
+	            if (nextProps.hasOwnProperty(removeProps[l])) {
+	                delete nextProps[removeProps[l]];
 	            }
 	        }
 	    }
@@ -2702,7 +2665,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var proxyConstructor = view.getFactory(this._node.xtagName)(nextProps);
 	    var that = this;
-	    var renderCallback = function () {
+	    var renderCallback = function renderCallback() {
 	        that._component = this;
 	        that._callbackUpdate(callback);
 	    };
@@ -2772,7 +2735,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var proxyConstructor = view.getFactory(this._node.xtagName)(props, children);
 	    var that = this;
-	    var renderCallback = function () {
+	    var renderCallback = function renderCallback() {
 	        that._component = this;
 	        that._callbackInit();
 	    };
@@ -2815,9 +2778,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	XBElement.prototype._callbackMutation = function (records) {
-	    var removeAttrs = records
-	        .filter(filterAttributesRemove, this)
-	        .map(mapAttributesName);
+	    var removeAttrs = records.filter(filterAttributesRemove, this).map(mapAttributesName);
 
 	    this.update(null, removeAttrs);
 	};
@@ -2828,7 +2789,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	function filterAttributesRemove(record) {
-	    return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
+	    return record.type === 'attributes' && !this._node.hasAttribute(record.attributeName);
 	}
 
 	/**
@@ -2874,7 +2835,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @type {xblocks.event.Custom}
 	 */
 
-
 /***/ },
 /* 52 */
 /***/ function(module, exports) {
@@ -2896,7 +2856,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    return CustomEventCommon;
-	}());
+	})();
 
 	/**
 	 * Designer events
@@ -2931,7 +2891,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    element.dispatchEvent(new Custom(name, params || {}));
 	};
 
-
 /***/ },
 /* 54 */
 /***/ function(module, exports, __webpack_require__) {
@@ -2960,7 +2919,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        return evt;
 	    };
-
 	} else {
 	    CustomEventCommon = function (eventName, params) {
 	        params = params || {};
@@ -2979,7 +2937,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	CustomEventCommon.prototype = context.Event.prototype;
 
 	module.exports = CustomEventCommon;
-
 
 /***/ },
 /* 55 */
@@ -3027,7 +2984,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return callback;
 	};
-
 
 /***/ },
 /* 56 */
@@ -3430,11 +3386,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
 	module.exports = {
 	    lazy: __webpack_require__(55),
 	    log: __webpack_require__(70)
 	};
-
 
 /***/ },
 /* 70 */
@@ -3449,17 +3406,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        element._xtimers = {};
 	    }
 
-	    if (!Array.isArray(element._xtimers[ name ])) {
-	        element._xtimers[ name ] = [];
+	    if (!Array.isArray(element._xtimers[name])) {
+	        element._xtimers[name] = [];
 	    }
 
-	    element._xtimers[ name ].push(context.performance.now());
+	    element._xtimers[name].push(context.performance.now());
 	};
 
 	exports.info = function () {
 	    context.console.info.apply(context.console, arguments);
 	};
-
 
 /***/ }
 /******/ ])

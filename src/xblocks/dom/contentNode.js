@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @function xblocks.dom.contentNode
  * @param {HTMLElement} node

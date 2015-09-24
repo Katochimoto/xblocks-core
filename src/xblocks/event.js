@@ -1,5 +1,3 @@
-'use strict';
-
 var context = require('../context');
 var isNative = require('_/lang/isNative');
 var CustomEventCommon = require('../polyfills/CustomEventCommon');

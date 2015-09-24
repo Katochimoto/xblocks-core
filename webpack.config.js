@@ -24,6 +24,15 @@ var paramsXblocks = {
             '_': path.join(__dirname, 'lodash'),
         }
     },
+    'module': {
+        'loaders': [
+            {
+                'test': /\.jsx?$/,
+                'exclude': /(node_modules|bower_components|lodash)/,
+                'loader': 'babel'
+            }
+        ]
+    },
     'plugins': [
         new webpack.DefinePlugin({
             'NODE_ENV': 'production'

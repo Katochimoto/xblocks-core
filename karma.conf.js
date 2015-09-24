@@ -68,8 +68,6 @@ module.exports = function(config) {
             },
             'plugins': [
                 new webpack.DefinePlugin({
-                    'DEBUG': false,
-                    'DEBUG_TIME': false,
                     'NODE_ENV': 'production'
                 })
             ],

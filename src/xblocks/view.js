@@ -1,7 +1,4 @@
-'use strict';
-
 var React = require('react');
-var assign = require('_/object/assign');
 var merge = require('_/object/merge');
 var isArray = require('_/lang/isArray');
 var viewComponentsClass = {};
@@ -29,13 +26,9 @@ var viewCommon = {
         var xtmpl = this.props._container && this.props._container.xtmpl;
 
         if (typeof xtmpl === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
-            props = assign({}, props, {
-                'dangerouslySetInnerHTML': {
-                    '__html': this.templatePrepare(xtmpl[ ref ])
-                }
-            });
-
-            return React.createElement('div', props);
+            return (
+                <div {...props} dangerouslySetInnerHTML={{ '__html': this.templatePrepare(xtmpl[ ref ]) }} />
+            );
         }
 
         return null;

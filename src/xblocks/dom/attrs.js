@@ -1,5 +1,3 @@
-'use strict';
-
 var React = require('react');
 var forEach = Array.prototype.forEach;
 

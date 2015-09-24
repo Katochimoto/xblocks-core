@@ -1,5 +1,3 @@
-'use strict';
-
 var immediate = require('setImmediate2/src');
 
 /**

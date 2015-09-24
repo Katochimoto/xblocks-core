@@ -1,5 +1,3 @@
-'use strict';
-
 var dom = require('./dom');
 var view = require('./view');
 var XBElement = require('./element');

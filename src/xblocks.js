@@ -1,7 +1,7 @@
-'use strict';
-
-exports.create = require('./xblocks/block').create;
-exports.dom = require('./xblocks/dom');
-exports.event = require('./xblocks/event');
-exports.utils = require('./xblocks/utils');
-exports.view = require('./xblocks/view');
+module.exports = {
+    'create': require('./xblocks/block').create,
+    'dom': require('./xblocks/dom'),
+    'event': require('./xblocks/event'),
+    'utils': require('./xblocks/utils'),
+    'view': require('./xblocks/view')
+};

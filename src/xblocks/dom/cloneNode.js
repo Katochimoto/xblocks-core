@@ -1,5 +1,3 @@
-'use strict';
-
 var context = require('../../context');
 var elementProto = (context.HTMLElement || context.Element).prototype;
 
