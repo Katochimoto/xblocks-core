@@ -5,6 +5,19 @@ var merge = require('./lodash/object/merge');
 var src = path.join(__dirname, 'src');
 var dist = path.join(__dirname, 'dist');
 
+var define = new webpack.DefinePlugin({
+    'NODE_ENV': 'production'
+});
+
+var uglify = new webpack.optimize.UglifyJsPlugin({
+    'output': {
+        'comments': false
+    },
+    'compress': {
+        'warnings': false
+    }
+});
+
 var paramsXblocks = {
     'entry': './xblocks.js',
     'context': src,
@@ -28,16 +41,14 @@ var paramsXblocks = {
         'loaders': [
             {
                 'test': /\.jsx?$/,
-                'exclude': /(node_modules|bower_components|lodash)/,
-                'loader': 'babel'
+                'loader': 'babel',
+                'include': [
+                    path.join(__dirname, 'src')
+                ]
             }
         ]
     },
-    'plugins': [
-        new webpack.DefinePlugin({
-            'NODE_ENV': 'production'
-        })
-    ]
+    'plugins': [ define ]
 };
 
 var paramsXtag = {
@@ -54,13 +65,15 @@ module.exports = [
     merge({}, paramsXblocks, {
         'output': {
             'filename': 'xblocks-core.min.js'
-        }
+        },
+        'plugins': [ define, uglify ]
     }),
 
     merge({}, paramsXtag),
     merge({}, paramsXtag, {
         'output': {
             'filename': 'x-tag-core.min.js'
-        }
-    }),
+        },
+        'plugins': [ uglify ]
+    })
 ];
