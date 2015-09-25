@@ -21,7 +21,6 @@ module.exports = function(config) {
 
             'node_modules/classnames/index.js',
             'bower_components/vow/vow.min.js',
-            'bower_components/es5-shim/es5-shim.js',
             'bower_components/react/react-with-addons.js',
             'bower_components/react/react-dom.js',
 
@@ -75,8 +74,11 @@ module.exports = function(config) {
                 'loaders': [
                     {
                         'test': /\.jsx?$/,
-                        'exclude': /(node_modules|bower_components)/,
-                        'loader': 'babel'
+                        'loader': 'babel',
+                        'include': [
+                            path.join(__dirname, 'src'),
+                            path.join(__dirname, 'test')
+                        ]
                     }
                 ]
             }
