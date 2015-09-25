@@ -1,4 +1,4 @@
-var immediate = require('setImmediate2/src');
+var immediate = require('setimmediate2/src');
 
 /**
  * Deferred execution
