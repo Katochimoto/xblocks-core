@@ -42,9 +42,7 @@ var paramsXblocks = {
             {
                 'test': /\.jsx?$/,
                 'loader': 'babel',
-                'include': [
-                    path.join(__dirname, 'src')
-                ]
+                'include': [ src ]
             }
         ]
     },

@@ -1,8 +1,8 @@
 var dom = require('./dom');
-var view = require('./view');
 var XBElement = require('./element');
 var xtag = require('xtag');
 var lazy = require('./utils/lazy');
+var propTypes = require('./utils/propTypes');
 var isPlainObject = require('_/lang/isPlainObject');
 var merge = require('_/object/merge');
 var uniqueId = require('_/utility/uniqueId');
@@ -106,21 +106,7 @@ var blockCommon = {
 
         xprops: {
             get: function () {
-                var viewClass = this.xtagName && view.getClass(this.xtagName);
-
-                if (!viewClass) {
-                    return {};
-                }
-
-                if (viewClass.propTypes) {
-                    return viewClass.propTypes;
-                }
-
-                if (viewClass.originalSpec && viewClass.originalSpec.propTypes) {
-                    return viewClass.originalSpec.propTypes;
-                }
-
-                return {};
+                return propTypes(this.xtagName);
             }
         },
 
