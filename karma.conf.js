@@ -20,11 +20,12 @@ module.exports = function(config) {
             'test/helpers/setup.js',
 
             'node_modules/classnames/index.js',
+            'bower_components/es5-shim/es5-shim.js',
             'bower_components/vow/vow.min.js',
             'bower_components/react/react-with-addons.js',
             'bower_components/react/react-dom.js',
 
-            'src/xtag.js',
+            'dist/x-tag-core.js',
 
             'test/spec/**/*.js'
         ],
@@ -49,8 +50,8 @@ module.exports = function(config) {
             'externals': {
                 'react': 'React',
                 'react-dom': 'ReactDOM',
-                'xtag': 'xtag',
-                'vow': 'vow'
+                'vow': 'vow',
+                'xtag': 'xtag'
             },
             'resolve': {
                 'alias': {
