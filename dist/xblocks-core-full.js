@@ -2085,8 +2085,7 @@
 	}
 
 	// CustomEvent shim
-	// NOTE: we can't check that typeof isn't `function` since Safari has a type `object` CustomEvent
-	if (!window.CustomEvent) {
+	if (!window.CustomEvent || isIE && (typeof window.CustomEvent !== 'function')) {
 	  window.CustomEvent = function(inType, params) {
 	    params = params || {};
 	    var e = document.createEvent('CustomEvent');
@@ -3358,8 +3357,7 @@
 	}
 
 	// CustomEvent shim
-	// NOTE: we can't check that typeof isn't `function` since Safari has a type `object` CustomEvent
-	if (!window.CustomEvent) {
+	if (!window.CustomEvent || isIE && (typeof window.CustomEvent !== 'function')) {
 	  window.CustomEvent = function(inType, params) {
 	    params = params || {};
 	    var e = document.createEvent('CustomEvent');
@@ -5018,7 +5016,6 @@
 	      }
 	      else obj[type] = [];
 	    }
-
 	  };
 
 	  win.xtag = xtag;

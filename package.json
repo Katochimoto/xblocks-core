@@ -49,10 +49,12 @@
     "karma-webpack": "^1.7.0",
     "lodash-cli": "^3.10.1",
     "mocha": "2.3.2",
+    "preprocess": "^2.3.1",
+    "preprocess-loader": "^0.1.0",
     "setimmediate2": "~2.0.x",
     "webcomponents.js": "webcomponents/webcomponentsjs.git",
     "webpack": "~1.12.x",
-    "x-tag-core": "Katochimoto/core.git"
+    "x-tag": "Katochimoto/core.git"
   },
   "engines": {
     "node": ">=0.6.0"

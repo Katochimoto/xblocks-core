@@ -68,14 +68,14 @@ module.exports = function(config) {
             },
             'plugins': [
                 new webpack.DefinePlugin({
-                    'NODE_ENV': 'production'
+                    'NODE_ENV': 'development'
                 })
             ],
             'module': {
                 'loaders': [
                     {
                         'test': /\.jsx?$/,
-                        'loader': 'babel',
+                        'loader': 'babel!preprocess?NODE_ENV=development',
                         'include': [
                             path.join(__dirname, 'src'),
                             path.join(__dirname, 'test')

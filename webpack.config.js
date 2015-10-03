@@ -6,7 +6,7 @@ var src = path.join(__dirname, 'src');
 var dist = path.join(__dirname, 'dist');
 
 var define = new webpack.DefinePlugin({
-    'NODE_ENV': 'production'
+    'NODE_ENV': process.env.NODE_ENV
 });
 
 var uglify = new webpack.optimize.UglifyJsPlugin({
@@ -41,7 +41,7 @@ var paramsXblocks = {
         'loaders': [
             {
                 'test': /\.jsx?$/,
-                'loader': 'babel',
+                'loader': 'babel!preprocess?NODE_ENV=' + process.env.NODE_ENV, // development
                 'include': [ src ]
             }
         ]

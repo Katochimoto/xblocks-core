@@ -28,7 +28,7 @@ lodash: node_modules Makefile
 	touch lodash
 
 dist: node_modules lodash $(src_js) webpack.config.js
-	$(NPM_BIN)/webpack --progress
+	NODE_ENV=production $(NPM_BIN)/webpack --progress
 	touch dist
 
 dist/xblocks-core-full.js: dist
