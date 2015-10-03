@@ -4,9 +4,20 @@ var merge = require('./lodash/object/merge');
 
 var src = path.join(__dirname, 'src');
 var dist = path.join(__dirname, 'dist');
+var isDev = (process.env.NODE_ENV === 'development');
+var nodeEnv = isDev ? 'development' : 'production';
+var envParams = {};
+
+if (isDev) {
+    dist = path.join(__dirname, 'samples', 'dist');
+    envParams = {
+        'debug': true,
+        'devtool': 'eval'
+    };
+}
 
 var define = new webpack.DefinePlugin({
-    'NODE_ENV': process.env.NODE_ENV
+    'NODE_ENV': nodeEnv
 });
 
 var uglify = new webpack.optimize.UglifyJsPlugin({
@@ -34,14 +45,21 @@ var paramsXblocks = {
     },
     'resolve': {
         'alias': {
-            '_': path.join(__dirname, 'lodash'),
+            '_': path.join(__dirname, 'lodash')
         }
     },
     'module': {
+        'preLoaders': [
+            {
+                'test': /\.jsx?$/,
+                'loader': 'eslint',
+                'include': [ src ]
+            }
+        ],
         'loaders': [
             {
                 'test': /\.jsx?$/,
-                'loader': 'babel!preprocess?NODE_ENV=' + process.env.NODE_ENV, // development
+                'loader': 'babel!preprocess?NODE_ENV=' + nodeEnv,
                 'include': [ src ]
             }
         ]
@@ -54,24 +72,31 @@ var paramsXtag = {
     'context': src,
     'output': {
         'filename': 'x-tag-core.js',
-        'path': dist,
+        'path': dist
     }
 };
 
-module.exports = [
-    merge({}, paramsXblocks),
-    merge({}, paramsXblocks, {
+var runs = [
+    merge({}, paramsXblocks, envParams),
+    merge({}, paramsXtag, envParams)
+];
+
+if (!isDev) {
+    runs.push(merge({}, paramsXblocks, {
         'output': {
             'filename': 'xblocks-core.min.js'
         },
-        'plugins': [ define, uglify ]
-    }),
+        'plugins': [ define, uglify ],
+        'devtool': '#source-map'
+    }));
 
-    merge({}, paramsXtag),
-    merge({}, paramsXtag, {
+    runs.push(merge({}, paramsXtag, {
         'output': {
             'filename': 'x-tag-core.min.js'
         },
-        'plugins': [ uglify ]
-    })
-];
+        'plugins': [ uglify ],
+        'devtool': '#source-map'
+    }));
+}
+
+module.exports = runs;

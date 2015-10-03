@@ -20,6 +20,7 @@ bower_components: bower.json
 
 clean:
 	rm -rf dist
+	rm -rf samples/dist
 	rm -rf lodash
 	rm -rf node_modules
 
@@ -28,8 +29,12 @@ lodash: node_modules Makefile
 	touch lodash
 
 dist: node_modules lodash $(src_js) webpack.config.js
-	NODE_ENV=production $(NPM_BIN)/webpack --progress
+	npm run prod
 	touch dist
+
+samples/dist: node_modules lodash $(src_js) webpack.config.js
+	npm run dev
+	touch samples/dist
 
 dist/xblocks-core-full.js: dist
 	cat dist/x-tag-core.js > $@
