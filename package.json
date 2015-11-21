@@ -58,7 +58,7 @@
     "x-tag": "Katochimoto/core.git"
   },
   "engines": {
-    "node": ">=0.6.0"
+    "node": ">=4.0.0"
   },
   "scripts": {
     "test": "make test",
