@@ -1,13 +1,10 @@
-//jscs:disable
-/* global xblocks, global */
-/* jshint strict: false */
-//jscs:enable
+var immediate = require('setimmediate2/src');
 
 /**
  * Deferred execution
  *
  * @example
- * var lazyCallback = function() {
+ * var lazyCallback = function () {
  *     console.log(arguments);
  * };
  * xblocks.utils.lazy(lazyCallback, 'a');
@@ -16,11 +13,12 @@
  * // ....
  * [ Array[ 'a', 'b', 'c' ] ]
  *
+ * @function xblocks.utils.lazy
  * @param {function} callback
  * @param {*} args
  * @returns {function}
  */
-xblocks.utils.lazy = function(callback, args) {
+module.exports = function (callback, args) {
     if (!callback._args) {
         callback._args = [];
     }
@@ -28,13 +26,13 @@ xblocks.utils.lazy = function(callback, args) {
     callback._args.push(args);
 
     if (!callback._timer) {
-        callback._timer = global.setImmediate(function() {
+        callback._timer = immediate.setImmediate(function () {
             callback._timer = 0;
 
-            var args = callback._args;
+            var saveArgs = callback._args;
             callback._args = [];
 
-            callback(args);
+            callback(saveArgs);
         });
     }
 

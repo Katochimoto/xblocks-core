@@ -1,12 +1,6 @@
-//jscs:disable
-/* global xblocks */
-/* jshint strict: false */
-//jscs:enable
+var context = require('../../context');
 
-xblocks.utils.log = {};
-
-xblocks.utils.log.time = function(/*element, name*/) {
-    /*
+exports.time = function (element, name) {
     if (!element._xtimers) {
         element._xtimers = {};
     }
@@ -15,6 +9,9 @@ xblocks.utils.log.time = function(/*element, name*/) {
         element._xtimers[ name ] = [];
     }
 
-    element._xtimers[ name ].push(performance.now());
-    */
+    element._xtimers[ name ].push(context.performance.now());
+};
+
+exports.info = function () {
+    context.console.info.apply(context.console, arguments);
 };

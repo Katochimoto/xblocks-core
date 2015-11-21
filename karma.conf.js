@@ -1,5 +1,7 @@
-// Karma configuration
-// Generated on Tue Jun 03 2014 00:28:29 GMT+0400 (MSK)
+var path = require('path');
+var webpack = require('webpack');
+var src = path.join(__dirname, 'src');
+var srcLib = path.join(src, 'xblocks');
 
 module.exports = function(config) {
     config.set({
@@ -10,7 +12,7 @@ module.exports = function(config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['mocha', 'sinon-expect'],
+        frameworks: ['mocha', 'sinon-chai'],
 
 
         // list of files / patterns to load in the browser
@@ -18,14 +20,13 @@ module.exports = function(config) {
             'test/helpers/setup.js',
 
             'node_modules/classnames/index.js',
-            'node_modules/setimmediate2/setImmediate.js',
-            'bower_components/vow/vow.min.js',
             'bower_components/es5-shim/es5-shim.js',
+            'bower_components/vow/vow.min.js',
             'bower_components/react/react-with-addons.js',
+            'bower_components/react/react-dom.js',
 
-            'src/xtag.js',
-            'src/xblocks.js',
-            'test/tags/**/*.js',
+            'dist/x-tag-core.js',
+
             'test/spec/**/*.js'
         ],
 
@@ -39,9 +40,49 @@ module.exports = function(config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            '**/*.js': [ 'borschik' ],
+            'test/**/*.js': [ 'webpack' ],
+            'src/**/*.js': [ 'webpack' ],
             '**/*.jsx': [ 'babel' ],
             '**/src/xblocks.js': 'coverage'
+        },
+
+        webpack: {
+            'externals': {
+                'react': 'React',
+                'react-dom': 'ReactDOM',
+                'vow': 'vow',
+                'xtag': 'xtag'
+            },
+            'resolve': {
+                'alias': {
+                    'context': path.join(src, 'context'),
+                    'polyfills': path.join(src, 'polyfills'),
+                    'block': path.join(srcLib, 'block'),
+                    'dom': path.join(srcLib, 'dom'),
+                    'element': path.join(srcLib, 'element'),
+                    'event': path.join(srcLib, 'event'),
+                    'utils': path.join(srcLib, 'utils'),
+                    'view': path.join(srcLib, 'view'),
+                    '_': path.join(__dirname, 'lodash')
+                }
+            },
+            'plugins': [
+                new webpack.DefinePlugin({
+                    'NODE_ENV': 'development'
+                })
+            ],
+            'module': {
+                'loaders': [
+                    {
+                        'test': /\.jsx?$/,
+                        'loader': 'babel!preprocess?NODE_ENV=development',
+                        'include': [
+                            path.join(__dirname, 'src'),
+                            path.join(__dirname, 'test')
+                        ]
+                    }
+                ]
+            }
         },
 
 
@@ -79,7 +120,7 @@ module.exports = function(config) {
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: [
             'PhantomJS',
-            'ChromeCanary',
+            //'ChromeCanary',
             'Firefox',
             'FirefoxDeveloperEdition',
             'Safari',

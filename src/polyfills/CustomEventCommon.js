@@ -1,24 +1,22 @@
-//jscs:disable
-/* global global */
-//jscs:enable
+'use strict';
 
+var context = require('../context');
 var CustomEventCommon;
-var doc = global.document;
 var issetCustomEvent = false;
 
 try {
-    issetCustomEvent = Boolean(doc.createEvent('CustomEvent'));
-} catch(e) {
+    issetCustomEvent = Boolean(context.document.createEvent('CustomEvent'));
+} catch (e) {
     // do nothing
 }
 
 if (issetCustomEvent) {
-    CustomEventCommon = function(eventName, params) {
+    CustomEventCommon = function (eventName, params) {
         params = params || {};
 
         var bubbles = Boolean(params.bubbles);
         var cancelable = Boolean(params.cancelable);
-        var evt = doc.createEvent('CustomEvent');
+        var evt = context.document.createEvent('CustomEvent');
 
         evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
@@ -26,12 +24,12 @@ if (issetCustomEvent) {
     };
 
 } else {
-    CustomEventCommon = function(eventName, params) {
+    CustomEventCommon = function (eventName, params) {
         params = params || {};
 
         var bubbles = Boolean(params.bubbles);
         var cancelable = Boolean(params.cancelable);
-        var evt = doc.createEvent('Event');
+        var evt = context.document.createEvent('Event');
 
         evt.initEvent(eventName, bubbles, cancelable);
         evt.detail = params.detail;
@@ -40,4 +38,6 @@ if (issetCustomEvent) {
     };
 }
 
-CustomEventCommon.prototype = global.Event.prototype;
+CustomEventCommon.prototype = context.Event.prototype;
+
+module.exports = CustomEventCommon;

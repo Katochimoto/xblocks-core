@@ -1,54 +1,74 @@
-/* global describe, it, expect, xblocks, beforeEach */
-/* jshint strict: false */
+require('../tags/x-element1.jsx');
 
-describe('xblocks.element', function() {
+var XBElement = require('element');
+var vow = require('vow');
+var ReactDOM = require('react-dom');
 
-    describe('.create ->', function() {
+describe('xblocks', function () {
 
-        beforeEach(function() {
-            this._stubInit = this.sinon.stub(xblocks.Element.prototype, '_init');
+    describe('element', function () {
+        describe('#create', function () {
+            beforeEach(function () {
+                this._spyInit = this.sinon.spy(XBElement.prototype, '_init');
 
-            this.node = document.createElement('div');
-            this.element = new xblocks.Element(this.node);
+                this.node = document.createElement('x-element1');
+
+                var that = this;
+                return new vow.Promise(function (resolve) {
+                    that.node.addEventListener('xb-created', function _onXbCreated() {
+                        this.removeEventListener('xb-created', _onXbCreated);
+                        resolve();
+                    });
+
+                    document.body.appendChild(that.node);
+                });
+            });
+
+            afterEach(function () {
+                if (this.node.parentNode) {
+                    this.node.parentNode.removeChild(this.node);
+                }
+            });
+
+            it('узел сожержит свойство xblock с созданным объектом', function () {
+                expect(this.node.xblock).to.be.an.instanceof(XBElement);
+            });
+
+            it('объект содержит свойство _node с узлом', function () {
+                expect(this.node.xblock._node).to.equal(this.node);
+            });
+
+            it('выполняется вызов метода инициализации', function () {
+                expect(this._spyInit.calledOnce).to.be.ok;
+            });
         });
 
-        it('создается объект xblocks.Element', function() {
-            expect(this.element).to.be.a(xblocks.Element);
-        });
+        describe('#destroy', function () {
+            beforeEach(function () {
+                this._spyReactUmount = this.sinon.spy(ReactDOM, 'unmountComponentAtNode');
+                this.node = document.createElement('x-element1');
 
-        it('узел сожержит свойство xblock с созданным объектом', function() {
-            expect(this.node.xblock).to.be(this.element);
-        });
+                var that = this;
+                return new vow.Promise(function (resolve) {
+                    that.node.addEventListener('xb-created', function _onXbCreated() {
+                        this.removeEventListener('xb-created', _onXbCreated);
+                        resolve();
+                    });
 
-        it('объект содержит свойство _node с узлом', function() {
-            expect(this.element._node).to.be(this.node);
-        });
+                    document.body.appendChild(that.node);
+                });
+            });
 
-        it('выполняется вызов метода инициализации', function() {
-            expect(this._stubInit.calledOnce).to.be.ok();
-        });
-    });
+            afterEach(function () {
+                if (this.node.parentNode) {
+                    this.node.parentNode.removeChild(this.node);
+                }
+            });
 
-    describe('#destroy ->', function() {
-
-        beforeEach(function() {
-            this.sinon.stub(xblocks.Element.prototype, '_init');
-
-            this.node = document.createElement('div');
-
-            this._stubUnmount = this.sinon.stub(xblocks.Element.prototype, 'unmount');
-            this._stubReactUmount = this.sinon.stub(xblocks.react, 'unmountComponentAtNode').withArgs(this.node);
-
-            this.element = new xblocks.Element(this.node);
-            this.element.destroy();
-        });
-
-        it('должен быть вызван метод unmount', function() {
-            expect(this._stubUnmount.calledOnce).to.be.ok();
-        });
-
-        it('должен быть вызван метод xblocks.react.unmountComponentAtNode', function() {
-            expect(this._stubReactUmount.calledOnce).to.be.ok();
+            it('должен быть вызван метод ReactDOM.unmountComponentAtNode', function () {
+                this.node.xblock.destroy();
+                expect(this._spyReactUmount).calledWith(this.node);
+            });
         });
     });
 });

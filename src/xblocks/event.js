@@ -1,12 +1,13 @@
-//jscs:disable
-/* global xblocks, global, CustomEventCommon */
-/* jshint strict: false */
-//jscs:enable
+var context = require('../context');
+var isNative = require('_/lang/isNative');
+var CustomEventCommon = require('../polyfills/CustomEventCommon');
+var Custom = (function () {
+    if (isNative('CustomEvent')) {
+        return context.CustomEvent;
+    }
 
-/**
- * @namespace
- */
-xblocks.event = xblocks.event || {};
+    return CustomEventCommon;
+}());
 
 /**
  * Designer events
@@ -21,16 +22,7 @@ xblocks.event = xblocks.event || {};
  * @constructor
  * @memberOf xblocks.event
  */
-xblocks.event.Custom = (function() {
-    if (xblocks.utils.pristine('CustomEvent')) {
-        return global.CustomEvent;
-    }
-
-    return (function() {
-        /*! borschik:include:../polyfills/CustomEventCommon.js */
-        return CustomEventCommon;
-    }());
-}());
+exports.Custom = Custom;
 
 /**
  * Dispatch event
@@ -46,6 +38,6 @@ xblocks.event.Custom = (function() {
  * @param {string} name event name
  * @param {object} params the event parameters
  */
-xblocks.event.dispatch = function(element, name, params) {
-    element.dispatchEvent(new xblocks.event.Custom(name, params || {}));
+exports.dispatch = function (element, name, params) {
+    element.dispatchEvent(new Custom(name, params || {}));
 };

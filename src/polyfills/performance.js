@@ -1,29 +1,22 @@
-//jscs:disable
-/* jshint -W067 */
-//jscs:enable
+'use strict';
 
-(function(global) {
-    'use strict';
+var context = require('../context');
 
-    if (typeof(global.performance) === 'undefined') {
-        global.performance = {};
+if (typeof context.performance === 'undefined') {
+    context.performance = {};
+}
+
+if (!context.performance.now) {
+    var nowOffset;
+
+    if (context.performance.timing && context.performance.timing.navigationStart) {
+        nowOffset = context.performance.timing.navigationStar;
+
+    } else {
+        nowOffset = Date.now();
     }
 
-    if (!global.performance.now) {
-        var nowOffset;
-
-        if (global.performance.timing && global.performance.timing.navigationStart) {
-            nowOffset = global.performance.timing.navigationStar;
-
-        } else {
-            nowOffset = Date.now();
-        }
-
-        global.performance.now = function() {
-            return (Date.now() - nowOffset);
-        };
-    }
-
-}(function() {
-    return this || (1, eval)('this');
-}()));
+    context.performance.now = function () {
+        return (Date.now() - nowOffset);
+    };
+}

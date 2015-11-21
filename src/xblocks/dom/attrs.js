@@ -1,7 +1,22 @@
-//jscs:disable
-/* global xblocks, React, __forEach */
-/* jshint strict: false */
-//jscs:enable
+var React = require('react');
+var forEach = Array.prototype.forEach;
+
+/**
+ * A set of boolean attributes
+ * @type {string[]}
+ */
+var attrsBoolean = [
+    'active',
+    'autofocus',
+    'checked',
+    'defer',
+    'disabled',
+    'ismap',
+    'multiple',
+    'readonly',
+    'required',
+    'selected'
+];
 
 /**
  * To obtain the specified attributes
@@ -17,11 +32,12 @@
  * });
  * // { 'attr1': true, 'attr2': 'test1' }
  *
+ * @function xblocks.dom.attrs.get
  * @param {HTMLElement} element
  * @param {object} attrs the set of derived attributes (+default values)
  * @return {object}
  */
-xblocks.dom.attrs.get = function(element, attrs) {
+exports.get = function (element, attrs) {
     if (element.nodeType !== 1 || !element.hasAttributes()) {
         return attrs;
     }
@@ -29,8 +45,8 @@ xblocks.dom.attrs.get = function(element, attrs) {
     var attrName;
     for (attrName in attrs) {
         if (attrs.hasOwnProperty(attrName) && element.hasAttribute(attrName)) {
-            if (typeof(attrs[ attrName ]) === 'boolean') {
-                attrs[ attrName ] = xblocks.dom.attrs.valueConversion(
+            if (typeof attrs[ attrName ] === 'boolean') {
+                attrs[ attrName ] = valueConversion(
                     attrName,
                     element.getAttribute(attrName),
                     React.PropTypes.bool
@@ -55,25 +71,18 @@ xblocks.dom.attrs.get = function(element, attrs) {
  * xblocks.dom.attrs.toObject(node);
  * // { 'attr1': '', 'attr2': 'test' }
  *
+ * @function xblocks.dom.attrs.toObject
  * @param {HTMLElement} element
  * @return {object}
  */
-xblocks.dom.attrs.toObject = function(element) {
+exports.toObject = function (element) {
     var attrs = {};
 
     if (element.nodeType === 1 && element.hasAttributes()) {
-        __forEach.call(element.attributes, xblocks.dom.attrs._toObjectIterator, attrs);
+        forEach.call(element.attributes, toObjectIterator, attrs);
     }
 
     return attrs;
-};
-
-/**
- * @param {Attr} attr
- * @private
- */
-xblocks.dom.attrs._toObjectIterator = function(attr) {
-    this[ attr.nodeName ] = attr.value;
 };
 
 /**
@@ -87,32 +96,13 @@ xblocks.dom.attrs._toObjectIterator = function(attr) {
  * xblocks.dom.attrs.valueConversion('attr1', '123', React.PropTypes.number);
  * // 123
  *
+ * @function xblocks.dom.attrs.valueConversion
  * @param {string} prop attribute name
  * @param {*} value attribute value
  * @param {function} [type] attribute type
  * @returns {*}
  */
-xblocks.dom.attrs.valueConversion = function(prop, value, type) {
-    if (!type) {
-        if (value === 'true' || value === 'false' || xblocks.dom.attrs.ARRTS_BOOLEAN.indexOf(prop) !== -1) {
-            type = React.PropTypes.bool;
-        }
-    }
-
-    switch (type) {
-        case React.PropTypes.bool:
-            return Boolean(value === true || value === '' || prop === value || value === 'true');
-
-        case React.PropTypes.string:
-            return String(value);
-
-        case React.PropTypes.number:
-            return Number(value);
-
-        default:
-            return value;
-    }
-};
+exports.valueConversion = valueConversion;
 
 /**
  * Collective conversion of attribute types
@@ -127,17 +117,18 @@ xblocks.dom.attrs.valueConversion = function(prop, value, type) {
  * });
  * // { 'attr1': 123, 'attr2': true }
  *
+ * @function xblocks.dom.attrs.typeConversion
  * @param {object} props the set of attributes
  * @param {object} [propTypes] the set of attribute types
  * @returns {object}
  */
-xblocks.dom.attrs.typeConversion = function(props, propTypes) {
+exports.typeConversion = function (props, propTypes) {
     propTypes = propTypes || {};
-    var prop;
 
+    var prop;
     for (prop in props) {
         if (props.hasOwnProperty(prop)) {
-            props[ prop ] = xblocks.dom.attrs.valueConversion(
+            props[ prop ] = valueConversion(
                 prop,
                 props[ prop ],
                 propTypes[ prop ]
@@ -147,3 +138,33 @@ xblocks.dom.attrs.typeConversion = function(props, propTypes) {
 
     return props;
 };
+
+/**
+ * @param {Attr} attr
+ * @private
+ */
+function toObjectIterator(attr) {
+    this[ attr.nodeName ] = attr.value;
+}
+
+function valueConversion(prop, value, type) {
+    if (!type) {
+        if (value === 'true' || value === 'false' || attrsBoolean.indexOf(prop) !== -1) {
+            type = React.PropTypes.bool;
+        }
+    }
+
+    switch (type) {
+    case React.PropTypes.bool:
+        return Boolean(value === true || value === '' || prop === value || value === 'true');
+
+    case React.PropTypes.string:
+        return String(value);
+
+    case React.PropTypes.number:
+        return Number(value);
+
+    default:
+        return value;
+    }
+}

@@ -1,37 +1,31 @@
-//jscs:disable
-/* jshint -W067 */
-//jscs:enable
 /**
  * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
  */
-(function(global) {
-    'use strict';
 
-    var attrModifiedWorks = false;
-    var listener = function() {
-        attrModifiedWorks = true;
-    };
+'use strict';
 
-    var doc = global.document;
-    var htmlElement = doc.documentElement;
-    htmlElement.addEventListener('DOMAttrModified', listener, false);
-    htmlElement.setAttribute('___TEST___', true);
-    htmlElement.removeEventListener('DOMAttrModified', listener, false);
-    htmlElement.removeAttribute('___TEST___', true);
+var context = require('../context');
+var attrModifiedWorks = false;
+var listener = function () {
+    attrModifiedWorks = true;
+};
 
-    if (attrModifiedWorks) {
-        return;
-    }
+var htmlElement = context.document.documentElement;
+htmlElement.addEventListener('DOMAttrModified', listener, false);
+htmlElement.setAttribute('___TEST___', true);
+htmlElement.removeEventListener('DOMAttrModified', listener, false);
+htmlElement.removeAttribute('___TEST___', true);
 
-    var proto = global.Element.prototype;
+if (!attrModifiedWorks) {
+    var proto = context.Element.prototype;
 
     proto.__setAttribute = proto.setAttribute;
-    proto.setAttribute = function(attrName, newVal) {
+    proto.setAttribute = function (attrName, newVal) {
         var prevVal = this.getAttribute(attrName);
         this.__setAttribute(attrName, newVal);
         newVal = this.getAttribute(attrName);
-        if (newVal != prevVal) {
-            var evt = doc.createEvent('MutationEvent');
+        if (newVal !== prevVal) {
+            var evt = context.document.createEvent('MutationEvent');
             evt.initMutationEvent(
                 'DOMAttrModified',
                 true,
@@ -40,17 +34,17 @@
                 prevVal || '',
                 newVal || '',
                 attrName,
-                (prevVal == null) ? evt.ADDITION : evt.MODIFICATION
+                (prevVal === null) ? evt.ADDITION : evt.MODIFICATION
             );
             this.dispatchEvent(evt);
         }
     };
 
     proto.__removeAttribute = proto.removeAttribute;
-    proto.removeAttribute = function(attrName) {
+    proto.removeAttribute = function (attrName) {
         var prevVal = this.getAttribute(attrName);
         this.__removeAttribute(attrName);
-        var evt = doc.createEvent('MutationEvent');
+        var evt = context.document.createEvent('MutationEvent');
         evt.initMutationEvent(
             'DOMAttrModified',
             true,
@@ -63,7 +57,4 @@
         );
         this.dispatchEvent(evt);
     };
-
-}(function() {
-    return this || (1, eval)('this');
-}()));
+}

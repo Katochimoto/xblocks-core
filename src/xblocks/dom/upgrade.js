@@ -1,16 +1,13 @@
-//jscs:disable
-/* global xblocks, global, __noop */
-/* jshint strict: false */
-//jscs:enable
+var context = require('../../context');
 
 /**
  * @function xblocks.dom.upgrade
  */
-xblocks.dom.upgrade = (function() {
-    if (global.CustomElements && typeof(global.CustomElements.upgrade) === 'function') {
-        return global.CustomElements.upgrade;
+module.exports = (function () {
+    if (context.CustomElements && typeof context.CustomElements.upgrade === 'function') {
+        return context.CustomElements.upgrade;
 
     } else {
-        return __noop;
+        return function () {};
     }
 }());
