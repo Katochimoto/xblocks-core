@@ -2,20 +2,15 @@ var path = require('path');
 var webpack = require('webpack');
 var merge = require('./lodash/object/merge');
 
-var src = path.join(__dirname, 'src');
-var dist = path.join(__dirname, 'dist');
+var srcPath = path.join(__dirname, 'src');
+var distPath = path.join(__dirname, 'dist');
 var isDev = (process.env.NODE_ENV === 'development');
 var nodeEnv = isDev ? 'development' : 'production';
 var preprocessParams = '?NODE_ENV=' + nodeEnv;
-var envParams = {};
 
 if (isDev) {
-    dist = path.join(__dirname, 'samples', 'dist');
+    distPath = path.join(__dirname, 'samples', 'dist');
     preprocessParams = '?+DEBUG&NODE_ENV=' + nodeEnv;
-    envParams = {
-        'debug': true,
-        'devtool': 'eval'
-    };
 }
 
 var define = new webpack.DefinePlugin({
@@ -32,10 +27,13 @@ var uglify = new webpack.optimize.UglifyJsPlugin({
 });
 
 var paramsXblocks = {
+    'debug': isDev,
+    'devtool': isDev ? 'eval' : undefined,
+    'target': 'web',
     'entry': './xblocks.js',
-    'context': src,
+    'context': srcPath,
     'output': {
-        'path': dist,
+        'path': distPath,
         'filename': 'xblocks-core.js',
         'library': 'xblocks',
         'libraryTarget': 'umd'
@@ -55,14 +53,14 @@ var paramsXblocks = {
             {
                 'test': /\.jsx?$/,
                 'loader': 'eslint',
-                'include': [ src ]
+                'include': [ srcPath ]
             }
         ],
         'loaders': [
             {
                 'test': /\.jsx?$/,
                 'loader': 'babel!preprocess' + preprocessParams,
-                'include': [ src ]
+                'include': [ srcPath ]
             }
         ]
     },
@@ -70,17 +68,20 @@ var paramsXblocks = {
 };
 
 var paramsXtag = {
+    'debug': isDev,
+    'devtool': isDev ? 'eval' : undefined,
+    'target': 'web',
     'entry': './xtag.js',
-    'context': src,
+    'context': srcPath,
     'output': {
         'filename': 'x-tag-core.js',
-        'path': dist
+        'path': distPath
     }
 };
 
 var runs = [
-    merge({}, paramsXblocks, envParams),
-    merge({}, paramsXtag, envParams)
+    paramsXblocks,
+    paramsXtag
 ];
 
 if (!isDev) {

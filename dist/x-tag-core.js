@@ -442,6 +442,11 @@
 
 	(function(global) {
 
+	  // Don't allow this object to be redefined.
+	  if (global.JsMutationObserver) {
+	    return;
+	  }
+
 	  var registrationsTable = new WeakMap();
 
 	  var setImmediate;
@@ -993,9 +998,11 @@
 
 	  global.JsMutationObserver = JsMutationObserver;
 
-	  if (!global.MutationObserver)
+	  if (!global.MutationObserver) {
 	    global.MutationObserver = JsMutationObserver;
-
+	    // Explicltly mark MO as polyfilled for user reference.
+	    JsMutationObserver._isPolyfilled = true;
+	  }
 
 	})(self);
 
@@ -1197,14 +1204,23 @@
 	}
 
 	// On platforms without MutationObserver, mutations may not be
-	// reliable and therefore attached/detached are not reliable.
-	// To make these callbacks less likely to fail, we defer all inserts and removes
+	// reliable and therefore attached/detached are not reliable. We think this
+	// occurs sometimes under heavy DOM operation load, but it is not easy to
+	// reproduce.
+	// To make these callbacks less likely to fail in this scenario,
+	// we *optionally* defer all inserts and removes
 	// to give a chance for elements to be attached into dom.
-	// This ensures attachedCallback fires for elements that are created and
+	// This helps ensure attachedCallback fires for elements that are created and
 	// immediately added to dom.
-	var hasPolyfillMutations = (!window.MutationObserver ||
-	    (window.MutationObserver === window.JsMutationObserver));
-	scope.hasPolyfillMutations = hasPolyfillMutations;
+	// This change can significantly alter the performance characteristics
+	// of attaching elements and therefore we only enable it if the user has
+	// explicitly provided the `throttle-attached` flag.
+	var hasThrottledAttached = (window.MutationObserver._isPolyfilled &&
+	    flags['throttle-attached']);
+	// bc
+	scope.hasPolyfillMutations = hasThrottledAttached;
+	// exposed for testing
+	scope.hasThrottledAttached = hasThrottledAttached;
 
 	var isPendingMutations = false;
 	var pendingMutations = [];
@@ -1226,7 +1242,7 @@
 	}
 
 	function attached(element) {
-	  if (hasPolyfillMutations) {
+	  if (hasThrottledAttached) {
 	    deferMutation(function() {
 	      _attached(element);
 	    });
@@ -1262,7 +1278,7 @@
 	}
 
 	function detached(element) {
-	  if (hasPolyfillMutations) {
+	  if (hasThrottledAttached) {
 	    deferMutation(function() {
 	      _detached(element);
 	    });
@@ -1347,7 +1363,7 @@
 	  }
 	  // handle mutations
 	  // NOTE: do an `inDocument` check dynamically here. It's possible that `root`
-	  // is a document in which case the answer here can never change; however 
+	  // is a document in which case the answer here can never change; however
 	  // `root` may be an element like a shadowRoot that can be added/removed
 	  // from the main document.
 	  var isAttached = inDocument(root);
@@ -1492,6 +1508,12 @@
 	 */
 	// Upgrade a node if it can be upgraded and is not already.
 	function upgrade(node, isAttached) {
+	  // upgrade template elements before custom elements
+	  if (node.localName === 'template') {
+	    if (window.HTMLTemplateElement && HTMLTemplateElement.decorate) {
+	      HTMLTemplateElement.decorate(node);
+	    }
+	  }
 	  if (!node.__upgraded__ && (node.nodeType === Node.ELEMENT_NODE)) {
 	    var is = node.getAttribute('is');
 	    // find definition first by localName and secondarily by is attribute
@@ -2084,27 +2106,6 @@
 	  });
 	}
 
-	// CustomEvent shim
-	if (!window.CustomEvent || isIE && (typeof window.CustomEvent !== 'function')) {
-	  window.CustomEvent = function(inType, params) {
-	    params = params || {};
-	    var e = document.createEvent('CustomEvent');
-	    e.initCustomEvent(inType, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
-	    // IE does not set `defaultPrevented` when `preventDefault()` is called on
-	    // CustomEvents
-	    // http://stackoverflow.com/questions/23349191/event-preventdefault-is-not-working-in-ie-11-for-custom-events
-	    e.preventDefault = function() {
-	      Object.defineProperty(this, 'defaultPrevented', {
-	        get: function() {
-	          return true;
-	        }
-	      });
-	    };
-	    return e;
-	  };
-	  window.CustomEvent.prototype = window.Event.prototype;
-	}
-
 	// When loading at readyState complete time (or via flag), boot custom elements
 	// immediately.
 	// If relevant, HTMLImports must already be loaded.
@@ -2499,12 +2500,16 @@
 	      if (request.readyState === 4) {
 	        // Servers redirecting an import can add a Location header to help us
 	        // polyfill correctly.
-	        var locationHeader = request.getResponseHeader("Location");
 	        var redirectedUrl = null;
-	        if (locationHeader) {
-	          var redirectedUrl = (locationHeader.substr( 0, 1 ) === "/")
-	            ? location.origin + locationHeader  // Location is a relative path
-	            : locationHeader;                    // Full path
+	        try {
+	          var locationHeader = request.getResponseHeader("Location");
+	          if (locationHeader) {
+	            redirectedUrl = (locationHeader.substr( 0, 1 ) === "/")
+	              ? location.origin + locationHeader  // Location is a relative path
+	              : locationHeader;                   // Full path
+	          }
+	        } catch ( e ) {
+	            console.error( e.message );
 	        }
 	        next.call(nextContext, !xhr.ok(request) && request,
 	            request.response || request.responseText, redirectedUrl);
@@ -3356,27 +3361,6 @@
 	  return;
 	}
 
-	// CustomEvent shim
-	if (!window.CustomEvent || isIE && (typeof window.CustomEvent !== 'function')) {
-	  window.CustomEvent = function(inType, params) {
-	    params = params || {};
-	    var e = document.createEvent('CustomEvent');
-	    e.initCustomEvent(inType, Boolean(params.bubbles), Boolean(params.cancelable), params.detail);
-	    // IE does not set `defaultPrevented` when `preventDefault()` is called on
-	    // CustomEvents
-	    // http://stackoverflow.com/questions/23349191/event-preventdefault-is-not-working-in-ie-11-for-custom-events
-	    e.preventDefault = function() {
-	      Object.defineProperty(this, 'defaultPrevented', {
-	        get: function() {
-	          return true;
-	        }
-	      });
-	    };
-	    return e;
-	  };
-	  window.CustomEvent.prototype = window.Event.prototype;
-	}
-
 	// Initialize polyfill modules. Note, polyfill modules are loaded but not
 	// executed; this is a convenient way to control which modules run when
 	// the polyfill is required and allows the polyfill to load even when it's
@@ -4089,6 +4073,7 @@
 	    container = doc.createElement('div'),
 	    noop = function(){},
 	    trueop = function(){ return true; },
+	    regexReplaceCommas = /,/g,
 	    regexCamelToDash = /([a-z])([A-Z])/g,
 	    regexPseudoParens = /\(|\)/g,
 	    regexPseudoCapture = /:(\w+)\u276A(.+?(?=\u276B))|:(\w+)/g,
@@ -4121,8 +4106,7 @@
 	        js: pre == 'ms' ? pre : pre[0].toUpperCase() + pre.substr(1)
 	      };
 	    })(),
-	    matchSelector = Element.prototype.matches || Element.prototype.matchesSelector || Element.prototype[prefix.lowercase + 'MatchesSelector'],
-	    mutation = win.MutationObserver || win[prefix.js + 'MutationObserver'];
+	    matchSelector = Element.prototype.matches || Element.prototype.matchesSelector || Element.prototype[prefix.lowercase + 'MatchesSelector'];
 
 	  var issetCustomEvent = false;
 	  var customEvent;
@@ -4169,11 +4153,9 @@
 	    The toArray() method allows for conversion of any object to a true array. For types that
 	    cannot be converted to an array, the method returns a 1 item array containing the passed-in object.
 	  */
-	  var unsliceable = ['undefined', 'null', 'number', 'boolean', 'string', 'function'];
+	  var unsliceable = { 'undefined': 1, 'null': 1, 'number': 1, 'boolean': 1, 'string': 1, 'function': 1 };
 	  function toArray(obj){
-	    return unsliceable.indexOf(typeOf(obj)) == -1 ?
-	    Array.prototype.slice.call(obj, 0) :
-	    [obj];
+	    return unsliceable[typeOf(obj)] ? [obj] : Array.prototype.slice.call(obj, 0);
 	  }
 
 	// DOM
@@ -4181,23 +4163,6 @@
 	  var str = '';
 	  function query(element, selector){
 	    return (selector || str).length ? toArray(element.querySelectorAll(selector)) : [];
-	  }
-
-	  function parseMutations(element, mutations) {
-	    var diff = { added: [], removed: [] };
-	    mutations.forEach(function(record){
-	      record._mutation = true;
-	      for (var z in diff) {
-	        var type = element._records[(z == 'added') ? 'inserted' : 'removed'],
-	          nodes = record[z + 'Nodes'], length = nodes.length;
-	        for (var i = 0; i < length && diff[z].indexOf(nodes[i]) == -1; i++){
-	          diff[z].push(nodes[i]);
-	          type.forEach(function(fn){
-	            fn(nodes[i], record);
-	          });
-	        }
-	      }
-	    });
 	  }
 
 	// Pseudos
@@ -4290,7 +4255,7 @@
 	  }
 
 	  function touchFilter(event){
-	    return event.button == 0;
+	    return event.button === 0;
 	  }
 
 	  function writeProperty(key, event, base, desc){
@@ -4389,7 +4354,7 @@
 
 	  var unwrapComment = /\/\*!?(?:\@preserve)?[ \t]*(?:\r\n|\n)([\s\S]*?)(?:\r\n|\n)\s*\*\//;
 	  function parseMultiline(fn){
-	    return unwrapComment.exec(fn.toString())[1];
+	    return typeof fn == 'function' ? unwrapComment.exec(fn.toString())[1] : fn;
 	  }
 
 	/*** X-Tag Object Definition ***/
@@ -4413,12 +4378,11 @@
 	      }
 	    },
 	    register: function (name, options) {
-	      if (typeof name == 'string') {
-	        var _name = name.toLowerCase();
-	      }
-	      else return;
+	      var _name;
+	      if (typeof name == 'string') _name = name.toLowerCase();
+	      else throw 'First argument must be a Custom Element string name';
 	      xtag.tags[_name] = options || {};
-	      // save prototype for actual object creation below
+
 	      var basePrototype = options.prototype;
 	      delete options.prototype;
 	      var tag = xtag.tags[_name].compiled = applyMixins(xtag.merge({}, xtag.defaultOptions, options));
@@ -4428,17 +4392,17 @@
 	      for (z in tag.methods) tag.prototype[z.split(':')[0]] = { value: xtag.applyPseudos(z, tag.methods[z], tag.pseudos, tag.methods[z]), enumerable: true };
 	      for (z in tag.accessors) parseAccessor(tag, z);
 
-	      tag.shadow = tag.shadow ? xtag.createFragment(tag.shadow) : null;
-	      tag.content = tag.content ? xtag.createFragment(tag.content) : null;
-	      var ready = tag.lifecycle.created || tag.lifecycle.ready;
+	      if (tag.shadow) tag.shadow = tag.shadow.nodeName ? tag.shadow : xtag.createFragment(tag.shadow);
+	      if (tag.content) tag.content = tag.content.nodeName ? tag.content.innerHTML : parseMultiline(tag.content);
+	      var created = tag.lifecycle.created;
 	      tag.prototype.createdCallback = {
 	        enumerable: true,
 	        value: function(){
 	          var element = this;
 	          if (tag.shadow && hasShadow) this.createShadowRoot().appendChild(tag.shadow.cloneNode(true));
-	          if (tag.content) this.appendChild(tag.content.cloneNode(true));
+	          if (tag.content) this.appendChild(document.createElement('div')).outerHTML = tag.content;
 	          xtag.addEvents(this, tag.events);
-	          var output = ready ? ready.apply(this, arguments) : null;
+	          var output = created ? created.apply(this, arguments) : null;
 	          for (var name in tag.attributes) {
 	            var attr = tag.attributes[name],
 	                hasAttr = this.hasAttribute(name),
@@ -4450,6 +4414,7 @@
 	          tag.pseudos.forEach(function(obj){
 	            obj.onAdd.call(element, obj);
 	          });
+	          this.xtagComponentReady = true;
 	          return output;
 	        }
 	      };
@@ -4561,7 +4526,7 @@
 	            custom.startX = event.clientX;
 	            custom.startY = event.clientY;
 	          }
-	          else if (event.button == 0 &&
+	          else if (event.button === 0 &&
 	                   Math.abs(custom.startX - event.clientX) < 10 &&
 	                   Math.abs(custom.startY - event.clientY) < 10) return true;
 	        }
@@ -4631,24 +4596,15 @@
 	      delegate: {
 	        action: delegateAction
 	      },
-	      within: {
-	        action: delegateAction,
-	        onAdd: function(pseudo){
-	          var condition = pseudo.source.condition;
-	          if (condition) pseudo.source.condition = function(event, custom){
-	            return xtag.query(this, pseudo.value).filter(function(node){
-	              return node == event.target || node.contains ? node.contains(event.target) : null;
-	            })[0] ? condition.call(this, event, custom) : null;
-	          };
-	        }
-	      },
 	      preventable: {
 	        action: function (pseudo, event) {
 	          return !event.defaultPrevented;
 	        }
 	      },
 	      duration: {
-	        onAdd: function(pseudo){ pseudo.source.duration = Number(pseudo.value) }
+	        onAdd: function(pseudo){
+	          pseudo.source.duration = Number(pseudo.value);
+	        }
 	      },
 	      capture: {
 	        onCompiled: function(fn, pseudo){
@@ -4767,36 +4723,28 @@
 	    */
 	    queryChildren: function (element, selector) {
 	      var id = element.id,
-	        guid = element.id = id || 'x_' + xtag.uid(),
-	        attr = '#' + guid + ' > ',
-	        noParent = false;
-	      if (!element.parentNode){
-	        noParent = true;
-	        container.appendChild(element);
-	      }
-	      selector = attr + (selector + '').replace(',', ',' + attr, 'g');
+	          attr = '#' + (element.id = id || 'x_' + xtag.uid()) + ' > ',
+	          parent = element.parentNode || !container.appendChild(element);
+	      selector = attr + (selector + '').replace(regexReplaceCommas, ',' + attr);
 	      var result = element.parentNode.querySelectorAll(selector);
 	      if (!id) element.removeAttribute('id');
-	      if (noParent){
-	        container.removeChild(element);
-	      }
+	      if (!parent) container.removeChild(element);
 	      return toArray(result);
 	    },
+
 	    /*
 	      Creates a document fragment with the content passed in - content can be
 	      a string of HTML, an element, or an array/collection of elements
 	    */
 	    createFragment: function(content) {
-	      var frag = doc.createDocumentFragment();
+	      var template = document.createElement('template');
 	      if (content) {
-	        var div = frag.appendChild(doc.createElement('div')),
-	          nodes = toArray(content.nodeName ? arguments : !(div.innerHTML = typeof content == 'function' ? parseMultiline(content) : content) || div.children),
-	          length = nodes.length,
-	          index = 0;
-	        while (index < length) frag.insertBefore(nodes[index++], div);
-	        frag.removeChild(div);
+	        if (content.nodeName) toArray(arguments).forEach(function(e){
+	          template.content.appendChild(e);
+	        });
+	        else template.innerHTML = parseMultiline(content);
 	      }
-	      return frag;
+	      return template.content;
 	    },
 
 	    /*
@@ -4805,9 +4753,8 @@
 	    */
 	    manipulate: function(element, fn){
 	      var next = element.nextSibling,
-	        parent = element.parentNode,
-	        frag = doc.createDocumentFragment(),
-	        returned = fn.call(frag.appendChild(element), frag) || element;
+	          parent = element.parentNode,
+	          returned = fn.call(element) || element;
 	      if (next) parent.insertBefore(returned, next);
 	      else parent.appendChild(returned);
 	    },
@@ -4885,15 +4832,9 @@
 	          }, custom || {});
 	      event.attach = toArray(event.base || event.attach);
 	      event.chain = key + (event.pseudos.length ? ':' + event.pseudos : '') + (pseudos.length ? ':' + pseudos.join(':') : '');
-	      var condition = event.condition;
-	      event.condition = function(e){
-	        var t = e.touches, tt = e.targetTouches;
-	        return condition.apply(this, arguments);
-	      };
 	      var stack = xtag.applyPseudos(event.chain, fn, event._pseudos, event);
 	      event.stack = function(e){
 	        e.currentTarget = e.currentTarget || this;
-	        var t = e.touches, tt = e.targetTouches;
 	        var detail = e.detail || {};
 	        if (!detail.__stack__) return stack.apply(this, arguments);
 	        else if (detail.__stack__ == stack) {
@@ -4977,49 +4918,12 @@
 	      if (options.baseEvent) inheritEvent(event, options.baseEvent);
 
 	      element.dispatchEvent(event);
-	    },
-
-	    /*
-	      Listens for insertion or removal of nodes from a given element using
-	      Mutation Observers, or Mutation Events as a fallback
-	    */
-	    addObserver: function(element, type, fn){
-	      if (!element._records) {
-	        element._records = { inserted: [], removed: [] };
-	        if (mutation){
-	          element._observer = new mutation(function(mutations) {
-	            parseMutations(element, mutations);
-	          });
-	          element._observer.observe(element, {
-	            subtree: true,
-	            childList: true,
-	            attributes: !true,
-	            characterData: false
-	          });
-	        }
-	        else ['Inserted', 'Removed'].forEach(function(type){
-	          element.addEventListener('DOMNode' + type, function(event){
-	            event._mutation = true;
-	            element._records[type.toLowerCase()].forEach(function(fn){
-	              fn(event.target, event);
-	            });
-	          }, false);
-	        });
-	      }
-	      if (element._records[type].indexOf(fn) == -1) element._records[type].push(fn);
-	    },
-
-	    removeObserver: function(element, type, fn){
-	      var obj = element._records;
-	      if (obj && fn){
-	        obj[type].splice(obj[type].indexOf(fn), 1);
-	      }
-	      else obj[type] = [];
 	    }
 	  };
 
-	  win.xtag = xtag;
 	  if (true) !(__WEBPACK_AMD_DEFINE_FACTORY__ = (xtag), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  else if (typeof module !== 'undefined' && module.exports) module.exports = xtag;
+	  else win.xtag = xtag;
 
 	  doc.addEventListener('WebComponentsReady', function(){
 	    xtag.fireEvent(doc.body, 'DOMComponentsLoaded');
