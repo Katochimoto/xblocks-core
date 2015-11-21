@@ -22,7 +22,6 @@ clean:
 	rm -rf dist
 	rm -rf samples/dist
 	rm -rf lodash
-	rm -rf node_modules
 
 lodash: node_modules Makefile
 	$(NPM_BIN)/lodash exports=umd include=assign,merge,isPlainObject,clone,cloneDeep,uniqueId,isNative,keys modularize -o $@

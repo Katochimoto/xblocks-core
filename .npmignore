@@ -6,7 +6,6 @@
 .travis.yml
 node_modules
 bower_components
-build
 test
 coverage
 samples
@@ -18,3 +17,4 @@ karma.conf.js
 webpack.config.js
 .eslintignore
 .eslintrc
+.codeclimate.yml
