@@ -86,7 +86,7 @@
 	}());
 
 	__webpack_require__(26);
-	__webpack_require__(27);
+	context.xtag = __webpack_require__(27);
 
 
 /***/ },

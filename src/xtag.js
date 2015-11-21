@@ -40,4 +40,4 @@ require('webcomponents.js/src/MutationObserver/MutationObserver.js');
 }());
 
 require('handjs/hand.base.js');
-require('x-tag/src/core.js');
+context.xtag = require('x-tag/src/core.js');
