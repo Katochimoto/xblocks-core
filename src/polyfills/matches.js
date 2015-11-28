@@ -1,8 +1,7 @@
-'use strict';
+import context from '../context';
 
-var context = require('../context');
-var indexOf = Array.prototype.indexOf;
-var proto = context.Element.prototype;
+const indexOf = Array.prototype.indexOf;
+const proto = context.Element.prototype;
 
 proto.matches = proto.matches ||
     proto.matchesSelector ||
@@ -14,4 +13,4 @@ proto.matches = proto.matches ||
         return (indexOf.call((this.parentNode || this.ownerDocument).querySelectorAll(selector), this) !== -1);
     };
 
-module.exports = proto.matches;
+export default proto.matches;

@@ -3,7 +3,7 @@
  * @param {HTMLElement} node
  * @returns {HTMLElement}
  */
-module.exports = function (node) {
+export default function (node) {
     var element;
 
     if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
@@ -15,4 +15,4 @@ module.exports = function (node) {
     }
 
     return element || node;
-};
+}

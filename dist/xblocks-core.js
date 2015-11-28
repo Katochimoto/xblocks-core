@@ -56,13 +56,38 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = {
-	    'create': __webpack_require__(1).create,
-	    'dom': __webpack_require__(2),
-	    'event': __webpack_require__(13),
-	    'utils': __webpack_require__(70),
-	    'view': __webpack_require__(20)
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _xblocksBlock = __webpack_require__(1);
+
+	var _xblocksDom = __webpack_require__(2);
+
+	var _xblocksDom2 = _interopRequireDefault(_xblocksDom);
+
+	var _xblocksEvent = __webpack_require__(13);
+
+	var _xblocksEvent2 = _interopRequireDefault(_xblocksEvent);
+
+	var _xblocksUtils = __webpack_require__(70);
+
+	var _xblocksUtils2 = _interopRequireDefault(_xblocksUtils);
+
+	var _xblocksView = __webpack_require__(20);
+
+	var _xblocksView2 = _interopRequireDefault(_xblocksView);
+
+	exports['default'] = {
+	    create: _xblocksBlock.create,
+	    dom: _xblocksDom2['default'],
+	    event: _xblocksEvent2['default'],
+	    utils: _xblocksUtils2['default'],
+	    view: _xblocksView2['default']
 	};
+	module.exports = exports['default'];
 
 /***/ },
 /* 1 */
@@ -70,17 +95,47 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var dom = __webpack_require__(2);
-	var XBElement = __webpack_require__(11);
-	var xtag = __webpack_require__(66);
-	var lazy = __webpack_require__(52);
-	var propTypes = __webpack_require__(67);
-	var isPlainObject = __webpack_require__(36);
-	var merge = __webpack_require__(21);
-	var uniqueId = __webpack_require__(68);
-	var isArray = __webpack_require__(34);
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
 
-	var forEach = Array.prototype.forEach;
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _dom = __webpack_require__(2);
+
+	var _dom2 = _interopRequireDefault(_dom);
+
+	var _element = __webpack_require__(11);
+
+	var _element2 = _interopRequireDefault(_element);
+
+	var _xtag = __webpack_require__(66);
+
+	var _xtag2 = _interopRequireDefault(_xtag);
+
+	var _utilsLazy = __webpack_require__(52);
+
+	var _utilsLazy2 = _interopRequireDefault(_utilsLazy);
+
+	var _utilsPropTypes = __webpack_require__(67);
+
+	var _utilsPropTypes2 = _interopRequireDefault(_utilsPropTypes);
+
+	var _langIsPlainObject = __webpack_require__(36);
+
+	var _langIsPlainObject2 = _interopRequireDefault(_langIsPlainObject);
+
+	var _objectMerge = __webpack_require__(21);
+
+	var _objectMerge2 = _interopRequireDefault(_objectMerge);
+
+	var _utilityUniqueId = __webpack_require__(68);
+
+	var _utilityUniqueId2 = _interopRequireDefault(_utilityUniqueId);
+
+	var _langIsArray = __webpack_require__(34);
+
+	var _langIsArray2 = _interopRequireDefault(_langIsArray);
 
 	var blockCommon = {
 	    lifecycle: {
@@ -102,7 +157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // asynchronous read content
 	            // <xb-test><script>...</script><div>not found</div></xb-test>
 	            if (isScriptContent) {
-	                lazy(blockCreateLazy, this);
+	                (0, _utilsLazy2['default'])(blockCreateLazy, this);
 	            } else {
 	                blockCreate(this);
 	            }
@@ -132,14 +187,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    return this.xblock.getMountedContent();
 	                }
 
-	                return dom.contentNode(this).innerHTML;
+	                return _dom2['default'].contentNode(this).innerHTML;
 	            },
 
 	            set: function set(content) {
 	                if (this.mounted) {
 	                    this.xblock.setMountedContent(content);
 	                } else {
-	                    dom.contentNode(this).innerHTML = content;
+	                    _dom2['default'].contentNode(this).innerHTML = content;
 	                    this.upgrade();
 	                }
 	            }
@@ -148,16 +203,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // getting object attributes
 	        attrs: {
 	            get: function get() {
-	                return dom.attrs.toObject(this);
+	                return _dom2['default'].attrs.toObject(this);
 	            }
 	        },
 
 	        props: {
 	            get: function get() {
 	                var prop;
-	                var props = dom.attrs.toObject(this);
+	                var props = _dom2['default'].attrs.toObject(this);
 	                var xprops = this.xprops;
-	                var eprops = xtag.tags[this.xtagName].accessors;
+	                var eprops = _xtag2['default'].tags[this.xtagName].accessors;
 	                var common = blockCommon.accessors;
 
 	                for (prop in eprops) {
@@ -167,29 +222,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                }
 
-	                dom.attrs.typeConversion(props, xprops);
+	                _dom2['default'].attrs.typeConversion(props, xprops);
 	                return props;
 	            }
 	        },
 
 	        xprops: {
 	            get: function get() {
-	                return propTypes(this.xtagName);
+	                return (0, _utilsPropTypes2['default'])(this.xtagName);
 	            }
 	        },
 
-	        outerHTML: dom.outerHTML
+	        outerHTML: _dom2['default'].outerHTML
 	    },
 
 	    methods: {
 	        upgrade: function upgrade() {
-	            dom.upgradeAll(this);
+	            _dom2['default'].upgradeAll(this);
 	        },
 
 	        cloneNode: function cloneNode(deep) {
 	            // not to clone the contents
-	            var node = dom.cloneNode(this, false);
-	            dom.upgrade(node);
+	            var node = _dom2['default'].cloneNode(this, false);
+	            _dom2['default'].upgrade(node);
 
 	            node.xtmpl = this.xtmpl;
 	            node.xinserted = false;
@@ -206,6 +261,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
+	exports['default'] = {
+	    create: create
+	};
+
 	/**
 	 * Creating a new tag
 	 *
@@ -214,8 +273,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {?object|array} options settings tag creation
 	 * @returns {HTMLElement}
 	 */
-	exports.create = function (blockName, options) {
-	    options = isArray(options) ? options : [options];
+	function create(blockName, options) {
+	    options = (0, _langIsArray2['default'])(options) ? options : [options];
 	    options.unshift({});
 	    options.push(blockCommon);
 
@@ -228,7 +287,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    for (; i < l; i++) {
 	        o = options[i];
 
-	        if (isPlainObject(o)) {
+	        if ((0, _langIsPlainObject2['default'])(o)) {
 	            if (!proto && o.prototype) {
 	                proto = o.prototype;
 	            }
@@ -237,20 +296,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 
-	    options = merge.apply({}, options);
+	    options = _objectMerge2['default'].apply({}, options);
 
 	    if (proto) {
 	        options.prototype = proto;
 	    }
 
-	    return xtag.register(blockName, options);
-	};
+	    return _xtag2['default'].register(blockName, options);
+	}
 
 	function blockInit(node) {
 	    if (!node.xtagName) {
 	        node.xtagName = node.tagName.toLowerCase();
 	        node.xtmpl = {};
-	        node.xuid = uniqueId();
+	        node.xuid = (0, _utilityUniqueId2['default'])();
 	        node.xinserted = false;
 	        return true;
 	    }
@@ -260,10 +319,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function blockCreate(node) {
 	    if (node.hasChildNodes()) {
-	        forEach.call(node.querySelectorAll('script[type="text/x-template"][ref],template[ref]'), tmplCompileIterator, node);
+	        Array.prototype.forEach.call(node.querySelectorAll('script[type="text/x-template"][ref],template[ref]'), tmplCompileIterator, node);
 	    }
 
-	    node.xblock = new XBElement(node);
+	    node.xblock = new _element2['default'](node);
 	}
 
 	function blockCreateLazy(nodes) {
@@ -273,6 +332,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function tmplCompileIterator(tmplNode) {
 	    this.xtmpl[tmplNode.getAttribute('ref')] = tmplNode.innerHTML;
 	}
+	module.exports = exports['default'];
 
 /***/ },
 /* 2 */
@@ -280,14 +340,45 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = {
-	    'attrs': __webpack_require__(3),
-	    'cloneNode': __webpack_require__(5),
-	    'contentNode': __webpack_require__(7),
-	    'outerHTML': __webpack_require__(8),
-	    'upgrade': __webpack_require__(9),
-	    'upgradeAll': __webpack_require__(10)
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _domAttrs = __webpack_require__(3);
+
+	var _domAttrs2 = _interopRequireDefault(_domAttrs);
+
+	var _domCloneNode = __webpack_require__(5);
+
+	var _domCloneNode2 = _interopRequireDefault(_domCloneNode);
+
+	var _domContentNode = __webpack_require__(7);
+
+	var _domContentNode2 = _interopRequireDefault(_domContentNode);
+
+	var _domOuterHTML = __webpack_require__(8);
+
+	var _domOuterHTML2 = _interopRequireDefault(_domOuterHTML);
+
+	var _domUpgrade = __webpack_require__(9);
+
+	var _domUpgrade2 = _interopRequireDefault(_domUpgrade);
+
+	var _domUpgradeAll = __webpack_require__(10);
+
+	var _domUpgradeAll2 = _interopRequireDefault(_domUpgradeAll);
+
+	exports['default'] = {
+	    attrs: _domAttrs2['default'],
+	    cloneNode: _domCloneNode2['default'],
+	    contentNode: _domContentNode2['default'],
+	    outerHTML: _domOuterHTML2['default'],
+	    upgrade: _domUpgrade2['default'],
+	    upgradeAll: _domUpgradeAll2['default']
 	};
+	module.exports = exports['default'];
 
 /***/ },
 /* 3 */
@@ -295,14 +386,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var React = __webpack_require__(4);
-	var forEach = Array.prototype.forEach;
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	var _react = __webpack_require__(4);
 
 	/**
 	 * A set of boolean attributes
 	 * @type {string[]}
 	 */
 	var attrsBoolean = ['active', 'autofocus', 'checked', 'defer', 'disabled', 'ismap', 'multiple', 'readonly', 'required', 'selected'];
+
+	exports['default'] = {
+	    get: get,
+	    toObject: toObject,
+	    typeConversion: typeConversion,
+	    valueConversion: valueConversion
+	};
 
 	/**
 	 * To obtain the specified attributes
@@ -323,7 +424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {object} attrs the set of derived attributes (+default values)
 	 * @return {object}
 	 */
-	exports.get = function (element, attrs) {
+	function get(element, attrs) {
 	    if (element.nodeType !== 1 || !element.hasAttributes()) {
 	        return attrs;
 	    }
@@ -332,7 +433,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    for (attrName in attrs) {
 	        if (attrs.hasOwnProperty(attrName) && element.hasAttribute(attrName)) {
 	            if (typeof attrs[attrName] === 'boolean') {
-	                attrs[attrName] = valueConversion(attrName, element.getAttribute(attrName), React.PropTypes.bool);
+	                attrs[attrName] = valueConversion(attrName, element.getAttribute(attrName), _react.PropTypes.bool);
 	            } else {
 	                attrs[attrName] = element.getAttribute(attrName);
 	            }
@@ -340,7 +441,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    return attrs;
-	};
+	}
 
 	/**
 	 * Retrieve object attributes
@@ -356,34 +457,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {HTMLElement} element
 	 * @return {object}
 	 */
-	exports.toObject = function (element) {
+	function toObject(element) {
 	    var attrs = {};
 
 	    if (element.nodeType === 1 && element.hasAttributes()) {
-	        forEach.call(element.attributes, toObjectIterator, attrs);
+	        Array.prototype.forEach.call(element.attributes, toObjectIterator, attrs);
 	    }
 
 	    return attrs;
-	};
-
-	/**
-	 * Convert the attribute value to the specified type
-	 *
-	 * @example
-	 * xblocks.dom.attrs.valueConversion('attr1', 'true');
-	 * // true
-	 * xblocks.dom.attrs.valueConversion('attr1', 'true', React.PropTypes.string);
-	 * // 'true'
-	 * xblocks.dom.attrs.valueConversion('attr1', '123', React.PropTypes.number);
-	 * // 123
-	 *
-	 * @function xblocks.dom.attrs.valueConversion
-	 * @param {string} prop attribute name
-	 * @param {*} value attribute value
-	 * @param {function} [type] attribute type
-	 * @returns {*}
-	 */
-	exports.valueConversion = valueConversion;
+	}
 
 	/**
 	 * Collective conversion of attribute types
@@ -393,8 +475,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *     'attr1': '123',
 	 *     'attr2': ''
 	 * }, {
-	 *     'attr1': React.PropTypes.number,
-	 *     'attr2': React.PropTypes.bool
+	 *     'attr1': PropTypes.number,
+	 *     'attr2': PropTypes.bool
 	 * });
 	 * // { 'attr1': 123, 'attr2': true }
 	 *
@@ -403,7 +485,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {object} [propTypes] the set of attribute types
 	 * @returns {object}
 	 */
-	exports.typeConversion = function (props, propTypes) {
+	function typeConversion(props, propTypes) {
 	    propTypes = propTypes || {};
 
 	    var prop;
@@ -414,7 +496,46 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    return props;
-	};
+	}
+
+	/**
+	 * Convert the attribute value to the specified type
+	 *
+	 * @example
+	 * xblocks.dom.attrs.valueConversion('attr1', 'true');
+	 * // true
+	 * xblocks.dom.attrs.valueConversion('attr1', 'true', PropTypes.string);
+	 * // 'true'
+	 * xblocks.dom.attrs.valueConversion('attr1', '123', PropTypes.number);
+	 * // 123
+	 *
+	 * @function xblocks.dom.attrs.valueConversion
+	 * @param {string} prop attribute name
+	 * @param {*} value attribute value
+	 * @param {function} [type] attribute type
+	 * @returns {*}
+	 */
+	function valueConversion(prop, value, type) {
+	    if (!type) {
+	        if (value === 'true' || value === 'false' || attrsBoolean.indexOf(prop) !== -1) {
+	            type = _react.PropTypes.bool;
+	        }
+	    }
+
+	    switch (type) {
+	        case _react.PropTypes.bool:
+	            return Boolean(value === true || value === '' || prop === value || value === 'true');
+
+	        case _react.PropTypes.string:
+	            return String(value);
+
+	        case _react.PropTypes.number:
+	            return Number(value);
+
+	        default:
+	            return value;
+	    }
+	}
 
 	/**
 	 * @param {Attr} attr
@@ -423,28 +544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function toObjectIterator(attr) {
 	    this[attr.nodeName] = attr.value;
 	}
-
-	function valueConversion(prop, value, type) {
-	    if (!type) {
-	        if (value === 'true' || value === 'false' || attrsBoolean.indexOf(prop) !== -1) {
-	            type = React.PropTypes.bool;
-	        }
-	    }
-
-	    switch (type) {
-	        case React.PropTypes.bool:
-	            return Boolean(value === true || value === '' || prop === value || value === 'true');
-
-	        case React.PropTypes.string:
-	            return String(value);
-
-	        case React.PropTypes.number:
-	            return Number(value);
-
-	        default:
-	            return value;
-	    }
-	}
+	module.exports = exports['default'];
 
 /***/ },
 /* 4 */
@@ -458,8 +558,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var context = __webpack_require__(6);
-	var elementProto = (context.HTMLElement || context.Element).prototype;
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _context = __webpack_require__(6);
+
+	var _context2 = _interopRequireDefault(_context);
+
+	var elementProto = (_context2['default'].HTMLElement || _context2['default'].Element).prototype;
 
 	/**
 	 * Cloning node
@@ -470,7 +579,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * or false to clone only the specified node.
 	 * @returns {HTMLElement} The new node that will be a clone of node
 	 */
-	module.exports = function (node, deep) {
+
+	exports['default'] = function (node, deep) {
 	    // FireFox19 cannot use native cloneNode the Node object
 	    return elementProto.cloneNode.call(node, deep);
 
@@ -487,15 +597,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    */
 	};
 
+	module.exports = exports['default'];
+
 /***/ },
 /* 6 */
 /***/ function(module, exports) {
 
 	'use strict';
 
-	module.exports = (function () {
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	var context = (function () {
 	    return this || (1, eval)('this');
 	})();
+
+	exports['default'] = context;
+	module.exports = exports['default'];
 
 /***/ },
 /* 7 */
@@ -508,7 +626,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	'use strict';
 
-	module.exports = function (node) {
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	exports['default'] = function (node) {
 	    var element;
 
 	    if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
@@ -522,13 +644,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return element || node;
 	};
 
+	module.exports = exports['default'];
+
 /***/ },
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(6);
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _context = __webpack_require__(6);
+
+	var _context2 = _interopRequireDefault(_context);
 
 	/**
 	 * @function xblocks.dom.outerHTML
@@ -536,9 +668,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @prop {function} xblocks.dom.outerHTML.get
 	 * @prop {function} xblocks.dom.outerHTML.set
 	 */
-	module.exports = (function () {
 
-	    var container = context.document.createElementNS('http://www.w3.org/1999/xhtml', '_');
+	exports['default'] = (function () {
+
+	    var container = _context2['default'].document.createElementNS('http://www.w3.org/1999/xhtml', '_');
 	    var getter;
 	    var setter;
 
@@ -551,7 +684,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.outerHTML = html;
 	        };
 	    } else {
-	        var serializer = context.XMLSerializer && new context.XMLSerializer();
+	        var serializer = _context2['default'].XMLSerializer && new _context2['default'].XMLSerializer();
 	        var xmlns = /\sxmlns=\"[^\"]+\"/;
 
 	        if (serializer) {
@@ -573,8 +706,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var child;
 
 	            if (!parent) {
-	                context.DOMException.code = context.DOMException.NOT_FOUND_ERR;
-	                throw context.DOMException;
+	                _context2['default'].DOMException.code = _context2['default'].DOMException.NOT_FOUND_ERR;
+	                throw _context2['default'].DOMException;
 	            }
 
 	            container.innerHTML = html;
@@ -593,24 +726,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	})();
 
+	module.exports = exports['default'];
+
 /***/ },
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(6);
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _context = __webpack_require__(6);
+
+	var _context2 = _interopRequireDefault(_context);
 
 	/**
 	 * @function xblocks.dom.upgrade
 	 */
-	module.exports = (function () {
-	    if (context.CustomElements && typeof context.CustomElements.upgrade === 'function') {
-	        return context.CustomElements.upgrade;
+
+	exports['default'] = (function () {
+	    if (_context2['default'].CustomElements && typeof _context2['default'].CustomElements.upgrade === 'function') {
+	        return _context2['default'].CustomElements.upgrade;
 	    } else {
 	        return function () {};
 	    }
 	})();
+
+	module.exports = exports['default'];
 
 /***/ },
 /* 10 */
@@ -618,18 +764,29 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var context = __webpack_require__(6);
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _context = __webpack_require__(6);
+
+	var _context2 = _interopRequireDefault(_context);
 
 	/**
 	 * @function xblocks.dom.upgradeAll
 	 */
-	module.exports = (function () {
-	    if (context.CustomElements && typeof context.CustomElements.upgradeAll === 'function') {
-	        return context.CustomElements.upgradeAll;
+
+	exports['default'] = (function () {
+	    if (_context2['default'].CustomElements && typeof _context2['default'].CustomElements.upgradeAll === 'function') {
+	        return _context2['default'].CustomElements.upgradeAll;
 	    } else {
 	        return function () {};
 	    }
 	})();
+
+	module.exports = exports['default'];
 
 /***/ },
 /* 11 */
@@ -637,31 +794,66 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var ReactDOM = __webpack_require__(12);
-	var context = __webpack_require__(6);
-	var dom = __webpack_require__(2);
-	var XBEvent = __webpack_require__(13);
-	var view = __webpack_require__(20);
-	var lazy = __webpack_require__(52);
-	var assign = __webpack_require__(63);
-	var merge = __webpack_require__(21);
-	var keys = __webpack_require__(45);
-	var isArray = __webpack_require__(34);
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	exports['default'] = XBElement;
 
-	module.exports = XBElement;
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _reactDom = __webpack_require__(12);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _context = __webpack_require__(6);
+
+	var _context2 = _interopRequireDefault(_context);
+
+	var _dom = __webpack_require__(2);
+
+	var _dom2 = _interopRequireDefault(_dom);
+
+	var _event = __webpack_require__(13);
+
+	var _event2 = _interopRequireDefault(_event);
+
+	var _view = __webpack_require__(20);
+
+	var _view2 = _interopRequireDefault(_view);
+
+	var _utilsLazy = __webpack_require__(52);
+
+	var _utilsLazy2 = _interopRequireDefault(_utilsLazy);
+
+	var _objectAssign = __webpack_require__(63);
+
+	var _objectAssign2 = _interopRequireDefault(_objectAssign);
+
+	var _objectMerge = __webpack_require__(21);
+
+	var _objectMerge2 = _interopRequireDefault(_objectMerge);
+
+	var _objectKeys = __webpack_require__(45);
+
+	var _objectKeys2 = _interopRequireDefault(_objectKeys);
+
+	var _langIsArray = __webpack_require__(34);
+
+	var _langIsArray2 = _interopRequireDefault(_langIsArray);
 
 	/**
 	 * Xblock element constructor
 	 * @param {HTMLElement} node the node of a custom element
 	 * @constructor
 	 */
+
 	function XBElement(node) {
 	    node.xblock = this;
 
 	    this._callbackMutation = this._callbackMutation.bind(this);
 
 	    this._observerOptions = {
-	        'attributeFilter': keys(node.xprops),
+	        'attributeFilter': (0, _objectKeys2['default'])(node.xprops),
 	        'attributeOldValue': false,
 	        'attributes': true,
 	        'characterData': true,
@@ -708,7 +900,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._component = null;
 	    this._node = null;
 
-	    ReactDOM.unmountComponentAtNode(node);
+	    _reactDom2['default'].unmountComponentAtNode(node);
 
 	    // replace initial content after destroy react component
 	    // fix:
@@ -717,7 +909,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    node.content = content;
 	    node.xblock = undefined;
 
-	    XBEvent.dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
+	    _event2['default'].dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
 	};
 
 	/**
@@ -727,11 +919,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {function} [callback] the callback function
 	 */
 	XBElement.prototype.update = function (props, removeProps, callback) {
-	    var nextProps = merge({}, this.getMountedProps(), this._node.props, props);
+	    var nextProps = (0, _objectMerge2['default'])({}, this.getMountedProps(), this._node.props, props);
 
 	    // merge of new and current properties
 	    // and the exclusion of remote properties
-	    if (isArray(removeProps) && removeProps.length) {
+	    if ((0, _langIsArray2['default'])(removeProps) && removeProps.length) {
 	        var l = removeProps.length;
 	        while (l--) {
 	            if (nextProps.hasOwnProperty(removeProps[l])) {
@@ -740,9 +932,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }
 
-	    dom.attrs.typeConversion(nextProps, this._node.xprops);
+	    _dom2['default'].attrs.typeConversion(nextProps, this._node.xprops);
 
-	    var proxyConstructor = view.getFactory(this._node.xtagName)(nextProps);
+	    var proxyConstructor = _view2['default'].getFactory(this._node.xtagName)(nextProps);
 	    var that = this;
 	    var renderCallback = function renderCallback() {
 	        that._component = this;
@@ -750,7 +942,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    this._observer.disconnect();
-	    this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
+	    this._component = _reactDom2['default'].render(proxyConstructor, this._node, renderCallback);
 	};
 
 	/**
@@ -805,21 +997,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	XBElement.prototype._init = function () {
 	    var children = this._node.content;
-	    var props = assign({}, this._node.props, {
+	    var props = (0, _objectAssign2['default'])({}, this._node.props, {
 	        '_uid': this._node.xuid,
 	        '_container': this._node
 	    });
 
-	    dom.attrs.typeConversion(props, this._node.xprops);
+	    _dom2['default'].attrs.typeConversion(props, this._node.xprops);
 
-	    var proxyConstructor = view.getFactory(this._node.xtagName)(props, children);
+	    var proxyConstructor = _view2['default'].getFactory(this._node.xtagName)(props, children);
 	    var that = this;
 	    var renderCallback = function renderCallback() {
 	        that._component = this;
 	        that._callbackInit();
 	    };
 
-	    this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
+	    this._component = _reactDom2['default'].render(proxyConstructor, this._node, renderCallback);
 	};
 
 	/**
@@ -828,11 +1020,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	XBElement.prototype._callbackInit = function () {
 	    this._node.upgrade();
-	    this._observer = new context.MutationObserver(this._callbackMutation);
+	    this._observer = new _context2['default'].MutationObserver(this._callbackMutation);
 	    this._observer.observe(this._node, this._observerOptions);
 
-	    XBEvent.dispatch(this._node, 'xb-created');
-	    lazy(globalInitEvent, this._node);
+	    _event2['default'].dispatch(this._node, 'xb-created');
+	    (0, _utilsLazy2['default'])(globalInitEvent, this._node);
 	};
 
 	/**
@@ -844,8 +1036,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._node.upgrade();
 	    this._observer.observe(this._node, this._observerOptions);
 
-	    XBEvent.dispatch(this._node, 'xb-update');
-	    lazy(globalUpdateEvent, this._node);
+	    _event2['default'].dispatch(this._node, 'xb-update');
+	    (0, _utilsLazy2['default'])(globalUpdateEvent, this._node);
 
 	    if (callback) {
 	        callback.call(this);
@@ -885,7 +1077,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	function globalInitEvent(records) {
-	    XBEvent.dispatch(context, 'xb-created', { 'detail': { 'records': records } });
+	    _event2['default'].dispatch(_context2['default'], 'xb-created', { 'detail': { 'records': records } });
 	}
 
 	/**
@@ -893,7 +1085,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	function globalUpdateEvent(records) {
-	    XBEvent.dispatch(context, 'xb-update', { 'detail': { 'records': records } });
+	    _event2['default'].dispatch(_context2['default'], 'xb-update', { 'detail': { 'records': records } });
 	}
 
 	/**
@@ -913,6 +1105,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @event xblocks.Element~event:xb-update
 	 * @type {xblocks.event.Custom}
 	 */
+	module.exports = exports['default'];
 
 /***/ },
 /* 12 */
@@ -926,16 +1119,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var context = __webpack_require__(6);
-	var isNative = __webpack_require__(14);
-	var CustomEventCommon = __webpack_require__(19);
-	var Custom = (function () {
-	    if (isNative('CustomEvent')) {
-	        return context.CustomEvent;
-	    }
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
 
-	    return CustomEventCommon;
-	})();
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _context = __webpack_require__(6);
+
+	var _context2 = _interopRequireDefault(_context);
+
+	var _langIsNative = __webpack_require__(14);
+
+	var _langIsNative2 = _interopRequireDefault(_langIsNative);
+
+	var _polyfillsCustomEventCommon = __webpack_require__(19);
+
+	var _polyfillsCustomEventCommon2 = _interopRequireDefault(_polyfillsCustomEventCommon);
 
 	/**
 	 * Designer events
@@ -950,7 +1150,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @constructor
 	 * @memberOf xblocks.event
 	 */
-	exports.Custom = Custom;
+	var Custom = (function () {
+	    if ((0, _langIsNative2['default'])('CustomEvent')) {
+	        return _context2['default'].CustomEvent;
+	    }
+
+	    return _polyfillsCustomEventCommon2['default'];
+	})();
+
+	exports['default'] = {
+	    Custom: Custom,
+	    dispatch: dispatch
+	};
 
 	/**
 	 * Dispatch event
@@ -966,9 +1177,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {string} name event name
 	 * @param {object} params the event parameters
 	 */
-	exports.dispatch = function (element, name, params) {
+	function dispatch(element, name, params) {
 	    element.dispatchEvent(new Custom(name, params || {}));
-	};
+	}
+	module.exports = exports['default'];
 
 /***/ },
 /* 14 */
@@ -1162,12 +1374,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var context = __webpack_require__(6);
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _context = __webpack_require__(6);
+
+	var _context2 = _interopRequireDefault(_context);
+
 	var CustomEventCommon;
 	var issetCustomEvent = false;
 
 	try {
-	    issetCustomEvent = Boolean(context.document.createEvent('CustomEvent'));
+	    issetCustomEvent = Boolean(_context2['default'].document.createEvent('CustomEvent'));
 	} catch (e) {
 	    // do nothing
 	}
@@ -1178,7 +1399,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var bubbles = Boolean(params.bubbles);
 	        var cancelable = Boolean(params.cancelable);
-	        var evt = context.document.createEvent('CustomEvent');
+	        var evt = _context2['default'].document.createEvent('CustomEvent');
 
 	        evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
@@ -1190,7 +1411,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var bubbles = Boolean(params.bubbles);
 	        var cancelable = Boolean(params.cancelable);
-	        var evt = context.document.createEvent('Event');
+	        var evt = _context2['default'].document.createEvent('Event');
 
 	        evt.initEvent(eventName, bubbles, cancelable);
 	        evt.detail = params.detail;
@@ -1199,9 +1420,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	}
 
-	CustomEventCommon.prototype = context.Event.prototype;
+	CustomEventCommon.prototype = _context2['default'].Event.prototype;
 
-	module.exports = CustomEventCommon;
+	exports['default'] = CustomEventCommon;
+	module.exports = exports['default'];
 
 /***/ },
 /* 20 */
@@ -1209,11 +1431,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var React = __webpack_require__(4);
-	var merge = __webpack_require__(21);
-	var isArray = __webpack_require__(34);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _react = __webpack_require__(4);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _objectMerge = __webpack_require__(21);
+
+	var _objectMerge2 = _interopRequireDefault(_objectMerge);
+
+	var _langIsArray = __webpack_require__(34);
+
+	var _langIsArray2 = _interopRequireDefault(_langIsArray);
+
 	var viewComponentsClass = {};
 	var viewCommon = {
 
@@ -1223,9 +1460,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @type {object}
 	     */
 	    propTypes: {
-	        '_uid': React.PropTypes.node,
-	        '_container': React.PropTypes.any, // Bad way ;(
-	        'children': React.PropTypes.node
+	        '_uid': _react2['default'].PropTypes.node,
+	        '_container': _react2['default'].PropTypes.any, // Bad way ;(
+	        'children': _react2['default'].PropTypes.node
 	    },
 
 	    /**
@@ -1239,7 +1476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var xtmpl = this.props._container && this.props._container.xtmpl;
 
 	        if (typeof xtmpl === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
-	            return React.createElement('div', _extends({}, props, { dangerouslySetInnerHTML: { '__html': this.templatePrepare(xtmpl[ref]) } }));
+	            return _react2['default'].createElement('div', _extends({}, props, { dangerouslySetInnerHTML: { '__html': this.templatePrepare(xtmpl[ref]) } }));
 	        }
 
 	        return null;
@@ -1258,6 +1495,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    templatePrepare: function templatePrepare(tmplString) {
 	        return tmplString;
 	    }
+	};
+
+	exports['default'] = {
+	    create: create,
+	    register: register,
+	    getClass: getClass,
+	    getFactory: getFactory
 	};
 
 	/**
@@ -1290,7 +1534,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {object|array} component settings view creation
 	 * @returns {function}
 	 */
-	exports.create = createClass;
+	function create(component) {
+	    component = (0, _langIsArray2['default'])(component) ? component : [component];
+	    component.unshift({}, viewCommonUser);
+	    component.push(viewCommon);
+
+	    return _react2['default'].createClass(_objectMerge2['default'].apply({}, component));
+	}
 
 	/**
 	 * Registration of a new node
@@ -1311,45 +1561,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {object|array} component settings view creation
 	 * @returns {function}
 	 */
-	exports.register = function (blockName, component) {
-	    if (React.DOM.hasOwnProperty(blockName)) {
+	function register(blockName, component) {
+	    if (_react2['default'].DOM.hasOwnProperty(blockName)) {
 	        /* eslint no-throw-literal:0 */
 	        throw 'Specified item "' + blockName + '" is already defined';
 	    }
 
-	    var componentClass = createClass(component);
+	    var componentClass = create(component);
 	    viewComponentsClass[blockName] = componentClass;
 
-	    React.DOM[blockName] = React.createFactory(componentClass);
+	    _react2['default'].DOM[blockName] = _react2['default'].createFactory(componentClass);
 
 	    return componentClass;
-	};
+	}
 
 	/**
 	 * Get factory view node
 	 * @param {string} blockName the name of the new node
 	 * @returns {function}
 	 */
-	exports.getFactory = function (blockName) {
-	    return React.DOM[blockName];
-	};
+	function getFactory(blockName) {
+	    return _react2['default'].DOM[blockName];
+	}
 
 	/**
 	 * Get class view node
 	 * @param {string} blockName the name of the new node
 	 * @returns {function}
 	 */
-	exports.getClass = function (blockName) {
+	function getClass(blockName) {
 	    return viewComponentsClass[blockName];
-	};
-
-	function createClass(component) {
-	    component = isArray(component) ? component : [component];
-	    component.unshift({}, viewCommonUser);
-	    component.push(viewCommon);
-
-	    return React.createClass(merge.apply({}, component));
 	}
+	module.exports = exports['default'];
 
 /***/ },
 /* 21 */
@@ -2802,7 +3045,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var immediate = __webpack_require__(53);
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _setimmediate2Src = __webpack_require__(53);
+
+	var _setimmediate2Src2 = _interopRequireDefault(_setimmediate2Src);
 
 	/**
 	 * Deferred execution
@@ -2822,7 +3073,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {*} args
 	 * @returns {function}
 	 */
-	module.exports = function (callback, args) {
+
+	exports['default'] = function (callback, args) {
 	    if (!callback._args) {
 	        callback._args = [];
 	    }
@@ -2830,7 +3082,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    callback._args.push(args);
 
 	    if (!callback._timer) {
-	        callback._timer = immediate.setImmediate(function () {
+	        callback._timer = _setimmediate2Src2['default'].setImmediate(function () {
 	            callback._timer = 0;
 
 	            var saveArgs = callback._args;
@@ -2842,6 +3094,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return callback;
 	};
+
+	module.exports = exports['default'];
 
 /***/ },
 /* 53 */
@@ -3306,10 +3560,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var view = __webpack_require__(20);
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
 
-	module.exports = function (tagName) {
-	    var viewClass = tagName && view.getClass(tagName);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _view = __webpack_require__(20);
+
+	var _view2 = _interopRequireDefault(_view);
+
+	exports['default'] = function (tagName) {
+	    var viewClass = tagName && _view2['default'].getClass(tagName);
 
 	    if (!viewClass) {
 	        return {};
@@ -3325,6 +3587,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    return {};
 	};
+
+	module.exports = exports['default'];
 
 /***/ },
 /* 68 */
@@ -3392,11 +3656,30 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = {
-	    lazy: __webpack_require__(52),
-	    log: __webpack_require__(71),
-	    propTypes: __webpack_require__(67)
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _utilsLazy = __webpack_require__(52);
+
+	var _utilsLazy2 = _interopRequireDefault(_utilsLazy);
+
+	var _utilsLog = __webpack_require__(71);
+
+	var _utilsLog2 = _interopRequireDefault(_utilsLog);
+
+	var _utilsPropTypes = __webpack_require__(67);
+
+	var _utilsPropTypes2 = _interopRequireDefault(_utilsPropTypes);
+
+	exports['default'] = {
+	    lazy: _utilsLazy2['default'],
+	    log: _utilsLog2['default'],
+	    propTypes: _utilsPropTypes2['default']
 	};
+	module.exports = exports['default'];
 
 /***/ },
 /* 71 */
@@ -3404,9 +3687,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var context = __webpack_require__(6);
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
 
-	exports.time = function (element, name) {
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _context = __webpack_require__(6);
+
+	var _context2 = _interopRequireDefault(_context);
+
+	exports['default'] = {
+	    time: time,
+	    info: info
+	};
+
+	function time(element, name) {
 	    if (!element._xtimers) {
 	        element._xtimers = {};
 	    }
@@ -3415,12 +3711,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        element._xtimers[name] = [];
 	    }
 
-	    element._xtimers[name].push(context.performance.now());
-	};
+	    element._xtimers[name].push(_context2['default'].performance.now());
+	}
 
-	exports.info = function () {
-	    context.console.info.apply(context.console, arguments);
-	};
+	function info() {
+	    _context2['default'].console.info.apply(_context2['default'].console, arguments);
+	}
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ])

@@ -1,6 +1,5 @@
-'use strict';
+import context from '../context';
 
-var context = require('../context');
 var CustomEventCommon;
 var issetCustomEvent = false;
 
@@ -40,4 +39,4 @@ if (issetCustomEvent) {
 
 CustomEventCommon.prototype = context.Event.prototype;
 
-module.exports = CustomEventCommon;
+export default CustomEventCommon;

@@ -1,13 +1,6 @@
-var context = require('../context');
-var isNative = require('_/lang/isNative');
-var CustomEventCommon = require('../polyfills/CustomEventCommon');
-var Custom = (function () {
-    if (isNative('CustomEvent')) {
-        return context.CustomEvent;
-    }
-
-    return CustomEventCommon;
-}());
+import context from '../context';
+import isNative from '_/lang/isNative';
+import CustomEventCommon from '../polyfills/CustomEventCommon';
 
 /**
  * Designer events
@@ -22,7 +15,18 @@ var Custom = (function () {
  * @constructor
  * @memberOf xblocks.event
  */
-exports.Custom = Custom;
+let Custom = (function () {
+    if (isNative('CustomEvent')) {
+        return context.CustomEvent;
+    }
+
+    return CustomEventCommon;
+}());
+
+export default {
+    Custom,
+    dispatch
+};
 
 /**
  * Dispatch event
@@ -38,6 +42,6 @@ exports.Custom = Custom;
  * @param {string} name event name
  * @param {object} params the event parameters
  */
-exports.dispatch = function (element, name, params) {
+function dispatch(element, name, params) {
     element.dispatchEvent(new Custom(name, params || {}));
-};
+}

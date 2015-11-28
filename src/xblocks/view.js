@@ -1,6 +1,7 @@
-var React = require('react');
-var merge = require('_/object/merge');
-var isArray = require('_/lang/isArray');
+import React from 'react';
+import merge from '_/object/merge';
+import isArray from '_/lang/isArray';
+
 var viewComponentsClass = {};
 var viewCommon = {
 
@@ -49,6 +50,13 @@ var viewCommonUser = {
     }
 };
 
+export default {
+    create,
+    register,
+    getClass,
+    getFactory
+};
+
 /**
  * Create class view node
  *
@@ -79,7 +87,13 @@ var viewCommonUser = {
  * @param {object|array} component settings view creation
  * @returns {function}
  */
-exports.create = createClass;
+function create(component) {
+    component = isArray(component) ? component : [ component ];
+    component.unshift({}, viewCommonUser);
+    component.push(viewCommon);
+
+    return React.createClass(merge.apply({}, component));
+}
 
 /**
  * Registration of a new node
@@ -100,42 +114,34 @@ exports.create = createClass;
  * @param {object|array} component settings view creation
  * @returns {function}
  */
-exports.register = function (blockName, component) {
+function register(blockName, component) {
     if (React.DOM.hasOwnProperty(blockName)) {
         /* eslint no-throw-literal:0 */
         throw 'Specified item "' + blockName + '" is already defined';
     }
 
-    var componentClass = createClass(component);
+    var componentClass = create(component);
     viewComponentsClass[ blockName ] = componentClass;
 
     React.DOM[ blockName ] = React.createFactory(componentClass);
 
     return componentClass;
-};
+}
 
 /**
  * Get factory view node
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
-exports.getFactory = function (blockName) {
+function getFactory(blockName) {
     return React.DOM[ blockName ];
-};
+}
 
 /**
  * Get class view node
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
-exports.getClass = function (blockName) {
+function getClass(blockName) {
     return viewComponentsClass[ blockName ];
-};
-
-function createClass(component) {
-    component = isArray(component) ? component : [ component ];
-    component.unshift({}, viewCommonUser);
-    component.push(viewCommon);
-
-    return React.createClass(merge.apply({}, component));
 }

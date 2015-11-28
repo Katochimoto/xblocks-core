@@ -1,9 +1,9 @@
-var context = require('../../context');
+import context from '../../context';
 
 /**
  * @function xblocks.dom.upgrade
  */
-module.exports = (function () {
+export default (function () {
     if (context.CustomElements && typeof context.CustomElements.upgrade === 'function') {
         return context.CustomElements.upgrade;
 

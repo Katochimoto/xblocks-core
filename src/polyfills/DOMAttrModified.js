@@ -2,9 +2,8 @@
  * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
  */
 
-'use strict';
+import context from '../context';
 
-var context = require('../context');
 var attrModifiedWorks = false;
 var listener = function () {
     attrModifiedWorks = true;

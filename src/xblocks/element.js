@@ -1,22 +1,20 @@
-var ReactDOM = require('react-dom');
-var context = require('../context');
-var dom = require('./dom');
-var XBEvent = require('./event');
-var view = require('./view');
-var lazy = require('./utils/lazy');
-var assign = require('_/object/assign');
-var merge = require('_/object/merge');
-var keys = require('_/object/keys');
-var isArray = require('_/lang/isArray');
-
-module.exports = XBElement;
+import ReactDOM from 'react-dom';
+import context from '../context';
+import dom from './dom';
+import XBEvent from './event';
+import view from './view';
+import lazy from './utils/lazy';
+import assign from '_/object/assign';
+import merge from '_/object/merge';
+import keys from '_/object/keys';
+import isArray from '_/lang/isArray';
 
 /**
  * Xblock element constructor
  * @param {HTMLElement} node the node of a custom element
  * @constructor
  */
-function XBElement(node) {
+export default function XBElement(node) {
     node.xblock = this;
 
     this._callbackMutation = this._callbackMutation.bind(this);

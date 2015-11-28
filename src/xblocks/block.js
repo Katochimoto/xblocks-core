@@ -1,14 +1,12 @@
-var dom = require('./dom');
-var XBElement = require('./element');
-var xtag = require('xtag');
-var lazy = require('./utils/lazy');
-var propTypes = require('./utils/propTypes');
-var isPlainObject = require('_/lang/isPlainObject');
-var merge = require('_/object/merge');
-var uniqueId = require('_/utility/uniqueId');
-var isArray = require('_/lang/isArray');
-
-var forEach = Array.prototype.forEach;
+import dom from './dom';
+import XBElement from './element';
+import xtag from 'xtag';
+import lazy from './utils/lazy';
+import propTypes from './utils/propTypes';
+import isPlainObject from '_/lang/isPlainObject';
+import merge from '_/object/merge';
+import uniqueId from '_/utility/uniqueId';
+import isArray from '_/lang/isArray';
 
 var blockCommon = {
     lifecycle: {
@@ -138,6 +136,10 @@ var blockCommon = {
     }
 };
 
+export default {
+    create
+};
+
 /**
  * Creating a new tag
  *
@@ -146,7 +148,7 @@ var blockCommon = {
  * @param {?object|array} options settings tag creation
  * @returns {HTMLElement}
  */
-exports.create = function (blockName, options) {
+function create(blockName, options) {
     options = isArray(options) ? options : [ options ];
     options.unshift({});
     options.push(blockCommon);
@@ -176,7 +178,7 @@ exports.create = function (blockName, options) {
     }
 
     return xtag.register(blockName, options);
-};
+}
 
 function blockInit(node) {
     if (!node.xtagName) {
@@ -192,7 +194,7 @@ function blockInit(node) {
 
 function blockCreate(node) {
     if (node.hasChildNodes()) {
-        forEach.call(
+        Array.prototype.forEach.call(
             node.querySelectorAll('script[type="text/x-template"][ref],template[ref]'),
             tmplCompileIterator,
             node

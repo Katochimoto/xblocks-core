@@ -1,4 +1,4 @@
-var immediate = require('setimmediate2/src');
+import immediate from 'setimmediate2/src';
 
 /**
  * Deferred execution
@@ -18,7 +18,7 @@ var immediate = require('setimmediate2/src');
  * @param {*} args
  * @returns {function}
  */
-module.exports = function (callback, args) {
+export default function (callback, args) {
     if (!callback._args) {
         callback._args = [];
     }
@@ -37,4 +37,4 @@ module.exports = function (callback, args) {
     }
 
     return callback;
-};
+}

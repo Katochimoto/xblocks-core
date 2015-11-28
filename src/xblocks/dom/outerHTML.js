@@ -1,4 +1,4 @@
-var context = require('../../context');
+import context from '../../context';
 
 /**
  * @function xblocks.dom.outerHTML
@@ -6,7 +6,7 @@ var context = require('../../context');
  * @prop {function} xblocks.dom.outerHTML.get
  * @prop {function} xblocks.dom.outerHTML.set
  */
-module.exports = (function () {
+export default (function () {
 
     var container = context.document.createElementNS('http://www.w3.org/1999/xhtml', '_');
     var getter;

@@ -76,6 +76,15 @@ var paramsXtag = {
     'output': {
         'filename': 'x-tag-core.js',
         'path': distPath
+    },
+    'module': {
+        'loaders': [
+            {
+                'test': /\.jsx?$/,
+                'loader': 'babel!preprocess' + preprocessParams,
+                'include': [ srcPath ]
+            }
+        ]
     }
 };
 

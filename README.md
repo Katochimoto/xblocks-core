@@ -19,6 +19,9 @@
 
 ##Example
 ```js
+var xblocks = require('xblocks');
+var classnames = require('classnames');
+
 // define jsx view
 xblocks.view.register('xb-ico', {
     displayName: 'xb-ico',
@@ -55,7 +58,7 @@ xblocks.view.register('xb-ico', {
             classes['_size-' + this.props.size] = true;
         }
 
-        classes = React.addons.classSet(classes);
+        classes = classnames(classes);
 
         return (
             <span className={classes}

@@ -1,5 +1,6 @@
-var context = require('../../context');
-var elementProto = (context.HTMLElement || context.Element).prototype;
+import context from '../../context';
+
+const elementProto = (context.HTMLElement || context.Element).prototype;
 
 /**
  * Cloning node
@@ -10,7 +11,7 @@ var elementProto = (context.HTMLElement || context.Element).prototype;
  * or false to clone only the specified node.
  * @returns {HTMLElement} The new node that will be a clone of node
  */
-module.exports = function (node, deep) {
+export default function (node, deep) {
     // FireFox19 cannot use native cloneNode the Node object
     return elementProto.cloneNode.call(node, deep);
 
@@ -25,4 +26,4 @@ module.exports = function (node, deep) {
         return node.ownerDocument.importNode(node, deep);
     }
     */
-};
+}

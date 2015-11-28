@@ -44,59 +44,91 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var context = __webpack_require__(1);
+	'use strict';
 
-	context.Platform = {};
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	/* eslint no-unused-vars:0 */
-	var logFlags = {
-	    // dom: true
-	    // data: true
-	};
+	var _context = __webpack_require__(1);
+
+	var _context2 = _interopRequireDefault(_context);
+
+	// dom: true
+	// data: true
 
 	__webpack_require__(2);
+
 	__webpack_require__(3);
+
 	__webpack_require__(4);
+
 	__webpack_require__(6);
 
 	__webpack_require__(7);
+
 	__webpack_require__(8);
+
 	__webpack_require__(9);
 
-	(function () {
-	    __webpack_require__(10);
-	    __webpack_require__(11);
-	    __webpack_require__(12);
-	    __webpack_require__(13);
-	    __webpack_require__(14);
-	    __webpack_require__(15);
-	}());
+	__webpack_require__(10);
 
-	(function () {
-	    __webpack_require__(16);
-	    __webpack_require__(17);
-	    __webpack_require__(18);
-	    __webpack_require__(19);
-	    __webpack_require__(20);
-	    __webpack_require__(21);
-	    __webpack_require__(22);
-	    __webpack_require__(23);
-	    __webpack_require__(24);
-	    __webpack_require__(25);
-	}());
+	__webpack_require__(11);
+
+	__webpack_require__(12);
+
+	__webpack_require__(13);
+
+	__webpack_require__(14);
+
+	__webpack_require__(15);
+
+	__webpack_require__(16);
+
+	__webpack_require__(17);
+
+	__webpack_require__(18);
+
+	__webpack_require__(19);
+
+	__webpack_require__(20);
+
+	__webpack_require__(21);
+
+	__webpack_require__(22);
+
+	__webpack_require__(23);
+
+	__webpack_require__(24);
+
+	__webpack_require__(25);
 
 	__webpack_require__(26);
-	context.xtag = __webpack_require__(27);
 
+	var _xTagSrcCoreJs = __webpack_require__(27);
+
+	var _xTagSrcCoreJs2 = _interopRequireDefault(_xTagSrcCoreJs);
+
+	_context2['default'].Platform = {};
+
+	/* eslint no-unused-vars:0 */
+	var logFlags = {};
+
+	_context2['default'].xtag = _xTagSrcCoreJs2['default'];
 
 /***/ },
 /* 1 */
 /***/ function(module, exports) {
 
-	module.exports = (function () {
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	var context = (function () {
 	    return this || (1, eval)('this');
 	})();
 
+	exports['default'] = context;
+	module.exports = exports['default'];
 
 /***/ },
 /* 2 */
@@ -104,27 +136,29 @@
 
 	'use strict';
 
-	var context = __webpack_require__(1);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	if (typeof context.performance === 'undefined') {
-	    context.performance = {};
+	var _context = __webpack_require__(1);
+
+	var _context2 = _interopRequireDefault(_context);
+
+	if (typeof _context2['default'].performance === 'undefined') {
+	    _context2['default'].performance = {};
 	}
 
-	if (!context.performance.now) {
+	if (!_context2['default'].performance.now) {
 	    var nowOffset;
 
-	    if (context.performance.timing && context.performance.timing.navigationStart) {
-	        nowOffset = context.performance.timing.navigationStar;
-
+	    if (_context2['default'].performance.timing && _context2['default'].performance.timing.navigationStart) {
+	        nowOffset = _context2['default'].performance.timing.navigationStar;
 	    } else {
 	        nowOffset = Date.now();
 	    }
 
-	    context.performance.now = function () {
-	        return (Date.now() - nowOffset);
+	    _context2['default'].performance.now = function () {
+	        return Date.now() - nowOffset;
 	    };
 	}
-
 
 /***/ },
 /* 3 */
@@ -132,22 +166,25 @@
 
 	'use strict';
 
-	var context = __webpack_require__(1);
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _context = __webpack_require__(1);
+
+	var _context2 = _interopRequireDefault(_context);
+
 	var indexOf = Array.prototype.indexOf;
-	var proto = context.Element.prototype;
+	var proto = _context2['default'].Element.prototype;
 
-	proto.matches = proto.matches ||
-	    proto.matchesSelector ||
-	    proto.webkitMatchesSelector ||
-	    proto.mozMatchesSelector ||
-	    proto.msMatchesSelector ||
-	    proto.oMatchesSelector ||
-	    function (selector) {
-	        return (indexOf.call((this.parentNode || this.ownerDocument).querySelectorAll(selector), this) !== -1);
-	    };
+	proto.matches = proto.matches || proto.matchesSelector || proto.webkitMatchesSelector || proto.mozMatchesSelector || proto.msMatchesSelector || proto.oMatchesSelector || function (selector) {
+	    return indexOf.call((this.parentNode || this.ownerDocument).querySelectorAll(selector), this) !== -1;
+	};
 
-	module.exports = proto.matches;
-
+	exports['default'] = proto.matches;
+	module.exports = exports['default'];
 
 /***/ },
 /* 4 */
@@ -160,12 +197,15 @@
 
 	'use strict';
 
-	var context = __webpack_require__(1);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	if (typeof context.CustomEvent !== 'function') {
-	    context.CustomEvent = __webpack_require__(5);
+	var _context = __webpack_require__(1);
+
+	var _context2 = _interopRequireDefault(_context);
+
+	if (typeof _context2['default'].CustomEvent !== 'function') {
+	  _context2['default'].CustomEvent = __webpack_require__(5);
 	}
-
 
 /***/ },
 /* 5 */
@@ -173,12 +213,21 @@
 
 	'use strict';
 
-	var context = __webpack_require__(1);
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _context = __webpack_require__(1);
+
+	var _context2 = _interopRequireDefault(_context);
+
 	var CustomEventCommon;
 	var issetCustomEvent = false;
 
 	try {
-	    issetCustomEvent = Boolean(context.document.createEvent('CustomEvent'));
+	    issetCustomEvent = Boolean(_context2['default'].document.createEvent('CustomEvent'));
 	} catch (e) {
 	    // do nothing
 	}
@@ -189,20 +238,19 @@
 
 	        var bubbles = Boolean(params.bubbles);
 	        var cancelable = Boolean(params.cancelable);
-	        var evt = context.document.createEvent('CustomEvent');
+	        var evt = _context2['default'].document.createEvent('CustomEvent');
 
 	        evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
 	        return evt;
 	    };
-
 	} else {
 	    CustomEventCommon = function (eventName, params) {
 	        params = params || {};
 
 	        var bubbles = Boolean(params.bubbles);
 	        var cancelable = Boolean(params.cancelable);
-	        var evt = context.document.createEvent('Event');
+	        var evt = _context2['default'].document.createEvent('Event');
 
 	        evt.initEvent(eventName, bubbles, cancelable);
 	        evt.detail = params.detail;
@@ -211,10 +259,10 @@
 	    };
 	}
 
-	CustomEventCommon.prototype = context.Event.prototype;
+	CustomEventCommon.prototype = _context2['default'].Event.prototype;
 
-	module.exports = CustomEventCommon;
-
+	exports['default'] = CustomEventCommon;
+	module.exports = exports['default'];
 
 /***/ },
 /* 6 */
@@ -226,20 +274,25 @@
 
 	'use strict';
 
-	var context = __webpack_require__(1);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _context = __webpack_require__(1);
+
+	var _context2 = _interopRequireDefault(_context);
+
 	var attrModifiedWorks = false;
-	var listener = function () {
+	var listener = function listener() {
 	    attrModifiedWorks = true;
 	};
 
-	var htmlElement = context.document.documentElement;
+	var htmlElement = _context2['default'].document.documentElement;
 	htmlElement.addEventListener('DOMAttrModified', listener, false);
 	htmlElement.setAttribute('___TEST___', true);
 	htmlElement.removeEventListener('DOMAttrModified', listener, false);
 	htmlElement.removeAttribute('___TEST___', true);
 
 	if (!attrModifiedWorks) {
-	    var proto = context.Element.prototype;
+	    var proto = _context2['default'].Element.prototype;
 
 	    proto.__setAttribute = proto.setAttribute;
 	    proto.setAttribute = function (attrName, newVal) {
@@ -247,17 +300,8 @@
 	        this.__setAttribute(attrName, newVal);
 	        newVal = this.getAttribute(attrName);
 	        if (newVal !== prevVal) {
-	            var evt = context.document.createEvent('MutationEvent');
-	            evt.initMutationEvent(
-	                'DOMAttrModified',
-	                true,
-	                false,
-	                this,
-	                prevVal || '',
-	                newVal || '',
-	                attrName,
-	                (prevVal === null) ? evt.ADDITION : evt.MODIFICATION
-	            );
+	            var evt = _context2['default'].document.createEvent('MutationEvent');
+	            evt.initMutationEvent('DOMAttrModified', true, false, this, prevVal || '', newVal || '', attrName, prevVal === null ? evt.ADDITION : evt.MODIFICATION);
 	            this.dispatchEvent(evt);
 	        }
 	    };
@@ -266,21 +310,11 @@
 	    proto.removeAttribute = function (attrName) {
 	        var prevVal = this.getAttribute(attrName);
 	        this.__removeAttribute(attrName);
-	        var evt = context.document.createEvent('MutationEvent');
-	        evt.initMutationEvent(
-	            'DOMAttrModified',
-	            true,
-	            false,
-	            this,
-	            prevVal,
-	            '',
-	            attrName,
-	            evt.REMOVAL
-	        );
+	        var evt = _context2['default'].document.createEvent('MutationEvent');
+	        evt.initMutationEvent('DOMAttrModified', true, false, this, prevVal, '', attrName, evt.REMOVAL);
 	        this.dispatchEvent(evt);
 	    };
 	}
-
 
 /***/ },
 /* 7 */

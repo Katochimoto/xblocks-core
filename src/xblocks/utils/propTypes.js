@@ -1,6 +1,6 @@
-var view = require('../view');
+import view from '../view';
 
-module.exports = function (tagName) {
+export default function (tagName) {
     var viewClass = tagName && view.getClass(tagName);
 
     if (!viewClass) {
@@ -16,4 +16,4 @@ module.exports = function (tagName) {
     }
 
     return {};
-};
+}

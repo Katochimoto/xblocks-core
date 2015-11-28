@@ -1,6 +1,4 @@
-'use strict';
-
-var context = require('../context');
+import context from '../context';
 
 if (typeof context.performance === 'undefined') {
     context.performance = {};

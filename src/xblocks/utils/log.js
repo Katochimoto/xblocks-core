@@ -1,6 +1,11 @@
-var context = require('../../context');
+import context from '../../context';
 
-exports.time = function (element, name) {
+export default {
+    time,
+    info
+};
+
+function time(element, name) {
     if (!element._xtimers) {
         element._xtimers = {};
     }
@@ -10,8 +15,8 @@ exports.time = function (element, name) {
     }
 
     element._xtimers[ name ].push(context.performance.now());
-};
+}
 
-exports.info = function () {
+function info() {
     context.console.info.apply(context.console, arguments);
-};
+}
