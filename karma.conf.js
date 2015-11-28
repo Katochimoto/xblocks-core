@@ -41,12 +41,12 @@ module.exports = function(config) {
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
             'test/**/*.js': [ 'webpack' ],
-            'src/**/*.js': [ 'webpack' ],
-            '**/*.jsx': [ 'babel' ],
-            '**/src/xblocks.js': 'coverage'
+            'src/**/*.js': [ 'webpack', 'sourcemap' ],
+            '**/*.jsx': [ 'babel' ]
         },
 
         webpack: {
+            'devtool': 'inline-source-map',
             'externals': {
                 'react': 'React',
                 'react-dom': 'ReactDOM',
@@ -79,6 +79,15 @@ module.exports = function(config) {
                         'include': [
                             path.join(__dirname, 'src'),
                             path.join(__dirname, 'test')
+                        ]
+                    }
+                ],
+                'postLoaders': [
+                    {
+                        'test': /\.js$/,
+                        'loader': 'istanbul-instrumenter',
+                        'include': [
+                            path.join(__dirname, 'src')
                         ]
                     }
                 ]

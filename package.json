@@ -1,7 +1,7 @@
 {
   "name": "xblocks-core",
   "description": "HTML core custom elements",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": [
     "x-tag",
     "x-tags",
@@ -36,6 +36,7 @@
     "eslint-loader": "~1.1.x",
     "eslint-plugin-react": "~3.10.x",
     "handjs": "1.3.11",
+    "istanbul-instrumenter-loader": "^0.1.3",
     "karma": "~0.13.x",
     "karma-babel-preprocessor": "~5.2.x",
     "karma-chai": "~0.1.x",
@@ -47,6 +48,7 @@
     "karma-phantomjs-launcher": "~0.2.x",
     "karma-safari-launcher": "~0.1.x",
     "karma-sinon-chai": "~1.1.x",
+    "karma-sourcemap-loader": "^0.3.6",
     "karma-webpack": "^1.7.0",
     "lodash-cli": "^3.10.1",
     "mocha": "^2.3.4",
