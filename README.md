@@ -93,15 +93,13 @@ bower install xblocks-core
 [![NPM](https://nodei.co/npm/xblocks-core.png?downloads=true&stars=true)](https://nodei.co/npm/xblocks-core/)
 [![NPM](https://nodei.co/npm-dl/xblocks-core.png)](https://nodei.co/npm/xblocks-core/)
 
-
-
-[build]: https://travis-ci.org/Katochimoto/xblocks-core.png?branch=master
+[build]: https://travis-ci.org/Katochimoto/xblocks-core.svg?branch=master
 [build-link]: https://travis-ci.org/Katochimoto/xblocks-core
-[version]: https://badge.fury.io/js/xblocks-core.png
+[version]: https://badge.fury.io/js/xblocks-core.svg
 [version-link]: http://badge.fury.io/js/xblocks-core
-[dependency]: https://david-dm.org/Katochimoto/xblocks-core.png
+[dependency]: https://david-dm.org/Katochimoto/xblocks-core.svg
 [dependency-link]: https://david-dm.org/Katochimoto/xblocks-core
-[dev-dependency]: https://david-dm.org/Katochimoto/xblocks-core/dev-status.png
+[dev-dependency]: https://david-dm.org/Katochimoto/xblocks-core/dev-status.svg
 [dev-dependency-link]: https://david-dm.org/Katochimoto/xblocks-core#info=devDependencies
 [climate]: https://codeclimate.com/github/Katochimoto/xblocks-core/badges/gpa.svg
 [climate-link]: https://codeclimate.com/github/Katochimoto/xblocks-core
