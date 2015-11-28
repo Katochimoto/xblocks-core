@@ -103,7 +103,7 @@ bower install xblocks-core
 [dependency-link]: https://david-dm.org/Katochimoto/xblocks-core
 [dev-dependency]: https://david-dm.org/Katochimoto/xblocks-core/dev-status.png
 [dev-dependency-link]: https://david-dm.org/Katochimoto/xblocks-core#info=devDependencies
-[climate]: https://codeclimate.com/github/Katochimoto/xblocks-core.png
+[climate]: https://codeclimate.com/github/Katochimoto/xblocks-core/badges/gpa.svg
 [climate-link]: https://codeclimate.com/github/Katochimoto/xblocks-core
 [coverage]: https://codeclimate.com/github/Katochimoto/xblocks-core/badges/coverage.svg
 [coverage-link]: https://codeclimate.com/github/Katochimoto/xblocks-core
