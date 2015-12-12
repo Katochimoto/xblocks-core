@@ -38,11 +38,28 @@ var paramsXblocks = {
         'library': 'xblocks',
         'libraryTarget': 'umd'
     },
-    'externals': {
-        'react': 'React',
-        'react-dom': 'ReactDOM',
-        'xtag': 'xtag'
-    },
+    'externals': [
+        {
+            'react': {
+                root: 'React',
+                commonjs2: 'react',
+                commonjs: 'react',
+                amd: 'react'
+            },
+            'react-dom': {
+                root: 'ReactDOM',
+                commonjs2: 'react-dom',
+                commonjs: 'react-dom',
+                amd: 'react-dom'
+            },
+            'xtag': {
+                root: 'xtag',
+                commonjs2: 'xtag',
+                commonjs: 'xtag',
+                amd: 'xtag'
+            }
+        }
+    ],
     'resolve': {
         'alias': {
             '_': path.join(__dirname, 'lodash')

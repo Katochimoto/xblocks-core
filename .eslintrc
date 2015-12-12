@@ -60,8 +60,6 @@
         "module": false,
         "exports": false,
         "require": false,
-        "DEBUG_TIME": false,
-        "DEBUG": false,
         "describe": false,
         "it": false,
         "expect": false,

@@ -1,10 +1,10 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("React"), require("ReactDOM"), require("xtag"));
+		module.exports = factory(require("react"), require("react-dom"), require("xtag"));
 	else if(typeof define === 'function' && define.amd)
-		define(["React", "ReactDOM", "xtag"], factory);
+		define(["react", "react-dom", "xtag"], factory);
 	else if(typeof exports === 'object')
-		exports["xblocks"] = factory(require("React"), require("ReactDOM"), require("xtag"));
+		exports["xblocks"] = factory(require("react"), require("react-dom"), require("xtag"));
 	else
 		root["xblocks"] = factory(root["React"], root["ReactDOM"], root["xtag"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_12__, __WEBPACK_EXTERNAL_MODULE_66__) {
