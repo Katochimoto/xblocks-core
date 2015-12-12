@@ -46,6 +46,10 @@
 
 	'use strict';
 
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	var _context = __webpack_require__(1);
@@ -113,6 +117,9 @@
 	var logFlags = {};
 
 	_context2['default'].xtag = _xTagSrcCoreJs2['default'];
+
+	exports['default'] = _xTagSrcCoreJs2['default'];
+	module.exports = exports['default'];
 
 /***/ },
 /* 1 */
@@ -4429,14 +4436,15 @@
 	      if (tag.shadow) tag.shadow = tag.shadow.nodeName ? tag.shadow : xtag.createFragment(tag.shadow);
 	      if (tag.content) tag.content = tag.content.nodeName ? tag.content.innerHTML : parseMultiline(tag.content);
 	      var created = tag.lifecycle.created;
+	      var finalized = tag.lifecycle.finalized;
 	      tag.prototype.createdCallback = {
 	        enumerable: true,
 	        value: function(){
 	          var element = this;
 	          if (tag.shadow && hasShadow) this.createShadowRoot().appendChild(tag.shadow.cloneNode(true));
 	          if (tag.content) this.appendChild(document.createElement('div')).outerHTML = tag.content;
-	          xtag.addEvents(this, tag.events);
 	          var output = created ? created.apply(this, arguments) : null;
+	          xtag.addEvents(this, tag.events);
 	          for (var name in tag.attributes) {
 	            var attr = tag.attributes[name],
 	                hasAttr = this.hasAttribute(name),
@@ -4449,6 +4457,7 @@
 	            obj.onAdd.call(element, obj);
 	          });
 	          this.xtagComponentReady = true;
+	          if (finalized) finalized.apply(this, arguments);
 	          return output;
 	        }
 	      };
