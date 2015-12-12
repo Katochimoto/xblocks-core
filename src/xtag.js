@@ -38,6 +38,4 @@ import 'webcomponents.js/src/HTMLImports/boot.js';
 import 'handjs/hand.base.js';
 import xtag from 'x-tag/src/core.js';
 
-context.xtag = xtag;
-
 export default xtag;

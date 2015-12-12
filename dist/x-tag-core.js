@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["xtag"] = factory();
+	else
+		root["xtag"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 
@@ -115,8 +125,6 @@
 
 	/* eslint no-unused-vars:0 */
 	var logFlags = {};
-
-	_context2['default'].xtag = _xTagSrcCoreJs2['default'];
 
 	exports['default'] = _xTagSrcCoreJs2['default'];
 	module.exports = exports['default'];
@@ -4976,4 +4984,6 @@
 
 
 /***/ }
-/******/ ]);
+/******/ ])
+});
+;

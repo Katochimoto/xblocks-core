@@ -92,7 +92,9 @@ var paramsXtag = {
     'context': srcPath,
     'output': {
         'filename': 'x-tag-core.js',
-        'path': distPath
+        'path': distPath,
+        'library': 'xtag',
+        'libraryTarget': 'umd'
     },
     'module': {
         'loaders': [
