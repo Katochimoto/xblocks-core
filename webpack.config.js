@@ -13,30 +13,20 @@ if (isDev) {
     preprocessParams = '?+DEBUG&NODE_ENV=' + nodeEnv;
 }
 
-var define = new webpack.DefinePlugin({
-    'NODE_ENV': nodeEnv
-});
-
-var uglify = new webpack.optimize.UglifyJsPlugin({
-    'output': {
-        'comments': false
-    },
-    'compress': {
-        'warnings': false
-    }
-});
-
-var paramsXblocks = {
+var params = {
     'debug': isDev,
     'devtool': isDev ? 'eval' : undefined,
     'target': 'web',
-    'entry': './xblocks.js',
+    'entry': {
+        'xblocks-core': './xblocks.js',
+        'xtag': './xtag.js'
+    },
     'context': srcPath,
     'output': {
-        'path': distPath,
-        'filename': 'xblocks-core.js',
-        'library': 'xblocks',
-        'libraryTarget': 'umd'
+        'filename': '[name].js',
+        'library': '[name]',
+        'libraryTarget': 'umd',
+        'path': distPath
     },
     'externals': [
         {
@@ -81,51 +71,35 @@ var paramsXblocks = {
             }
         ]
     },
-    'plugins': [ define ]
-};
-
-var paramsXtag = {
-    'debug': isDev,
-    'devtool': isDev ? 'eval' : undefined,
-    'target': 'web',
-    'entry': './xtag.js',
-    'context': srcPath,
-    'output': {
-        'filename': 'x-tag-core.js',
-        'path': distPath,
-        'library': 'xtag',
-        'libraryTarget': 'umd'
-    },
-    'module': {
-        'loaders': [
-            {
-                'test': /\.jsx?$/,
-                'loader': 'babel!preprocess' + preprocessParams,
-                'include': [ srcPath ]
-            }
-        ]
-    }
+    'plugins': [
+        new webpack.DefinePlugin({
+            'NODE_ENV': nodeEnv
+        })
+    ]
 };
 
 var runs = [
-    paramsXblocks,
-    paramsXtag
+    params
 ];
 
 if (!isDev) {
-    runs.push(merge({}, paramsXblocks, {
+    runs.push(merge({}, params, {
         'output': {
-            'filename': 'xblocks-core.min.js'
+            'filename': '[name].min.js',
         },
-        'plugins': [ define, uglify ],
-        'devtool': '#source-map'
-    }));
-
-    runs.push(merge({}, paramsXtag, {
-        'output': {
-            'filename': 'x-tag-core.min.js'
-        },
-        'plugins': [ uglify ],
+        'plugins': [
+            new webpack.DefinePlugin({
+                'NODE_ENV': nodeEnv
+            }),
+            new webpack.optimize.UglifyJsPlugin({
+                'output': {
+                    'comments': false
+                },
+                'compress': {
+                    'warnings': false
+                }
+            })
+        ],
         'devtool': '#source-map'
     }));
 }

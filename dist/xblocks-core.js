@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define(["react", "react-dom", "xtag"], factory);
 	else if(typeof exports === 'object')
-		exports["xblocks"] = factory(require("react"), require("react-dom"), require("xtag"));
+		exports["xblocks-core"] = factory(require("react"), require("react-dom"), require("xtag"));
 	else
-		root["xblocks"] = factory(root["React"], root["ReactDOM"], root["xtag"]);
+		root["xblocks-core"] = factory(root["React"], root["ReactDOM"], root["xtag"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_12__, __WEBPACK_EXTERNAL_MODULE_66__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
