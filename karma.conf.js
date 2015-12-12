@@ -25,7 +25,7 @@ module.exports = function(config) {
             'node_modules/react/dist/react-with-addons.js',
             'node_modules/react-dom/dist/react-dom.js',
 
-            'dist/x-tag-core.js',
+            'dist/xtag.js',
 
             'test/spec/**/*.js'
         ],

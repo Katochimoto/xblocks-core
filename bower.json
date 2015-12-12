@@ -4,10 +4,10 @@
   "main": [
     "dist/xblocks-core.js",
     "dist/xblocks-core.min.js",
-    "dist/xblocks-core-full.js",
-    "dist/xblocks-core-full.min.js",
-    "dist/x-tag-core.js",
-    "dist/x-tag-core.min.js"
+    "dist/xblocks-core.min.js.map",
+    "dist/xtag.js",
+    "dist/xtag.min.js",
+    "dist/xtag.min.js.map"
   ],
   "ignore": [
     "**/.*",
