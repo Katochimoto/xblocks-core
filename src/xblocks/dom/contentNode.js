@@ -1,5 +1,4 @@
 /**
- * @function xblocks.dom.contentNode
  * @param {HTMLElement} node
  * @returns {HTMLElement}
  */

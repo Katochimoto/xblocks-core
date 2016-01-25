@@ -1,11 +1,6 @@
 import context from '../../context';
 
-export default {
-    time,
-    info
-};
-
-function time(element, name) {
+export function time(element, name) {
     if (!element._xtimers) {
         element._xtimers = {};
     }
@@ -17,6 +12,6 @@ function time(element, name) {
     element._xtimers[ name ].push(context.performance.now());
 }
 
-function info() {
+export function info() {
     context.console.info.apply(context.console, arguments);
 }

@@ -17,13 +17,6 @@ const attrsBoolean = [
     'selected'
 ];
 
-export default {
-    get,
-    toObject,
-    typeConversion,
-    valueConversion
-};
-
 /**
  * To obtain the specified attributes
  *
@@ -32,24 +25,22 @@ export default {
  * node.setAttribute('attr1', '');
  * node.setAttribute('attr2', 'test1');
  * node.setAttribute('attr3', 'test2');
- * xblocks.dom.attrs.get(node, {
+ * get(node, {
  *     'attr1': false,
  *     'attr2': undefined
  * });
  * // { 'attr1': true, 'attr2': 'test1' }
  *
- * @function xblocks.dom.attrs.get
  * @param {HTMLElement} element
  * @param {object} attrs the set of derived attributes (+default values)
  * @return {object}
  */
-function get(element, attrs) {
+export function get(element, attrs) {
     if (element.nodeType !== 1 || !element.hasAttributes()) {
         return attrs;
     }
 
-    var attrName;
-    for (attrName in attrs) {
+    for (let attrName in attrs) {
         if (attrs.hasOwnProperty(attrName) && element.hasAttribute(attrName)) {
             if (typeof attrs[ attrName ] === 'boolean') {
                 attrs[ attrName ] = valueConversion(
@@ -74,14 +65,13 @@ function get(element, attrs) {
  * node = document.createElement('div');
  * node.setAttribute('attr1', '');
  * node.setAttribute('attr2', 'test');
- * xblocks.dom.attrs.toObject(node);
+ * toObject(node);
  * // { 'attr1': '', 'attr2': 'test' }
  *
- * @function xblocks.dom.attrs.toObject
  * @param {HTMLElement} element
  * @return {object}
  */
-function toObject(element) {
+export function toObject(element) {
     var attrs = {};
 
     if (element.nodeType === 1 && element.hasAttributes()) {
@@ -95,7 +85,7 @@ function toObject(element) {
  * Collective conversion of attribute types
  *
  * @example
- * xblocks.dom.attrs.typeConversion({
+ * typeConversion({
  *     'attr1': '123',
  *     'attr2': ''
  * }, {
@@ -104,16 +94,14 @@ function toObject(element) {
  * });
  * // { 'attr1': 123, 'attr2': true }
  *
- * @function xblocks.dom.attrs.typeConversion
  * @param {object} props the set of attributes
  * @param {object} [propTypes] the set of attribute types
  * @returns {object}
  */
-function typeConversion(props, propTypes) {
+export function typeConversion(props, propTypes) {
     propTypes = propTypes || {};
 
-    var prop;
-    for (prop in props) {
+    for (let prop in props) {
         if (props.hasOwnProperty(prop)) {
             props[ prop ] = valueConversion(
                 prop,
@@ -130,20 +118,19 @@ function typeConversion(props, propTypes) {
  * Convert the attribute value to the specified type
  *
  * @example
- * xblocks.dom.attrs.valueConversion('attr1', 'true');
+ * valueConversion('attr1', 'true');
  * // true
- * xblocks.dom.attrs.valueConversion('attr1', 'true', PropTypes.string);
+ * valueConversion('attr1', 'true', PropTypes.string);
  * // 'true'
- * xblocks.dom.attrs.valueConversion('attr1', '123', PropTypes.number);
+ * valueConversion('attr1', '123', PropTypes.number);
  * // 123
  *
- * @function xblocks.dom.attrs.valueConversion
  * @param {string} prop attribute name
  * @param {*} value attribute value
  * @param {function} [type] attribute type
  * @returns {*}
  */
-function valueConversion(prop, value, type) {
+export function valueConversion(prop, value, type) {
     if (!type) {
         if (value === 'true' || value === 'false' || attrsBoolean.indexOf(prop) !== -1) {
             type = PropTypes.bool;

@@ -1,9 +1,8 @@
-import React from 'react';
-import merge from '_/object/merge';
-import isArray from '_/lang/isArray';
+import React, { PropTypes } from 'react';
+import merge from 'lodash/object/merge';
+import isArray from 'lodash/lang/isArray';
 
-var viewComponentsClass = {};
-var viewCommon = {
+const viewCommon = {
 
     /**
      * Required attributes
@@ -11,9 +10,9 @@ var viewCommon = {
      * @type {object}
      */
     propTypes: {
-        '_uid':         React.PropTypes.node,
-        '_container':   React.PropTypes.any,  // Bad way ;(
-        'children':     React.PropTypes.node
+        _uid: PropTypes.node,
+        _container: PropTypes.any,  // Bad way ;(
+        children: PropTypes.node
     },
 
     /**
@@ -44,18 +43,13 @@ var viewCommon = {
     }
 };
 
-var viewCommonUser = {
+const viewCommonUser = {
     templatePrepare: function (tmplString) {
         return tmplString;
     }
 };
 
-export default {
-    create,
-    register,
-    getClass,
-    getFactory
-};
+var viewComponentsClass = {};
 
 /**
  * Create class view node
@@ -87,7 +81,7 @@ export default {
  * @param {object|array} component settings view creation
  * @returns {function}
  */
-function create(component) {
+export function create(component) {
     component = isArray(component) ? component : [ component ];
     component.unshift({}, viewCommonUser);
     component.push(viewCommon);
@@ -114,7 +108,7 @@ function create(component) {
  * @param {object|array} component settings view creation
  * @returns {function}
  */
-function register(blockName, component) {
+export function register(blockName, component) {
     if (React.DOM.hasOwnProperty(blockName)) {
         /* eslint no-throw-literal:0 */
         throw 'Specified item "' + blockName + '" is already defined';
@@ -133,7 +127,7 @@ function register(blockName, component) {
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
-function getFactory(blockName) {
+export function getFactory(blockName) {
     return React.DOM[ blockName ];
 }
 
@@ -142,6 +136,6 @@ function getFactory(blockName) {
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
-function getClass(blockName) {
+export function getClass(blockName) {
     return viewComponentsClass[ blockName ];
 }

@@ -50,162 +50,146 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _context = __webpack_require__(6);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
 
-	// dom: true
-	// data: true
+	__webpack_require__(145);
 
-	__webpack_require__(72);
+	__webpack_require__(146);
 
-	__webpack_require__(73);
+	__webpack_require__(147);
 
-	__webpack_require__(74);
+	__webpack_require__(148);
 
-	__webpack_require__(75);
+	__webpack_require__(149);
 
-	__webpack_require__(76);
+	__webpack_require__(150);
 
-	__webpack_require__(77);
+	__webpack_require__(151);
 
-	__webpack_require__(78);
+	__webpack_require__(152);
 
-	__webpack_require__(79);
+	__webpack_require__(153);
 
-	__webpack_require__(80);
+	__webpack_require__(154);
 
-	__webpack_require__(81);
+	__webpack_require__(155);
 
-	__webpack_require__(82);
+	__webpack_require__(156);
 
-	__webpack_require__(83);
+	__webpack_require__(157);
 
-	__webpack_require__(84);
+	__webpack_require__(158);
 
-	__webpack_require__(85);
+	__webpack_require__(159);
 
-	__webpack_require__(86);
+	__webpack_require__(160);
 
-	__webpack_require__(87);
+	__webpack_require__(161);
 
-	__webpack_require__(88);
+	__webpack_require__(162);
 
-	__webpack_require__(89);
+	__webpack_require__(163);
 
-	__webpack_require__(90);
+	__webpack_require__(164);
 
-	__webpack_require__(91);
+	__webpack_require__(165);
 
-	__webpack_require__(92);
+	__webpack_require__(166);
 
-	__webpack_require__(93);
+	__webpack_require__(167);
 
-	__webpack_require__(94);
+	__webpack_require__(168);
 
-	__webpack_require__(95);
+	var _core = __webpack_require__(169);
 
-	var _xTagSrcCoreJs = __webpack_require__(96);
+	var _core2 = _interopRequireDefault(_core);
 
-	var _xTagSrcCoreJs2 = _interopRequireDefault(_xTagSrcCoreJs);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	_context2['default'].Platform = {};
+	_context2.default.Platform = {};
 
 	/* eslint no-unused-vars:0 */
-	var logFlags = {};
+	var logFlags = {
+	    // dom: true
+	    // data: true
+	};
 
-	exports['default'] = _xTagSrcCoreJs2['default'];
-	module.exports = exports['default'];
+	exports.default = _core2.default;
 
 /***/ },
-/* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */
+
+/***/ 112:
 /***/ function(module, exports) {
 
 	'use strict';
 
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	var context = (function () {
+	var context = function () {
 	    return this || (1, eval)('this');
-	})();
+	}();
 
-	exports['default'] = context;
-	module.exports = exports['default'];
+	exports.default = context;
 
 /***/ },
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */,
-/* 19 */
+
+/***/ 130:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _context = __webpack_require__(6);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var CustomEventCommon;
 	var issetCustomEvent = false;
 
 	try {
-	    issetCustomEvent = Boolean(_context2['default'].document.createEvent('CustomEvent'));
+	    issetCustomEvent = Boolean(_context2.default.document.createEvent('CustomEvent'));
 	} catch (e) {
 	    // do nothing
 	}
 
 	if (issetCustomEvent) {
-	    CustomEventCommon = function (eventName, params) {
+	    CustomEventCommon = function CustomEventCommon(eventName, params) {
 	        params = params || {};
 
 	        var bubbles = Boolean(params.bubbles);
 	        var cancelable = Boolean(params.cancelable);
-	        var evt = _context2['default'].document.createEvent('CustomEvent');
+	        var evt = _context2.default.document.createEvent('CustomEvent');
 
 	        evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
 	        return evt;
 	    };
 	} else {
-	    CustomEventCommon = function (eventName, params) {
+	    CustomEventCommon = function CustomEventCommon(eventName, params) {
 	        params = params || {};
 
 	        var bubbles = Boolean(params.bubbles);
 	        var cancelable = Boolean(params.cancelable);
-	        var evt = _context2['default'].document.createEvent('Event');
+	        var evt = _context2.default.document.createEvent('Event');
 
 	        evt.initEvent(eventName, bubbles, cancelable);
 	        evt.detail = params.detail;
@@ -214,169 +198,116 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	}
 
-	CustomEventCommon.prototype = _context2['default'].Event.prototype;
+	CustomEventCommon.prototype = _context2.default.Event.prototype;
 
-	exports['default'] = CustomEventCommon;
-	module.exports = exports['default'];
+	exports.default = CustomEventCommon;
 
 /***/ },
-/* 20 */,
-/* 21 */,
-/* 22 */,
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */,
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */,
-/* 51 */,
-/* 52 */,
-/* 53 */,
-/* 54 */,
-/* 55 */,
-/* 56 */,
-/* 57 */,
-/* 58 */,
-/* 59 */,
-/* 60 */,
-/* 61 */,
-/* 62 */,
-/* 63 */,
-/* 64 */,
-/* 65 */,
-/* 66 */,
-/* 67 */,
-/* 68 */,
-/* 69 */,
-/* 70 */,
-/* 71 */,
-/* 72 */
+
+/***/ 145:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _context = __webpack_require__(6);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
 
-	if (typeof _context2['default'].performance === 'undefined') {
-	    _context2['default'].performance = {};
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	if (typeof _context2.default.performance === 'undefined') {
+	    _context2.default.performance = {};
 	}
 
-	if (!_context2['default'].performance.now) {
+	if (!_context2.default.performance.now) {
 	    var nowOffset;
 
-	    if (_context2['default'].performance.timing && _context2['default'].performance.timing.navigationStart) {
-	        nowOffset = _context2['default'].performance.timing.navigationStar;
+	    if (_context2.default.performance.timing && _context2.default.performance.timing.navigationStart) {
+	        nowOffset = _context2.default.performance.timing.navigationStar;
 	    } else {
 	        nowOffset = Date.now();
 	    }
 
-	    _context2['default'].performance.now = function () {
+	    _context2.default.performance.now = function () {
 	        return Date.now() - nowOffset;
 	    };
 	}
 
 /***/ },
-/* 73 */
+
+/***/ 146:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	Object.defineProperty(exports, '__esModule', {
+	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _context = __webpack_require__(6);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
 
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	var indexOf = Array.prototype.indexOf;
-	var proto = _context2['default'].Element.prototype;
+	var proto = _context2.default.Element.prototype;
 
 	proto.matches = proto.matches || proto.matchesSelector || proto.webkitMatchesSelector || proto.mozMatchesSelector || proto.msMatchesSelector || proto.oMatchesSelector || function (selector) {
 	    return indexOf.call((this.parentNode || this.ownerDocument).querySelectorAll(selector), this) !== -1;
 	};
 
-	exports['default'] = proto.matches;
-	module.exports = exports['default'];
+	exports.default = proto.matches;
 
 /***/ },
-/* 74 */
-/***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * strange commit, checks CustomEvent only in IE
-	 * https://github.com/webcomponents/webcomponentsjs/commit/8d6a38aa6e3d03ff54a41db9e9725401bbc1446c
-	 */
+/***/ 147:
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _context = __webpack_require__(6);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
 
-	if (typeof _context2['default'].CustomEvent !== 'function') {
-	  _context2['default'].CustomEvent = __webpack_require__(19);
-	}
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	if (typeof _context2.default.CustomEvent !== 'function') {
+	  _context2.default.CustomEvent = __webpack_require__(130);
+	} /**
+	   * strange commit, checks CustomEvent only in IE
+	   * https://github.com/webcomponents/webcomponentsjs/commit/8d6a38aa6e3d03ff54a41db9e9725401bbc1446c
+	   */
 
 /***/ },
-/* 75 */
-/***/ function(module, exports, __webpack_require__) {
 
-	/**
-	 * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
-	 */
+/***/ 148:
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _context = __webpack_require__(6);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
 
-	var attrModifiedWorks = false;
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var attrModifiedWorks = false; /**
+	                                * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
+	                                */
+
 	var listener = function listener() {
 	    attrModifiedWorks = true;
 	};
 
-	var htmlElement = _context2['default'].document.documentElement;
+	var htmlElement = _context2.default.document.documentElement;
 	htmlElement.addEventListener('DOMAttrModified', listener, false);
 	htmlElement.setAttribute('___TEST___', true);
 	htmlElement.removeEventListener('DOMAttrModified', listener, false);
 	htmlElement.removeAttribute('___TEST___', true);
 
 	if (!attrModifiedWorks) {
-	    var proto = _context2['default'].Element.prototype;
+	    var proto = _context2.default.Element.prototype;
 
 	    proto.__setAttribute = proto.setAttribute;
 	    proto.setAttribute = function (attrName, newVal) {
@@ -384,7 +315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.__setAttribute(attrName, newVal);
 	        newVal = this.getAttribute(attrName);
 	        if (newVal !== prevVal) {
-	            var evt = _context2['default'].document.createEvent('MutationEvent');
+	            var evt = _context2.default.document.createEvent('MutationEvent');
 	            evt.initMutationEvent('DOMAttrModified', true, false, this, prevVal || '', newVal || '', attrName, prevVal === null ? evt.ADDITION : evt.MODIFICATION);
 	            this.dispatchEvent(evt);
 	        }
@@ -394,14 +325,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    proto.removeAttribute = function (attrName) {
 	        var prevVal = this.getAttribute(attrName);
 	        this.__removeAttribute(attrName);
-	        var evt = _context2['default'].document.createEvent('MutationEvent');
+	        var evt = _context2.default.document.createEvent('MutationEvent');
 	        evt.initMutationEvent('DOMAttrModified', true, false, this, prevVal, '', attrName, evt.REMOVAL);
 	        this.dispatchEvent(evt);
 	    };
 	}
 
 /***/ },
-/* 76 */
+
+/***/ 149:
 /***/ function(module, exports) {
 
 	// DOMTokenList polyfill for IE9
@@ -490,7 +422,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 77 */
+
+/***/ 150:
 /***/ function(module, exports) {
 
 	/**
@@ -545,7 +478,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 78 */
+
+/***/ 151:
 /***/ function(module, exports) {
 
 	/**
@@ -1126,7 +1060,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 79 */
+
+/***/ 152:
 /***/ function(module, exports) {
 
 	/**
@@ -1172,7 +1107,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 80 */
+
+/***/ 153:
 /***/ function(module, exports) {
 
 	/**
@@ -1264,7 +1200,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 81 */
+
+/***/ 154:
 /***/ function(module, exports) {
 
 	/**
@@ -1588,7 +1525,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 82 */
+
+/***/ 155:
 /***/ function(module, exports) {
 
 	/**
@@ -1724,7 +1662,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 83 */
+
+/***/ 156:
 /***/ function(module, exports) {
 
 	/**
@@ -2116,7 +2055,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 84 */
+
+/***/ 157:
 /***/ function(module, exports) {
 
 	/**
@@ -2246,7 +2186,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 85 */
+
+/***/ 158:
 /***/ function(module, exports) {
 
 	/**
@@ -2390,6 +2331,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (importCount) {
 	    for (var i=0, imp; i<importCount && (imp=imports[i]); i++) {
 	      if (isImportLoaded(imp)) {
+	        newImports.push(this);
 	        parsedCount++;
 	        checkDone();
 	      } else {
@@ -2492,7 +2434,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 86 */
+
+/***/ 159:
 /***/ function(module, exports) {
 
 	/**
@@ -2527,7 +2470,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 87 */
+
+/***/ 160:
 /***/ function(module, exports) {
 
 	/**
@@ -2582,7 +2526,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 88 */
+
+/***/ 161:
 /***/ function(module, exports) {
 
 	/**
@@ -2650,7 +2595,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 89 */
+
+/***/ 162:
 /***/ function(module, exports) {
 
 	/**
@@ -2796,7 +2742,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 90 */
+
+/***/ 163:
 /***/ function(module, exports) {
 
 	/**
@@ -2853,7 +2800,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 91 */
+
+/***/ 164:
 /***/ function(module, exports) {
 
 	/**
@@ -3198,7 +3146,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 92 */
+
+/***/ 165:
 /***/ function(module, exports) {
 
 	/**
@@ -3377,7 +3326,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 93 */
+
+/***/ 166:
 /***/ function(module, exports) {
 
 	/**
@@ -3448,7 +3398,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 94 */
+
+/***/ 167:
 /***/ function(module, exports) {
 
 	/**
@@ -3509,7 +3460,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 95 */
+
+/***/ 168:
 /***/ function(module, exports) {
 
 	var HANDJS = HANDJS || {};
@@ -4174,7 +4126,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	})();
 
 /***/ },
-/* 96 */
+
+/***/ 169:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function () {
@@ -4864,7 +4817,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        else template.innerHTML = parseMultiline(content);
 	      }
-	      return template.content;
+	      return document.importNode(template.content, true);
 	    },
 
 	    /*
@@ -5053,6 +5006,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }
-/******/ ])
+
+/******/ })
 });
 ;

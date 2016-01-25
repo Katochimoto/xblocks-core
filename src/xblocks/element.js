@@ -1,13 +1,11 @@
 import ReactDOM from 'react-dom';
+import { merge, keys } from 'lodash/object';
+import isArray from 'lodash/lang/isArray';
 import context from '../context';
-import dom from './dom';
-import XBEvent from './event';
-import view from './view';
+import { typeConversion } from './dom/attrs';
+import { getFactory } from './view';
+import { dispatch } from './event';
 import lazy from './utils/lazy';
-import assign from '_/object/assign';
-import merge from '_/object/merge';
-import keys from '_/object/keys';
-import isArray from '_/lang/isArray';
 
 /**
  * Xblock element constructor
@@ -76,7 +74,7 @@ XBElement.prototype.destroy = function () {
     node.content = content;
     node.xblock = undefined;
 
-    XBEvent.dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
+    dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
 };
 
 /**
@@ -99,9 +97,9 @@ XBElement.prototype.update = function (props, removeProps, callback) {
         }
     }
 
-    dom.attrs.typeConversion(nextProps, this._node.xprops);
+    typeConversion(nextProps, this._node.xprops);
 
-    var proxyConstructor = view.getFactory(this._node.xtagName)(nextProps);
+    var proxyConstructor = getFactory(this._node.xtagName)(nextProps);
     var that = this;
     var renderCallback = function () {
         that._component = this;
@@ -164,14 +162,14 @@ XBElement.prototype.getMountedProps = function () {
  */
 XBElement.prototype._init = function () {
     var children = this._node.content;
-    var props = assign({}, this._node.props, {
-        '_uid': this._node.xuid,
-        '_container': this._node
+    var props = merge({}, this._node.props, {
+        _uid: this._node.xuid,
+        _container: this._node
     });
 
-    dom.attrs.typeConversion(props, this._node.xprops);
+    typeConversion(props, this._node.xprops);
 
-    var proxyConstructor = view.getFactory(this._node.xtagName)(props, children);
+    var proxyConstructor = getFactory(this._node.xtagName)(props, children);
     var that = this;
     var renderCallback = function () {
         that._component = this;
@@ -190,7 +188,7 @@ XBElement.prototype._callbackInit = function () {
     this._observer = new context.MutationObserver(this._callbackMutation);
     this._observer.observe(this._node, this._observerOptions);
 
-    XBEvent.dispatch(this._node, 'xb-created');
+    dispatch(this._node, 'xb-created');
     lazy(globalInitEvent, this._node);
 };
 
@@ -203,7 +201,7 @@ XBElement.prototype._callbackUpdate = function (callback) {
     this._node.upgrade();
     this._observer.observe(this._node, this._observerOptions);
 
-    XBEvent.dispatch(this._node, 'xb-update');
+    dispatch(this._node, 'xb-update');
     lazy(globalUpdateEvent, this._node);
 
     if (callback) {
@@ -246,7 +244,7 @@ function mapAttributesName(record) {
  * @protected
  */
 function globalInitEvent(records) {
-    XBEvent.dispatch(context, 'xb-created', { 'detail': { 'records': records } });
+    dispatch(context, 'xb-created', { 'detail': { 'records': records } });
 }
 
 /**
@@ -254,7 +252,7 @@ function globalInitEvent(records) {
  * @protected
  */
 function globalUpdateEvent(records) {
-    XBEvent.dispatch(context, 'xb-update', { 'detail': { 'records': records } });
+    dispatch(context, 'xb-update', { 'detail': { 'records': records } });
 }
 
 /**

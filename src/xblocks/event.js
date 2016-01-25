@@ -1,5 +1,5 @@
 import context from '../context';
-import isNative from '_/lang/isNative';
+import isNative from 'lodash/lang/isNative';
 import CustomEventCommon from '../polyfills/CustomEventCommon';
 
 /**
@@ -15,18 +15,13 @@ import CustomEventCommon from '../polyfills/CustomEventCommon';
  * @constructor
  * @memberOf xblocks.event
  */
-let Custom = (function () {
+export let Custom = (function () {
     if (isNative('CustomEvent')) {
         return context.CustomEvent;
     }
 
     return CustomEventCommon;
 }());
-
-export default {
-    Custom,
-    dispatch
-};
 
 /**
  * Dispatch event
@@ -42,6 +37,6 @@ export default {
  * @param {string} name event name
  * @param {object} params the event parameters
  */
-function dispatch(element, name, params) {
+export function dispatch(element, name, params) {
     element.dispatchEvent(new Custom(name, params || {}));
 }

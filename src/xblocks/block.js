@@ -1,14 +1,12 @@
-import dom from './dom';
-import XBElement from './element';
 import xtag from 'xtag';
-import lazy from './utils/lazy';
-import propTypes from './utils/propTypes';
-import isPlainObject from '_/lang/isPlainObject';
-import merge from '_/object/merge';
-import uniqueId from '_/utility/uniqueId';
-import isArray from '_/lang/isArray';
+import { isPlainObject, isArray } from 'lodash/lang';
+import merge from 'lodash/object/merge';
+import uniqueId from 'lodash/utility/uniqueId';
+import * as dom from './dom';
+import XBElement from './element';
+import { lazy, propTypes } from './utils';
 
-var blockCommon = {
+const blockCommon = {
     lifecycle: {
         created: function () {
             blockInit(this);
@@ -136,10 +134,6 @@ var blockCommon = {
     }
 };
 
-export default {
-    create
-};
-
 /**
  * Creating a new tag
  *
@@ -148,7 +142,7 @@ export default {
  * @param {?object|array} options settings tag creation
  * @returns {HTMLElement}
  */
-function create(blockName, options) {
+export default function create(blockName, options) {
     options = isArray(options) ? options : [ options ];
     options.unshift({});
     options.push(blockCommon);

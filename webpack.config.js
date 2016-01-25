@@ -52,7 +52,7 @@ var params = {
     ],
     'resolve': {
         'alias': {
-            '_': path.join(__dirname, 'lodash')
+            'lodash': path.join(__dirname, 'lodash')
         }
     },
     'module': {
@@ -73,7 +73,8 @@ var params = {
     },
     'plugins': [
         new webpack.DefinePlugin({
-            'NODE_ENV': nodeEnv
+            'NODE_ENV': JSON.stringify(nodeEnv),
+            'process.env.NODE_ENV': JSON.stringify(nodeEnv)
         })
     ]
 };
@@ -89,7 +90,8 @@ if (!isDev) {
         },
         'plugins': [
             new webpack.DefinePlugin({
-                'NODE_ENV': nodeEnv
+                'NODE_ENV': JSON.stringify(nodeEnv),
+                'process.env.NODE_ENV': JSON.stringify(nodeEnv)
             }),
             new webpack.optimize.UglifyJsPlugin({
                 'output': {
