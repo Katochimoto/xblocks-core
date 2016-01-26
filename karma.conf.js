@@ -62,13 +62,13 @@ module.exports = function(config) {
                     'element': path.join(srcLib, 'element'),
                     'event': path.join(srcLib, 'event'),
                     'utils': path.join(srcLib, 'utils'),
-                    'view': path.join(srcLib, 'view'),
-                    '_': path.join(__dirname, 'lodash')
+                    'view': path.join(srcLib, 'view')
                 }
             },
             'plugins': [
                 new webpack.DefinePlugin({
-                    'NODE_ENV': 'development'
+                    'NODE_ENV': JSON.stringify('development'),
+                    'process.env.NODE_ENV': JSON.stringify('development')
                 })
             ],
             'module': {

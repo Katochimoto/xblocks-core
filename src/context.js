@@ -1,5 +1,3 @@
-var context = (function () {
+export default (function () {
     return this || (1, eval)('this');
 })();
-
-export default context;

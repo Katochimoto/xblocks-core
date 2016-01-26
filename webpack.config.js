@@ -1,6 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
-var merge = require('./lodash/object/merge');
+var merge = require('lodash/merge');
 
 var srcPath = path.join(__dirname, 'src');
 var distPath = path.join(__dirname, 'dist');
@@ -50,11 +50,6 @@ var params = {
             }
         }
     ],
-    'resolve': {
-        'alias': {
-            'lodash': path.join(__dirname, 'lodash')
-        }
-    },
     'module': {
         'preLoaders': [
             {

@@ -4,7 +4,8 @@
  */
 
 import context from '../context';
+import CustomEventCommon from './CustomEventCommon';
 
 if (typeof context.CustomEvent !== 'function') {
-    context.CustomEvent = require('./CustomEventCommon');
+    context.CustomEvent = CustomEventCommon;
 }

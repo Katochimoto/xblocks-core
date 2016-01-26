@@ -1,9 +1,10 @@
-import xtag from 'xtag';
-import { isPlainObject, isArray } from 'lodash/lang';
-import merge from 'lodash/object/merge';
-import uniqueId from 'lodash/utility/uniqueId';
+import * as xtag from 'xtag';
+import isPlainObject from 'lodash/isPlainObject';
+import isArray from 'lodash/isArray';
+import merge from 'lodash/merge';
+import uniqueId from 'lodash/uniqueId';
 import * as dom from './dom';
-import XBElement from './element';
+import { XBElement } from './element';
 import { lazy, propTypes } from './utils';
 
 const blockCommon = {
@@ -139,10 +140,10 @@ const blockCommon = {
  *
  * @see http://x-tags.org/docs
  * @param {string} blockName the name of the new node
- * @param {?object|array} options settings tag creation
+ * @param {?Object|array} options settings tag creation
  * @returns {HTMLElement}
  */
-export default function create(blockName, options) {
+export function create(blockName, options) {
     options = isArray(options) ? options : [ options ];
     options.unshift({});
     options.push(blockCommon);

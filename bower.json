@@ -16,7 +16,6 @@
     "test",
     "Makefile",
     "src",
-    "lodash",
     "package.json",
     "karma.conf.js",
     "webpack.config.js"

@@ -57,13 +57,41 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _context = __webpack_require__(112);
+	var _context = __webpack_require__(105);
 
 	var _context2 = _interopRequireDefault(_context);
+
+	__webpack_require__(129);
+
+	__webpack_require__(130);
+
+	__webpack_require__(131);
+
+	__webpack_require__(132);
+
+	__webpack_require__(133);
+
+	__webpack_require__(134);
+
+	__webpack_require__(135);
+
+	__webpack_require__(136);
+
+	__webpack_require__(137);
+
+	__webpack_require__(138);
+
+	__webpack_require__(139);
+
+	__webpack_require__(140);
+
+	__webpack_require__(141);
+
+	__webpack_require__(142);
+
+	__webpack_require__(143);
+
+	__webpack_require__(144);
 
 	__webpack_require__(145);
 
@@ -81,39 +109,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	__webpack_require__(152);
 
-	__webpack_require__(153);
-
-	__webpack_require__(154);
-
-	__webpack_require__(155);
-
-	__webpack_require__(156);
-
-	__webpack_require__(157);
-
-	__webpack_require__(158);
-
-	__webpack_require__(159);
-
-	__webpack_require__(160);
-
-	__webpack_require__(161);
-
-	__webpack_require__(162);
-
-	__webpack_require__(163);
-
-	__webpack_require__(164);
-
-	__webpack_require__(165);
-
-	__webpack_require__(166);
-
-	__webpack_require__(167);
-
-	__webpack_require__(168);
-
-	var _core = __webpack_require__(169);
+	var _core = __webpack_require__(153);
 
 	var _core2 = _interopRequireDefault(_core);
 
@@ -127,11 +123,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // data: true
 	};
 
-	exports.default = _core2.default;
+	module.exports = _core2.default;
 
 /***/ },
 
-/***/ 112:
+/***/ 105:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -139,15 +135,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	var context = function () {
+
+	exports.default = function () {
 	    return this || (1, eval)('this');
 	}();
 
-	exports.default = context;
-
 /***/ },
 
-/***/ 130:
+/***/ 114:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -156,7 +151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	var _context = __webpack_require__(112);
+	var _context = __webpack_require__(105);
 
 	var _context2 = _interopRequireDefault(_context);
 
@@ -204,12 +199,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 145:
+/***/ 129:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _context = __webpack_require__(112);
+	var _context = __webpack_require__(105);
 
 	var _context2 = _interopRequireDefault(_context);
 
@@ -235,7 +230,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 146:
+/***/ 130:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -244,7 +239,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	var _context = __webpack_require__(112);
+	var _context = __webpack_require__(105);
 
 	var _context2 = _interopRequireDefault(_context);
 
@@ -261,32 +256,38 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 147:
+/***/ 131:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _context = __webpack_require__(112);
+	var _context = __webpack_require__(105);
 
 	var _context2 = _interopRequireDefault(_context);
 
+	var _CustomEventCommon = __webpack_require__(114);
+
+	var _CustomEventCommon2 = _interopRequireDefault(_CustomEventCommon);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/**
+	 * strange commit, checks CustomEvent only in IE
+	 * https://github.com/webcomponents/webcomponentsjs/commit/8d6a38aa6e3d03ff54a41db9e9725401bbc1446c
+	 */
+
 	if (typeof _context2.default.CustomEvent !== 'function') {
-	  _context2.default.CustomEvent = __webpack_require__(130);
-	} /**
-	   * strange commit, checks CustomEvent only in IE
-	   * https://github.com/webcomponents/webcomponentsjs/commit/8d6a38aa6e3d03ff54a41db9e9725401bbc1446c
-	   */
+	  _context2.default.CustomEvent = _CustomEventCommon2.default;
+	}
 
 /***/ },
 
-/***/ 148:
+/***/ 132:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _context = __webpack_require__(112);
+	var _context = __webpack_require__(105);
 
 	var _context2 = _interopRequireDefault(_context);
 
@@ -333,7 +334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 149:
+/***/ 133:
 /***/ function(module, exports) {
 
 	// DOMTokenList polyfill for IE9
@@ -423,7 +424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 150:
+/***/ 134:
 /***/ function(module, exports) {
 
 	/**
@@ -479,7 +480,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 151:
+/***/ 135:
 /***/ function(module, exports) {
 
 	/**
@@ -1061,7 +1062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 152:
+/***/ 136:
 /***/ function(module, exports) {
 
 	/**
@@ -1108,7 +1109,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 153:
+/***/ 137:
 /***/ function(module, exports) {
 
 	/**
@@ -1201,7 +1202,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 154:
+/***/ 138:
 /***/ function(module, exports) {
 
 	/**
@@ -1526,7 +1527,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 155:
+/***/ 139:
 /***/ function(module, exports) {
 
 	/**
@@ -1663,7 +1664,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 156:
+/***/ 140:
 /***/ function(module, exports) {
 
 	/**
@@ -2056,7 +2057,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 157:
+/***/ 141:
 /***/ function(module, exports) {
 
 	/**
@@ -2187,7 +2188,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 158:
+/***/ 142:
 /***/ function(module, exports) {
 
 	/**
@@ -2435,7 +2436,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 159:
+/***/ 143:
 /***/ function(module, exports) {
 
 	/**
@@ -2471,7 +2472,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 160:
+/***/ 144:
 /***/ function(module, exports) {
 
 	/**
@@ -2527,7 +2528,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 161:
+/***/ 145:
 /***/ function(module, exports) {
 
 	/**
@@ -2596,7 +2597,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 162:
+/***/ 146:
 /***/ function(module, exports) {
 
 	/**
@@ -2743,7 +2744,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 163:
+/***/ 147:
 /***/ function(module, exports) {
 
 	/**
@@ -2801,7 +2802,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 164:
+/***/ 148:
 /***/ function(module, exports) {
 
 	/**
@@ -3147,7 +3148,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 165:
+/***/ 149:
 /***/ function(module, exports) {
 
 	/**
@@ -3327,7 +3328,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 166:
+/***/ 150:
 /***/ function(module, exports) {
 
 	/**
@@ -3399,7 +3400,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 167:
+/***/ 151:
 /***/ function(module, exports) {
 
 	/**
@@ -3461,7 +3462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 168:
+/***/ 152:
 /***/ function(module, exports) {
 
 	var HANDJS = HANDJS || {};
@@ -4127,7 +4128,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 169:
+/***/ 153:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function () {

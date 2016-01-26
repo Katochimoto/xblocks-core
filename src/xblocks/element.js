@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom';
-import { merge, keys } from 'lodash/object';
-import isArray from 'lodash/lang/isArray';
+import merge from 'lodash/merge';
+import keys from 'lodash/keys';
+import isArray from 'lodash/isArray';
 import context from '../context';
 import { typeConversion } from './dom/attrs';
 import { getFactory } from './view';
@@ -12,7 +13,7 @@ import lazy from './utils/lazy';
  * @param {HTMLElement} node the node of a custom element
  * @constructor
  */
-export default function XBElement(node) {
+export function XBElement(node) {
     node.xblock = this;
 
     this._callbackMutation = this._callbackMutation.bind(this);

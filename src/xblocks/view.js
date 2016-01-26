@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import merge from 'lodash/object/merge';
-import isArray from 'lodash/lang/isArray';
+import merge from 'lodash/merge';
+import isArray from 'lodash/isArray';
 
 const viewCommon = {
 

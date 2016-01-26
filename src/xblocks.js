@@ -1,4 +1,4 @@
-export create from './xblocks/block';
+export { create } from './xblocks/block';
 export * as dom from './xblocks/dom';
 export * as event from './xblocks/event';
 export * as utils from './xblocks/utils';

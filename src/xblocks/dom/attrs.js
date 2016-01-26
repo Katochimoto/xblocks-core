@@ -32,8 +32,8 @@ const attrsBoolean = [
  * // { 'attr1': true, 'attr2': 'test1' }
  *
  * @param {HTMLElement} element
- * @param {object} attrs the set of derived attributes (+default values)
- * @return {object}
+ * @param {Object} attrs the set of derived attributes (+default values)
+ * @returns {Object}
  */
 export function get(element, attrs) {
     if (element.nodeType !== 1 || !element.hasAttributes()) {
@@ -69,7 +69,7 @@ export function get(element, attrs) {
  * // { 'attr1': '', 'attr2': 'test' }
  *
  * @param {HTMLElement} element
- * @return {object}
+ * @returns {Object}
  */
 export function toObject(element) {
     var attrs = {};
@@ -94,9 +94,9 @@ export function toObject(element) {
  * });
  * // { 'attr1': 123, 'attr2': true }
  *
- * @param {object} props the set of attributes
- * @param {object} [propTypes] the set of attribute types
- * @returns {object}
+ * @param {Object} props the set of attributes
+ * @param {Object} [propTypes] the set of attribute types
+ * @returns {Object}
  */
 export function typeConversion(props, propTypes) {
     propTypes = propTypes || {};
