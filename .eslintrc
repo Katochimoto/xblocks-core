@@ -37,6 +37,17 @@
         ],
         "key-spacing": [
             0
+        ],
+        "valid-jsdoc": [
+            2,
+            {
+                "prefer": {
+                    "return": "returns"
+                },
+                "requireReturn": false,
+                "requireParamDescription": false,
+                "requireReturnDescription": false
+            }
         ]
     },
     "env": {
@@ -60,8 +71,6 @@
         "module": false,
         "exports": false,
         "require": false,
-        "DEBUG_TIME": false,
-        "DEBUG": false,
         "describe": false,
         "it": false,
         "expect": false,

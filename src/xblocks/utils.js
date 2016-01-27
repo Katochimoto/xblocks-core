@@ -1,9 +1,3 @@
-import lazy from './utils/lazy';
-import log from './utils/log';
-import propTypes from './utils/propTypes';
-
-export default {
-    lazy,
-    log,
-    propTypes
-};
+export lazy from './utils/lazy';
+export * as log from './utils/log';
+export propTypes from './utils/propTypes';

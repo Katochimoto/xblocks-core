@@ -20,12 +20,12 @@ module.exports = function(config) {
             'test/helpers/setup.js',
 
             'node_modules/classnames/index.js',
-            'bower_components/es5-shim/es5-shim.js',
-            'bower_components/vow/vow.min.js',
-            'bower_components/react/react-with-addons.js',
-            'bower_components/react/react-dom.js',
+            'node_modules/es5-shim/es5-shim.js',
+            'node_modules/vow/vow.min.js',
+            'node_modules/react/dist/react-with-addons.js',
+            'node_modules/react-dom/dist/react-dom.js',
 
-            'dist/x-tag-core.js',
+            'dist/xtag.js',
 
             'test/spec/**/*.js'
         ],
@@ -62,13 +62,13 @@ module.exports = function(config) {
                     'element': path.join(srcLib, 'element'),
                     'event': path.join(srcLib, 'event'),
                     'utils': path.join(srcLib, 'utils'),
-                    'view': path.join(srcLib, 'view'),
-                    '_': path.join(__dirname, 'lodash')
+                    'view': path.join(srcLib, 'view')
                 }
             },
             'plugins': [
                 new webpack.DefinePlugin({
-                    'NODE_ENV': 'development'
+                    'NODE_ENV': JSON.stringify('development'),
+                    'process.env.NODE_ENV': JSON.stringify('development')
                 })
             ],
             'module': {

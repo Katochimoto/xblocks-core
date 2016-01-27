@@ -1,21 +1,21 @@
+import isNative from 'lodash/isNative';
 import context from '../context';
-import isNative from '_/lang/isNative';
 import CustomEventCommon from '../polyfills/CustomEventCommon';
 
 /**
- * Designer events
+ * Designer events.
  *
  * @example
- * new xblocks.event.Custom('custom-event', {
+ * import { Custom } from './event';
+ * new Custom('custom-event', {
  *     bubbles: true,
  *     cancelable: true,
  *     detail: { data: '123' }
  * })
  *
  * @constructor
- * @memberOf xblocks.event
  */
-let Custom = (function () {
+export let Custom = (function () {
     if (isNative('CustomEvent')) {
         return context.CustomEvent;
     }
@@ -23,16 +23,12 @@ let Custom = (function () {
     return CustomEventCommon;
 }());
 
-export default {
-    Custom,
-    dispatch
-};
-
 /**
- * Dispatch event
+ * Dispatch event.
  *
  * @example
- * xblocks.event.dispatch(node, 'custom-event', {
+ * mport { dispatch } from './event';
+ * dispatch(node, 'custom-event', {
  *     bubbles: true,
  *     cancelable: true,
  *     detail: { data: '123' }
@@ -40,8 +36,8 @@ export default {
  *
  * @param {HTMLElement} element node events
  * @param {string} name event name
- * @param {object} params the event parameters
+ * @param {Object} params the event parameters
  */
-function dispatch(element, name, params) {
+export function dispatch(element, name, params) {
     element.dispatchEvent(new Custom(name, params || {}));
 }

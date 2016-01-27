@@ -1,26 +1,25 @@
-import React from 'react';
-import merge from '_/object/merge';
-import isArray from '_/lang/isArray';
+import React, { PropTypes } from 'react';
+import merge from 'lodash/merge';
+import isArray from 'lodash/isArray';
 
-var viewComponentsClass = {};
-var viewCommon = {
+const viewCommon = {
 
     /**
-     * Required attributes
+     * Required attributes.
      * @memberOf ReactElement.prototype
-     * @type {object}
+     * @type {Object}
      */
     propTypes: {
-        '_uid':         React.PropTypes.node,
-        '_container':   React.PropTypes.any,  // Bad way ;(
-        'children':     React.PropTypes.node
+        _uid: PropTypes.node,
+        _container: PropTypes.any,  // Bad way ;(
+        children: PropTypes.node
     },
 
     /**
-     * Create node by template
+     * Create node by template.
      * @memberOf ReactElement.prototype
      * @param {string} ref template name
-     * @param {object} [props] the attributes of a node
+     * @param {Object} [props] the attributes of a node
      * @returns {?ReactElement}
      */
     template: function (ref, props) {
@@ -36,7 +35,7 @@ var viewCommon = {
     },
 
     /**
-     * Get the node associated with the view
+     * Get the node associated with the view.
      * @returns {HTMLElement}
      */
     container: function () {
@@ -44,21 +43,16 @@ var viewCommon = {
     }
 };
 
-var viewCommonUser = {
+const viewCommonUser = {
     templatePrepare: function (tmplString) {
         return tmplString;
     }
 };
 
-export default {
-    create,
-    register,
-    getClass,
-    getFactory
-};
+var viewComponentsClass = {};
 
 /**
- * Create class view node
+ * Create class view node.
  *
  * @example
  * var view = require('./view');
@@ -84,10 +78,10 @@ export default {
  * });
  *
  * @see http://facebook.github.io/react/docs/component-specs.html
- * @param {object|array} component settings view creation
+ * @param {Object|array} component settings view creation
  * @returns {function}
  */
-function create(component) {
+export function create(component) {
     component = isArray(component) ? component : [ component ];
     component.unshift({}, viewCommonUser);
     component.push(viewCommon);
@@ -96,7 +90,7 @@ function create(component) {
 }
 
 /**
- * Registration of a new node
+ * Registration of a new node.
  *
  * @example
  * var view = require('./view');
@@ -111,10 +105,10 @@ function create(component) {
  *
  * @see http://facebook.github.io/react/docs/component-specs.html
  * @param {string} blockName the name of the new node
- * @param {object|array} component settings view creation
+ * @param {Object|array} component settings view creation
  * @returns {function}
  */
-function register(blockName, component) {
+export function register(blockName, component) {
     if (React.DOM.hasOwnProperty(blockName)) {
         /* eslint no-throw-literal:0 */
         throw 'Specified item "' + blockName + '" is already defined';
@@ -129,19 +123,19 @@ function register(blockName, component) {
 }
 
 /**
- * Get factory view node
+ * Get factory view node.
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
-function getFactory(blockName) {
+export function getFactory(blockName) {
     return React.DOM[ blockName ];
 }
 
 /**
- * Get class view node
+ * Get class view node.
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
-function getClass(blockName) {
+export function getClass(blockName) {
     return viewComponentsClass[ blockName ];
 }

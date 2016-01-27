@@ -1,32 +1,29 @@
 import ReactDOM from 'react-dom';
+import merge from 'lodash/merge';
+import keys from 'lodash/keys';
+import isArray from 'lodash/isArray';
 import context from '../context';
-import dom from './dom';
-import XBEvent from './event';
-import view from './view';
+import { typeConversion } from './dom/attrs';
+import { getFactory } from './view';
+import { dispatch } from './event';
 import lazy from './utils/lazy';
-import assign from '_/object/assign';
-import merge from '_/object/merge';
-import keys from '_/object/keys';
-import isArray from '_/lang/isArray';
 
 /**
- * Xblock element constructor
+ * Xblock element constructor.
  * @param {HTMLElement} node the node of a custom element
- * @constructor
+ * @constructor XBElement
  */
-export default function XBElement(node) {
+export function XBElement(node) {
     node.xblock = this;
 
-    this._callbackMutation = this._callbackMutation.bind(this);
-
     this._observerOptions = {
-        'attributeFilter': keys(node.xprops),
-        'attributeOldValue': false,
-        'attributes': true,
-        'characterData': true,
-        'characterDataOldValue': false,
-        'childList': true,
-        'subtree': false
+        attributeFilter: keys(node.xprops),
+        attributeOldValue: false,
+        attributes: true,
+        characterData: true,
+        characterDataOldValue: false,
+        childList: true,
+        subtree: false
     };
 
     this._node = node;
@@ -34,29 +31,29 @@ export default function XBElement(node) {
 }
 
 /**
- * The node of a custom element
+ * The node of a custom element.
  * @type {HTMLElement}
  * @protected
  */
 XBElement.prototype._node = null;
 
 /**
- * React component
+ * React component.
  * @type {Constructor}
  * @protected
  */
 XBElement.prototype._component = null;
 
 /**
- * Instance MutationObserver
+ * Instance MutationObserver.
  * @type {MutationObserver}
  * @protected
  */
 XBElement.prototype._observer = null;
 
 /**
- * Unmounts a component and removes it from the DOM
- * @fires xblocks.Element~event:xb-destroy
+ * Unmounts a component and removes it from the DOM.
+ * @fires XBElement~event:xb-destroy
  */
 XBElement.prototype.destroy = function () {
     var node = this._node;
@@ -76,12 +73,12 @@ XBElement.prototype.destroy = function () {
     node.content = content;
     node.xblock = undefined;
 
-    XBEvent.dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
+    dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
 };
 
 /**
- * Update react view
- * @param {object} [props] added attributes
+ * Update react view.
+ * @param {Object} [props] added attributes
  * @param {array} [removeProps] remote attributes
  * @param {function} [callback] the callback function
  */
@@ -99,9 +96,9 @@ XBElement.prototype.update = function (props, removeProps, callback) {
         }
     }
 
-    dom.attrs.typeConversion(nextProps, this._node.xprops);
+    typeConversion(nextProps, this._node.xprops);
 
-    var proxyConstructor = view.getFactory(this._node.xtagName)(nextProps);
+    var proxyConstructor = getFactory(this._node.xtagName)(nextProps);
     var that = this;
     var renderCallback = function () {
         that._component = this;
@@ -113,7 +110,7 @@ XBElement.prototype.update = function (props, removeProps, callback) {
 };
 
 /**
- * Returns true if the component is rendered into the DOM, false otherwise
+ * Returns true if the component is rendered into the DOM, false otherwise.
  * @see http://facebook.github.io/react/docs/component-api.html#ismounted
  * @returns {boolean}
  */
@@ -122,7 +119,7 @@ XBElement.prototype.isMounted = function () {
 };
 
 /**
- * Installing a new content react component
+ * Installing a new content react component.
  * @param {string} content
  */
 XBElement.prototype.setMountedContent = function (content) {
@@ -132,7 +129,7 @@ XBElement.prototype.setMountedContent = function (content) {
 };
 
 /**
- * Receiving the content components react
+ * Receiving the content components react.
  * @returns {?string}
  */
 XBElement.prototype.getMountedContent = function () {
@@ -142,7 +139,7 @@ XBElement.prototype.getMountedContent = function () {
 };
 
 /**
- * Get components react
+ * Get components react.
  * @returns {?ReactCompositeComponent.createClass.Constructor}
  */
 XBElement.prototype.getMountedComponent = function () {
@@ -152,7 +149,7 @@ XBElement.prototype.getMountedComponent = function () {
 };
 
 /**
- * Gets the attributes of the components
+ * Gets the attributes of the components.
  * @returns {?object}
  */
 XBElement.prototype.getMountedProps = function () {
@@ -164,14 +161,14 @@ XBElement.prototype.getMountedProps = function () {
  */
 XBElement.prototype._init = function () {
     var children = this._node.content;
-    var props = assign({}, this._node.props, {
-        '_uid': this._node.xuid,
-        '_container': this._node
+    var props = merge({}, this._node.props, {
+        _uid: this._node.xuid,
+        _container: this._node
     });
 
-    dom.attrs.typeConversion(props, this._node.xprops);
+    typeConversion(props, this._node.xprops);
 
-    var proxyConstructor = view.getFactory(this._node.xtagName)(props, children);
+    var proxyConstructor = getFactory(this._node.xtagName)(props, children);
     var that = this;
     var renderCallback = function () {
         that._component = this;
@@ -183,27 +180,27 @@ XBElement.prototype._init = function () {
 
 /**
  * @protected
- * @fires xblocks.Element~event:xb-created
+ * @fires XBElement~event:xb-created
  */
 XBElement.prototype._callbackInit = function () {
     this._node.upgrade();
-    this._observer = new context.MutationObserver(this._callbackMutation);
+    this._observer = new context.MutationObserver(::this._callbackMutation);
     this._observer.observe(this._node, this._observerOptions);
 
-    XBEvent.dispatch(this._node, 'xb-created');
+    dispatch(this._node, 'xb-created');
     lazy(globalInitEvent, this._node);
 };
 
 /**
  * @param {function} [callback] the callback function
  * @protected
- * @fires xblocks.Element~event:xb-update
+ * @fires XBElement~event:xb-update
  */
 XBElement.prototype._callbackUpdate = function (callback) {
     this._node.upgrade();
     this._observer.observe(this._node, this._observerOptions);
 
-    XBEvent.dispatch(this._node, 'xb-update');
+    dispatch(this._node, 'xb-update');
     lazy(globalUpdateEvent, this._node);
 
     if (callback) {
@@ -246,7 +243,7 @@ function mapAttributesName(record) {
  * @protected
  */
 function globalInitEvent(records) {
-    XBEvent.dispatch(context, 'xb-created', { 'detail': { 'records': records } });
+    dispatch(context, 'xb-created', { 'detail': { 'records': records } });
 }
 
 /**
@@ -254,23 +251,23 @@ function globalInitEvent(records) {
  * @protected
  */
 function globalUpdateEvent(records) {
-    XBEvent.dispatch(context, 'xb-update', { 'detail': { 'records': records } });
+    dispatch(context, 'xb-update', { 'detail': { 'records': records } });
 }
 
 /**
  * Created event
- * @event xblocks.Element~event:xb-created
- * @type {xblocks.event.Custom}
+ * @event XBElement~event:xb-created
+ * @type {CustomEvent}
  */
 
 /**
  * Destroy event
- * @event xblocks.Element~event:xb-destroy
- * @type {xblocks.event.Custom}
+ * @event XBElement~event:xb-destroy
+ * @type {CustomEvent}
  */
 
 /**
  * Updated event
- * @event xblocks.Element~event:xb-update
- * @type {xblocks.event.Custom}
+ * @event XBElement~event:xb-update
+ * @type {CustomEvent}
  */

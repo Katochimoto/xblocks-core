@@ -1,13 +1,5 @@
-import { create } from './xblocks/block';
-import dom from './xblocks/dom';
-import event from './xblocks/event';
-import utils from './xblocks/utils';
-import view from './xblocks/view';
-
-export default {
-    create,
-    dom,
-    event,
-    utils,
-    view
-};
+export { create } from './xblocks/block';
+export * as dom from './xblocks/dom';
+export * as event from './xblocks/event';
+export * as utils from './xblocks/utils';
+export * as view from './xblocks/view';

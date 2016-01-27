@@ -1,15 +1,6 @@
-import attrs from './dom/attrs';
-import cloneNode from './dom/cloneNode';
-import contentNode from './dom/contentNode';
-import outerHTML from './dom/outerHTML';
-import upgrade from './dom/upgrade';
-import upgradeAll from './dom/upgradeAll';
-
-export default {
-    attrs,
-    cloneNode,
-    contentNode,
-    outerHTML,
-    upgrade,
-    upgradeAll
-};
+export * as attrs from './dom/attrs';
+export cloneNode from './dom/cloneNode';
+export contentNode from './dom/contentNode';
+export outerHTML from './dom/outerHTML';
+export upgrade from './dom/upgrade';
+export upgradeAll from './dom/upgradeAll';

@@ -1,14 +1,13 @@
-import dom from './dom';
-import XBElement from './element';
-import xtag from 'xtag';
-import lazy from './utils/lazy';
-import propTypes from './utils/propTypes';
-import isPlainObject from '_/lang/isPlainObject';
-import merge from '_/object/merge';
-import uniqueId from '_/utility/uniqueId';
-import isArray from '_/lang/isArray';
+import * as xtag from 'xtag';
+import isPlainObject from 'lodash/isPlainObject';
+import isArray from 'lodash/isArray';
+import merge from 'lodash/merge';
+import uniqueId from 'lodash/uniqueId';
+import * as dom from './dom';
+import { XBElement } from './element';
+import { lazy, propTypes } from './utils';
 
-var blockCommon = {
+const blockCommon = {
     lifecycle: {
         created: function () {
             blockInit(this);
@@ -136,19 +135,15 @@ var blockCommon = {
     }
 };
 
-export default {
-    create
-};
-
 /**
- * Creating a new tag
- *
+ * Creating a new tag.
  * @see http://x-tags.org/docs
  * @param {string} blockName the name of the new node
- * @param {?object|array} options settings tag creation
+ * @param {?Object|array} options settings tag creation
  * @returns {HTMLElement}
+ * @public
  */
-function create(blockName, options) {
+export function create(blockName, options) {
     options = isArray(options) ? options : [ options ];
     options.unshift({});
     options.push(blockCommon);
@@ -180,6 +175,12 @@ function create(blockName, options) {
     return xtag.register(blockName, options);
 }
 
+/**
+ * Initialization of the element.
+ * @param {HTMLElement} node
+ * @returns {boolean}
+ * @private
+ */
 function blockInit(node) {
     if (!node.xtagName) {
         node.xtagName = node.tagName.toLowerCase();
@@ -192,6 +193,11 @@ function blockInit(node) {
     return false;
 }
 
+/**
+ * Creating an item.
+ * @param {HTMLElement} node
+ * @private
+ */
 function blockCreate(node) {
     if (node.hasChildNodes()) {
         Array.prototype.forEach.call(
@@ -204,10 +210,20 @@ function blockCreate(node) {
     node.xblock = new XBElement(node);
 }
 
+/**
+ * Pending the creation of the item.
+ * @param {HTMLElement[]} nodes
+ * @private
+ */
 function blockCreateLazy(nodes) {
     nodes.forEach(blockCreate);
 }
 
-function tmplCompileIterator(tmplNode) {
-    this.xtmpl[ tmplNode.getAttribute('ref') ] = tmplNode.innerHTML;
+/**
+ * The selection of templates.
+ * @param {HTMLElement} node
+ * @private
+ */
+function tmplCompileIterator(node) {
+    this.xtmpl[ node.getAttribute('ref') ] = node.innerHTML;
 }

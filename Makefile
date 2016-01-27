@@ -4,52 +4,27 @@ export NPM_BIN
 src_js := $(shell find src -type f -name "*.js")
 
 all: node_modules \
-	bower_components \
-	lodash \
-	dist \
-	dist/xblocks-core-full.js \
-	dist/xblocks-core-full.min.js
+	prod
 
 node_modules: package.json
 	npm install
 	touch node_modules
 
-bower_components: bower.json
-	bower install
-	touch bower_components
-
 clean:
 	rm -rf dist
 	rm -rf samples/dist
-	rm -rf lodash
 
-lodash: node_modules Makefile
-	$(NPM_BIN)/lodash exports=umd include=assign,merge,isPlainObject,clone,cloneDeep,uniqueId,isNative,keys modularize -o $@
-	touch lodash
+prod: node_modules $(src_js) webpack.config.js
+	NODE_ENV=production ./node_modules/.bin/webpack --progress
 
-dist: node_modules lodash $(src_js) webpack.config.js
-	npm run prod
-	touch dist
+dev: node_modules $(src_js) webpack.config.js
+	NODE_ENV=development ./node_modules/.bin/webpack --progress --watch
 
-samples/dist: node_modules lodash $(src_js) webpack.config.js
-	npm run dev
-	touch samples/dist
-
-dist/xblocks-core-full.js: dist
-	cat dist/x-tag-core.js > $@
-	echo "\n" >> $@
-	cat dist/xblocks-core.js >> $@
-
-dist/xblocks-core-full.min.js: dist
-	cat dist/x-tag-core.min.js > $@
-	echo "\n" >> $@
-	cat dist/xblocks-core.min.js >> $@
-
-test: node_modules bower_components lodash
+test: node_modules
 	$(NPM_BIN)/eslint .
 	./node_modules/karma/bin/karma start --single-run --browsers PhantomJS
 
-testall: node_modules bower_components lodash
+testall: node_modules
 	$(NPM_BIN)/eslint .
 	./node_modules/karma/bin/karma start --single-run
 

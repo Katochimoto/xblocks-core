@@ -5,7 +5,7 @@ require('../tags/x-element-insert.jsx');
 require('../tags/x-element-update.jsx');
 
 var vow = require('vow');
-var XBElement = require('element');
+var XBElement = require('element').XBElement;
 
 describe('xblocks', function () {
 
