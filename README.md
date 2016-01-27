@@ -11,11 +11,10 @@
 
 ##Browser support
 
-- Firefox 14+
-- Internet Explorer 9+
-- Chrome 4+
-- Safari 4+
-- Opera 12+
+| <img src="http://diokuz.github.io/pics/chrome.png" width="48px" height="48px" alt="Chrome logo"> | <img src="http://diokuz.github.io/pics/firefox.png" width="48px" height="48px" alt="Firefox logo"> | <img src="http://diokuz.github.io/pics/ie.png" width="48px" height="48px" alt="Internet Explorer logo"> | <img src="http://diokuz.github.io/pics/opera.png" width="48px" height="48px" alt="Opera logo"> | <img src="http://diokuz.github.io/pics/safari.png" width="48px" height="48px" alt="Safari logo"> |
+|:---:|:---:|:---:|:---:|:---:|
+| 4+ ✔ | 14+ ✔ | 9+ ✔ | 12+ ✔ | 4+ ✔ |
+
 
 ##Example
 ```js
