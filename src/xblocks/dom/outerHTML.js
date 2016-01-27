@@ -2,7 +2,7 @@ import context from '../../context';
 
 /**
  * @function xblocks.dom.outerHTML
- * @prop {object} xblocks.dom.outerHTML
+ * @prop {Object} xblocks.dom.outerHTML
  * @prop {function} xblocks.dom.outerHTML.get
  * @prop {function} xblocks.dom.outerHTML.set
  */

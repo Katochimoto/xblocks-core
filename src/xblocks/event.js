@@ -3,7 +3,7 @@ import context from '../context';
 import CustomEventCommon from '../polyfills/CustomEventCommon';
 
 /**
- * Designer events
+ * Designer events.
  *
  * @example
  * import { Custom } from './event';
@@ -24,7 +24,7 @@ export let Custom = (function () {
 }());
 
 /**
- * Dispatch event
+ * Dispatch event.
  *
  * @example
  * mport { dispatch } from './event';
@@ -36,7 +36,7 @@ export let Custom = (function () {
  *
  * @param {HTMLElement} element node events
  * @param {string} name event name
- * @param {object} params the event parameters
+ * @param {Object} params the event parameters
  */
 export function dispatch(element, name, params) {
     element.dispatchEvent(new Custom(name, params || {}));

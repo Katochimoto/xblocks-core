@@ -1,7 +1,7 @@
 import { PropTypes } from 'react';
 
 /**
- * A set of boolean attributes
+ * A set of boolean attributes.
  * @type {string[]}
  */
 const attrsBoolean = [
@@ -18,7 +18,7 @@ const attrsBoolean = [
 ];
 
 /**
- * To obtain the specified attributes
+ * To obtain the specified attributes.
  *
  * @example
  * node = document.createElement('div');
@@ -59,7 +59,7 @@ export function get(element, attrs) {
 }
 
 /**
- * Retrieve object attributes
+ * Retrieve object attributes.
  *
  * @example
  * node = document.createElement('div');
@@ -82,7 +82,7 @@ export function toObject(element) {
 }
 
 /**
- * Collective conversion of attribute types
+ * Collective conversion of attribute types.
  *
  * @example
  * typeConversion({
@@ -115,7 +115,7 @@ export function typeConversion(props, propTypes) {
 }
 
 /**
- * Convert the attribute value to the specified type
+ * Convert the attribute value to the specified type.
  *
  * @example
  * valueConversion('attr1', 'true');

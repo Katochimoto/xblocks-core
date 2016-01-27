@@ -5,9 +5,9 @@ import isArray from 'lodash/isArray';
 const viewCommon = {
 
     /**
-     * Required attributes
+     * Required attributes.
      * @memberOf ReactElement.prototype
-     * @type {object}
+     * @type {Object}
      */
     propTypes: {
         _uid: PropTypes.node,
@@ -16,10 +16,10 @@ const viewCommon = {
     },
 
     /**
-     * Create node by template
+     * Create node by template.
      * @memberOf ReactElement.prototype
      * @param {string} ref template name
-     * @param {object} [props] the attributes of a node
+     * @param {Object} [props] the attributes of a node
      * @returns {?ReactElement}
      */
     template: function (ref, props) {
@@ -35,7 +35,7 @@ const viewCommon = {
     },
 
     /**
-     * Get the node associated with the view
+     * Get the node associated with the view.
      * @returns {HTMLElement}
      */
     container: function () {
@@ -52,7 +52,7 @@ const viewCommonUser = {
 var viewComponentsClass = {};
 
 /**
- * Create class view node
+ * Create class view node.
  *
  * @example
  * var view = require('./view');
@@ -78,7 +78,7 @@ var viewComponentsClass = {};
  * });
  *
  * @see http://facebook.github.io/react/docs/component-specs.html
- * @param {object|array} component settings view creation
+ * @param {Object|array} component settings view creation
  * @returns {function}
  */
 export function create(component) {
@@ -90,7 +90,7 @@ export function create(component) {
 }
 
 /**
- * Registration of a new node
+ * Registration of a new node.
  *
  * @example
  * var view = require('./view');
@@ -105,7 +105,7 @@ export function create(component) {
  *
  * @see http://facebook.github.io/react/docs/component-specs.html
  * @param {string} blockName the name of the new node
- * @param {object|array} component settings view creation
+ * @param {Object|array} component settings view creation
  * @returns {function}
  */
 export function register(blockName, component) {
@@ -123,7 +123,7 @@ export function register(blockName, component) {
 }
 
 /**
- * Get factory view node
+ * Get factory view node.
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
@@ -132,7 +132,7 @@ export function getFactory(blockName) {
 }
 
 /**
- * Get class view node
+ * Get class view node.
  * @param {string} blockName the name of the new node
  * @returns {function}
  */

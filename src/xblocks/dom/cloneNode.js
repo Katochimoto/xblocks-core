@@ -3,7 +3,7 @@ import context from '../../context';
 const elementProto = (context.HTMLElement || context.Element).prototype;
 
 /**
- * Cloning node
+ * Cloning node.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Node.cloneNode
  * @param {HTMLElement} node the node to be cloned
  * @param {boolean} deep true if the children of the node should also be cloned,

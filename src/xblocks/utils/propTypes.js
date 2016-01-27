@@ -1,5 +1,9 @@
 import { getClass } from '../view';
 
+/**
+ * @param {string} [tagName] the name of the new node
+ * @returns {Object}
+ */
 export default function (tagName) {
     var viewClass = tagName && getClass(tagName);
 

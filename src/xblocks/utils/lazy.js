@@ -1,7 +1,7 @@
 import immediate from 'setimmediate2/src';
 
 /**
- * Deferred execution
+ * Deferred execution.
  *
  * @example
  * import lazy from './lazy';
