@@ -19,21 +19,22 @@
 
 ##Example
 ```js
-var xblocks = require('xblocks');
-var classnames = require('classnames');
+import { PropTypes } from 'react';
+import xcore from 'xblocks-core';
+import classnames from 'classnames';
 
 // define jsx view
-xblocks.view.register('xb-ico', {
+xcore.view.register('xb-ico', {
     displayName: 'xb-ico',
 
     propTypes: {
-        'id': React.PropTypes.string,
-        'class': React.PropTypes.string,
-        'alt': React.PropTypes.string,
-        'size': React.PropTypes.oneOf(['s', 'm', 'l', 'xl']),
-        'type': React.PropTypes.oneOf(['remove', 'notification', 'check', 'dropdown']),
-        'active': React.PropTypes.bool,
-        'disabled': React.PropTypes.bool
+        'id': PropTypes.string,
+        'class': PropTypes.string,
+        'alt': PropTypes.string,
+        'size': PropTypes.oneOf([ 's', 'm', 'l', 'xl' ]),
+        'type': PropTypes.oneOf([ 'remove', 'notification', 'check', 'dropdown' ]),
+        'active': PropTypes.bool,
+        'disabled': PropTypes.bool
     },
 
     getDefaultProps: function() {
@@ -70,7 +71,9 @@ xblocks.view.register('xb-ico', {
 
 ```js
 // define element
-xblocks.create('xb-ico');
+import xcore from 'xblocks-core';
+
+xcore.create('xb-ico');
 ```
 
 ```html
