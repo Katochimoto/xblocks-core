@@ -34,7 +34,7 @@
     "babel-preset-stage-0": "6.3.13",
     "classnames": "2.2.3",
     "dom-token-list-polyfill": "pennyfx/dom-token-list.git#0.0.2",
-    "es5-shim": "4.5.0",
+    "es5-shim": "4.5.2",
     "eslint": "1.10.3",
     "eslint-config-yandex": "1.0.5",
     "eslint-loader": "1.2.0",
