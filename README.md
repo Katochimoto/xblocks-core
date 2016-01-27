@@ -1,7 +1,7 @@
 # xblocks-core
 > HTML core custom elements
 
-[![Build Status][build]][build-link] [![NPM version][version]][version-link] [![Dependency Status][dependency]][dependency-link] [![devDependency Status][dev-dependency]][dev-dependency-link] [![Code Climate][climate]][climate-link] [![Test Coverage][coverage]][coverage-link]
+[![Build Status][build]][build-link] [![NPM version][version]][version-link] [![Dependency Status][dependency]][dependency-link] [![devDependency Status][dev-dependency]][dev-dependency-link] [![Code Climate][climate]][climate-link] [![Test Coverage][coverage]][coverage-link] [![Inline docs](https://inch-ci.org/github/Katochimoto/xblocks-core.svg?branch=master)](https://inch-ci.org/github/Katochimoto/xblocks-core)
 
 ##Dependencies
 
