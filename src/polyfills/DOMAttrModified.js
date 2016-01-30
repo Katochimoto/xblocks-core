@@ -19,6 +19,12 @@ if (!attrModifiedWorks) {
     var proto = context.Element.prototype;
 
     proto.__setAttribute = proto.setAttribute;
+
+    /**
+     * Set attribute.
+     * @param {string} attrName
+     * @param {string} newVal
+     */
     proto.setAttribute = function (attrName, newVal) {
         var prevVal = this.getAttribute(attrName);
         this.__setAttribute(attrName, newVal);
@@ -40,6 +46,11 @@ if (!attrModifiedWorks) {
     };
 
     proto.__removeAttribute = proto.removeAttribute;
+
+    /**
+     * Remote attribute.
+     * @param {string} attrName
+     */
     proto.removeAttribute = function (attrName) {
         var prevVal = this.getAttribute(attrName);
         this.__removeAttribute(attrName);

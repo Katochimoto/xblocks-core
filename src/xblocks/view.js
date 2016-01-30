@@ -44,6 +44,11 @@ const viewCommon = {
 };
 
 const viewCommonUser = {
+    /**
+     * Custom conversion template.
+     * @param {string} tmplString
+     * @returns {string}
+     */
     templatePrepare: function (tmplString) {
         return tmplString;
     }

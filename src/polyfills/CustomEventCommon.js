@@ -1,6 +1,5 @@
 import context from '../context';
 
-var CustomEventCommon;
 var issetCustomEvent = false;
 
 try {
@@ -9,21 +8,22 @@ try {
     // do nothing
 }
 
-if (issetCustomEvent) {
-    CustomEventCommon = function (eventName, params) {
-        params = params || {};
+var CustomEventCommon = (function () {
+    if (issetCustomEvent) {
+        return function (eventName, params) {
+            params = params || {};
 
-        var bubbles = Boolean(params.bubbles);
-        var cancelable = Boolean(params.cancelable);
-        var evt = context.document.createEvent('CustomEvent');
+            var bubbles = Boolean(params.bubbles);
+            var cancelable = Boolean(params.cancelable);
+            var evt = context.document.createEvent('CustomEvent');
 
-        evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
+            evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
-        return evt;
-    };
+            return evt;
+        };
+    }
 
-} else {
-    CustomEventCommon = function (eventName, params) {
+    return function (eventName, params) {
         params = params || {};
 
         var bubbles = Boolean(params.bubbles);
@@ -35,7 +35,7 @@ if (issetCustomEvent) {
 
         return evt;
     };
-}
+}());
 
 CustomEventCommon.prototype = context.Event.prototype;
 

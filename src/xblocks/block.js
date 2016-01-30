@@ -9,10 +9,16 @@ import { lazy, propTypes } from './utils';
 
 const blockCommon = {
     lifecycle: {
+        /**
+         * The callback of the create element.
+         */
         created: function () {
             blockInit(this);
         },
 
+        /**
+         * The callback of the insert in DOM.
+         */
         inserted: function () {
             if (this.xinserted) {
                 return;
@@ -34,6 +40,9 @@ const blockCommon = {
             }
         },
 
+        /**
+         * The callback of the remote in DOM.
+         */
         removed: function () {
             this.xinserted = false;
 
@@ -45,14 +54,21 @@ const blockCommon = {
     },
 
     accessors: {
-        // check mounted react
         mounted: {
+            /**
+             * Check react mounted
+             * @returns {boolean}
+             */
             get: function () {
                 return Boolean(this.xblock && this.xblock.isMounted());
             }
         },
 
         content: {
+            /**
+             * Receiving the content.
+             * @returns {?string}
+             */
             get: function () {
                 if (this.mounted) {
                     return this.xblock.getMountedContent();
@@ -61,6 +77,10 @@ const blockCommon = {
                 return dom.contentNode(this).innerHTML;
             },
 
+            /**
+             * Installing a new content.
+             * @param {string} content
+             */
             set: function (content) {
                 if (this.mounted) {
                     this.xblock.setMountedContent(content);
@@ -72,14 +92,21 @@ const blockCommon = {
             }
         },
 
-        // getting object attributes
         attrs: {
+            /**
+             * Getting object attributes.
+             * @returns {Object}
+             */
             get: function () {
                 return dom.attrs.toObject(this);
             }
         },
 
         props: {
+            /**
+             * Getting object properties.
+             * @returns {Object}
+             */
             get: function () {
                 var prop;
                 var props = dom.attrs.toObject(this);
@@ -102,6 +129,10 @@ const blockCommon = {
         },
 
         xprops: {
+            /**
+             * Getting react properties.
+             * @returns {Object}
+             */
             get: function () {
                 return propTypes(this.xtagName);
             }
@@ -111,10 +142,18 @@ const blockCommon = {
     },
 
     methods: {
+        /**
+         * Recalculation of the internal structure.
+         */
         upgrade: function () {
             dom.upgradeAll(this);
         },
 
+        /**
+         * Cloning a node.
+         * @param {boolean} deep true if the content to be saved
+         * @returns {HTMLElement}
+         */
         cloneNode: function (deep) {
             // not to clone the contents
             var node = dom.cloneNode(this, false);

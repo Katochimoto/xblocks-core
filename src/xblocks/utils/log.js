@@ -1,5 +1,9 @@
 import context from '../../context';
 
+/**
+ * @param {HTMLElement} element
+ * @param {string} name
+ */
 export function time(element, name) {
     if (!element._xtimers) {
         element._xtimers = {};
@@ -12,6 +16,10 @@ export function time(element, name) {
     element._xtimers[ name ].push(context.performance.now());
 }
 
-export function info() {
-    context.console.info.apply(context.console, arguments);
+/**
+ * Console output info.
+ * @param {...*} args
+ */
+export function info(...args) {
+    ::context.console.info(...args);
 }
