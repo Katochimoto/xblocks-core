@@ -1,7 +1,7 @@
 # xblocks-core
 > HTML core custom elements
 
-[![Build Status][build]][build-link] [![NPM version][version]][version-link] [![Dependency Status][dependency]][dependency-link] [![devDependency Status][dev-dependency]][dev-dependency-link] [![Code Climate][climate]][climate-link] [![Test Coverage][coverage]][coverage-link] [![Inline docs](https://inch-ci.org/github/Katochimoto/xblocks-core.svg?branch=master)](https://inch-ci.org/github/Katochimoto/xblocks-core)
+[![Build Status][build]][build-link] [![NPM version][version]][version-link] [![Dependency Status][dependency]][dependency-link] [![devDependency Status][dev-dependency]][dev-dependency-link] [![Code Climate][climate]][climate-link] [![Test Coverage][coverage]][coverage-link] [![Inline docs][inch]][inch-link]
 
 ##Dependencies
 
@@ -21,17 +21,14 @@
 ##Example
 ```js
 import { PropTypes } from 'react';
-import xcore from 'xblocks-core';
+import { view } from 'xblocks-core';
 import classnames from 'classnames';
 
 // define jsx view
-xcore.view.register('xb-ico', {
+view.register('xb-ico', {
     displayName: 'xb-ico',
 
     propTypes: {
-        'id': PropTypes.string,
-        'class': PropTypes.string,
-        'alt': PropTypes.string,
         'size': PropTypes.oneOf([ 's', 'm', 'l', 'xl' ]),
         'type': PropTypes.oneOf([ 'remove', 'notification', 'check', 'dropdown' ]),
         'active': PropTypes.bool,
@@ -72,9 +69,9 @@ xcore.view.register('xb-ico', {
 
 ```js
 // define element
-import xcore from 'xblocks-core';
+import { create } from 'xblocks-core';
 
-xcore.create('xb-ico');
+create('xb-ico');
 ```
 
 ```html
@@ -109,3 +106,5 @@ bower install xblocks-core
 [climate-link]: https://codeclimate.com/github/Katochimoto/xblocks-core
 [coverage]: https://codeclimate.com/github/Katochimoto/xblocks-core/badges/coverage.svg
 [coverage-link]: https://codeclimate.com/github/Katochimoto/xblocks-core
+[inch]: https://inch-ci.org/github/Katochimoto/xblocks-core.svg?branch=master
+[inch-link]: https://inch-ci.org/github/Katochimoto/xblocks-core
