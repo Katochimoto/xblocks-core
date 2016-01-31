@@ -4,7 +4,12 @@ if (typeof context.performance === 'undefined') {
     context.performance = {};
 }
 
-if (!context.performance.now) {
+/**
+ * Method Performance.now() returns timestamp DOMHighResTimeStamp,
+ * measured in milliseconds, accurate to one thousandth of a millisecond.
+ * @returns {number}
+ */
+context.performance.now = context.performance.now || (function () {
     var nowOffset;
 
     if (context.performance.timing && context.performance.timing.navigationStart) {
@@ -14,7 +19,7 @@ if (!context.performance.now) {
         nowOffset = Date.now();
     }
 
-    context.performance.now = function () {
+    return function () {
         return (Date.now() - nowOffset);
     };
-}
+}());
