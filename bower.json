@@ -9,6 +9,11 @@
     "dist/xtag.min.js",
     "dist/xtag.min.js.map"
   ],
+  "dependencies": {
+    "react": "0.14.7",
+    "react-dom": "0.14.7",
+    "es5-shim": "4.5.2"
+  },
   "ignore": [
     "**/.*",
     "node_modules",
@@ -22,7 +27,7 @@
   ],
   "homepage": "http://xblocks.info",
   "authors": [
-    "rikishi <bufpost@yandex.ru>"
+    "Rikishi <rikishi@protonmail.ch>"
   ],
   "description": "HTML core custom elements",
   "moduleType": [

@@ -57,23 +57,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _context = __webpack_require__(105);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
-
-	__webpack_require__(129);
-
-	__webpack_require__(130);
-
-	__webpack_require__(131);
-
-	__webpack_require__(132);
-
-	__webpack_require__(133);
-
-	__webpack_require__(134);
-
-	__webpack_require__(135);
 
 	__webpack_require__(136);
 
@@ -109,7 +95,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	__webpack_require__(152);
 
-	var _core = __webpack_require__(153);
+	__webpack_require__(153);
+
+	__webpack_require__(154);
+
+	__webpack_require__(155);
+
+	__webpack_require__(156);
+
+	__webpack_require__(157);
+
+	__webpack_require__(158);
+
+	__webpack_require__(159);
+
+	var _core = __webpack_require__(160);
 
 	var _core2 = _interopRequireDefault(_core);
 
@@ -127,7 +127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 105:
+/***/ 112:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -142,7 +142,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 114:
+/***/ 121:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -151,13 +151,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	var _context = __webpack_require__(105);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var CustomEventCommon;
 	var issetCustomEvent = false;
 
 	try {
@@ -166,20 +165,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // do nothing
 	}
 
-	if (issetCustomEvent) {
-	    CustomEventCommon = function CustomEventCommon(eventName, params) {
-	        params = params || {};
+	var CustomEventCommon = function () {
+	    if (issetCustomEvent) {
+	        return function (eventName, params) {
+	            params = params || {};
 
-	        var bubbles = Boolean(params.bubbles);
-	        var cancelable = Boolean(params.cancelable);
-	        var evt = _context2.default.document.createEvent('CustomEvent');
+	            var bubbles = Boolean(params.bubbles);
+	            var cancelable = Boolean(params.cancelable);
+	            var evt = _context2.default.document.createEvent('CustomEvent');
 
-	        evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
+	            evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
-	        return evt;
-	    };
-	} else {
-	    CustomEventCommon = function CustomEventCommon(eventName, params) {
+	            return evt;
+	        };
+	    }
+
+	    return function (eventName, params) {
 	        params = params || {};
 
 	        var bubbles = Boolean(params.bubbles);
@@ -191,7 +192,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        return evt;
 	    };
-	}
+	}();
 
 	CustomEventCommon.prototype = _context2.default.Event.prototype;
 
@@ -199,12 +200,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 129:
+/***/ 136:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _context = __webpack_require__(105);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
 
@@ -214,7 +215,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _context2.default.performance = {};
 	}
 
-	if (!_context2.default.performance.now) {
+	/**
+	 * Method Performance.now() returns timestamp DOMHighResTimeStamp,
+	 * measured in milliseconds, accurate to one thousandth of a millisecond.
+	 * @returns {number}
+	 */
+	_context2.default.performance.now = _context2.default.performance.now || function () {
 	    var nowOffset;
 
 	    if (_context2.default.performance.timing && _context2.default.performance.timing.navigationStart) {
@@ -223,14 +229,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        nowOffset = Date.now();
 	    }
 
-	    _context2.default.performance.now = function () {
+	    return function () {
 	        return Date.now() - nowOffset;
 	    };
-	}
+	}();
 
 /***/ },
 
-/***/ 130:
+/***/ 137:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -239,7 +245,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	var _context = __webpack_require__(105);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
 
@@ -256,16 +262,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 131:
+/***/ 138:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _context = __webpack_require__(105);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
 
-	var _CustomEventCommon = __webpack_require__(114);
+	var _CustomEventCommon = __webpack_require__(121);
 
 	var _CustomEventCommon2 = _interopRequireDefault(_CustomEventCommon);
 
@@ -282,12 +288,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 132:
+/***/ 139:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _context = __webpack_require__(105);
+	var _context = __webpack_require__(112);
 
 	var _context2 = _interopRequireDefault(_context);
 
@@ -311,6 +317,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var proto = _context2.default.Element.prototype;
 
 	    proto.__setAttribute = proto.setAttribute;
+
+	    /**
+	     * Set attribute.
+	     * @param {string} attrName
+	     * @param {string} newVal
+	     */
 	    proto.setAttribute = function (attrName, newVal) {
 	        var prevVal = this.getAttribute(attrName);
 	        this.__setAttribute(attrName, newVal);
@@ -323,6 +335,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    proto.__removeAttribute = proto.removeAttribute;
+
+	    /**
+	     * Remote attribute.
+	     * @param {string} attrName
+	     */
 	    proto.removeAttribute = function (attrName) {
 	        var prevVal = this.getAttribute(attrName);
 	        this.__removeAttribute(attrName);
@@ -334,7 +351,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 133:
+/***/ 140:
 /***/ function(module, exports) {
 
 	// DOMTokenList polyfill for IE9
@@ -424,7 +441,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 134:
+/***/ 141:
 /***/ function(module, exports) {
 
 	/**
@@ -480,7 +497,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 135:
+/***/ 142:
 /***/ function(module, exports) {
 
 	/**
@@ -1062,7 +1079,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 136:
+/***/ 143:
 /***/ function(module, exports) {
 
 	/**
@@ -1109,7 +1126,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 137:
+/***/ 144:
 /***/ function(module, exports) {
 
 	/**
@@ -1202,7 +1219,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 138:
+/***/ 145:
 /***/ function(module, exports) {
 
 	/**
@@ -1527,7 +1544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 139:
+/***/ 146:
 /***/ function(module, exports) {
 
 	/**
@@ -1664,7 +1681,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 140:
+/***/ 147:
 /***/ function(module, exports) {
 
 	/**
@@ -2057,7 +2074,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 141:
+/***/ 148:
 /***/ function(module, exports) {
 
 	/**
@@ -2188,7 +2205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 142:
+/***/ 149:
 /***/ function(module, exports) {
 
 	/**
@@ -2436,7 +2453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 143:
+/***/ 150:
 /***/ function(module, exports) {
 
 	/**
@@ -2472,7 +2489,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 144:
+/***/ 151:
 /***/ function(module, exports) {
 
 	/**
@@ -2528,7 +2545,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 145:
+/***/ 152:
 /***/ function(module, exports) {
 
 	/**
@@ -2597,7 +2614,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 146:
+/***/ 153:
 /***/ function(module, exports) {
 
 	/**
@@ -2744,7 +2761,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 147:
+/***/ 154:
 /***/ function(module, exports) {
 
 	/**
@@ -2802,7 +2819,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 148:
+/***/ 155:
 /***/ function(module, exports) {
 
 	/**
@@ -3062,7 +3079,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (doc && this._mayParse.indexOf(doc) < 0) {
 	      this._mayParse.push(doc);
 	      var nodes = doc.querySelectorAll(this.parseSelectorsForNode(doc));
-	      for (var i=0, l=nodes.length, p=0, n; (i<l) && (n=nodes[i]); i++) {
+	      for (var i=0, l=nodes.length, n; (i<l) && (n=nodes[i]); i++) {
 	        if (!this.isParsed(n)) {
 	          if (this.hasResource(n)) {
 	            return nodeIsImport(n) ? this.nextToParseInDoc(n.__doc, n) : n;
@@ -3148,7 +3165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 149:
+/***/ 156:
 /***/ function(module, exports) {
 
 	/**
@@ -3328,7 +3345,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 150:
+/***/ 157:
 /***/ function(module, exports) {
 
 	/**
@@ -3400,7 +3417,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 151:
+/***/ 158:
 /***/ function(module, exports) {
 
 	/**
@@ -3462,7 +3479,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 152:
+/***/ 159:
 /***/ function(module, exports) {
 
 	var HANDJS = HANDJS || {};
@@ -4128,7 +4145,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 153:
+/***/ 160:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function () {
