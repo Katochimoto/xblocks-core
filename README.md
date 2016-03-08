@@ -5,7 +5,7 @@
 
 ##Dependencies
 
-- [React.js](https://github.com/facebook/react) (0.14.6)
+- [React.js](https://github.com/facebook/react) (0.14.7)
 - [X-Tag core](https://github.com/x-tag/core) ([custom build xtag.js](https://github.com/Katochimoto/xblocks-core/blob/master/dist/xtag.js) or 1.5.6)
 - [es5-shim](https://github.com/es-shims/es5-shim) (4.5.2)
 
