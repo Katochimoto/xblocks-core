@@ -46,7 +46,7 @@ module.exports = function(config) {
         },
 
         webpack: {
-            'devtool': 'inline-source-map',
+            'devtool': '#inline-source-map',
             'externals': {
                 'react': 'React',
                 'react-dom': 'ReactDOM',
