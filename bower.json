@@ -1,6 +1,6 @@
 {
   "name": "xblocks-core",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "main": [
     "dist/xblocks-core.js",
     "dist/xblocks-core.min.js",
@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "react": "0.14.8",
-    "es5-shim": "4.5.7"
+    "es5-shim": "4.5.8"
   },
   "ignore": [
     "**/.*",

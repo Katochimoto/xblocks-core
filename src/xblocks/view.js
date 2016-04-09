@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import merge from 'lodash/merge';
 import isArray from 'lodash/isArray';
+import isFunction from 'lodash/isFunction';
 
 const viewCommon = {
 
@@ -110,7 +111,7 @@ export function create(component) {
  *
  * @see http://facebook.github.io/react/docs/component-specs.html
  * @param {string} blockName the name of the new node
- * @param {Object|array} component settings view creation
+ * @param {Object|array|React.Component} component settings view creation
  * @returns {function}
  */
 export function register(blockName, component) {
@@ -119,7 +120,10 @@ export function register(blockName, component) {
         throw 'Specified item "' + blockName + '" is already defined';
     }
 
-    var componentClass = create(component);
+    var componentClass = isFunction(component) ?
+        component :
+        create(component);
+
     viewComponentsClass[ blockName ] = componentClass;
 
     React.DOM[ blockName ] = React.createFactory(componentClass);

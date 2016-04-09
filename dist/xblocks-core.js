@@ -59,7 +59,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.view = exports.utils = exports.event = exports.dom = exports.create = undefined;
+	exports.element = exports.view = exports.utils = exports.event = exports.dom = exports.create = undefined;
 
 	var _block = __webpack_require__(1);
 
@@ -67,6 +67,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  enumerable: true,
 	  get: function get() {
 	    return _block.create;
+	  }
+	});
+
+	var _decorator = __webpack_require__(140);
+
+	Object.defineProperty(exports, 'element', {
+	  enumerable: true,
+	  get: function get() {
+	    return _decorator.element;
 	  }
 	});
 
@@ -4858,6 +4867,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _isArray2 = _interopRequireDefault(_isArray);
 
+	var _isFunction = __webpack_require__(27);
+
+	var _isFunction2 = _interopRequireDefault(_isFunction);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var viewCommon = {
@@ -4966,7 +4979,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @see http://facebook.github.io/react/docs/component-specs.html
 	 * @param {string} blockName the name of the new node
-	 * @param {Object|array} component settings view creation
+	 * @param {Object|array|React.Component} component settings view creation
 	 * @returns {function}
 	 */
 	function register(blockName, component) {
@@ -4975,7 +4988,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        throw 'Specified item "' + blockName + '" is already defined';
 	    }
 
-	    var componentClass = create(component);
+	    var componentClass = (0, _isFunction2.default)(component) ? component : create(component);
+
 	    viewComponentsClass[blockName] = componentClass;
 
 	    _react2.default.DOM[blockName] = _react2.default.createFactory(componentClass);
@@ -5596,6 +5610,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	var _view = __webpack_require__(123);
+
+/***/ },
+/* 140 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.element = element;
+
+	var _block = __webpack_require__(1);
+
+	var _view = __webpack_require__(123);
+
+	/**
+	 * Decorating React.Component
+	 *
+	 * @example
+	 * var xcore = require('xblocks-core');
+	 *
+	 * @xcore.element('x-element')
+	 * class XElement extends React.Component {
+	 *     render() {
+	 *         return (
+	 *             <div data-xb-content={this.props._uid} title={this.props.test1}>{this.props.children}</div>
+	 *         );
+	 *     }
+	 * }
+	 *
+	 * XElement.propTypes = {
+	 *     test1: React.PropTypes.string
+	 * };
+	 *
+	 * @example
+	 * var xcore = require('xblocks-core');
+	 *
+	 * @xcore.element('x-element', {
+	 *     events: {
+	 *         'xb-created': function() {}
+	 *     }
+	 * })
+	 * class XElement extends React.Component {
+	 *     // ...
+	 * }
+	 *
+	 * @param {string} blockName the name of the new node
+	 * @param {?Object|array} options settings tag creation
+	 * @returns {function}
+	 */
+	function element(blockName, options) {
+	    return function (component) {
+	        (0, _block.create)(blockName, options);
+	        (0, _view.register)(blockName, component);
+	    };
+	}
 
 /***/ }
 /******/ ])
