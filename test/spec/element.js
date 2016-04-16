@@ -2,6 +2,7 @@ require('../tags/x-element1.jsx');
 
 var XBElement = require('element').XBElement;
 var vow = require('vow');
+var React = require('react');
 var ReactDOM = require('react-dom');
 
 describe('xblocks', function () {
@@ -68,6 +69,81 @@ describe('xblocks', function () {
             it('должен быть вызван метод ReactDOM.unmountComponentAtNode', function () {
                 this.node.xblock.destroy();
                 expect(this._spyReactUmount).calledWith(this.node);
+            });
+        });
+    });
+
+    describe('#getMountedComponent', function () {
+        beforeEach(function () {
+            this.node = document.createElement('x-element1');
+
+            var that = this;
+            return new vow.Promise(function (resolve) {
+                that.node.addEventListener('xb-created', function _onXbCreated() {
+                    this.removeEventListener('xb-created', _onXbCreated);
+                    resolve();
+                });
+
+                document.body.appendChild(that.node);
+            });
+        });
+
+        it('должен вернуть компонент React', function () {
+            var proto = Object.getPrototypeOf(this.node.xblock.getMountedComponent());
+            expect(proto).to.include.keys([ 'render' ]);
+        });
+    });
+
+    describe('#getMountedContent', function () {
+        beforeEach(function () {
+            this.node = document.createElement('x-element1');
+            this.content = document.createElement('div');
+            this.content.setAttribute('data-test', 'getMountedContent');
+
+            this.node.appendChild(this.content);
+
+            var that = this;
+            return new vow.Promise(function (resolve) {
+                that.node.addEventListener('xb-created', function _onXbCreated() {
+                    this.removeEventListener('xb-created', _onXbCreated);
+                    resolve();
+                });
+
+                document.body.appendChild(that.node);
+            });
+        });
+
+        it('должен вернуть строку содержимое компонента', function () {
+            expect(this.node.xblock.getMountedContent()).to.equal(this.content.outerHTML);
+        });
+    });
+
+    describe('#setMountedContent', function () {
+        beforeEach(function () {
+            this.node = document.createElement('x-element1');
+
+            var that = this;
+            return new vow.Promise(function (resolve) {
+                that.node.addEventListener('xb-created', function _onXbCreated() {
+                    this.removeEventListener('xb-created', _onXbCreated);
+                    resolve();
+                });
+
+                document.body.appendChild(that.node);
+            });
+        });
+
+        it('должен изменить содержимое контента блока', function () {
+            var content = 'setMountedContent';
+            var that = this;
+            return new vow.Promise(function (resolve) {
+                that.node.addEventListener('xb-update', function _onXbUpdate() {
+                    this.removeEventListener('xb-update', _onXbUpdate);
+                    expect(that.node.xblock.getMountedContent()).to.equal(content);
+                    resolve();
+                });
+
+                that.node.xblock.setMountedContent(content);
             });
         });
     });

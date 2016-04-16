@@ -133,7 +133,7 @@ module.exports = function(config) {
             'Firefox',
             'FirefoxDeveloperEdition',
             'Safari',
-            'Opera',
+            'Opera'
 
             //'Firefox5',
             //'Firefox6',
@@ -142,11 +142,13 @@ module.exports = function(config) {
             //'Firefox12',
             //'Firefox13',
 
+            /*
             'Firefox14',
             'Firefox15',
             'Firefox19',
             'Firefox30',
             'Firefox32'
+            */
         ],
 
 
