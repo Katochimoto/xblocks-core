@@ -145,7 +145,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	var blockCommon = {
+	var BLOCK_COMMON = {
 	    lifecycle: {
 	        /**
 	         * The callback of the create element.
@@ -244,13 +244,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	             * @returns {Object}
 	             */
 	            get: function get() {
-	                var prop;
 	                var props = dom.attrs.toObject(this);
 	                var xprops = this.xprops;
 	                var eprops = xtag.tags[this.xtagName].accessors;
-	                var common = blockCommon.accessors;
+	                var common = BLOCK_COMMON.accessors;
 
-	                for (prop in eprops) {
+	                for (var prop in eprops) {
 	                    if (xprops.hasOwnProperty(prop) && eprops.hasOwnProperty(prop) && !common.hasOwnProperty(prop)) {
 
 	                        props[prop] = this[prop];
@@ -319,19 +318,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	function create(blockName, options) {
 	    options = (0, _isArray2.default)(options) ? options : [options];
 	    options.unshift({});
-	    options.push(blockCommon);
+	    options.push(BLOCK_COMMON);
 
 	    // error when merging prototype in FireFox <=19
-	    var proto;
-	    var o;
+	    var proto = void 0;
 	    var i = 1;
 	    var l = options.length;
 
 	    for (; i < l; i++) {
-	        o = options[i];
+	        var o = options[i];
 
-	        if ((0, _isPlainObject2.default)(o)) {
-	            if (!proto && o.prototype) {
+	        if ((0, _isPlainObject2.default)(o) && o.prototype) {
+	            if (!proto) {
 	                proto = o.prototype;
 	            }
 
@@ -427,7 +425,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var objectCtorString = funcToString.call(Object);
 
 	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
 	 * of values.
 	 */
 	var objectToString = objectProto.toString;
@@ -644,9 +643,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var Stack = __webpack_require__(10),
-	    arrayEach = __webpack_require__(43),
-	    assignMergeValue = __webpack_require__(44),
-	    baseMergeDeep = __webpack_require__(45),
+	    arrayEach = __webpack_require__(44),
+	    assignMergeValue = __webpack_require__(45),
+	    baseMergeDeep = __webpack_require__(46),
 	    isArray = __webpack_require__(7),
 	    isObject = __webpack_require__(28),
 	    isTypedArray = __webpack_require__(97),
@@ -981,7 +980,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var MapCache = __webpack_require__(21),
-	    assocSet = __webpack_require__(41);
+	    assocSet = __webpack_require__(42);
 
 	/** Used as the size to enable large array optimizations. */
 	var LARGE_ARRAY_SIZE = 200;
@@ -1023,10 +1022,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var mapClear = __webpack_require__(22),
-	    mapDelete = __webpack_require__(33),
-	    mapGet = __webpack_require__(37),
-	    mapHas = __webpack_require__(39),
-	    mapSet = __webpack_require__(40);
+	    mapDelete = __webpack_require__(34),
+	    mapGet = __webpack_require__(38),
+	    mapHas = __webpack_require__(40),
+	    mapSet = __webpack_require__(41);
 
 	/**
 	 * Creates a map cache object to store key-value pairs.
@@ -1061,7 +1060,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var Hash = __webpack_require__(23),
-	    Map = __webpack_require__(29);
+	    Map = __webpack_require__(30);
 
 	/**
 	 * Removes all key-value entries from the map.
@@ -1091,7 +1090,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var objectProto = Object.prototype;
 
 	/**
-	 * Creates an hash object.
+	 * Creates a hash object.
 	 *
 	 * @private
 	 * @constructor
@@ -1145,9 +1144,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var isFunction = __webpack_require__(27),
 	    isHostObject = __webpack_require__(5),
-	    isObjectLike = __webpack_require__(6);
+	    isObject = __webpack_require__(28),
+	    toSource = __webpack_require__(29);
 
-	/** Used to match `RegExp` [syntax characters](http://ecma-international.org/ecma-262/6.0/#sec-patterns). */
+	/**
+	 * Used to match `RegExp`
+	 * [syntax characters](http://ecma-international.org/ecma-262/6.0/#sec-patterns).
+	 */
 	var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
 
 	/** Used to detect host constructors (Safari). */
@@ -1187,14 +1190,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * // => false
 	 */
 	function isNative(value) {
-	  if (value == null) {
+	  if (!isObject(value)) {
 	    return false;
 	  }
-	  if (isFunction(value)) {
-	    return reIsNative.test(funcToString.call(value));
-	  }
-	  return isObjectLike(value) &&
-	    (isHostObject(value) ? reIsNative : reIsHostCtor).test(value);
+	  var pattern = (isFunction(value) || isHostObject(value)) ? reIsNative : reIsHostCtor;
+	  return pattern.test(toSource(value));
 	}
 
 	module.exports = isNative;
@@ -1214,7 +1214,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var objectProto = Object.prototype;
 
 	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
 	 * of values.
 	 */
 	var objectToString = objectProto.toString;
@@ -1253,8 +1254,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	/**
-	 * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
-	 * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+	 * Checks if `value` is the
+	 * [language type](http://www.ecma-international.org/ecma-262/6.0/#sec-ecmascript-language-types)
+	 * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
 	 *
 	 * @static
 	 * @memberOf _
@@ -1286,10 +1288,39 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 29 */
+/***/ function(module, exports) {
+
+	/** Used to resolve the decompiled source of functions. */
+	var funcToString = Function.prototype.toString;
+
+	/**
+	 * Converts `func` to its source code.
+	 *
+	 * @private
+	 * @param {Function} func The function to process.
+	 * @returns {string} Returns the source code.
+	 */
+	function toSource(func) {
+	  if (func != null) {
+	    try {
+	      return funcToString.call(func);
+	    } catch (e) {}
+	    try {
+	      return (func + '');
+	    } catch (e) {}
+	  }
+	  return '';
+	}
+
+	module.exports = toSource;
+
+
+/***/ },
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(25),
-	    root = __webpack_require__(30);
+	    root = __webpack_require__(31);
 
 	/* Built-in method references that are verified to be native. */
 	var Map = getNative(root, 'Map');
@@ -1298,10 +1329,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module, global) {var checkGlobal = __webpack_require__(32);
+	/* WEBPACK VAR INJECTION */(function(module, global) {var checkGlobal = __webpack_require__(33);
 
 	/** Used to determine if values are of the language type `Object`. */
 	var objectTypes = {
@@ -1343,10 +1374,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = root;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(32)(module), (function() { return this; }())))
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -1362,7 +1393,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports) {
 
 	/**
@@ -1380,13 +1411,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Map = __webpack_require__(29),
+	var Map = __webpack_require__(30),
 	    assocDelete = __webpack_require__(13),
-	    hashDelete = __webpack_require__(34),
-	    isKeyable = __webpack_require__(36);
+	    hashDelete = __webpack_require__(35),
+	    isKeyable = __webpack_require__(37);
 
 	/**
 	 * Removes `key` and its value from the map.
@@ -1409,10 +1440,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hashHas = __webpack_require__(35);
+	var hashHas = __webpack_require__(36);
 
 	/**
 	 * Removes `key` and its value from the hash.
@@ -1430,7 +1461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var nativeCreate = __webpack_require__(24);
@@ -1457,7 +1488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports) {
 
 	/**
@@ -1477,13 +1508,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Map = __webpack_require__(29),
+	var Map = __webpack_require__(30),
 	    assocGet = __webpack_require__(17),
-	    hashGet = __webpack_require__(38),
-	    isKeyable = __webpack_require__(36);
+	    hashGet = __webpack_require__(39),
+	    isKeyable = __webpack_require__(37);
 
 	/**
 	 * Gets the map value for `key`.
@@ -1506,7 +1537,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var nativeCreate = __webpack_require__(24);
@@ -1540,13 +1571,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Map = __webpack_require__(29),
+	var Map = __webpack_require__(30),
 	    assocHas = __webpack_require__(19),
-	    hashHas = __webpack_require__(35),
-	    isKeyable = __webpack_require__(36);
+	    hashHas = __webpack_require__(36),
+	    isKeyable = __webpack_require__(37);
 
 	/**
 	 * Checks if a map value for `key` exists.
@@ -1569,13 +1600,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Map = __webpack_require__(29),
-	    assocSet = __webpack_require__(41),
-	    hashSet = __webpack_require__(42),
-	    isKeyable = __webpack_require__(36);
+	var Map = __webpack_require__(30),
+	    assocSet = __webpack_require__(42),
+	    hashSet = __webpack_require__(43),
+	    isKeyable = __webpack_require__(37);
 
 	/**
 	 * Sets the map `key` to `value`.
@@ -1603,7 +1634,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var assocIndexOf = __webpack_require__(14);
@@ -1629,7 +1660,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var nativeCreate = __webpack_require__(24);
@@ -1653,7 +1684,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports) {
 
 	/**
@@ -1681,7 +1712,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var eq = __webpack_require__(15);
@@ -1706,11 +1737,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assignMergeValue = __webpack_require__(44),
-	    baseClone = __webpack_require__(46),
+	var assignMergeValue = __webpack_require__(45),
+	    baseClone = __webpack_require__(47),
 	    copyArray = __webpack_require__(66),
 	    isArguments = __webpack_require__(56),
 	    isArray = __webpack_require__(7),
@@ -1795,13 +1826,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Stack = __webpack_require__(10),
-	    arrayEach = __webpack_require__(43),
-	    assignValue = __webpack_require__(47),
-	    baseAssign = __webpack_require__(48),
+	    arrayEach = __webpack_require__(44),
+	    assignValue = __webpack_require__(48),
+	    baseAssign = __webpack_require__(49),
 	    cloneBuffer = __webpack_require__(65),
 	    copyArray = __webpack_require__(66),
 	    copySymbols = __webpack_require__(67),
@@ -1940,7 +1971,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var eq = __webpack_require__(15);
@@ -1973,10 +2004,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(49),
+	var copyObject = __webpack_require__(50),
 	    keys = __webpack_require__(51);
 
 	/**
@@ -1996,10 +2027,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObjectWith = __webpack_require__(50);
+	var assignValue = __webpack_require__(48);
 
 	/**
 	 * Copies properties of `source` to `object`.
@@ -2008,33 +2039,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {Object} source The object to copy properties from.
 	 * @param {Array} props The property identifiers to copy.
 	 * @param {Object} [object={}] The object to copy properties to.
-	 * @returns {Object} Returns `object`.
-	 */
-	function copyObject(source, props, object) {
-	  return copyObjectWith(source, props, object);
-	}
-
-	module.exports = copyObject;
-
-
-/***/ },
-/* 50 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var assignValue = __webpack_require__(47);
-
-	/**
-	 * This function is like `copyObject` except that it accepts a function to
-	 * customize copied values.
-	 *
-	 * @private
-	 * @param {Object} source The object to copy properties from.
-	 * @param {Array} props The property identifiers to copy.
-	 * @param {Object} [object={}] The object to copy properties to.
 	 * @param {Function} [customizer] The function to customize copied values.
 	 * @returns {Object} Returns `object`.
 	 */
-	function copyObjectWith(source, props, object, customizer) {
+	function copyObject(source, props, object, customizer) {
 	  object || (object = {});
 
 	  var index = -1,
@@ -2052,7 +2060,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return object;
 	}
 
-	module.exports = copyObjectWith;
+	module.exports = copyObject;
 
 
 /***/ },
@@ -2242,7 +2250,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var hasOwnProperty = objectProto.hasOwnProperty;
 
 	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
 	 * of values.
 	 */
 	var objectToString = objectProto.toString;
@@ -2454,7 +2463,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var objectProto = Object.prototype;
 
 	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
 	 * of values.
 	 */
 	var objectToString = objectProto.toString;
@@ -2590,7 +2600,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(49),
+	var copyObject = __webpack_require__(50),
 	    getSymbols = __webpack_require__(68);
 
 	/**
@@ -2719,10 +2729,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var DataView = __webpack_require__(73),
-	    Map = __webpack_require__(29),
+	    Map = __webpack_require__(30),
 	    Promise = __webpack_require__(74),
 	    Set = __webpack_require__(75),
-	    WeakMap = __webpack_require__(76);
+	    WeakMap = __webpack_require__(76),
+	    toSource = __webpack_require__(29);
 
 	/** `Object#toString` result references. */
 	var mapTag = '[object Map]',
@@ -2736,21 +2747,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
 
-	/** Used to resolve the decompiled source of functions. */
-	var funcToString = Function.prototype.toString;
-
 	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
 	 * of values.
 	 */
 	var objectToString = objectProto.toString;
 
 	/** Used to detect maps, sets, and weakmaps. */
-	var dataViewCtorString = DataView ? (DataView + '') : '',
-	    mapCtorString = Map ? funcToString.call(Map) : '',
-	    promiseCtorString = Promise ? funcToString.call(Promise) : '',
-	    setCtorString = Set ? funcToString.call(Set) : '',
-	    weakMapCtorString = WeakMap ? funcToString.call(WeakMap) : '';
+	var dataViewCtorString = toSource(DataView),
+	    mapCtorString = toSource(Map),
+	    promiseCtorString = toSource(Promise),
+	    setCtorString = toSource(Set),
+	    weakMapCtorString = toSource(WeakMap);
 
 	/**
 	 * Gets the `toStringTag` of `value`.
@@ -2772,8 +2781,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
 	  getTag = function(value) {
 	    var result = objectToString.call(value),
-	        Ctor = result == objectTag ? value.constructor : null,
-	        ctorString = typeof Ctor == 'function' ? funcToString.call(Ctor) : '';
+	        Ctor = result == objectTag ? value.constructor : undefined,
+	        ctorString = Ctor ? toSource(Ctor) : undefined;
 
 	    if (ctorString) {
 	      switch (ctorString) {
@@ -2796,7 +2805,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(25),
-	    root = __webpack_require__(30);
+	    root = __webpack_require__(31);
 
 	/* Built-in method references that are verified to be native. */
 	var DataView = getNative(root, 'DataView');
@@ -2809,7 +2818,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(25),
-	    root = __webpack_require__(30);
+	    root = __webpack_require__(31);
 
 	/* Built-in method references that are verified to be native. */
 	var Promise = getNative(root, 'Promise');
@@ -2822,7 +2831,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(25),
-	    root = __webpack_require__(30);
+	    root = __webpack_require__(31);
 
 	/* Built-in method references that are verified to be native. */
 	var Set = getNative(root, 'Set');
@@ -2835,7 +2844,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(25),
-	    root = __webpack_require__(30);
+	    root = __webpack_require__(31);
 
 	/* Built-in method references that are verified to be native. */
 	var WeakMap = getNative(root, 'WeakMap');
@@ -2987,7 +2996,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(30);
+	var root = __webpack_require__(31);
 
 	/** Built-in value references. */
 	var Uint8Array = root.Uint8Array;
@@ -3239,7 +3248,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(30);
+	var root = __webpack_require__(31);
 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -3322,7 +3331,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {var constant = __webpack_require__(96),
-	    root = __webpack_require__(30);
+	    root = __webpack_require__(31);
 
 	/** Used to determine if values are of the language type `Object`. */
 	var objectTypes = {
@@ -3371,7 +3380,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = isBuffer;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(31)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(32)(module)))
 
 /***/ },
 /* 96 */
@@ -3457,7 +3466,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var objectProto = Object.prototype;
 
 	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
 	 * of values.
 	 */
 	var objectToString = objectProto.toString;
@@ -3492,7 +3502,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(49),
+	var copyObject = __webpack_require__(50),
 	    keysIn = __webpack_require__(99);
 
 	/**
@@ -3633,7 +3643,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(30);
+	var root = __webpack_require__(31);
 
 	/** Built-in value references. */
 	var Reflect = root.Reflect;
@@ -3825,7 +3835,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @private
 	 * @param {Function} func The function to invoke.
 	 * @param {*} thisArg The `this` binding of `func`.
-	 * @param {...*} args The arguments to invoke `func` with.
+	 * @param {Array} args The arguments to invoke `func` with.
 	 * @returns {*} Returns the result of `func`.
 	 */
 	function apply(func, thisArg, args) {
@@ -3955,7 +3965,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value = isObject(other) ? (other + '') : other;
 	  }
 	  if (typeof value != 'string') {
-	    return value === 0 ?  value : +value;
+	    return value === 0 ? value : +value;
 	  }
 	  value = value.replace(reTrim, '');
 	  var isBinary = reIsBinary.test(value);
@@ -3980,7 +3990,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var objectProto = Object.prototype;
 
 	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
 	 * of values.
 	 */
 	var objectToString = objectProto.toString;
@@ -4021,7 +4032,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var idCounter = 0;
 
 	/**
-	 * Generates a unique ID. If `prefix` is given the ID is appended to it.
+	 * Generates a unique ID. If `prefix` is given, the ID is appended to it.
 	 *
 	 * @static
 	 * @since 0.1.0
@@ -4060,8 +4071,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    symbolToString = symbolProto ? symbolProto.toString : undefined;
 
 	/**
-	 * Converts `value` to a string if it's not one. An empty string is returned
-	 * for `null` and `undefined` values. The sign of `-0` is preserved.
+	 * Converts `value` to a string. An empty string is returned for `null`
+	 * and `undefined` values. The sign of `-0` is preserved.
 	 *
 	 * @static
 	 * @memberOf _
@@ -4376,7 +4387,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 	exports.default = function (node) {
-	    var element;
+	    var element = void 0;
 
 	    if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
 	        element = node.querySelector('[data-xb-content="' + node.xuid + '"]');
@@ -4415,8 +4426,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = function () {
 
 	    var container = _context2.default.document.createElementNS('http://www.w3.org/1999/xhtml', '_');
-	    var getter;
-	    var setter;
+	    var getter = void 0;
+	    var setter = void 0;
 
 	    if (container.hasOwnProperty('outerHTML')) {
 	        getter = function getter() {
@@ -4427,40 +4438,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.outerHTML = html;
 	        };
 	    } else {
-	        var serializer = _context2.default.XMLSerializer && new _context2.default.XMLSerializer();
-	        var xmlns = /\sxmlns=\"[^\"]+\"/;
+	        (function () {
+	            var serializer = _context2.default.XMLSerializer && new _context2.default.XMLSerializer();
+	            var xmlns = /\sxmlns=\"[^\"]+\"/;
 
-	        if (serializer) {
-	            getter = function getter() {
-	                return serializer.serializeToString(this).replace(xmlns, '');
-	            };
-	        } else {
-	            getter = function getter() {
-	                container.appendChild(this.cloneNode(false));
-	                var html = container.innerHTML.replace('><', '>' + this.innerHTML + '<');
-	                container.innerHTML = '';
-	                return html;
-	            };
-	        }
-
-	        setter = function setter(html) {
-	            var node = this;
-	            var parent = node.parentNode;
-	            var child;
-
-	            if (!parent) {
-	                _context2.default.DOMException.code = _context2.default.DOMException.NOT_FOUND_ERR;
-	                throw _context2.default.DOMException;
+	            if (serializer) {
+	                getter = function getter() {
+	                    return serializer.serializeToString(this).replace(xmlns, '');
+	                };
+	            } else {
+	                getter = function getter() {
+	                    container.appendChild(this.cloneNode(false));
+	                    var html = container.innerHTML.replace('><', '>' + this.innerHTML + '<');
+	                    container.innerHTML = '';
+	                    return html;
+	                };
 	            }
 
-	            container.innerHTML = html;
+	            setter = function setter(html) {
+	                var node = this;
+	                var parent = node.parentNode;
+	                var child = void 0;
 
-	            while (child = container.firstChild) {
-	                parent.insertBefore(child, node);
-	            }
+	                if (!parent) {
+	                    _context2.default.DOMException.code = _context2.default.DOMException.NOT_FOUND_ERR;
+	                    throw _context2.default.DOMException;
+	                }
 
-	            parent.removeChild(node);
-	        };
+	                container.innerHTML = html;
+
+	                while (child = container.firstChild) {
+	                    parent.insertBefore(child, node);
+	                }
+
+	                parent.removeChild(node);
+	            };
+	        })();
 	    }
 
 	    return {
@@ -4633,7 +4646,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    node.content = content;
 	    node.xblock = undefined;
 
-	    (0, _event.dispatch)(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
+	    (0, _event.dispatch)(node, 'xb-destroy', { bubbles: false, cancelable: false });
 	};
 
 	/**
@@ -4684,7 +4697,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	XBElement.prototype.setMountedContent = function (content) {
 	    if (this.isMounted()) {
-	        this.update({ 'children': content });
+	        this.update({ children: content });
 	    }
 	};
 
@@ -4801,7 +4814,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	function globalInitEvent(records) {
-	    (0, _event.dispatch)(_context2.default, 'xb-created', { 'detail': { 'records': records } });
+	    (0, _event.dispatch)(_context2.default, 'xb-created', { detail: { records: records } });
 	}
 
 	/**
@@ -4809,7 +4822,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @protected
 	 */
 	function globalUpdateEvent(records) {
-	    (0, _event.dispatch)(_context2.default, 'xb-update', { 'detail': { 'records': records } });
+	    (0, _event.dispatch)(_context2.default, 'xb-update', { detail: { records: records } });
 	}
 
 	/**
@@ -4873,7 +4886,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var viewCommon = {
+	var VIEW_COMMON = {
 
 	    /**
 	     * Required attributes.
@@ -4912,7 +4925,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
-	var viewCommonUser = {
+	var VIEW_COMMON_USER = {
 	    /**
 	     * Custom conversion template.
 	     * @param {string} tmplString
@@ -4957,8 +4970,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	function create(component) {
 	    component = (0, _isArray2.default)(component) ? component : [component];
-	    component.unshift({}, viewCommonUser);
-	    component.push(viewCommon);
+	    component.unshift({}, VIEW_COMMON_USER);
+	    component.push(VIEW_COMMON);
 
 	    return _react2.default.createClass(_merge2.default.apply({}, component));
 	}

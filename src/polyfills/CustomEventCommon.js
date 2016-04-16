@@ -1,6 +1,6 @@
 import context from '../context';
 
-var issetCustomEvent = false;
+let issetCustomEvent = false;
 
 try {
     issetCustomEvent = Boolean(context.document.createEvent('CustomEvent'));
@@ -8,14 +8,14 @@ try {
     // do nothing
 }
 
-var CustomEventCommon = (function () {
+let CustomEventCommon = (function () {
     if (issetCustomEvent) {
         return function (eventName, params) {
             params = params || {};
 
-            var bubbles = Boolean(params.bubbles);
-            var cancelable = Boolean(params.cancelable);
-            var evt = context.document.createEvent('CustomEvent');
+            let bubbles = Boolean(params.bubbles);
+            let cancelable = Boolean(params.cancelable);
+            let evt = context.document.createEvent('CustomEvent');
 
             evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
@@ -26,9 +26,9 @@ var CustomEventCommon = (function () {
     return function (eventName, params) {
         params = params || {};
 
-        var bubbles = Boolean(params.bubbles);
-        var cancelable = Boolean(params.cancelable);
-        var evt = context.document.createEvent('Event');
+        let bubbles = Boolean(params.bubbles);
+        let cancelable = Boolean(params.cancelable);
+        let evt = context.document.createEvent('Event');
 
         evt.initEvent(eventName, bubbles, cancelable);
         evt.detail = params.detail;

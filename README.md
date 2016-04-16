@@ -17,22 +17,52 @@
 - Safari 4+
 - Opera 12+
 
+##Example ES6
+```js
+import React from 'react';
+import { element } from 'xblocks-core';
+
+@element('xb-element')
+class XBElement extends React.Component {
+    render() {
+        return (
+            <div data-xb-content={this.props._uid} title={this.props.title}>{this.props.children}</div>
+        );
+    }
+}
+
+XBElement.propTypes = {
+    title: React.PropTypes.string
+};
+```
 
 ##Example
+```html
+<!-- element usage -->
+<xb-ico type="notification">8</xb-ico>
+```
+
 ```js
+// define element
+import { create } from 'xblocks-core';
+
+create('xb-ico');
+```
+
+```js
+// define view
 import { PropTypes } from 'react';
 import { view } from 'xblocks-core';
 import classnames from 'classnames';
 
-// define jsx view
 view.register('xb-ico', {
     displayName: 'xb-ico',
 
     propTypes: {
-        'size': PropTypes.oneOf([ 's', 'm', 'l', 'xl' ]),
-        'type': PropTypes.oneOf([ 'remove', 'notification', 'check', 'dropdown' ]),
-        'active': PropTypes.bool,
-        'disabled': PropTypes.bool
+        size: PropTypes.oneOf([ 's', 'm', 'l', 'xl' ]),
+        type: PropTypes.oneOf([ 'remove', 'notification', 'check', 'dropdown' ]),
+        active: PropTypes.bool,
+        disabled: PropTypes.bool
     },
 
     getDefaultProps: function() {
@@ -65,18 +95,6 @@ view.register('xb-ico', {
         );
     }
 });
-```
-
-```js
-// define element
-import { create } from 'xblocks-core';
-
-create('xb-ico');
-```
-
-```html
-<!-- element usage -->
-<xb-ico type="notification">8</xb-ico>
 ```
 
 

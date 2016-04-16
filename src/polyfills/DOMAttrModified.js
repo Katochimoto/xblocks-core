@@ -4,19 +4,19 @@
 
 import context from '../context';
 
-var attrModifiedWorks = false;
-var listener = function () {
+let attrModifiedWorks = false;
+let listener = function () {
     attrModifiedWorks = true;
 };
 
-var htmlElement = context.document.documentElement;
+let htmlElement = context.document.documentElement;
 htmlElement.addEventListener('DOMAttrModified', listener, false);
 htmlElement.setAttribute('___TEST___', true);
 htmlElement.removeEventListener('DOMAttrModified', listener, false);
 htmlElement.removeAttribute('___TEST___', true);
 
 if (!attrModifiedWorks) {
-    var proto = context.Element.prototype;
+    let proto = context.Element.prototype;
 
     proto.__setAttribute = proto.setAttribute;
 
@@ -26,11 +26,11 @@ if (!attrModifiedWorks) {
      * @param {string} newVal
      */
     proto.setAttribute = function (attrName, newVal) {
-        var prevVal = this.getAttribute(attrName);
+        let prevVal = this.getAttribute(attrName);
         this.__setAttribute(attrName, newVal);
         newVal = this.getAttribute(attrName);
         if (newVal !== prevVal) {
-            var evt = context.document.createEvent('MutationEvent');
+            let evt = context.document.createEvent('MutationEvent');
             evt.initMutationEvent(
                 'DOMAttrModified',
                 true,
@@ -52,9 +52,9 @@ if (!attrModifiedWorks) {
      * @param {string} attrName
      */
     proto.removeAttribute = function (attrName) {
-        var prevVal = this.getAttribute(attrName);
+        let prevVal = this.getAttribute(attrName);
         this.__removeAttribute(attrName);
-        var evt = context.document.createEvent('MutationEvent');
+        let evt = context.document.createEvent('MutationEvent');
         evt.initMutationEvent(
             'DOMAttrModified',
             true,

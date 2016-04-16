@@ -29,7 +29,7 @@ export default function (callback, args) {
         callback._timer = immediate.setImmediate(function () {
             callback._timer = 0;
 
-            var saveArgs = callback._args;
+            const saveArgs = callback._args;
             callback._args = [];
 
             callback(saveArgs);

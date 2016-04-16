@@ -5,7 +5,7 @@ import { getClass } from '../view';
  * @returns {Object}
  */
 export default function (tagName) {
-    var viewClass = tagName && getClass(tagName);
+    const viewClass = tagName && getClass(tagName);
 
     if (!viewClass) {
         return {};

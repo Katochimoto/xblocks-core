@@ -3,7 +3,7 @@ import merge from 'lodash/merge';
 import isArray from 'lodash/isArray';
 import isFunction from 'lodash/isFunction';
 
-const viewCommon = {
+const VIEW_COMMON = {
 
     /**
      * Required attributes.
@@ -24,7 +24,7 @@ const viewCommon = {
      * @returns {?ReactElement}
      */
     template: function (ref, props) {
-        var xtmpl = this.props._container && this.props._container.xtmpl;
+        const xtmpl = this.props._container && this.props._container.xtmpl;
 
         if (typeof xtmpl === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
             return (
@@ -44,7 +44,7 @@ const viewCommon = {
     }
 };
 
-const viewCommonUser = {
+const VIEW_COMMON_USER = {
     /**
      * Custom conversion template.
      * @param {string} tmplString
@@ -89,8 +89,8 @@ var viewComponentsClass = {};
  */
 export function create(component) {
     component = isArray(component) ? component : [ component ];
-    component.unshift({}, viewCommonUser);
-    component.push(viewCommon);
+    component.unshift({}, VIEW_COMMON_USER);
+    component.push(VIEW_COMMON);
 
     return React.createClass(merge.apply({}, component));
 }
@@ -120,7 +120,7 @@ export function register(blockName, component) {
         throw 'Specified item "' + blockName + '" is already defined';
     }
 
-    var componentClass = isFunction(component) ?
+    const componentClass = isFunction(component) ?
         component :
         create(component);
 

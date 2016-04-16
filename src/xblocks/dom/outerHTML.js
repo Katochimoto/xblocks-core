@@ -8,9 +8,9 @@ import context from '../../context';
  */
 export default (function () {
 
-    var container = context.document.createElementNS('http://www.w3.org/1999/xhtml', '_');
-    var getter;
-    var setter;
+    let container = context.document.createElementNS('http://www.w3.org/1999/xhtml', '_');
+    let getter;
+    let setter;
 
     if (container.hasOwnProperty('outerHTML')) {
         getter = function () {
@@ -22,8 +22,8 @@ export default (function () {
         };
 
     } else {
-        var serializer = context.XMLSerializer && (new context.XMLSerializer());
-        var xmlns = /\sxmlns=\"[^\"]+\"/;
+        let serializer = context.XMLSerializer && (new context.XMLSerializer());
+        let xmlns = /\sxmlns=\"[^\"]+\"/;
 
         if (serializer) {
             getter = function () {
@@ -33,16 +33,16 @@ export default (function () {
         } else {
             getter = function () {
                 container.appendChild(this.cloneNode(false));
-                var html = container.innerHTML.replace('><', '>' + this.innerHTML + '<');
+                const html = container.innerHTML.replace('><', '>' + this.innerHTML + '<');
                 container.innerHTML = '';
                 return html;
             };
         }
 
         setter = function (html) {
-            var node = this;
-            var parent = node.parentNode;
-            var child;
+            let node = this;
+            let parent = node.parentNode;
+            let child;
 
             if (!parent) {
                 context.DOMException.code = context.DOMException.NOT_FOUND_ERR;

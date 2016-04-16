@@ -3,7 +3,7 @@
  * @returns {HTMLElement}
  */
 export default function (node) {
-    var element;
+    let element;
 
     if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
         element = node.querySelector('[data-xb-content="' + node.xuid + '"]');

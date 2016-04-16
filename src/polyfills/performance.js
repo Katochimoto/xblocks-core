@@ -10,7 +10,7 @@ if (typeof context.performance === 'undefined') {
  * @returns {number}
  */
 context.performance.now = context.performance.now || (function () {
-    var nowOffset;
+    let nowOffset;
 
     if (context.performance.timing && context.performance.timing.navigationStart) {
         nowOffset = context.performance.timing.navigationStar;

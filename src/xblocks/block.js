@@ -7,7 +7,7 @@ import * as dom from './dom';
 import { XBElement } from './element';
 import { lazy, propTypes } from './utils';
 
-const blockCommon = {
+const BLOCK_COMMON = {
     lifecycle: {
         /**
          * The callback of the create element.
@@ -28,7 +28,7 @@ const blockCommon = {
 
             this.xinserted = true;
 
-            var isScriptContent = Boolean(this.querySelector('script'));
+            const isScriptContent = Boolean(this.querySelector('script'));
 
             // asynchronous read content
             // <xb-test><script>...</script><div>not found</div></xb-test>
@@ -108,13 +108,12 @@ const blockCommon = {
              * @returns {Object}
              */
             get: function () {
-                var prop;
-                var props = dom.attrs.toObject(this);
-                var xprops = this.xprops;
-                var eprops = xtag.tags[ this.xtagName ].accessors;
-                var common = blockCommon.accessors;
+                const props = dom.attrs.toObject(this);
+                const xprops = this.xprops;
+                const eprops = xtag.tags[ this.xtagName ].accessors;
+                const common = BLOCK_COMMON.accessors;
 
-                for (prop in eprops) {
+                for (let prop in eprops) {
                     if (xprops.hasOwnProperty(prop) &&
                         eprops.hasOwnProperty(prop) &&
                         !common.hasOwnProperty(prop)) {
@@ -156,7 +155,7 @@ const blockCommon = {
          */
         cloneNode: function (deep) {
             // not to clone the contents
-            var node = dom.cloneNode(this, false);
+            const node = dom.cloneNode(this, false);
             dom.upgrade(node);
 
             node.xtmpl = this.xtmpl;
@@ -185,19 +184,18 @@ const blockCommon = {
 export function create(blockName, options) {
     options = isArray(options) ? options : [ options ];
     options.unshift({});
-    options.push(blockCommon);
+    options.push(BLOCK_COMMON);
 
     // error when merging prototype in FireFox <=19
-    var proto;
-    var o;
-    var i = 1;
-    var l = options.length;
+    let proto;
+    let i = 1;
+    const l = options.length;
 
     for (; i < l; i++) {
-        o = options[ i ];
+        let o = options[ i ];
 
-        if (isPlainObject(o)) {
-            if (!proto && o.prototype) {
+        if (isPlainObject(o) && o.prototype) {
+            if (!proto) {
                 proto = o.prototype;
             }
 

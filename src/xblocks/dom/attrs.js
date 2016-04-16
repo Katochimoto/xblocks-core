@@ -72,7 +72,7 @@ export function get(element, attrs) {
  * @returns {Object}
  */
 export function toObject(element) {
-    var attrs = {};
+    const attrs = {};
 
     if (element.nodeType === 1 && element.hasAttributes()) {
         Array.prototype.forEach.call(element.attributes, toObjectIterator, attrs);

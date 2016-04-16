@@ -56,8 +56,8 @@ XBElement.prototype._observer = null;
  * @fires XBElement~event:xb-destroy
  */
 XBElement.prototype.destroy = function () {
-    var node = this._node;
-    var content = node.content;
+    let node = this._node;
+    let content = node.content;
 
     this._observer.disconnect();
     this._observer = null;
@@ -73,7 +73,7 @@ XBElement.prototype.destroy = function () {
     node.content = content;
     node.xblock = undefined;
 
-    dispatch(node, 'xb-destroy', { 'bubbles': false, 'cancelable': false });
+    dispatch(node, 'xb-destroy', { bubbles: false, cancelable: false });
 };
 
 /**
@@ -83,12 +83,12 @@ XBElement.prototype.destroy = function () {
  * @param {function} [callback] the callback function
  */
 XBElement.prototype.update = function (props, removeProps, callback) {
-    var nextProps = merge({}, this.getMountedProps(), this._node.props, props);
+    const nextProps = merge({}, this.getMountedProps(), this._node.props, props);
 
     // merge of new and current properties
     // and the exclusion of remote properties
     if (isArray(removeProps) && removeProps.length) {
-        var l = removeProps.length;
+        let l = removeProps.length;
         while (l--) {
             if (nextProps.hasOwnProperty(removeProps[ l ])) {
                 delete nextProps[ removeProps[ l ] ];
@@ -98,9 +98,9 @@ XBElement.prototype.update = function (props, removeProps, callback) {
 
     typeConversion(nextProps, this._node.xprops);
 
-    var proxyConstructor = getFactory(this._node.xtagName)(nextProps);
-    var that = this;
-    var renderCallback = function () {
+    const proxyConstructor = getFactory(this._node.xtagName)(nextProps);
+    const that = this;
+    const renderCallback = function () {
         that._component = this;
         that._callbackUpdate(callback);
     };
@@ -124,7 +124,7 @@ XBElement.prototype.isMounted = function () {
  */
 XBElement.prototype.setMountedContent = function (content) {
     if (this.isMounted()) {
-        this.update({ 'children': content });
+        this.update({ children: content });
     }
 };
 
@@ -160,17 +160,17 @@ XBElement.prototype.getMountedProps = function () {
  * @protected
  */
 XBElement.prototype._init = function () {
-    var children = this._node.content;
-    var props = merge({}, this._node.props, {
+    const children = this._node.content;
+    const props = merge({}, this._node.props, {
         _uid: this._node.xuid,
         _container: this._node
     });
 
     typeConversion(props, this._node.xprops);
 
-    var proxyConstructor = getFactory(this._node.xtagName)(props, children);
-    var that = this;
-    var renderCallback = function () {
+    const proxyConstructor = getFactory(this._node.xtagName)(props, children);
+    const that = this;
+    const renderCallback = function () {
         that._component = this;
         that._callbackInit();
     };
@@ -213,7 +213,7 @@ XBElement.prototype._callbackUpdate = function (callback) {
  * @protected
  */
 XBElement.prototype._callbackMutation = function (records) {
-    var removeAttrs = records
+    const removeAttrs = records
         .filter(filterAttributesRemove, this)
         .map(mapAttributesName);
 
@@ -243,7 +243,7 @@ function mapAttributesName(record) {
  * @protected
  */
 function globalInitEvent(records) {
-    dispatch(context, 'xb-created', { 'detail': { 'records': records } });
+    dispatch(context, 'xb-created', { detail: { records } });
 }
 
 /**
@@ -251,7 +251,7 @@ function globalInitEvent(records) {
  * @protected
  */
 function globalUpdateEvent(records) {
-    dispatch(context, 'xb-update', { 'detail': { 'records': records } });
+    dispatch(context, 'xb-update', { detail: { records } });
 }
 
 /**
