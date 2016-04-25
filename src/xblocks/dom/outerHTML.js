@@ -58,9 +58,20 @@ export default (function () {
     }
 
     return {
-        /** @alias module:xblocks/dom/outerHTML.get */
+        /**
+         * Obtaining external HTML.
+         * @alias module:xblocks/dom/outerHTML.get
+         * @function
+         * @returns {string}
+         */
         'get': getter,
-        /** @alias module:xblocks/dom/outerHTML.set */
+
+        /**
+         * Installing external HTML.
+         * @alias module:xblocks/dom/outerHTML.set
+         * @function
+         * @param {string} html
+         */
         'set': setter
     };
 
