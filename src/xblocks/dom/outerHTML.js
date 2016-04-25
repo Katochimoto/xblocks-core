@@ -11,10 +11,18 @@ export default (function () {
     let setter;
 
     if (container.hasOwnProperty('outerHTML')) {
+        /**
+         * Native obtaining external HTML.
+         * @returns {string}
+         */
         getter = function () {
             return this.outerHTML;
         };
 
+        /**
+         * Native installing external HTML.
+         * @param {string} html
+         */
         setter = function (html) {
             this.outerHTML = html;
         };
@@ -24,11 +32,19 @@ export default (function () {
         const xmlns = /\sxmlns=\"[^\"]+\"/;
 
         if (serializer) {
+            /**
+             * Obtaining external HTML, using XMLSerializer.
+             * @returns {string}
+             */
             getter = function () {
                 return serializer.serializeToString(this).replace(xmlns, '');
             };
 
         } else {
+            /**
+             * Obtaining external HTML, using fake element.
+             * @returns {string}
+             */
             getter = function () {
                 container.appendChild(this.cloneNode(false));
                 const html = container.innerHTML.replace('><', `>${this.innerHTML}<`);
@@ -37,6 +53,11 @@ export default (function () {
             };
         }
 
+        /**
+         * Installing external HTML, using fake element.
+         * @param {string} html
+         * @throws {DOMException}
+         */
         setter = function (html) {
             let node = this;
             let parent = node.parentNode;
