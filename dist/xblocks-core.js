@@ -4444,10 +4444,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var setter = void 0;
 
 	    if (container.hasOwnProperty('outerHTML')) {
+	        /**
+	         * Native obtaining external HTML.
+	         * @returns {string}
+	         */
 	        getter = function getter() {
 	            return this.outerHTML;
 	        };
 
+	        /**
+	         * Native installing external HTML.
+	         * @param {string} html
+	         */
 	        setter = function setter(html) {
 	            this.outerHTML = html;
 	        };
@@ -4457,10 +4465,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var xmlns = /\sxmlns=\"[^\"]+\"/;
 
 	            if (serializer) {
+	                /**
+	                 * Obtaining external HTML, using XMLSerializer.
+	                 * @returns {string}
+	                 */
 	                getter = function getter() {
 	                    return serializer.serializeToString(this).replace(xmlns, '');
 	                };
 	            } else {
+	                /**
+	                 * Obtaining external HTML, using fake element.
+	                 * @returns {string}
+	                 */
 	                getter = function getter() {
 	                    container.appendChild(this.cloneNode(false));
 	                    var html = container.innerHTML.replace('><', '>' + this.innerHTML + '<');
@@ -4469,6 +4485,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                };
 	            }
 
+	            /**
+	             * Installing external HTML, using fake element.
+	             * @param {string} html
+	             * @throws {DOMException}
+	             */
 	            setter = function setter(html) {
 	                var node = this;
 	                var parent = node.parentNode;
@@ -4491,9 +4512,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    return {
-	        /** @alias module:xblocks/dom/outerHTML.get */
+	        /**
+	         * Obtaining external HTML.
+	         * @alias module:xblocks/dom/outerHTML.get
+	         * @function
+	         * @returns {string}
+	         */
 	        'get': getter,
-	        /** @alias module:xblocks/dom/outerHTML.set */
+
+	        /**
+	         * Installing external HTML.
+	         * @alias module:xblocks/dom/outerHTML.set
+	         * @function
+	         * @param {string} html
+	         */
 	        'set': setter
 	    };
 	}();

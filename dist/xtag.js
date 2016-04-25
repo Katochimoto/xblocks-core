@@ -300,9 +300,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var attrModifiedWorks = false; /**
-	                                * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
-	                                */
+	/**
+	 * The sign of the change events of an attribute.
+	 * @type {boolean}
+	 */
+	var attrModifiedWorks = false;
+
+	/**
+	 * Helper function.
+	 * @private
+	 */
+	/**
+	 * @see http://engineering.silk.co/post/31921750832/mutation-events-what-happens
+	 */
 
 	var listener = function listener() {
 	    attrModifiedWorks = true;
