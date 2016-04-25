@@ -4,7 +4,16 @@
 
 import context from '../context';
 
+/**
+ * The sign of the change events of an attribute.
+ * @type {boolean}
+ */
 let attrModifiedWorks = false;
+
+/**
+ * Helper function.
+ * @private
+ */
 let listener = function () {
     attrModifiedWorks = true;
 };
