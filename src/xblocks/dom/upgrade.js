@@ -1,7 +1,7 @@
 import context from '../../context';
 
 /**
- * @function upgrade
+ * @module xblocks/dom/upgrade
  */
 export default (function () {
     if (context.CustomElements && typeof context.CustomElements.upgrade === 'function') {

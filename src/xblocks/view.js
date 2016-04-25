@@ -1,3 +1,7 @@
+/**
+ * @module xblocks/view
+ */
+
 import React, { PropTypes } from 'react';
 import merge from 'lodash/merge';
 import isArray from 'lodash/isArray';
@@ -55,7 +59,7 @@ const VIEW_COMMON_USER = {
     }
 };
 
-var viewComponentsClass = {};
+const VIEW_COMPONENTS_CLASS = {};
 
 /**
  * Create class view node.
@@ -84,6 +88,7 @@ var viewComponentsClass = {};
  * });
  *
  * @see http://facebook.github.io/react/docs/component-specs.html
+ * @alias module:xblocks/view.create
  * @param {Object|array} component settings view creation
  * @returns {function}
  */
@@ -110,6 +115,7 @@ export function create(component) {
  * });
  *
  * @see http://facebook.github.io/react/docs/component-specs.html
+ * @alias module:xblocks/view.register
  * @param {string} blockName the name of the new node
  * @param {Object|array|React.Component} component settings view creation
  * @returns {function}
@@ -124,7 +130,7 @@ export function register(blockName, component) {
         component :
         create(component);
 
-    viewComponentsClass[ blockName ] = componentClass;
+    VIEW_COMPONENTS_CLASS[ blockName ] = componentClass;
 
     React.DOM[ blockName ] = React.createFactory(componentClass);
 
@@ -133,6 +139,7 @@ export function register(blockName, component) {
 
 /**
  * Get factory view node.
+ * @alias module:xblocks/view.getFactory
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
@@ -142,9 +149,10 @@ export function getFactory(blockName) {
 
 /**
  * Get class view node.
+ * @alias module:xblocks/view.getClass
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
 export function getClass(blockName) {
-    return viewComponentsClass[ blockName ];
+    return VIEW_COMPONENTS_CLASS[ blockName ];
 }

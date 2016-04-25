@@ -1,3 +1,7 @@
+/**
+ * @module xblocks/element
+ */
+
 import ReactDOM from 'react-dom';
 import merge from 'lodash/merge';
 import keys from 'lodash/keys';
@@ -10,6 +14,7 @@ import lazy from './utils/lazy';
 
 /**
  * Xblock element constructor.
+ * @alias module:xblocks/element~XBElement
  * @param {HTMLElement} node the node of a custom element
  * @constructor XBElement
  */

@@ -1,10 +1,8 @@
 import context from '../../context';
 
 /**
- * @function xblocks.dom.outerHTML
- * @prop {Object} xblocks.dom.outerHTML
- * @prop {function} xblocks.dom.outerHTML.get
- * @prop {function} xblocks.dom.outerHTML.set
+ * Obtaining and installing external HTML.
+ * @module xblocks/dom/outerHTML
  */
 export default (function () {
 
@@ -22,8 +20,8 @@ export default (function () {
         };
 
     } else {
-        let serializer = context.XMLSerializer && (new context.XMLSerializer());
-        let xmlns = /\sxmlns=\"[^\"]+\"/;
+        const serializer = context.XMLSerializer && (new context.XMLSerializer());
+        const xmlns = /\sxmlns=\"[^\"]+\"/;
 
         if (serializer) {
             getter = function () {
@@ -33,7 +31,7 @@ export default (function () {
         } else {
             getter = function () {
                 container.appendChild(this.cloneNode(false));
-                const html = container.innerHTML.replace('><', '>' + this.innerHTML + '<');
+                const html = container.innerHTML.replace('><', `>${this.innerHTML}<`);
                 container.innerHTML = '';
                 return html;
             };
@@ -60,7 +58,9 @@ export default (function () {
     }
 
     return {
+        /** @alias module:xblocks/dom/outerHTML.get */
         'get': getter,
+        /** @alias module:xblocks/dom/outerHTML.set */
         'set': setter
     };
 

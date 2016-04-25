@@ -14,6 +14,7 @@ import immediate from 'setimmediate2/src';
  * // ....
  * [ Array[ 'a', 'b', 'c' ] ]
  *
+ * @module xblocks/utils/lazy
  * @param {function} callback
  * @param {*} args
  * @returns {function}

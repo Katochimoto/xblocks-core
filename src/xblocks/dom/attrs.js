@@ -1,3 +1,7 @@
+/**
+ * @module xblocks/dom/attrs
+ */
+
 import { PropTypes } from 'react';
 
 /**
@@ -31,6 +35,7 @@ const attrsBoolean = [
  * });
  * // { 'attr1': true, 'attr2': 'test1' }
  *
+ * @alias module:xblocks/dom/attrs.get
  * @param {HTMLElement} element
  * @param {Object} attrs the set of derived attributes (+default values)
  * @returns {Object}
@@ -68,6 +73,7 @@ export function get(element, attrs) {
  * toObject(node);
  * // { 'attr1': '', 'attr2': 'test' }
  *
+ * @alias module:xblocks/dom/attrs.toObject
  * @param {HTMLElement} element
  * @returns {Object}
  */
@@ -94,6 +100,7 @@ export function toObject(element) {
  * });
  * // { 'attr1': 123, 'attr2': true }
  *
+ * @alias module:xblocks/dom/attrs.typeConversion
  * @param {Object} props the set of attributes
  * @param {Object} [propTypes] the set of attribute types
  * @returns {Object}
@@ -125,6 +132,7 @@ export function typeConversion(props, propTypes) {
  * valueConversion('attr1', '123', PropTypes.number);
  * // 123
  *
+ * @alias module:xblocks/dom/attrs.valueConversion
  * @param {string} prop attribute name
  * @param {*} value attribute value
  * @param {function} [type] attribute type
@@ -154,6 +162,7 @@ export function valueConversion(prop, value, type) {
 
 /**
  * @param {Attr} attr
+ * @this Object
  * @private
  */
 function toObjectIterator(attr) {

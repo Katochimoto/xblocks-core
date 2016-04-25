@@ -1,3 +1,7 @@
+/**
+ * @module xblocks/event
+ */
+
 import isNative from 'lodash/isNative';
 import context from '../context';
 import CustomEventCommon from '../polyfills/CustomEventCommon';
@@ -13,6 +17,7 @@ import CustomEventCommon from '../polyfills/CustomEventCommon';
  *     detail: { data: '123' }
  * })
  *
+ * @alias module:xblocks/event~Custom
  * @constructor
  */
 export let Custom = (function () {
@@ -34,6 +39,7 @@ export let Custom = (function () {
  *     detail: { data: '123' }
  * })
  *
+ * @alias module:xblocks/event.dispatch
  * @param {HTMLElement} element node events
  * @param {string} name event name
  * @param {Object} params the event parameters

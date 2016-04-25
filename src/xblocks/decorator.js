@@ -1,3 +1,7 @@
+/**
+ * @module xblocks/decorator
+ */
+
 import { create } from './block';
 import { register } from './view';
 
@@ -32,6 +36,7 @@ import { register } from './view';
  *     // ...
  * }
  *
+ * @alias module:xblocks/decorator.element
  * @param {string} blockName the name of the new node
  * @param {?Object|array} options settings tag creation
  * @returns {function}

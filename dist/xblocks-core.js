@@ -145,6 +145,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+	/**
+	 * @module xblocks/block
+	 */
+
 	var BLOCK_COMMON = {
 	    lifecycle: {
 	        /**
@@ -310,6 +314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Creating a new tag.
 	 * @see http://x-tags.org/docs
+	 * @alias module:xblocks/block.create
 	 * @param {string} blockName the name of the new node
 	 * @param {?Object|array} options settings tag creation
 	 * @returns {HTMLElement}
@@ -389,6 +394,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * The selection of templates.
 	 * @param {HTMLElement} node
+	 * @this HTMLElement
 	 * @private
 	 */
 	function tmplCompileIterator(node) {
@@ -4191,10 +4197,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * });
 	 * // { 'attr1': true, 'attr2': 'test1' }
 	 *
+	 * @alias module:xblocks/dom/attrs.get
 	 * @param {HTMLElement} element
 	 * @param {Object} attrs the set of derived attributes (+default values)
 	 * @returns {Object}
 	 */
+	/**
+	 * @module xblocks/dom/attrs
+	 */
+
 	function get(element, attrs) {
 	    if (element.nodeType !== 1 || !element.hasAttributes()) {
 	        return attrs;
@@ -4223,6 +4234,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * toObject(node);
 	 * // { 'attr1': '', 'attr2': 'test' }
 	 *
+	 * @alias module:xblocks/dom/attrs.toObject
 	 * @param {HTMLElement} element
 	 * @returns {Object}
 	 */
@@ -4249,6 +4261,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * });
 	 * // { 'attr1': 123, 'attr2': true }
 	 *
+	 * @alias module:xblocks/dom/attrs.typeConversion
 	 * @param {Object} props the set of attributes
 	 * @param {Object} [propTypes] the set of attribute types
 	 * @returns {Object}
@@ -4276,6 +4289,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * valueConversion('attr1', '123', PropTypes.number);
 	 * // 123
 	 *
+	 * @alias module:xblocks/dom/attrs.valueConversion
 	 * @param {string} prop attribute name
 	 * @param {*} value attribute value
 	 * @param {function} [type] attribute type
@@ -4305,6 +4319,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * @param {Attr} attr
+	 * @this Object
 	 * @private
 	 */
 	function toObjectIterator(attr) {
@@ -4355,6 +4370,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Cloning node.
 	 * @see https://developer.mozilla.org/en-US/docs/Web/API/Node.cloneNode
+	 * @module xblocks/dom/cloneNode
 	 * @param {HTMLElement} node the node to be cloned
 	 * @param {boolean} deep true if the children of the node should also be cloned,
 	 * or false to clone only the specified node.
@@ -4417,10 +4433,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	/**
-	 * @function xblocks.dom.outerHTML
-	 * @prop {Object} xblocks.dom.outerHTML
-	 * @prop {function} xblocks.dom.outerHTML.get
-	 * @prop {function} xblocks.dom.outerHTML.set
+	 * Obtaining and installing external HTML.
+	 * @module xblocks/dom/outerHTML
 	 */
 
 	exports.default = function () {
@@ -4477,7 +4491,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    return {
+	        /** @alias module:xblocks/dom/outerHTML.get */
 	        'get': getter,
+	        /** @alias module:xblocks/dom/outerHTML.set */
 	        'set': setter
 	    };
 	}();
@@ -4499,7 +4515,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	/**
-	 * @function upgrade
+	 * @module xblocks/dom/upgrade
 	 */
 
 	exports.default = function () {
@@ -4527,7 +4543,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	/**
-	 * @function upgradeAll
+	 * @module xblocks/dom/upgradeAll
 	 */
 
 	exports.default = function () {
@@ -4583,6 +4599,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Xblock element constructor.
+	 * @alias module:xblocks/element~XBElement
 	 * @param {HTMLElement} node the node of a custom element
 	 * @constructor XBElement
 	 */
@@ -4608,6 +4625,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @type {HTMLElement}
 	 * @protected
 	 */
+	/**
+	 * @module xblocks/element
+	 */
+
 	XBElement.prototype._node = null;
 
 	/**
@@ -4861,7 +4882,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; }; /**
+	                                                                                                                                                                                                                                                   * @module xblocks/view
+	                                                                                                                                                                                                                                                   */
 
 	exports.create = create;
 	exports.register = register;
@@ -4936,7 +4959,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
-	var viewComponentsClass = {};
+	var VIEW_COMPONENTS_CLASS = {};
 
 	/**
 	 * Create class view node.
@@ -4965,6 +4988,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * });
 	 *
 	 * @see http://facebook.github.io/react/docs/component-specs.html
+	 * @alias module:xblocks/view.create
 	 * @param {Object|array} component settings view creation
 	 * @returns {function}
 	 */
@@ -4991,6 +5015,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * });
 	 *
 	 * @see http://facebook.github.io/react/docs/component-specs.html
+	 * @alias module:xblocks/view.register
 	 * @param {string} blockName the name of the new node
 	 * @param {Object|array|React.Component} component settings view creation
 	 * @returns {function}
@@ -5003,7 +5028,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var componentClass = (0, _isFunction2.default)(component) ? component : create(component);
 
-	    viewComponentsClass[blockName] = componentClass;
+	    VIEW_COMPONENTS_CLASS[blockName] = componentClass;
 
 	    _react2.default.DOM[blockName] = _react2.default.createFactory(componentClass);
 
@@ -5012,6 +5037,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Get factory view node.
+	 * @alias module:xblocks/view.getFactory
 	 * @param {string} blockName the name of the new node
 	 * @returns {function}
 	 */
@@ -5021,11 +5047,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Get class view node.
+	 * @alias module:xblocks/view.getClass
 	 * @param {string} blockName the name of the new node
 	 * @returns {function}
 	 */
 	function getClass(blockName) {
-	    return viewComponentsClass[blockName];
+	    return VIEW_COMPONENTS_CLASS[blockName];
 	}
 
 /***/ },
@@ -5035,7 +5062,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 	exports.Custom = undefined;
 	exports.dispatch = dispatch;
@@ -5065,14 +5092,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *     detail: { data: '123' }
 	 * })
 	 *
+	 * @alias module:xblocks/event~Custom
 	 * @constructor
 	 */
 	var Custom = exports.Custom = function () {
-	    if ((0, _isNative2.default)('CustomEvent')) {
-	        return _context2.default.CustomEvent;
-	    }
+	  if ((0, _isNative2.default)('CustomEvent')) {
+	    return _context2.default.CustomEvent;
+	  }
 
-	    return _CustomEventCommon2.default;
+	  return _CustomEventCommon2.default;
 	}();
 
 	/**
@@ -5086,12 +5114,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *     detail: { data: '123' }
 	 * })
 	 *
+	 * @alias module:xblocks/event.dispatch
 	 * @param {HTMLElement} element node events
 	 * @param {string} name event name
 	 * @param {Object} params the event parameters
 	 */
+	/**
+	 * @module xblocks/event
+	 */
+
 	function dispatch(element, name, params) {
-	    element.dispatchEvent(new Custom(name, params || {}));
+	  element.dispatchEvent(new Custom(name, params || {}));
 	}
 
 /***/ },
@@ -5569,6 +5602,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	/**
+	 * @alias module:xblocks/utils/log.time
 	 * @param {HTMLElement} element
 	 * @param {string} name
 	 */
@@ -5586,8 +5620,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Console output info.
+	 * @alias module:xblocks/utils/log.info
 	 * @param {...*} args
 	 */
+	/**
+	 * @module xblocks/utils/log
+	 */
+
 	function info() {
 	    var _context, _info;
 
@@ -5631,7 +5670,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 	exports.element = element;
 
@@ -5670,15 +5709,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *     // ...
 	 * }
 	 *
+	 * @alias module:xblocks/decorator.element
 	 * @param {string} blockName the name of the new node
 	 * @param {?Object|array} options settings tag creation
 	 * @returns {function}
 	 */
+	/**
+	 * @module xblocks/decorator
+	 */
+
 	function element(blockName, options) {
-	    return function (component) {
-	        (0, _block.create)(blockName, options);
-	        (0, _view.register)(blockName, component);
-	    };
+	  return function (component) {
+	    (0, _block.create)(blockName, options);
+	    (0, _view.register)(blockName, component);
+	  };
 	}
 
 /***/ }

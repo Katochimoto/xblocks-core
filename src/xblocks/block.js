@@ -1,3 +1,7 @@
+/**
+ * @module xblocks/block
+ */
+
 import * as xtag from 'xtag';
 import isPlainObject from 'lodash/isPlainObject';
 import isArray from 'lodash/isArray';
@@ -176,6 +180,7 @@ const BLOCK_COMMON = {
 /**
  * Creating a new tag.
  * @see http://x-tags.org/docs
+ * @alias module:xblocks/block.create
  * @param {string} blockName the name of the new node
  * @param {?Object|array} options settings tag creation
  * @returns {HTMLElement}
@@ -259,6 +264,7 @@ function blockCreateLazy(nodes) {
 /**
  * The selection of templates.
  * @param {HTMLElement} node
+ * @this HTMLElement
  * @private
  */
 function tmplCompileIterator(node) {
