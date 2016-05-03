@@ -25,10 +25,13 @@ const attrsBoolean = [
  * To obtain the specified attributes.
  *
  * @example
- * node = document.createElement('div');
+ * import { get } from 'xblocks/dom/attrs';
+ *
+ * var node = document.createElement('div');
  * node.setAttribute('attr1', '');
  * node.setAttribute('attr2', 'test1');
  * node.setAttribute('attr3', 'test2');
+ *
  * get(node, {
  *     'attr1': false,
  *     'attr2': undefined
@@ -67,9 +70,12 @@ export function get(element, attrs) {
  * Retrieve object attributes.
  *
  * @example
- * node = document.createElement('div');
+ * import { toObject } from 'xblocks/dom/attrs';
+ *
+ * var node = document.createElement('div');
  * node.setAttribute('attr1', '');
  * node.setAttribute('attr2', 'test');
+ *
  * toObject(node);
  * // { 'attr1': '', 'attr2': 'test' }
  *
@@ -91,6 +97,8 @@ export function toObject(element) {
  * Collective conversion of attribute types.
  *
  * @example
+ * import { typeConversion } from 'xblocks/dom/attrs';
+ *
  * typeConversion({
  *     'attr1': '123',
  *     'attr2': ''
@@ -125,6 +133,8 @@ export function typeConversion(props, propTypes) {
  * Convert the attribute value to the specified type.
  *
  * @example
+ * import { valueConversion } from 'xblocks/dom/attrs';
+ *
  * valueConversion('attr1', 'true');
  * // true
  * valueConversion('attr1', 'true', PropTypes.string);

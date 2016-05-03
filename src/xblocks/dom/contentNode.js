@@ -6,7 +6,7 @@
  *
  * import contentNode from 'xblocks/dom/contentNode';
  * console.log(contentNode(document.querySelector('x-element')));
- * # test
+ * // test
  *
  * @example
  * <x-element>
@@ -16,7 +16,7 @@
  *
  * import contentNode from 'xblocks/dom/contentNode';
  * console.log(contentNode(document.querySelector('x-element')));
- * # test
+ * // test
  *
  * @module xblocks/dom/contentNode
  * @param {HTMLElement} node

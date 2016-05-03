@@ -14,6 +14,7 @@ export default (function () {
         /**
          * Native obtaining external HTML.
          * @returns {string}
+         * @private
          */
         getter = function () {
             return this.outerHTML;
@@ -22,6 +23,7 @@ export default (function () {
         /**
          * Native installing external HTML.
          * @param {string} html
+         * @private
          */
         setter = function (html) {
             this.outerHTML = html;
@@ -35,6 +37,7 @@ export default (function () {
             /**
              * Obtaining external HTML, using XMLSerializer.
              * @returns {string}
+             * @private
              */
             getter = function () {
                 return serializer.serializeToString(this).replace(xmlns, '');
@@ -44,6 +47,7 @@ export default (function () {
             /**
              * Obtaining external HTML, using fake element.
              * @returns {string}
+             * @private
              */
             getter = function () {
                 container.appendChild(this.cloneNode(false));
@@ -57,6 +61,7 @@ export default (function () {
          * Installing external HTML, using fake element.
          * @param {string} html
          * @throws {DOMException}
+         * @private
          */
         setter = function (html) {
             let node = this;

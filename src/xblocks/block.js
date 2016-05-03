@@ -179,7 +179,7 @@ const BLOCK_COMMON = {
 
 /**
  * Creating a new tag.
- * @see http://x-tags.org/docs
+ * @see http://x-tag.github.io/
  * @alias module:xblocks/block.create
  * @param {string} blockName the name of the new node
  * @param {?Object|array} options settings tag creation

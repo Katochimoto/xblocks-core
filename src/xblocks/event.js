@@ -10,7 +10,8 @@ import CustomEventCommon from '../polyfills/CustomEventCommon';
  * Designer events.
  *
  * @example
- * import { Custom } from './event';
+ * import { Custom } from 'xblocks/event';
+ *
  * new Custom('custom-event', {
  *     bubbles: true,
  *     cancelable: true,
@@ -32,7 +33,8 @@ export let Custom = (function () {
  * Dispatch event.
  *
  * @example
- * mport { dispatch } from './event';
+ * import { dispatch } from 'xblocks/event';
+ * 
  * dispatch(node, 'custom-event', {
  *     bubbles: true,
  *     cancelable: true,

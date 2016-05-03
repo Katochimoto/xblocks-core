@@ -1,15 +1,18 @@
-# xblocks-core
-> HTML core custom elements
+HTML core custom elements
 
 [![Build Status][build]][build-link] [![NPM version][version]][version-link] [![Dependency Status][dependency]][dependency-link] [![devDependency Status][dev-dependency]][dev-dependency-link] [![Code Climate][climate]][climate-link] [![Test Coverage][coverage]][coverage-link] [![Inline docs][inch]][inch-link]
 
-##Dependencies
+## Документация
+
+[Документация](http://xblocks.info) | [JSDoc](https://katochimoto.github.io/xblocks/docs/jsdoc/)
+
+## Dependencies
 
 - [React.js](https://github.com/facebook/react)
 - [X-Tag core](https://github.com/x-tag/core) ([custom build xtag.js](https://github.com/Katochimoto/xblocks-core/blob/master/dist/xtag.js))
 - [es5-shim](https://github.com/es-shims/es5-shim)
 
-##Browser support
+## Browser support
 
 - Firefox 14+
 - Internet Explorer 9+
@@ -17,7 +20,7 @@
 - Safari 4+
 - Opera 12+
 
-##Example ES6
+## Example ES6
 ```js
 import React from 'react';
 import { element } from 'xblocks-core';
@@ -26,7 +29,7 @@ import { element } from 'xblocks-core';
 class XBElement extends React.Component {
     render() {
         return (
-            <div data-xb-content={this.props._uid} title={this.props.title}>{this.props.children}</div>
+            <div title={this.props.title}>{this.props.children}</div>
         );
     }
 }
@@ -36,7 +39,7 @@ XBElement.propTypes = {
 };
 ```
 
-##Example
+## Example
 ```html
 <!-- element usage -->
 <xb-ico type="notification">8</xb-ico>
@@ -67,38 +70,29 @@ view.register('xb-ico', {
 
     getDefaultProps: function() {
         return {
-            'size': 'm',
-            'children': String.fromCharCode(160)
+            size: 'm',
+            children: String.fromCharCode(160)
         };
     },
 
     render: function() {
-        var classes = {
+        const classes = classnames({
             'xb-ico': true,
             '_active': this.props.active,
-            '_disabled': this.props.disabled
-        };
-
-        if (this.props.type) {
-            classes['_type-' + this.props.type] = true;
-        }
-
-        if (this.props.size) {
-            classes['_size-' + this.props.size] = true;
-        }
-
-        classes = classnames(classes);
+            '_disabled': this.props.disabled,
+            [ `_type-${this.props.type}` ]: Boolean(this.props.type),
+            [ `_size-${this.props.size}` ]: Boolean(this.props.size)
+        });
 
         return (
-            <span className={classes}
-                data-xb-content={this.props._uid}>{this.props.children}</span>
+            <span className={classes}>{this.props.children}</span>
         );
     }
 });
 ```
 
 
-##Install
+## Install
 
 ```
 npm install xblocks-core
@@ -106,8 +100,6 @@ npm install xblocks-core
 ```
 bower install xblocks-core
 ```
-
-## Stats
 
 [![NPM](https://nodei.co/npm/xblocks-core.png?downloads=true&stars=true)](https://nodei.co/npm/xblocks-core/)
 [![NPM](https://nodei.co/npm-dl/xblocks-core.png)](https://nodei.co/npm/xblocks-core/)

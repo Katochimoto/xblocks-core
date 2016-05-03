@@ -6,7 +6,7 @@ import { getClass } from '../view';
  * @example
  * import propTypes from 'xblocks/utils/propTypes';
  * console.log(propTypes('x-element'));
- * # Object { _uid: function() ... }
+ * // Object { _uid: function() ... }
  *
  * @module xblocks/utils/propTypes
  * @param {string} [tagName] the name of the new node

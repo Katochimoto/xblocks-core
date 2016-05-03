@@ -65,24 +65,24 @@ const VIEW_COMPONENTS_CLASS = {};
  * Create class view node.
  *
  * @example
- * var view = require('./view');
+ * import view from 'xblocks/view';
  *
  * var XBButtonContent = view.create({
- *     'displayName': 'XBButtonContent',
- *     'render': function () {
+ *     displayName: 'XBButtonContent',
+ *     render: function () {
  *         return (
- *             &lt;span {...this.props}&gt;{this.props.children}&lt;/span&gt;
+ *             <span {...this.props}>{this.props.children}</span>
  *         );
  *     }
  * });
  *
  * view.register('xb-button', {
- *     'displayName': 'xb-button',
- *     'render': function () {
+ *     displayName: 'xb-button',
+ *     render: function () {
  *         return (
- *             &lt;button&gt;
- *                 &lt;XBButtonContent {...this.props} /&gt;
- *             &lt;/button&gt;
+ *             <button>
+ *                 <XBButtonContent {...this.props} />
+ *             </button>
  *         );
  *     }
  * });
@@ -104,12 +104,13 @@ export function create(component) {
  * Registration of a new node.
  *
  * @example
- * var view = require('./view');
+ * import view from 'xblocks/view';
+ * 
  * view.register('xb-button', {
- *     'displayName': 'xb-button',
- *     'render': function () {
+ *     displayName: 'xb-button',
+ *     render: function () {
  *         return (
- *             &lt;button {...this.props}&gt;{this.props.children}&lt;/button&gt;
+ *             <button {...this.props}>{this.props.children}</button>
  *         );
  *     }
  * });

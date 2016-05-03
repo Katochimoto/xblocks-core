@@ -7,6 +7,7 @@ import context from '../context';
 /**
  * The sign of the change events of an attribute.
  * @type {boolean}
+ * @private
  */
 let attrModifiedWorks = false;
 

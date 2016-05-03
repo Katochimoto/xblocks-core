@@ -4,15 +4,16 @@ import immediate from 'setimmediate2/src';
  * Deferred execution.
  *
  * @example
- * import lazy from './lazy';
+ * import lazy from 'xblocks/utils/lazy';
+ *
  * var lazyCallback = function () {
  *     console.log(arguments);
  * };
+ *
  * lazy(lazyCallback, 'a');
  * lazy(lazyCallback, 'b');
  * lazy(lazyCallback, 'c');
- * // ....
- * [ Array[ 'a', 'b', 'c' ] ]
+ * // [ Array[ 'a', 'b', 'c' ] ]
  *
  * @module xblocks/utils/lazy
  * @param {function} callback

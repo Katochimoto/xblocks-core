@@ -16,7 +16,7 @@ import lazy from './utils/lazy';
  * Xblock element constructor.
  * @alias module:xblocks/element~XBElement
  * @param {HTMLElement} node the node of a custom element
- * @constructor XBElement
+ * @constructor
  */
 export function XBElement(node) {
     node.xblock = this;
@@ -189,7 +189,7 @@ XBElement.prototype._init = function () {
  */
 XBElement.prototype._callbackInit = function () {
     this._node.upgrade();
-    this._observer = new context.MutationObserver(::this._callbackMutation);
+    this._observer = new context.MutationObserver(this._callbackMutation.bind(this));
     this._observer.observe(this._node, this._observerOptions);
 
     dispatch(this._node, 'xb-created');
@@ -228,7 +228,7 @@ XBElement.prototype._callbackMutation = function (records) {
 /**
  * @param {MutationRecord} record
  * @returns {boolean}
- * @protected
+ * @private
  */
 function filterAttributesRemove(record) {
     return (record.type === 'attributes' && !this._node.hasAttribute(record.attributeName));
@@ -237,7 +237,7 @@ function filterAttributesRemove(record) {
 /**
  * @param {MutationRecord} record
  * @returns {string}
- * @protected
+ * @private
  */
 function mapAttributesName(record) {
     return record.attributeName;
@@ -245,7 +245,7 @@ function mapAttributesName(record) {
 
 /**
  * @param {array} records
- * @protected
+ * @private
  */
 function globalInitEvent(records) {
     dispatch(context, 'xb-created', { detail: { records } });
@@ -253,7 +253,7 @@ function globalInitEvent(records) {
 
 /**
  * @param {array} records
- * @protected
+ * @private
  */
 function globalUpdateEvent(records) {
     dispatch(context, 'xb-update', { detail: { records } });
@@ -261,18 +261,18 @@ function globalUpdateEvent(records) {
 
 /**
  * Created event
- * @event XBElement~event:xb-created
+ * @event module:xblocks/element~XBElement~event:xb-created
  * @type {CustomEvent}
  */
 
 /**
  * Destroy event
- * @event XBElement~event:xb-destroy
+ * @event module:xblocks/element~XBElement~event:xb-destroy
  * @type {CustomEvent}
  */
 
 /**
  * Updated event
- * @event XBElement~event:xb-update
+ * @event module:xblocks/element~XBElement~event:xb-update
  * @type {CustomEvent}
  */
