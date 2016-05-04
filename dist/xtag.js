@@ -279,8 +279,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	/**
-	 * strange commit, checks CustomEvent only in IE
-	 * https://github.com/webcomponents/webcomponentsjs/commit/8d6a38aa6e3d03ff54a41db9e9725401bbc1446c
+	 * {@link https://github.com/webcomponents/webcomponentsjs/commit/8d6a38aa6e3d03ff54a41db9e9725401bbc1446c Strange commit, checks CustomEvent only in IE}
+	 * @constructor CustomEvent
+	 * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent
 	 */
 
 	if (typeof _context2.default.CustomEvent !== 'function') {
@@ -303,6 +304,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * The sign of the change events of an attribute.
 	 * @type {boolean}
+	 * @private
 	 */
 	var attrModifiedWorks = false;
 

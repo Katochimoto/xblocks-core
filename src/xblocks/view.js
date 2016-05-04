@@ -105,7 +105,6 @@ export function create(component) {
  *
  * @example
  * import view from 'xblocks/view';
- * 
  * view.register('xb-button', {
  *     displayName: 'xb-button',
  *     render: function () {

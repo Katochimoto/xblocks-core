@@ -34,7 +34,6 @@ export let Custom = (function () {
  *
  * @example
  * import { dispatch } from 'xblocks/event';
- * 
  * dispatch(node, 'custom-event', {
  *     bubbles: true,
  *     cancelable: true,

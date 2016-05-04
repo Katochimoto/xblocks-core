@@ -11,7 +11,7 @@ import { register } from './view';
  * @example
  * var xcore = require('xblocks-core');
  *
- * ​@​xcore.element('x-element')
+ * @xcore.element('x-element')
  * class XElement extends React.Component {
  *     render() {
  *         return (
@@ -27,7 +27,7 @@ import { register } from './view';
  * @example
  * var xcore = require('xblocks-core');
  *
- * ​@​xcore.element('x-element', {
+ * @xcore.element('x-element', {
  *     events: {
  *         'xb-created': function() {}
  *     }
