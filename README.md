@@ -2,9 +2,9 @@ HTML core custom elements
 
 [![Build Status][build]][build-link] [![NPM version][version]][version-link] [![Dependency Status][dependency]][dependency-link] [![devDependency Status][dev-dependency]][dev-dependency-link] [![Code Climate][climate]][climate-link] [![Test Coverage][coverage]][coverage-link] [![Inline docs][inch]][inch-link]
 
-## Документация
+## Documentation
 
-[Документация](http://xblocks.info) | [JSDoc](https://katochimoto.github.io/xblocks/docs/jsdoc/)
+[Documentation](http://xblocks.info) | [JSDoc](https://katochimoto.github.io/xblocks/docs/jsdoc/)
 
 ## Dependencies
 
