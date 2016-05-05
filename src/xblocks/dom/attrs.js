@@ -1,5 +1,5 @@
 /**
- * @module xblocks/dom/attrs
+ * @module xblocks-core/dom/attrs
  */
 
 import { PropTypes } from 'react';
@@ -25,7 +25,7 @@ const attrsBoolean = [
  * To obtain the specified attributes.
  *
  * @example
- * import { get } from 'xblocks/dom/attrs';
+ * import { get } from 'xblocks-core/dom/attrs';
  *
  * var node = document.createElement('div');
  * node.setAttribute('attr1', '');
@@ -38,7 +38,7 @@ const attrsBoolean = [
  * });
  * // { 'attr1': true, 'attr2': 'test1' }
  *
- * @alias module:xblocks/dom/attrs.get
+ * @alias module:xblocks-core/dom/attrs.get
  * @param {HTMLElement} element
  * @param {Object} attrs the set of derived attributes (+default values)
  * @returns {Object}
@@ -70,7 +70,7 @@ export function get(element, attrs) {
  * Retrieve object attributes.
  *
  * @example
- * import { toObject } from 'xblocks/dom/attrs';
+ * import { toObject } from 'xblocks-core/dom/attrs';
  *
  * var node = document.createElement('div');
  * node.setAttribute('attr1', '');
@@ -79,7 +79,7 @@ export function get(element, attrs) {
  * toObject(node);
  * // { 'attr1': '', 'attr2': 'test' }
  *
- * @alias module:xblocks/dom/attrs.toObject
+ * @alias module:xblocks-core/dom/attrs.toObject
  * @param {HTMLElement} element
  * @returns {Object}
  */
@@ -97,7 +97,7 @@ export function toObject(element) {
  * Collective conversion of attribute types.
  *
  * @example
- * import { typeConversion } from 'xblocks/dom/attrs';
+ * import { typeConversion } from 'xblocks-core/dom/attrs';
  *
  * typeConversion({
  *     'attr1': '123',
@@ -108,7 +108,7 @@ export function toObject(element) {
  * });
  * // { 'attr1': 123, 'attr2': true }
  *
- * @alias module:xblocks/dom/attrs.typeConversion
+ * @alias module:xblocks-core/dom/attrs.typeConversion
  * @param {Object} props the set of attributes
  * @param {Object} [propTypes] the set of attribute types
  * @returns {Object}
@@ -133,7 +133,7 @@ export function typeConversion(props, propTypes) {
  * Convert the attribute value to the specified type.
  *
  * @example
- * import { valueConversion } from 'xblocks/dom/attrs';
+ * import { valueConversion } from 'xblocks-core/dom/attrs';
  *
  * valueConversion('attr1', 'true');
  * // true
@@ -142,7 +142,7 @@ export function typeConversion(props, propTypes) {
  * valueConversion('attr1', '123', PropTypes.number);
  * // 123
  *
- * @alias module:xblocks/dom/attrs.valueConversion
+ * @alias module:xblocks-core/dom/attrs.valueConversion
  * @param {string} prop attribute name
  * @param {*} value attribute value
  * @param {function} [type] attribute type

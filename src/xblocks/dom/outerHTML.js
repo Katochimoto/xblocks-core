@@ -2,7 +2,7 @@ import context from '../../context';
 
 /**
  * Obtaining and installing external HTML.
- * @module xblocks/dom/outerHTML
+ * @module xblocks-core/dom/outerHTML
  */
 export default (function () {
 
@@ -86,7 +86,7 @@ export default (function () {
     return {
         /**
          * Obtaining external HTML.
-         * @alias module:xblocks/dom/outerHTML.get
+         * @alias module:xblocks-core/dom/outerHTML.get
          * @function
          * @returns {string}
          */
@@ -94,7 +94,7 @@ export default (function () {
 
         /**
          * Installing external HTML.
-         * @alias module:xblocks/dom/outerHTML.set
+         * @alias module:xblocks-core/dom/outerHTML.set
          * @function
          * @param {string} html
          */

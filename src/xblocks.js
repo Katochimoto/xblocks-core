@@ -1,5 +1,5 @@
 /**
- * @module xblocks
+ * @module xblocks-core
  */
 
 export { create } from './xblocks/block';

@@ -1,11 +1,11 @@
 /**
- * @module xblocks/utils/log
+ * @module xblocks-core/utils/log
  */
 
 import context from '../../context';
 
 /**
- * @alias module:xblocks/utils/log.time
+ * @alias module:xblocks-core/utils/log.time
  * @param {HTMLElement} element
  * @param {string} name
  */
@@ -23,7 +23,7 @@ export function time(element, name) {
 
 /**
  * Console output info.
- * @alias module:xblocks/utils/log.info
+ * @alias module:xblocks-core/utils/log.info
  * @param {...*} args
  */
 export function info(...args) {

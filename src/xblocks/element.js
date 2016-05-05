@@ -1,5 +1,5 @@
 /**
- * @module xblocks/element
+ * @module xblocks-core/element
  */
 
 import ReactDOM from 'react-dom';
@@ -14,7 +14,7 @@ import lazy from './utils/lazy';
 
 /**
  * Xblock element constructor.
- * @alias module:xblocks/element~XBElement
+ * @alias module:xblocks-core/element~XBElement
  * @param {HTMLElement} node the node of a custom element
  * @constructor
  */
@@ -58,7 +58,7 @@ XBElement.prototype._observer = null;
 
 /**
  * Unmounts a component and removes it from the DOM.
- * @fires XBElement~event:xb-destroy
+ * @fires module:xblocks-core/element~XBElement~event:xb-destroy
  */
 XBElement.prototype.destroy = function () {
     let node = this._node;
@@ -185,7 +185,7 @@ XBElement.prototype._init = function () {
 
 /**
  * @protected
- * @fires XBElement~event:xb-created
+ * @fires module:xblocks-core/element~XBElement~event:xb-created
  */
 XBElement.prototype._callbackInit = function () {
     this._node.upgrade();
@@ -199,7 +199,7 @@ XBElement.prototype._callbackInit = function () {
 /**
  * @param {function} [callback] the callback function
  * @protected
- * @fires XBElement~event:xb-update
+ * @fires module:xblocks-core/element~XBElement~event:xb-update
  */
 XBElement.prototype._callbackUpdate = function (callback) {
     this._node.upgrade();
@@ -261,18 +261,18 @@ function globalUpdateEvent(records) {
 
 /**
  * Created event
- * @event module:xblocks/element~XBElement~event:xb-created
+ * @event module:xblocks-core/element~XBElement~event:xb-created
  * @type {CustomEvent}
  */
 
 /**
  * Destroy event
- * @event module:xblocks/element~XBElement~event:xb-destroy
+ * @event module:xblocks-core/element~XBElement~event:xb-destroy
  * @type {CustomEvent}
  */
 
 /**
  * Updated event
- * @event module:xblocks/element~XBElement~event:xb-update
+ * @event module:xblocks-core/element~XBElement~event:xb-update
  * @type {CustomEvent}
  */

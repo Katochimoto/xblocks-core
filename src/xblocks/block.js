@@ -1,5 +1,5 @@
 /**
- * @module xblocks/block
+ * @module xblocks-core/block
  */
 
 import * as xtag from 'xtag';
@@ -180,7 +180,7 @@ const BLOCK_COMMON = {
 /**
  * Creating a new tag.
  * @see http://x-tag.github.io/
- * @alias module:xblocks/block.create
+ * @alias module:xblocks-core/block.create
  * @param {string} blockName the name of the new node
  * @param {?Object|array} options settings tag creation
  * @returns {HTMLElement}

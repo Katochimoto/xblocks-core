@@ -4,11 +4,11 @@ import { getClass } from '../view';
  * Description React component properties.
  *
  * @example
- * import propTypes from 'xblocks/utils/propTypes';
+ * import propTypes from 'xblocks-core/utils/propTypes';
  * console.log(propTypes('x-element'));
  * // Object { _uid: function() ... }
  *
- * @module xblocks/utils/propTypes
+ * @module xblocks-core/utils/propTypes
  * @param {string} [tagName] the name of the new node
  * @returns {Object}
  */

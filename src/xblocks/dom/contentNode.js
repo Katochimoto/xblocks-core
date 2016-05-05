@@ -4,7 +4,7 @@
  * @example
  * <x-element>test</x-element>
  *
- * import contentNode from 'xblocks/dom/contentNode';
+ * import contentNode from 'xblocks-core/dom/contentNode';
  * console.log(contentNode(document.querySelector('x-element')));
  * // test
  *
@@ -14,11 +14,11 @@
  *     other content
  * </x-element>
  *
- * import contentNode from 'xblocks/dom/contentNode';
+ * import contentNode from 'xblocks-core/dom/contentNode';
  * console.log(contentNode(document.querySelector('x-element')));
  * // test
  *
- * @module xblocks/dom/contentNode
+ * @module xblocks-core/dom/contentNode
  * @param {HTMLElement} node
  * @returns {HTMLElement}
  */

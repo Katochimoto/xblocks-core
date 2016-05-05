@@ -1,5 +1,5 @@
 /**
- * @module xblocks/event
+ * @module xblocks-core/event
  */
 
 import isNative from 'lodash/isNative';
@@ -10,7 +10,7 @@ import CustomEventCommon from '../polyfills/CustomEventCommon';
  * Designer events.
  *
  * @example
- * import { Custom } from 'xblocks/event';
+ * import { Custom } from 'xblocks-core/event';
  *
  * new Custom('custom-event', {
  *     bubbles: true,
@@ -18,7 +18,7 @@ import CustomEventCommon from '../polyfills/CustomEventCommon';
  *     detail: { data: '123' }
  * })
  *
- * @alias module:xblocks/event~Custom
+ * @alias module:xblocks-core/event~Custom
  * @constructor
  */
 export let Custom = (function () {
@@ -33,14 +33,14 @@ export let Custom = (function () {
  * Dispatch event.
  *
  * @example
- * import { dispatch } from 'xblocks/event';
+ * import { dispatch } from 'xblocks-core/event';
  * dispatch(node, 'custom-event', {
  *     bubbles: true,
  *     cancelable: true,
  *     detail: { data: '123' }
  * })
  *
- * @alias module:xblocks/event.dispatch
+ * @alias module:xblocks-core/event.dispatch
  * @param {HTMLElement} element node events
  * @param {string} name event name
  * @param {Object} params the event parameters

@@ -1,5 +1,5 @@
 /**
- * @module xblocks/view
+ * @module xblocks-core/view
  */
 
 import React, { PropTypes } from 'react';
@@ -65,7 +65,7 @@ const VIEW_COMPONENTS_CLASS = {};
  * Create class view node.
  *
  * @example
- * import view from 'xblocks/view';
+ * import view from 'xblocks-core/view';
  *
  * var XBButtonContent = view.create({
  *     displayName: 'XBButtonContent',
@@ -88,7 +88,7 @@ const VIEW_COMPONENTS_CLASS = {};
  * });
  *
  * @see http://facebook.github.io/react/docs/component-specs.html
- * @alias module:xblocks/view.create
+ * @alias module:xblocks-core/view.create
  * @param {Object|array} component settings view creation
  * @returns {function}
  */
@@ -104,7 +104,7 @@ export function create(component) {
  * Registration of a new node.
  *
  * @example
- * import view from 'xblocks/view';
+ * import view from 'xblocks-core/view';
  * view.register('xb-button', {
  *     displayName: 'xb-button',
  *     render: function () {
@@ -115,7 +115,7 @@ export function create(component) {
  * });
  *
  * @see http://facebook.github.io/react/docs/component-specs.html
- * @alias module:xblocks/view.register
+ * @alias module:xblocks-core/view.register
  * @param {string} blockName the name of the new node
  * @param {Object|array|React.Component} component settings view creation
  * @returns {function}
@@ -139,7 +139,7 @@ export function register(blockName, component) {
 
 /**
  * Get factory view node.
- * @alias module:xblocks/view.getFactory
+ * @alias module:xblocks-core/view.getFactory
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
@@ -149,7 +149,7 @@ export function getFactory(blockName) {
 
 /**
  * Get class view node.
- * @alias module:xblocks/view.getClass
+ * @alias module:xblocks-core/view.getClass
  * @param {string} blockName the name of the new node
  * @returns {function}
  */
