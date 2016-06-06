@@ -4471,17 +4471,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var basePrototype = options.prototype;
 	      delete options.prototype;
 	      var tag = xtag.tags[_name].compiled = applyMixins(xtag.merge({}, xtag.defaultOptions, options));
+	      var proto = tag.prototype;
+	      var lifecycle = tag.lifecycle;
 
 	      for (var z in tag.events) tag.events[z] = xtag.parseEvent(z, tag.events[z]);
-	      for (z in tag.lifecycle) tag.lifecycle[z.split(':')[0]] = xtag.applyPseudos(z, tag.lifecycle[z], tag.pseudos, tag.lifecycle[z]);
-	      for (z in tag.methods) tag.prototype[z.split(':')[0]] = { value: xtag.applyPseudos(z, tag.methods[z], tag.pseudos, tag.methods[z]), enumerable: true };
+	      for (z in lifecycle) lifecycle[z.split(':')[0]] = xtag.applyPseudos(z, lifecycle[z], tag.pseudos, lifecycle[z]);
+	      for (z in tag.methods) proto[z.split(':')[0]] = { value: xtag.applyPseudos(z, tag.methods[z], tag.pseudos, tag.methods[z]), enumerable: true };
 	      for (z in tag.accessors) parseAccessor(tag, z);
 
 	      if (tag.shadow) tag.shadow = tag.shadow.nodeName ? tag.shadow : xtag.createFragment(tag.shadow);
 	      if (tag.content) tag.content = tag.content.nodeName ? tag.content.innerHTML : parseMultiline(tag.content);
-	      var created = tag.lifecycle.created;
-	      var finalized = tag.lifecycle.finalized;
-	      tag.prototype.createdCallback = {
+	      var created = lifecycle.created;
+	      var finalized = lifecycle.finalized;
+	      proto.createdCallback = {
 	        enumerable: true,
 	        value: function(){
 	          var element = this;
@@ -4506,16 +4508,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      };
 
-	      var inserted = tag.lifecycle.inserted,
-	          removed = tag.lifecycle.removed;
+	      var inserted = lifecycle.inserted;
+	      var removed = lifecycle.removed;
 	      if (inserted || removed) {
-	        tag.prototype.attachedCallback = { value: function(){
+	        proto.attachedCallback = { value: function(){
 	          if (removed) this.xtag.__parentNode__ = this.parentNode;
 	          if (inserted) return inserted.apply(this, arguments);
 	        }, enumerable: true };
 	      }
 	      if (removed) {
-	        tag.prototype.detachedCallback = { value: function(){
+	        proto.detachedCallback = { value: function(){
 	          var args = toArray(arguments);
 	          args.unshift(this.xtag.__parentNode__);
 	          var output = removed.apply(this, args);
@@ -4523,9 +4525,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return output;
 	        }, enumerable: true };
 	      }
-	      if (tag.lifecycle.attributeChanged) tag.prototype.attributeChangedCallback = { value: tag.lifecycle.attributeChanged, enumerable: true };
+	      if (lifecycle.attributeChanged) proto.attributeChangedCallback = { value: lifecycle.attributeChanged, enumerable: true };
 
-	      tag.prototype.setAttribute = {
+	      proto.setAttribute = {
 	        writable: true,
 	        enumerable: true,
 	        value: function (name, value){
@@ -4544,7 +4546,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      };
 
-	      tag.prototype.removeAttribute = {
+	      proto.removeAttribute = {
 	        writable: true,
 	        enumerable: true,
 	        value: function (name){
@@ -4559,20 +4561,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      };
 
-	      var elementProto = basePrototype ?
-	            basePrototype :
-	            tag['extends'] ?
-	            Object.create(doc.createElement(tag['extends']).constructor).prototype :
-	            win.HTMLElement.prototype;
+	      var definition = {};
+	      var instance = basePrototype instanceof win.HTMLElement;
+	      var extended = tag['extends'] && (definition['extends'] = tag['extends']);
 
-	      var definition = {
-	        'prototype': Object.create(elementProto, tag.prototype)
-	      };
-	      if (tag['extends']) {
-	        definition['extends'] = tag['extends'];
-	      }
-	      var reg = doc.registerElement(_name, definition);
-	      return reg;
+	      if (basePrototype) Object.getOwnPropertyNames(basePrototype).forEach(function(z){
+	        var prop = proto[z];
+	        var desc = instance ? Object.getOwnPropertyDescriptor(basePrototype, z) : basePrototype[z];
+	        if (prop) {
+	          for (var y in desc) {
+	            if (typeof desc[y] == 'function' && prop[y]) prop[y] = xtag.wrap(desc[y], prop[y]);
+	            else prop[y] = desc[y];
+	          }
+	        }
+	        proto[z] = prop || desc;
+	      });
+
+	      definition['prototype'] = Object.create(
+	        extended ? Object.create(doc.createElement(extended).constructor).prototype : win.HTMLElement.prototype,
+	        proto
+	      );
+
+	      return doc.registerElement(_name, definition);
 	    },
 
 	    /* Exposed Variables */
@@ -4627,16 +4637,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        condition: touchFilter
 	      },
 	      tapmove: {
-	        attach: ['pointerdown', 'pointerup'],
+	        attach: ['pointerdown'],
 	        condition: function(event, custom){
 	          if (event.type == 'pointerdown') {
-	            if (!custom.moveListener) custom.moveListener = xtag.addEvent(this, 'pointermove', custom.listener);
+	            var listener = custom.listener.bind(this);
+	            if (!custom.tapmoveListeners) custom.tapmoveListeners = xtag.addEvents(document, {
+	              pointermove: listener,
+	              pointerup: listener,
+	              pointercancel: listener
+	            });
 	          }
-	          else if (event.type == 'pointerup') {
-	            xtag.removeEvent(this, custom.moveListener);
-	            custom.moveListener = null;
+	          else if (event.type == 'pointerup' || event.type == 'pointercancel') {
+	            xtag.removeEvents(document, custom.tapmoveListeners);
+	            custom.tapmoveListeners = null;
 	          }
-	          else return true;
+	          return true;
 	        }
 	      },
 	      taphold: {
