@@ -435,7 +435,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	function optionsIterator(option) {
 	    if ((0, _isPlainObject2.default)(option)) {
-	        delete option.prototype;
 	        (0, _forOwn2.default)(option.accessors, accessorsIterator);
 	    }
 	}

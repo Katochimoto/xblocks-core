@@ -286,7 +286,6 @@ function mergeCustomizer(objValue, srcValue) {
  */
 function optionsIterator(option) {
     if (isPlainObject(option)) {
-        delete option.prototype;
         forOwn(option.accessors, accessorsIterator);
     }
 }
