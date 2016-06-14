@@ -3,13 +3,22 @@
  */
 
 import * as xtag from 'xtag';
+import isFunction from 'lodash/isFunction';
 import isPlainObject from 'lodash/isPlainObject';
-import isArray from 'lodash/isArray';
-import merge from 'lodash/merge';
+import mergeWith from 'lodash/mergeWith';
 import uniqueId from 'lodash/uniqueId';
+import forOwn from 'lodash/forOwn';
+import forEach from 'lodash/forEach';
+import spread from 'lodash/spread';
+import castArray from 'lodash/castArray';
+import isArray from 'lodash/isArray';
+import set from 'lodash/set';
+import get from 'lodash/get';
 import * as dom from './dom';
 import { XBElement } from './element';
 import { lazy, propTypes } from './utils';
+
+const spreadMergeWith = spread(mergeWith);
 
 const BLOCK_COMMON = {
     lifecycle: {
@@ -62,6 +71,7 @@ const BLOCK_COMMON = {
             /**
              * Check react mounted
              * @returns {boolean}
+             * @readonly
              */
             get: function () {
                 return Boolean(this.xblock && this.xblock.isMounted());
@@ -100,6 +110,7 @@ const BLOCK_COMMON = {
             /**
              * Getting object attributes.
              * @returns {Object}
+             * @readonly
              */
             get: function () {
                 return dom.attrs.toObject(this);
@@ -110,6 +121,7 @@ const BLOCK_COMMON = {
             /**
              * Getting object properties.
              * @returns {Object}
+             * @readonly
              */
             get: function () {
                 const props = dom.attrs.toObject(this);
@@ -135,6 +147,7 @@ const BLOCK_COMMON = {
             /**
              * Getting react properties.
              * @returns {Object}
+             * @readonly
              */
             get: function () {
                 return propTypes(this.xtagName);
@@ -187,32 +200,13 @@ const BLOCK_COMMON = {
  * @public
  */
 export function create(blockName, options) {
-    options = isArray(options) ? options : [ options ];
+    options = castArray(options);
+    options = forEach(options, optionsIterator);
+
     options.unshift({});
-    options.push(BLOCK_COMMON);
+    options.push(BLOCK_COMMON, mergeCustomizer);
 
-    // error when merging prototype in FireFox <=19
-    let proto;
-    let i = 1;
-    const l = options.length;
-
-    for (; i < l; i++) {
-        let o = options[ i ];
-
-        if (isPlainObject(o) && o.prototype) {
-            if (!proto) {
-                proto = o.prototype;
-            }
-
-            delete o.prototype;
-        }
-    }
-
-    options = merge.apply({}, options);
-
-    if (proto) {
-        options.prototype = proto;
-    }
+    options = spreadMergeWith(options);
 
     return xtag.register(blockName, options);
 }
@@ -269,4 +263,54 @@ function blockCreateLazy(nodes) {
  */
 function tmplCompileIterator(node) {
     this.xtmpl[ node.getAttribute('ref') ] = node.innerHTML;
+}
+
+/**
+ * Special handler of merge.
+ * Arrays are merged by the concatenation.
+ * @param {*} objValue
+ * @param {*} srcValue
+ * @returns {?array}
+ * @private
+ */
+function mergeCustomizer(objValue, srcValue) {
+    if (isArray(objValue)) {
+        return objValue.concat(srcValue);
+    }
+}
+
+/**
+ * The iterator parameters.
+ * @param {Object} option
+ * @private
+ */
+function optionsIterator(option) {
+    if (isPlainObject(option)) {
+        delete option.prototype;
+        forOwn(option.accessors, accessorsIterator);
+    }
+}
+
+/**
+ * The iterator accessors.
+ * Overriding the event of a value change.
+ * @param {Object} accessor
+ * @param {string} accessorName
+ * @private
+ */
+function accessorsIterator(accessor, accessorName) {
+    const setter = get(accessor, 'set');
+
+    set(accessor, 'set', function (nextValue, prevValue) {
+        if (isFunction(setter)) {
+            setter.call(this, nextValue, prevValue);
+        }
+
+        if (nextValue !== prevValue &&
+            this.xprops.hasOwnProperty(accessorName) &&
+            this.mounted) {
+
+            this.xblock.update();
+        }
+    });
 }
