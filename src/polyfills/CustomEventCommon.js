@@ -1,12 +1,45 @@
 import context from '../context';
 
+/**
+ * @constant {Document}
+ * @private
+ */
+const doc = context.document;
+
+/**
+ * @constant {Object}
+ * @private
+ */
+const protoEvent = context.Event.prototype;
+
 let issetCustomEvent = false;
 
 try {
-    issetCustomEvent = Boolean(context.document.createEvent('CustomEvent'));
+    issetCustomEvent = Boolean(doc.createEvent('CustomEvent'));
 } catch (e) {
     // do nothing
 }
+
+/**
+ * The original function "stopImmediatePropagation"
+ * @constant {function}
+ * @private
+ */
+const stopImmediatePropagation = protoEvent.stopImmediatePropagation;
+
+/**
+ * Override function to set properties "immediatePropagationStopped"
+ */
+protoEvent.stopImmediatePropagation = function () {
+    this.immediatePropagationStopped = true;
+
+    if (stopImmediatePropagation) {
+        stopImmediatePropagation.call(this);
+
+    } else {
+        this.stopPropagation();
+    }
+};
 
 let CustomEventCommon = (function () {
     if (issetCustomEvent) {
@@ -15,7 +48,7 @@ let CustomEventCommon = (function () {
 
             let bubbles = Boolean(params.bubbles);
             let cancelable = Boolean(params.cancelable);
-            let evt = context.document.createEvent('CustomEvent');
+            let evt = doc.createEvent('CustomEvent');
 
             evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
@@ -28,7 +61,7 @@ let CustomEventCommon = (function () {
 
         let bubbles = Boolean(params.bubbles);
         let cancelable = Boolean(params.cancelable);
-        let evt = context.document.createEvent('Event');
+        let evt = doc.createEvent('Event');
 
         evt.initEvent(eventName, bubbles, cancelable);
         evt.detail = params.detail;
@@ -37,6 +70,6 @@ let CustomEventCommon = (function () {
     };
 }());
 
-CustomEventCommon.prototype = context.Event.prototype;
+CustomEventCommon.prototype = protoEvent;
 
 export default CustomEventCommon;

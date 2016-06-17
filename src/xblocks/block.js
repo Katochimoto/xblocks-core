@@ -3,17 +3,18 @@
  */
 
 import * as xtag from 'xtag';
+import isUndefined from 'lodash/isUndefined';
 import isFunction from 'lodash/isFunction';
-import isPlainObject from 'lodash/isPlainObject';
+import stubFalse from 'lodash/stubFalse';
+import merge from 'lodash/merge';
+import assign from 'lodash/assign';
 import mergeWith from 'lodash/mergeWith';
 import uniqueId from 'lodash/uniqueId';
-import forOwn from 'lodash/forOwn';
-import forEach from 'lodash/forEach';
 import spread from 'lodash/spread';
 import castArray from 'lodash/castArray';
 import isArray from 'lodash/isArray';
-import set from 'lodash/set';
 import get from 'lodash/get';
+import wrap from 'lodash/wrap';
 import * as dom from './dom';
 import { XBElement } from './element';
 import { lazy, propTypes } from './utils';
@@ -201,12 +202,15 @@ const BLOCK_COMMON = {
  */
 export function create(blockName, options) {
     options = castArray(options);
-    options = forEach(options, optionsIterator);
-
     options.unshift({});
-    options.push(BLOCK_COMMON, mergeCustomizer);
-
+    options.push(mergeCustomizer);
     options = spreadMergeWith(options);
+
+    for (let key in BLOCK_COMMON) {
+        if (BLOCK_COMMON.hasOwnProperty(key)) {
+            options[ key ] = assign(options[ key ], BLOCK_COMMON[ key ]);
+        }
+    }
 
     return xtag.register(blockName, options);
 }
@@ -270,46 +274,98 @@ function tmplCompileIterator(node) {
  * Arrays are merged by the concatenation.
  * @param {*} objValue
  * @param {*} srcValue
- * @returns {?array}
+ * @param {string} key
+ * @returns {Object|array|undefined}
  * @private
  */
-function mergeCustomizer(objValue, srcValue) {
+function mergeCustomizer(objValue, srcValue, key) {
     if (isArray(objValue)) {
         return objValue.concat(srcValue);
     }
-}
 
-/**
- * The iterator parameters.
- * @param {Object} option
- * @private
- */
-function optionsIterator(option) {
-    if (isPlainObject(option)) {
-        forOwn(option.accessors, accessorsIterator);
+    if (key === 'events') {
+        return mergeWith(objValue, srcValue, eventsCustomizer);
+    }
+
+    if (key === 'accessors') {
+        return mergeWith(objValue, srcValue, accessorsCustomizer);
     }
 }
 
 /**
- * The iterator accessors.
- * Overriding the event of a value change.
- * @param {Object} accessor
- * @param {string} accessorName
+ * Inheritance event handler.
+ * @param {function} [objValue] the current handler
+ * @param {function} [srcValue] the new handler
+ * @returns {function}
  * @private
  */
-function accessorsIterator(accessor, accessorName) {
-    const setter = get(accessor, 'set');
+function eventsCustomizer(objValue, srcValue) {
+    return wrap(objValue, wrap(srcValue, wrapperEvents));
+}
 
-    set(accessor, 'set', function (nextValue, prevValue) {
-        if (isFunction(setter)) {
-            setter.call(this, nextValue, prevValue);
-        }
+/**
+ * Inheritance events "set" property changes.
+ * @param {Object} [objValue] the current value
+ * @param {Object} [srcValue] the new value
+ * @param {string} name the name of the property
+ * @returns {Object}
+ * @private
+ */
+function accessorsCustomizer(objValue, srcValue, name) {
+    const srcSetter = get(srcValue, 'set');
+    const objSetter = isUndefined(objValue) ? wrap(name, wrapperAccessorsSetInit) : get(objValue, 'set');
 
-        if (nextValue !== prevValue &&
-            this.xprops.hasOwnProperty(accessorName) &&
-            this.mounted) {
-
-            this.xblock.update();
-        }
+    return merge({}, objValue, srcValue, {
+        set: wrap(objSetter, wrap(srcSetter, wrapperAccessorsSet))
     });
+}
+
+/**
+ * Implementation of inherited event.
+ * @param {function} [func1]
+ * @param {function} [func2]
+ * @param {...*} args
+ * @private
+ */
+function wrapperEvents(func1, func2, ...args) {
+    const event = (args[ 0 ] instanceof Event) && args[ 0 ];
+    const isStopped = event ? () => event.immediatePropagationStopped : stubFalse;
+
+    if (!isStopped() && isFunction(func1)) {
+        func1.apply(this, args);
+    }
+
+    if (!isStopped() && isFunction(func2)) {
+        func2.apply(this, args);
+    }
+}
+
+/**
+ * Update element when a property is changed.
+ * @param {string} accessorName the name of the property
+ * @param {*} nextValue
+ * @param {*} prevValue
+ * @private
+ */
+function wrapperAccessorsSetInit(accessorName, nextValue, prevValue) {
+    if (nextValue !== prevValue && this.xprops.hasOwnProperty(accessorName) && this.mounted) {
+        this.xblock.update();
+    }
+}
+
+/**
+ * Implementation of inherited event.
+ * @param {function} [func1]
+ * @param {function} [func2]
+ * @param {...*} args
+ * @private
+ */
+function wrapperAccessorsSet(func1, func2, ...args) {
+    if (isFunction(func1)) {
+        func1.apply(this, args);
+    }
+
+    if (isFunction(func2)) {
+        func2.apply(this, args);
+    }
 }

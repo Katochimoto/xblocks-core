@@ -57,39 +57,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _context = __webpack_require__(157);
+	var _context = __webpack_require__(171);
 
 	var _context2 = _interopRequireDefault(_context);
-
-	__webpack_require__(183);
-
-	__webpack_require__(184);
-
-	__webpack_require__(185);
-
-	__webpack_require__(186);
-
-	__webpack_require__(187);
-
-	__webpack_require__(188);
-
-	__webpack_require__(189);
-
-	__webpack_require__(190);
-
-	__webpack_require__(191);
-
-	__webpack_require__(192);
-
-	__webpack_require__(193);
-
-	__webpack_require__(194);
-
-	__webpack_require__(195);
-
-	__webpack_require__(196);
-
-	__webpack_require__(197);
 
 	__webpack_require__(198);
 
@@ -109,7 +79,37 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	__webpack_require__(206);
 
-	var _core = __webpack_require__(207);
+	__webpack_require__(207);
+
+	__webpack_require__(208);
+
+	__webpack_require__(209);
+
+	__webpack_require__(210);
+
+	__webpack_require__(211);
+
+	__webpack_require__(212);
+
+	__webpack_require__(213);
+
+	__webpack_require__(214);
+
+	__webpack_require__(215);
+
+	__webpack_require__(216);
+
+	__webpack_require__(217);
+
+	__webpack_require__(218);
+
+	__webpack_require__(219);
+
+	__webpack_require__(220);
+
+	__webpack_require__(221);
+
+	var _core = __webpack_require__(222);
 
 	var _core2 = _interopRequireDefault(_core);
 
@@ -127,7 +127,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 157:
+/***/ 171:
 /***/ function(module, exports) {
 
 	'use strict';
@@ -143,7 +143,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 167:
+/***/ 182:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -152,19 +152,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	var _context = __webpack_require__(157);
+	var _context = __webpack_require__(171);
 
 	var _context2 = _interopRequireDefault(_context);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/**
+	 * @constant {Document}
+	 * @private
+	 */
+	var doc = _context2.default.document;
+
+	/**
+	 * @constant {Object}
+	 * @private
+	 */
+	var protoEvent = _context2.default.Event.prototype;
+
 	var issetCustomEvent = false;
 
 	try {
-	    issetCustomEvent = Boolean(_context2.default.document.createEvent('CustomEvent'));
-	} catch (e) {
-	    // do nothing
-	}
+	    issetCustomEvent = Boolean(doc.createEvent('CustomEvent'));
+	} catch (e) {}
+	// do nothing
+
+
+	/**
+	 * The original function "stopImmediatePropagation"
+	 * @constant {function}
+	 * @private
+	 */
+	var stopImmediatePropagation = protoEvent.stopImmediatePropagation;
+
+	/**
+	 * Override function to set properties "immediatePropagationStopped"
+	 */
+	protoEvent.stopImmediatePropagation = function () {
+	    this.immediatePropagationStopped = true;
+
+	    if (stopImmediatePropagation) {
+	        stopImmediatePropagation.call(this);
+	    } else {
+	        this.stopPropagation();
+	    }
+	};
 
 	var CustomEventCommon = function () {
 	    if (issetCustomEvent) {
@@ -173,7 +205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            var bubbles = Boolean(params.bubbles);
 	            var cancelable = Boolean(params.cancelable);
-	            var evt = _context2.default.document.createEvent('CustomEvent');
+	            var evt = doc.createEvent('CustomEvent');
 
 	            evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
 
@@ -186,7 +218,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var bubbles = Boolean(params.bubbles);
 	        var cancelable = Boolean(params.cancelable);
-	        var evt = _context2.default.document.createEvent('Event');
+	        var evt = doc.createEvent('Event');
 
 	        evt.initEvent(eventName, bubbles, cancelable);
 	        evt.detail = params.detail;
@@ -195,18 +227,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	}();
 
-	CustomEventCommon.prototype = _context2.default.Event.prototype;
+	CustomEventCommon.prototype = protoEvent;
 
 	exports.default = CustomEventCommon;
 
 /***/ },
 
-/***/ 183:
+/***/ 198:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _context = __webpack_require__(157);
+	var _context = __webpack_require__(171);
 
 	var _context2 = _interopRequireDefault(_context);
 
@@ -237,7 +269,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 184:
+/***/ 199:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -246,7 +278,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	var _context = __webpack_require__(157);
+	var _context = __webpack_require__(171);
 
 	var _context2 = _interopRequireDefault(_context);
 
@@ -263,16 +295,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 185:
+/***/ 200:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _context = __webpack_require__(157);
+	var _context = __webpack_require__(171);
 
 	var _context2 = _interopRequireDefault(_context);
 
-	var _CustomEventCommon = __webpack_require__(167);
+	var _CustomEventCommon = __webpack_require__(182);
 
 	var _CustomEventCommon2 = _interopRequireDefault(_CustomEventCommon);
 
@@ -290,12 +322,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 186:
+/***/ 201:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _context = __webpack_require__(157);
+	var _context = __webpack_require__(171);
 
 	var _context2 = _interopRequireDefault(_context);
 
@@ -364,7 +396,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 187:
+/***/ 202:
 /***/ function(module, exports) {
 
 	// DOMTokenList polyfill for IE9
@@ -454,7 +486,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 188:
+/***/ 203:
 /***/ function(module, exports) {
 
 	/**
@@ -510,7 +542,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 189:
+/***/ 204:
 /***/ function(module, exports) {
 
 	/**
@@ -1092,7 +1124,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 190:
+/***/ 205:
 /***/ function(module, exports) {
 
 	/**
@@ -1139,7 +1171,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 191:
+/***/ 206:
 /***/ function(module, exports) {
 
 	/**
@@ -1232,7 +1264,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 192:
+/***/ 207:
 /***/ function(module, exports) {
 
 	/**
@@ -1557,7 +1589,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 193:
+/***/ 208:
 /***/ function(module, exports) {
 
 	/**
@@ -1694,7 +1726,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 194:
+/***/ 209:
 /***/ function(module, exports) {
 
 	/**
@@ -2070,7 +2102,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 195:
+/***/ 210:
 /***/ function(module, exports) {
 
 	/**
@@ -2201,7 +2233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 196:
+/***/ 211:
 /***/ function(module, exports) {
 
 	/**
@@ -2449,7 +2481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 197:
+/***/ 212:
 /***/ function(module, exports) {
 
 	/**
@@ -2485,7 +2517,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 198:
+/***/ 213:
 /***/ function(module, exports) {
 
 	/**
@@ -2541,7 +2573,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 199:
+/***/ 214:
 /***/ function(module, exports) {
 
 	/**
@@ -2610,7 +2642,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 200:
+/***/ 215:
 /***/ function(module, exports) {
 
 	/**
@@ -2757,7 +2789,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 201:
+/***/ 216:
 /***/ function(module, exports) {
 
 	/**
@@ -2815,7 +2847,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 202:
+/***/ 217:
 /***/ function(module, exports) {
 
 	/**
@@ -3161,7 +3193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 203:
+/***/ 218:
 /***/ function(module, exports) {
 
 	/**
@@ -3341,7 +3373,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 204:
+/***/ 219:
 /***/ function(module, exports) {
 
 	/**
@@ -3413,7 +3445,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 205:
+/***/ 220:
 /***/ function(module, exports) {
 
 	/**
@@ -3475,7 +3507,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 206:
+/***/ 221:
 /***/ function(module, exports) {
 
 	var HANDJS = HANDJS || {};
@@ -4141,7 +4173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 
-/***/ 207:
+/***/ 222:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function () {

@@ -165,22 +165,23 @@ XBElement.prototype.getMountedProps = function () {
  * @protected
  */
 XBElement.prototype._init = function () {
-    const children = this._node.content;
-    const props = merge({}, this._node.props, {
-        _uid: this._node.xuid,
-        _container: this._node
+    const node = this._node;
+    const props = merge({}, node.props, {
+        _uid: node.xuid,
+        _container: node
     });
 
-    typeConversion(props, this._node.xprops);
+    typeConversion(props, node.xprops);
 
-    const proxyConstructor = getFactory(this._node.xtagName)(props, children);
+    const proxyConstructor = getFactory(node.xtagName)(props, node.content);
     const that = this;
     const renderCallback = function () {
         that._component = this;
         that._callbackInit();
     };
 
-    this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
+    dispatch(node, 'xb-before-created');
+    this._component = ReactDOM.render(proxyConstructor, node, renderCallback);
 };
 
 /**
