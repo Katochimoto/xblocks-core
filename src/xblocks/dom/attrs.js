@@ -171,6 +171,10 @@ export function valueConversion(prop, value, type) {
 }
 
 /**
+ * The mapping of attributes to the object
+ * @example
+ * var attrs = {};
+ * Array.prototype.forEach.call(element.attributes, toObjectIterator, attrs);
  * @param {Attr} attr
  * @this Object
  * @private

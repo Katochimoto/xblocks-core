@@ -307,6 +307,7 @@ function accessorsCustomizer(objValue, srcValue) {
 
 /**
  * Implementation of inherited event.
+ * @example
  * // call objFunc, srcFunc
  * _.wrap(objFunc, _.wrap(srcFunc, wrapperEvents));
  * @param {function} [srcFunc]

@@ -462,6 +462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Implementation of inherited event.
+	 * @example
 	 * // call objFunc, srcFunc
 	 * _.wrap(objFunc, _.wrap(srcFunc, wrapperEvents));
 	 * @param {function} [srcFunc]
@@ -7748,6 +7749,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
+	 * The mapping of attributes to the object
+	 * @example
+	 * var attrs = {};
+	 * Array.prototype.forEach.call(element.attributes, toObjectIterator, attrs);
 	 * @param {Attr} attr
 	 * @this Object
 	 * @private
