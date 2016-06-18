@@ -1,6 +1,7 @@
 require('../tags/x-element-accessors.jsx');
 
 var create = require('block').create;
+var register = require('view').register;
 var dispatch = require('event').dispatch;
 var xtag = require('xtag');
 var vow = require('vow');
@@ -41,30 +42,50 @@ describe('xblocks', function () {
             expect(node).to.have.property('test2');
         });
 
-        it('События жизненного цикла (lifecycle) переопределить нельзя', function () {
-            var created = function () {};
-            var inserted = function () {};
-            var removed = function () {};
-            // var attributeChanged = function () {};
+        describe('Наследование событий жизненного цикла', function () {
+            it('События жизненного цикла (lifecycle) можно наследовать', function () {
+                var spy1 = this.sinon.spy();
+                var spy2 = this.sinon.spy();
+                var spy3 = this.sinon.spy();
 
-            this.sinon.stub(xtag, 'register', function (name, params) {
-                expect(name).to.equal('xb-test3');
-                expect(params.lifecycle.created).to.not.equal(created);
-                expect(params.lifecycle.inserted).to.not.equal(inserted);
-                expect(params.lifecycle.removed).to.not.equal(removed);
-                // expect(params.lifecycle.attributeChanged).to.not.equal(attributeChanged);
+                register('xb-test3', {
+                    render: function() {
+                        return (
+                            <div />
+                        );
+                    }
+                });
+
+                create('xb-test3', {
+                    lifecycle: {
+                        created: spy1,
+                        inserted: spy2,
+                        removed: spy3
+                        // attributeChanged: attributeChanged
+                    }
+                });
+
+                var node = document.createElement('xb-test3');
+                var that = this;
+                return new vow.Promise(function (resolve) {
+                    node.addEventListener('xb-created', function _onXbCreated() {
+                        this.removeEventListener('xb-created', _onXbCreated);
+
+                        this.addEventListener('xb-destroy', function _onXbDestroy() {
+                            this.removeEventListener('xb-destroy', _onXbDestroy);
+
+                            expect(spy1.callCount).to.be.equal(1);
+                            expect(spy2.callCount).to.be.equal(1);
+                            expect(spy3.callCount).to.be.equal(1);
+                            resolve();
+                        });
+
+                        this.parentNode.removeChild(this);
+                    });
+
+                    document.body.appendChild(node);
+                });
             });
-
-            create('xb-test3', {
-                lifecycle: {
-                    created: created,
-                    inserted: inserted,
-                    removed: removed
-                    // attributeChanged: attributeChanged
-                }
-            });
-
-            xtag.register.restore();
         });
 
         describe('Наследование событий', function () {

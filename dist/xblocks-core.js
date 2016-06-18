@@ -183,169 +183,122 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var spreadMergeWith = (0, _spread2.default)(_mergeWith2.default);
 
-	var BLOCK_COMMON = {
-	    lifecycle: {
+	var BLOCK_COMMON_ACCESSORS = {
+	    mounted: {
 	        /**
-	         * The callback of the create element.
+	         * Check react mounted
+	         * @returns {boolean}
+	         * @readonly
 	         */
-	        created: function created() {
-	            blockInit(this);
+	        get: function get() {
+	            return Boolean(this.xblock && this.xblock.isMounted());
+	        }
+	    },
+
+	    content: {
+	        /**
+	         * Receiving the content.
+	         * @returns {?string}
+	         */
+	        get: function get() {
+	            if (this.mounted) {
+	                return this.xblock.getMountedContent();
+	            }
+
+	            return dom.contentNode(this).innerHTML;
 	        },
 
 	        /**
-	         * The callback of the insert in DOM.
+	         * Installing a new content.
+	         * @param {string} content
 	         */
-	        inserted: function inserted() {
-	            if (this.xinserted) {
-	                return;
-	            }
-
-	            blockInit(this);
-
-	            this.xinserted = true;
-
-	            var isScriptContent = Boolean(this.querySelector('script'));
-
-	            // asynchronous read content
-	            // <xb-test><script>...</script><div>not found</div></xb-test>
-	            if (isScriptContent) {
-	                (0, _utils.lazy)(blockCreateLazy, this);
+	        set: function set(content) {
+	            if (this.mounted) {
+	                this.xblock.setMountedContent(content);
 	            } else {
-	                blockCreate(this);
-	            }
-	        },
-
-	        /**
-	         * The callback of the remote in DOM.
-	         */
-	        removed: function removed() {
-	            this.xinserted = false;
-
-	            if (this.xblock) {
-	                this.xblock.destroy();
-	                this.xblock = undefined;
+	                dom.contentNode(this).innerHTML = content;
+	                this.upgrade();
 	            }
 	        }
 	    },
 
-	    accessors: {
-	        mounted: {
-	            /**
-	             * Check react mounted
-	             * @returns {boolean}
-	             * @readonly
-	             */
-	            get: function get() {
-	                return Boolean(this.xblock && this.xblock.isMounted());
-	            }
-	        },
-
-	        content: {
-	            /**
-	             * Receiving the content.
-	             * @returns {?string}
-	             */
-	            get: function get() {
-	                if (this.mounted) {
-	                    return this.xblock.getMountedContent();
-	                }
-
-	                return dom.contentNode(this).innerHTML;
-	            },
-
-	            /**
-	             * Installing a new content.
-	             * @param {string} content
-	             */
-	            set: function set(content) {
-	                if (this.mounted) {
-	                    this.xblock.setMountedContent(content);
-	                } else {
-	                    dom.contentNode(this).innerHTML = content;
-	                    this.upgrade();
-	                }
-	            }
-	        },
-
-	        attrs: {
-	            /**
-	             * Getting object attributes.
-	             * @returns {Object}
-	             * @readonly
-	             */
-	            get: function get() {
-	                return dom.attrs.toObject(this);
-	            }
-	        },
-
-	        props: {
-	            /**
-	             * Getting object properties.
-	             * @returns {Object}
-	             * @readonly
-	             */
-	            get: function get() {
-	                var props = dom.attrs.toObject(this);
-	                var xprops = this.xprops;
-	                var eprops = xtag.tags[this.xtagName].accessors;
-	                var common = BLOCK_COMMON.accessors;
-
-	                for (var prop in eprops) {
-	                    if (xprops.hasOwnProperty(prop) && eprops.hasOwnProperty(prop) && !common.hasOwnProperty(prop)) {
-
-	                        props[prop] = this[prop];
-	                    }
-	                }
-
-	                dom.attrs.typeConversion(props, xprops);
-	                return props;
-	            }
-	        },
-
-	        xprops: {
-	            /**
-	             * Getting react properties.
-	             * @returns {Object}
-	             * @readonly
-	             */
-	            get: function get() {
-	                return (0, _utils.propTypes)(this.xtagName);
-	            }
-	        },
-
-	        outerHTML: dom.outerHTML
+	    attrs: {
+	        /**
+	         * Getting object attributes.
+	         * @returns {Object}
+	         * @readonly
+	         */
+	        get: function get() {
+	            return dom.attrs.toObject(this);
+	        }
 	    },
 
-	    methods: {
+	    props: {
 	        /**
-	         * Recalculation of the internal structure.
+	         * Getting object properties.
+	         * @returns {Object}
+	         * @readonly
 	         */
-	        upgrade: function upgrade() {
-	            dom.upgradeAll(this);
-	        },
+	        get: function get() {
+	            var props = dom.attrs.toObject(this);
+	            var xprops = this.xprops;
+	            var eprops = xtag.tags[this.xtagName].accessors;
 
-	        /**
-	         * Cloning a node.
-	         * @param {boolean} deep true if the content to be saved
-	         * @returns {HTMLElement}
-	         */
-	        cloneNode: function cloneNode(deep) {
-	            // not to clone the contents
-	            var node = dom.cloneNode(this, false);
-	            dom.upgrade(node);
+	            for (var prop in eprops) {
+	                if (xprops.hasOwnProperty(prop) && eprops.hasOwnProperty(prop) && !BLOCK_COMMON_ACCESSORS.hasOwnProperty(prop)) {
 
-	            node.xtmpl = this.xtmpl;
-	            node.xinserted = false;
-
-	            if (deep) {
-	                node.content = this.content;
+	                    props[prop] = this[prop];
+	                }
 	            }
 
-	            // ???
-	            // if ('checked' in this) clone.checked = this.checked;
-
-	            return node;
+	            dom.attrs.typeConversion(props, xprops);
+	            return props;
 	        }
+	    },
+
+	    xprops: {
+	        /**
+	         * Getting react properties.
+	         * @returns {Object}
+	         * @readonly
+	         */
+	        get: function get() {
+	            return (0, _utils.propTypes)(this.xtagName);
+	        }
+	    },
+
+	    outerHTML: dom.outerHTML
+	};
+
+	var BLOCK_COMMON_METHODS = {
+	    /**
+	     * Recalculation of the internal structure.
+	     */
+	    upgrade: function upgrade() {
+	        dom.upgradeAll(this);
+	    },
+
+	    /**
+	     * Cloning a node.
+	     * @param {boolean} deep true if the content to be saved
+	     * @returns {HTMLElement}
+	     */
+	    cloneNode: function cloneNode(deep) {
+	        // not to clone the contents
+	        var node = dom.cloneNode(this, false);
+	        dom.upgrade(node);
+
+	        node.xtmpl = this.xtmpl;
+	        node.xinserted = false;
+
+	        if (deep) {
+	            node.content = this.content;
+	        }
+
+	        // ???
+	        // if ('checked' in this) clone.checked = this.checked;
+
+	        return node;
 	    }
 	};
 
@@ -360,15 +313,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	function create(blockName, options) {
 	    options = (0, _castArray2.default)(options);
-	    options.unshift({});
+	    options.unshift({ lifecycle: { created: lifecycleCreated, inserted: lifecycleInserted } });
 	    options.push(mergeCustomizer);
 	    options = spreadMergeWith(options);
 
 	    (0, _forEach2.default)(options.accessors, accessorsIterator);
 
-	    (0, _forEach2.default)(BLOCK_COMMON, function (value, key) {
-	        options[key] = (0, _assign2.default)(options[key], value);
-	    });
+	    options.accessors = (0, _assign2.default)(options.accessors, BLOCK_COMMON_ACCESSORS);
+	    options.methods = (0, _assign2.default)(options.methods, BLOCK_COMMON_METHODS);
+
+	    // "removed" should be called after user handler
+	    options.lifecycle.removed = (0, _wrap2.default)(options.lifecycle.removed, (0, _wrap2.default)(lifecycleRemoved, wrapperFunction));
 
 	    return xtag.register(blockName, options);
 	}
@@ -437,6 +392,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return objValue.concat(srcValue);
 	    }
 
+	    if (key === 'lifecycle') {
+	        return (0, _mergeWith2.default)(objValue, srcValue, lifecycleCustomizer);
+	    }
+
 	    if (key === 'events') {
 	        return (0, _mergeWith2.default)(objValue, srcValue, eventsCustomizer);
 	    }
@@ -444,6 +403,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (key === 'accessors') {
 	        return (0, _mergeWith2.default)(objValue, srcValue, accessorsCustomizer);
 	    }
+	}
+
+	/**
+	 * Inheritance lifecycle handler.
+	 * @param {function} [objValue] the current handler
+	 * @param {function} [srcValue] the new handler
+	 * @returns {function}
+	 * @private
+	 */
+	function lifecycleCustomizer(objValue, srcValue) {
+	    return (0, _wrap2.default)(objValue, (0, _wrap2.default)(srcValue, wrapperFunction));
 	}
 
 	/**
@@ -469,7 +439,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var srcSetter = (0, _get2.default)(srcValue, 'set');
 
 	    return (0, _merge2.default)({}, objValue, srcValue, {
-	        set: (0, _wrap2.default)(objSetter, (0, _wrap2.default)(srcSetter, wrapperAccessorsSet))
+	        set: (0, _wrap2.default)(objSetter, (0, _wrap2.default)(srcSetter, wrapperFunction))
 	    });
 	}
 
@@ -500,13 +470,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
-	 * Implementation of inherited event.
+	 * Implementation of inherited function.
 	 * @param {function} [srcFunc]
 	 * @param {function} [objFunc]
 	 * @param {...*} args
 	 * @private
 	 */
-	function wrapperAccessorsSet(srcFunc, objFunc) {
+	function wrapperFunction(srcFunc, objFunc) {
 	    for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
 	        args[_key2 - 2] = arguments[_key2];
 	    }
@@ -532,7 +502,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var updateSetter = (0, _wrap2.default)(name, wrapperAccessorsSetUpdate);
 
 	    accessors[name] = (0, _merge2.default)({}, options, {
-	        set: (0, _wrap2.default)(optionsSetter, (0, _wrap2.default)(updateSetter, wrapperAccessorsSet))
+	        set: (0, _wrap2.default)(optionsSetter, (0, _wrap2.default)(updateSetter, wrapperFunction))
 	    });
 	}
 
@@ -541,11 +511,60 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {string} accessorName the name of the property
 	 * @param {*} nextValue
 	 * @param {*} prevValue
+	 * @this HTMLElement
 	 * @private
 	 */
 	function wrapperAccessorsSetUpdate(accessorName, nextValue, prevValue) {
 	    if (nextValue !== prevValue && this.xprops.hasOwnProperty(accessorName) && this.mounted) {
 	        this.xblock.update();
+	    }
+	}
+
+	/**
+	 * The callback of the remote in DOM.
+	 * @this HTMLElement
+	 * @private
+	 */
+	function lifecycleRemoved() {
+	    this.xinserted = false;
+
+	    if (this.xblock) {
+	        this.xblock.destroy();
+	        this.xblock = undefined;
+	    }
+	}
+
+	/**
+	 * The callback of the create element.
+	 * @this HTMLElement
+	 * @private
+	 */
+	function lifecycleCreated() {
+	    blockInit(this);
+	}
+
+	/**
+	 * The callback of the insert in DOM.
+	 * @this HTMLElement
+	 * @private
+	 */
+	function lifecycleInserted() {
+	    if (this.xinserted) {
+	        return;
+	    }
+
+	    blockInit(this);
+
+	    this.xinserted = true;
+
+	    var isScriptContent = Boolean(this.querySelector('script'));
+
+	    // asynchronous read content
+	    // <xb-test><script>...</script><div>not found</div></xb-test>
+	    if (isScriptContent) {
+	        (0, _utils.lazy)(blockCreateLazy, this);
+	    } else {
+	        blockCreate(this);
 	    }
 	}
 
@@ -8190,7 +8209,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        that._callbackInit();
 	    };
 
-	    (0, _event.dispatch)(node, 'xb-before-created');
 	    this._component = _reactDom2.default.render(proxyConstructor, node, renderCallback);
 	};
 

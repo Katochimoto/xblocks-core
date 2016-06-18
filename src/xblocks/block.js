@@ -21,173 +21,125 @@ import { lazy, propTypes } from './utils';
 
 const spreadMergeWith = spread(mergeWith);
 
-const BLOCK_COMMON = {
-    lifecycle: {
+const BLOCK_COMMON_ACCESSORS = {
+    mounted: {
         /**
-         * The callback of the create element.
+         * Check react mounted
+         * @returns {boolean}
+         * @readonly
          */
-        created: function () {
-            blockInit(this);
+        get: function () {
+            return Boolean(this.xblock && this.xblock.isMounted());
+        }
+    },
+
+    content: {
+        /**
+         * Receiving the content.
+         * @returns {?string}
+         */
+        get: function () {
+            if (this.mounted) {
+                return this.xblock.getMountedContent();
+            }
+
+            return dom.contentNode(this).innerHTML;
         },
 
         /**
-         * The callback of the insert in DOM.
+         * Installing a new content.
+         * @param {string} content
          */
-        inserted: function () {
-            if (this.xinserted) {
-                return;
-            }
-
-            blockInit(this);
-
-            this.xinserted = true;
-
-            const isScriptContent = Boolean(this.querySelector('script'));
-
-            // asynchronous read content
-            // <xb-test><script>...</script><div>not found</div></xb-test>
-            if (isScriptContent) {
-                lazy(blockCreateLazy, this);
+        set: function (content) {
+            if (this.mounted) {
+                this.xblock.setMountedContent(content);
 
             } else {
-                blockCreate(this);
-            }
-        },
-
-        /**
-         * The callback of the remote in DOM.
-         */
-        removed: function () {
-            this.xinserted = false;
-
-            if (this.xblock) {
-                this.xblock.destroy();
-                this.xblock = undefined;
+                dom.contentNode(this).innerHTML = content;
+                this.upgrade();
             }
         }
     },
 
-    accessors: {
-        mounted: {
-            /**
-             * Check react mounted
-             * @returns {boolean}
-             * @readonly
-             */
-            get: function () {
-                return Boolean(this.xblock && this.xblock.isMounted());
-            }
-        },
-
-        content: {
-            /**
-             * Receiving the content.
-             * @returns {?string}
-             */
-            get: function () {
-                if (this.mounted) {
-                    return this.xblock.getMountedContent();
-                }
-
-                return dom.contentNode(this).innerHTML;
-            },
-
-            /**
-             * Installing a new content.
-             * @param {string} content
-             */
-            set: function (content) {
-                if (this.mounted) {
-                    this.xblock.setMountedContent(content);
-
-                } else {
-                    dom.contentNode(this).innerHTML = content;
-                    this.upgrade();
-                }
-            }
-        },
-
-        attrs: {
-            /**
-             * Getting object attributes.
-             * @returns {Object}
-             * @readonly
-             */
-            get: function () {
-                return dom.attrs.toObject(this);
-            }
-        },
-
-        props: {
-            /**
-             * Getting object properties.
-             * @returns {Object}
-             * @readonly
-             */
-            get: function () {
-                const props = dom.attrs.toObject(this);
-                const xprops = this.xprops;
-                const eprops = xtag.tags[ this.xtagName ].accessors;
-                const common = BLOCK_COMMON.accessors;
-
-                for (let prop in eprops) {
-                    if (xprops.hasOwnProperty(prop) &&
-                        eprops.hasOwnProperty(prop) &&
-                        !common.hasOwnProperty(prop)) {
-
-                        props[ prop ] = this[ prop ];
-                    }
-                }
-
-                dom.attrs.typeConversion(props, xprops);
-                return props;
-            }
-        },
-
-        xprops: {
-            /**
-             * Getting react properties.
-             * @returns {Object}
-             * @readonly
-             */
-            get: function () {
-                return propTypes(this.xtagName);
-            }
-        },
-
-        outerHTML: dom.outerHTML
+    attrs: {
+        /**
+         * Getting object attributes.
+         * @returns {Object}
+         * @readonly
+         */
+        get: function () {
+            return dom.attrs.toObject(this);
+        }
     },
 
-    methods: {
+    props: {
         /**
-         * Recalculation of the internal structure.
+         * Getting object properties.
+         * @returns {Object}
+         * @readonly
          */
-        upgrade: function () {
-            dom.upgradeAll(this);
-        },
+        get: function () {
+            const props = dom.attrs.toObject(this);
+            const xprops = this.xprops;
+            const eprops = xtag.tags[ this.xtagName ].accessors;
 
-        /**
-         * Cloning a node.
-         * @param {boolean} deep true if the content to be saved
-         * @returns {HTMLElement}
-         */
-        cloneNode: function (deep) {
-            // not to clone the contents
-            const node = dom.cloneNode(this, false);
-            dom.upgrade(node);
+            for (let prop in eprops) {
+                if (xprops.hasOwnProperty(prop) &&
+                    eprops.hasOwnProperty(prop) &&
+                    !BLOCK_COMMON_ACCESSORS.hasOwnProperty(prop)) {
 
-            node.xtmpl = this.xtmpl;
-            node.xinserted = false;
-
-            if (deep) {
-                node.content = this.content;
+                    props[ prop ] = this[ prop ];
+                }
             }
 
-            // ???
-            // if ('checked' in this) clone.checked = this.checked;
-
-            return node;
+            dom.attrs.typeConversion(props, xprops);
+            return props;
         }
+    },
+
+    xprops: {
+        /**
+         * Getting react properties.
+         * @returns {Object}
+         * @readonly
+         */
+        get: function () {
+            return propTypes(this.xtagName);
+        }
+    },
+
+    outerHTML: dom.outerHTML
+};
+
+const BLOCK_COMMON_METHODS = {
+    /**
+     * Recalculation of the internal structure.
+     */
+    upgrade: function () {
+        dom.upgradeAll(this);
+    },
+
+    /**
+     * Cloning a node.
+     * @param {boolean} deep true if the content to be saved
+     * @returns {HTMLElement}
+     */
+    cloneNode: function (deep) {
+        // not to clone the contents
+        const node = dom.cloneNode(this, false);
+        dom.upgrade(node);
+
+        node.xtmpl = this.xtmpl;
+        node.xinserted = false;
+
+        if (deep) {
+            node.content = this.content;
+        }
+
+        // ???
+        // if ('checked' in this) clone.checked = this.checked;
+
+        return node;
     }
 };
 
@@ -202,15 +154,17 @@ const BLOCK_COMMON = {
  */
 export function create(blockName, options) {
     options = castArray(options);
-    options.unshift({});
+    options.unshift({ lifecycle: { created: lifecycleCreated, inserted: lifecycleInserted } });
     options.push(mergeCustomizer);
     options = spreadMergeWith(options);
 
     forEach(options.accessors, accessorsIterator);
 
-    forEach(BLOCK_COMMON, function (value, key) {
-        options[ key ] = assign(options[ key ], value);
-    });
+    options.accessors = assign(options.accessors, BLOCK_COMMON_ACCESSORS);
+    options.methods = assign(options.methods, BLOCK_COMMON_METHODS);
+
+    // "removed" should be called after user handler
+    options.lifecycle.removed = wrap(options.lifecycle.removed, wrap(lifecycleRemoved, wrapperFunction));
 
     return xtag.register(blockName, options);
 }
@@ -283,6 +237,10 @@ function mergeCustomizer(objValue, srcValue, key) {
         return objValue.concat(srcValue);
     }
 
+    if (key === 'lifecycle') {
+        return mergeWith(objValue, srcValue, lifecycleCustomizer);
+    }
+
     if (key === 'events') {
         return mergeWith(objValue, srcValue, eventsCustomizer);
     }
@@ -290,6 +248,17 @@ function mergeCustomizer(objValue, srcValue, key) {
     if (key === 'accessors') {
         return mergeWith(objValue, srcValue, accessorsCustomizer);
     }
+}
+
+/**
+ * Inheritance lifecycle handler.
+ * @param {function} [objValue] the current handler
+ * @param {function} [srcValue] the new handler
+ * @returns {function}
+ * @private
+ */
+function lifecycleCustomizer(objValue, srcValue) {
+    return wrap(objValue, wrap(srcValue, wrapperFunction));
 }
 
 /**
@@ -315,7 +284,7 @@ function accessorsCustomizer(objValue, srcValue) {
     const srcSetter = get(srcValue, 'set');
 
     return merge({}, objValue, srcValue, {
-        set: wrap(objSetter, wrap(srcSetter, wrapperAccessorsSet))
+        set: wrap(objSetter, wrap(srcSetter, wrapperFunction))
     });
 }
 
@@ -340,13 +309,13 @@ function wrapperEvents(srcFunc, objFunc, ...args) {
 }
 
 /**
- * Implementation of inherited event.
+ * Implementation of inherited function.
  * @param {function} [srcFunc]
  * @param {function} [objFunc]
  * @param {...*} args
  * @private
  */
-function wrapperAccessorsSet(srcFunc, objFunc, ...args) {
+function wrapperFunction(srcFunc, objFunc, ...args) {
     if (isFunction(objFunc)) {
         objFunc.apply(this, args);
     }
@@ -368,7 +337,7 @@ function accessorsIterator(options, name, accessors) {
     const updateSetter = wrap(name, wrapperAccessorsSetUpdate);
 
     accessors[ name ] = merge({}, options, {
-        set: wrap(optionsSetter, wrap(updateSetter, wrapperAccessorsSet))
+        set: wrap(optionsSetter, wrap(updateSetter, wrapperFunction))
     });
 }
 
@@ -377,10 +346,60 @@ function accessorsIterator(options, name, accessors) {
  * @param {string} accessorName the name of the property
  * @param {*} nextValue
  * @param {*} prevValue
+ * @this HTMLElement
  * @private
  */
 function wrapperAccessorsSetUpdate(accessorName, nextValue, prevValue) {
     if (nextValue !== prevValue && this.xprops.hasOwnProperty(accessorName) && this.mounted) {
         this.xblock.update();
+    }
+}
+
+/**
+ * The callback of the remote in DOM.
+ * @this HTMLElement
+ * @private
+ */
+function lifecycleRemoved() {
+    this.xinserted = false;
+
+    if (this.xblock) {
+        this.xblock.destroy();
+        this.xblock = undefined;
+    }
+}
+
+/**
+ * The callback of the create element.
+ * @this HTMLElement
+ * @private
+ */
+function lifecycleCreated() {
+    blockInit(this);
+}
+
+/**
+ * The callback of the insert in DOM.
+ * @this HTMLElement
+ * @private
+ */
+function lifecycleInserted() {
+    if (this.xinserted) {
+        return;
+    }
+
+    blockInit(this);
+
+    this.xinserted = true;
+
+    const isScriptContent = Boolean(this.querySelector('script'));
+
+    // asynchronous read content
+    // <xb-test><script>...</script><div>not found</div></xb-test>
+    if (isScriptContent) {
+        lazy(blockCreateLazy, this);
+
+    } else {
+        blockCreate(this);
     }
 }

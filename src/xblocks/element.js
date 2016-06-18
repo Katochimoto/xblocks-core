@@ -180,7 +180,6 @@ XBElement.prototype._init = function () {
         that._callbackInit();
     };
 
-    dispatch(node, 'xb-before-created');
     this._component = ReactDOM.render(proxyConstructor, node, renderCallback);
 };
 
