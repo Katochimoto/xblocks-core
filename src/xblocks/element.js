@@ -11,6 +11,7 @@ import { typeConversion } from './dom/attrs';
 import { getFactory } from './view';
 import { dispatch } from './event';
 import lazy from './utils/lazy';
+import Constants from './constants';
 
 /**
  * Xblock element constructor.
@@ -19,7 +20,7 @@ import lazy from './utils/lazy';
  * @constructor
  */
 export function XBElement(node) {
-    node.xblock = this;
+    node[ Constants.BLOCK ] = this;
 
     this._observerOptions = {
         attributeFilter: keys(node.xprops),
@@ -61,8 +62,8 @@ XBElement.prototype._observer = null;
  * @fires module:xblocks-core/element~XBElement~event:xb-destroy
  */
 XBElement.prototype.destroy = function () {
-    let node = this._node;
-    let content = node.content;
+    const node = this._node;
+    const content = node.content;
 
     this._observer.disconnect();
     this._observer = null;
@@ -76,7 +77,7 @@ XBElement.prototype.destroy = function () {
     // element.parentNode.removeChild(element);
     // document.body.appendChild(element);
     node.content = content;
-    node.xblock = undefined;
+    node[ Constants.BLOCK ] = undefined;
 
     dispatch(node, 'xb-destroy', { bubbles: false, cancelable: false });
 };

@@ -3,6 +3,7 @@ require('../tags/x-element1.jsx');
 var XBElement = require('element').XBElement;
 var vow = require('vow');
 var ReactDOM = require('react-dom');
+import Constants from 'constants';
 
 describe('xblocks', function () {
 
@@ -31,11 +32,11 @@ describe('xblocks', function () {
             });
 
             it('узел сожержит свойство xblock с созданным объектом', function () {
-                expect(this.node.xblock).to.be.an.instanceof(XBElement);
+                expect(this.node[ Constants.BLOCK ]).to.be.an.instanceof(XBElement);
             });
 
             it('объект содержит свойство _node с узлом', function () {
-                expect(this.node.xblock._node).to.equal(this.node);
+                expect(this.node[ Constants.BLOCK ]._node).to.equal(this.node);
             });
 
             it('выполняется вызов метода инициализации', function () {
@@ -66,7 +67,7 @@ describe('xblocks', function () {
             });
 
             it('должен быть вызван метод ReactDOM.unmountComponentAtNode', function () {
-                this.node.xblock.destroy();
+                this.node[ Constants.BLOCK ].destroy();
                 expect(this._spyReactUmount).calledWith(this.node);
             });
         });
@@ -88,7 +89,7 @@ describe('xblocks', function () {
         });
 
         it('должен вернуть компонент React', function () {
-            var proto = Object.getPrototypeOf(this.node.xblock.getMountedComponent());
+            var proto = Object.getPrototypeOf(this.node[ Constants.BLOCK ].getMountedComponent());
             expect(proto).to.include.keys([ 'render' ]);
         });
     });
@@ -113,7 +114,7 @@ describe('xblocks', function () {
         });
 
         it('должен вернуть строку содержимое компонента', function () {
-            expect(this.node.xblock.getMountedContent()).to.equal(this.content.outerHTML);
+            expect(this.node[ Constants.BLOCK ].getMountedContent()).to.equal(this.content.outerHTML);
         });
     });
 
@@ -138,11 +139,11 @@ describe('xblocks', function () {
             return new vow.Promise(function (resolve) {
                 that.node.addEventListener('xb-update', function _onXbUpdate() {
                     this.removeEventListener('xb-update', _onXbUpdate);
-                    expect(that.node.xblock.getMountedContent()).to.equal(content);
+                    expect(that.node[ Constants.BLOCK ].getMountedContent()).to.equal(content);
                     resolve();
                 });
 
-                that.node.xblock.setMountedContent(content);
+                that.node[ Constants.BLOCK ].setMountedContent(content);
             });
         });
     });

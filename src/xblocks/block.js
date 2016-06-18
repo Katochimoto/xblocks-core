@@ -15,9 +15,11 @@ import castArray from 'lodash/castArray';
 import isArray from 'lodash/isArray';
 import get from 'lodash/get';
 import wrap from 'lodash/wrap';
+import invoke from 'lodash/invoke';
 import * as dom from './dom';
 import { XBElement } from './element';
 import { lazy, propTypes } from './utils';
+import Constants from './constants';
 
 const spreadMergeWith = spread(mergeWith);
 
@@ -29,7 +31,7 @@ const BLOCK_COMMON_ACCESSORS = {
          * @readonly
          */
         get: function () {
-            return Boolean(this.xblock && this.xblock.isMounted());
+            return Boolean(invoke(this, [ Constants.BLOCK, 'isMounted' ]));
         }
     },
 
@@ -40,7 +42,7 @@ const BLOCK_COMMON_ACCESSORS = {
          */
         get: function () {
             if (this.mounted) {
-                return this.xblock.getMountedContent();
+                return invoke(this, [ Constants.BLOCK, 'getMountedContent' ]);
             }
 
             return dom.contentNode(this).innerHTML;
@@ -52,7 +54,7 @@ const BLOCK_COMMON_ACCESSORS = {
          */
         set: function (content) {
             if (this.mounted) {
-                this.xblock.setMountedContent(content);
+                invoke(this, [ Constants.BLOCK, 'setMountedContent' ], content);
 
             } else {
                 dom.contentNode(this).innerHTML = content;
@@ -81,7 +83,7 @@ const BLOCK_COMMON_ACCESSORS = {
         get: function () {
             const props = dom.attrs.toObject(this);
             const xprops = this.xprops;
-            const eprops = xtag.tags[ this.xtagName ].accessors;
+            const eprops = get(xtag, [ 'tags', this.xtagName, 'accessors' ], {});
 
             for (let prop in eprops) {
                 if (xprops.hasOwnProperty(prop) &&
@@ -113,6 +115,14 @@ const BLOCK_COMMON_ACCESSORS = {
 
 const BLOCK_COMMON_METHODS = {
     /**
+     * Obtaining the React components.
+     * @returns {?Constructor}
+     */
+    getComponent: function () {
+        return invoke(this, [ Constants.BLOCK, 'getMountedComponent' ]);
+    },
+
+    /**
      * Recalculation of the internal structure.
      */
     upgrade: function () {
@@ -129,8 +139,8 @@ const BLOCK_COMMON_METHODS = {
         const node = dom.cloneNode(this, false);
         dom.upgrade(node);
 
-        node.xtmpl = this.xtmpl;
-        node.xinserted = false;
+        node[ Constants.TMPL ] = this[ Constants.TMPL ];
+        node[ Constants.INSERTED ] = false;
 
         if (deep) {
             node.content = this.content;
@@ -180,9 +190,10 @@ export function create(blockName, options) {
 function blockInit(node) {
     if (!node.xtagName) {
         node.xtagName = node.tagName.toLowerCase();
-        node.xtmpl = {};
         node.xuid = uniqueId();
-        node.xinserted = false;
+        node[ Constants.TMPL ] = {};
+        node[ Constants.INSERTED ] = false;
+
         return true;
     }
 
@@ -205,7 +216,7 @@ function blockCreate(node) {
         );
     }
 
-    node.xblock = new XBElement(node);
+    node[ Constants.BLOCK ] = new XBElement(node);
 }
 
 /**
@@ -222,14 +233,14 @@ function blockCreateLazy(nodes) {
 /**
  * The selection of templates.
  * @example
- * // append template to node.xtmpl
+ * // append template to node
  * tmplCompileIterator.call(node, tmplNode);
  * @param {HTMLElement} node
  * @this HTMLElement
  * @private
  */
 function tmplCompileIterator(node) {
-    this.xtmpl[ node.getAttribute('ref') ] = node.innerHTML;
+    this[ Constants.TMPL ][ node.getAttribute('ref') ] = node.innerHTML;
 }
 
 /**
@@ -379,7 +390,7 @@ function accessorsIterator(options, name, accessors) {
  */
 function wrapperAccessorsSetUpdate(accessorName, nextValue, prevValue) {
     if (nextValue !== prevValue && this.xprops.hasOwnProperty(accessorName) && this.mounted) {
-        this.xblock.update();
+        this[ Constants.BLOCK ].update();
     }
 }
 
@@ -389,11 +400,13 @@ function wrapperAccessorsSetUpdate(accessorName, nextValue, prevValue) {
  * @private
  */
 function lifecycleRemoved() {
-    this.xinserted = false;
+    this[ Constants.INSERTED ] = false;
 
-    if (this.xblock) {
-        this.xblock.destroy();
-        this.xblock = undefined;
+    const block = this[ Constants.BLOCK ];
+
+    if (block) {
+        block.destroy();
+        this[ Constants.BLOCK ] = undefined;
     }
 }
 
@@ -412,13 +425,13 @@ function lifecycleCreated() {
  * @private
  */
 function lifecycleInserted() {
-    if (this.xinserted) {
+    if (this[ Constants.INSERTED ]) {
         return;
     }
 
     blockInit(this);
 
-    this.xinserted = true;
+    this[ Constants.INSERTED ] = true;
 
     const isScriptContent = Boolean(this.querySelector('script'));
 

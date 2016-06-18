@@ -3,7 +3,6 @@ require('../tags/x-element-accessors.jsx');
 var create = require('block').create;
 var register = require('view').register;
 var dispatch = require('event').dispatch;
-var xtag = require('xtag');
 var vow = require('vow');
 
 describe('xblocks', function () {
@@ -49,7 +48,7 @@ describe('xblocks', function () {
                 var spy3 = this.sinon.spy();
 
                 register('xb-test3', {
-                    render: function() {
+                    render: function () {
                         return (
                             <div />
                         );
@@ -66,7 +65,6 @@ describe('xblocks', function () {
                 });
 
                 var node = document.createElement('xb-test3');
-                var that = this;
                 return new vow.Promise(function (resolve) {
                     node.addEventListener('xb-created', function _onXbCreated() {
                         this.removeEventListener('xb-created', _onXbCreated);

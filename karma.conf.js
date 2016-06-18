@@ -55,12 +55,13 @@ module.exports = function(config) {
             },
             'resolve': {
                 'alias': {
-                    'context': path.join(src, 'context'),
-                    'polyfills': path.join(src, 'polyfills'),
                     'block': path.join(srcLib, 'block'),
+                    'constants': path.join(srcLib, 'constants'),
+                    'context': path.join(src, 'context'),
                     'dom': path.join(srcLib, 'dom'),
                     'element': path.join(srcLib, 'element'),
                     'event': path.join(srcLib, 'event'),
+                    'polyfills': path.join(src, 'polyfills'),
                     'utils': path.join(srcLib, 'utils'),
                     'view': path.join(srcLib, 'view')
                 }

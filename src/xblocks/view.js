@@ -6,6 +6,9 @@ import React, { PropTypes } from 'react';
 import merge from 'lodash/merge';
 import isArray from 'lodash/isArray';
 import isFunction from 'lodash/isFunction';
+import isPlainObject from 'lodash/isPlainObject';
+import get from 'lodash/get';
+import Constants from './constants';
 
 const VIEW_COMMON = {
 
@@ -28,11 +31,11 @@ const VIEW_COMMON = {
      * @returns {?ReactElement}
      */
     template: function (ref, props) {
-        const xtmpl = this.props._container && this.props._container.xtmpl;
+        const templates = get(this, [ 'props', '_container', Constants.TMPL ]);
 
-        if (typeof xtmpl === 'object' && xtmpl !== null && xtmpl.hasOwnProperty(ref)) {
+        if (isPlainObject(templates) && templates.hasOwnProperty(ref)) {
             return (
-                <div {...props} dangerouslySetInnerHTML={{ '__html': this.templatePrepare(xtmpl[ ref ]) }} />
+                <div {...props} dangerouslySetInnerHTML={{ '__html': this.templatePrepare(templates[ ref ]) }} />
             );
         }
 

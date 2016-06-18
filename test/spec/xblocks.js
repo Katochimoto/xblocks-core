@@ -6,6 +6,7 @@ require('../tags/x-element-update.jsx');
 
 var vow = require('vow');
 var XBElement = require('element').XBElement;
+import Constants from 'constants';
 
 describe('xblocks', function () {
 
@@ -202,7 +203,7 @@ describe('xblocks', function () {
 
                     var cloneElement = this.cloneNode();
 
-                    expect(cloneElement.xinserted).to.equal(false);
+                    expect(cloneElement[ Constants.INSERTED ]).to.equal(false);
                     resolve();
                 });
 
@@ -238,7 +239,7 @@ describe('xblocks', function () {
         });
 
         it('свойство xtmpl', function () {
-            expect(this.xElement.xtmpl).to.be.an('object');
+            expect(this.xElement[ Constants.TMPL ]).to.be.an('object');
         });
 
         it('свойство xuid', function () {
@@ -292,12 +293,12 @@ describe('xblocks', function () {
         });
 
         it('свойство xblock отсутствует на момент создания элемента', function () {
-            expect(this.xElement.xblock).to.be.a('undefined');
+            expect(this.xElement[ Constants.BLOCK ]).to.be.a('undefined');
         });
 
         it('свойство xinserted', function () {
-            expect(this.xElement.xinserted).to.be.a('boolean');
-            expect(this.xElement.xinserted).to.equal(false);
+            expect(this.xElement[ Constants.INSERTED ]).to.be.a('boolean');
+            expect(this.xElement[ Constants.INSERTED ]).to.equal(false);
         });
     });
 
@@ -319,9 +320,9 @@ describe('xblocks', function () {
                 that.xElement.addEventListener('xb-created', function _onXbCreated() {
                     this.removeEventListener('xb-created', _onXbCreated);
 
-                    expect(this.xblock).to.be.an.instanceof(XBElement);
+                    expect(this[ Constants.BLOCK ]).to.be.an.instanceof(XBElement);
                     expect(this.mounted).to.be.true;
-                    expect(this.xinserted).to.be.true;
+                    expect(this[ Constants.INSERTED ]).to.be.true;
                     resolve();
                 });
 
