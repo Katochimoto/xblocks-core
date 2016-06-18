@@ -88,7 +88,9 @@ describe('xblocks', function () {
             });
 
             it('Выполнение событий можно прервать через вызов stopImmediatePropagation', function () {
-                var spy1 = this.sinon.spy(function (event) { event.stopImmediatePropagation(); });
+                var spy1 = this.sinon.spy(function (event) {
+                    event.stopImmediatePropagation();
+                });
                 var spy2 = this.sinon.spy();
 
                 var Element = create('xb-inheritance-events-test2', [ {
