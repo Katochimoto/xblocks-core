@@ -17,16 +17,18 @@ xblocks.view.register('x-element-accessors', {
 xblocks.create('x-element-accessors', {
     accessors: {
         test1: {
-            attribute: {},
-
+            get: function () {
+                return this._test1;
+            },
             set: function (nextValue) {
                 this._test1 = nextValue;
             }
         },
 
         test2: {
-            attribute: {},
-
+            get: function () {
+                return this._test2;
+            },
             set: function (nextValue) {
                 this._test2 = nextValue;
             }

@@ -3,7 +3,7 @@
  */
 
 import * as xtag from 'xtag';
-import isUndefined from 'lodash/isUndefined';
+import forEach from 'lodash/forEach';
 import isFunction from 'lodash/isFunction';
 import stubFalse from 'lodash/stubFalse';
 import merge from 'lodash/merge';
@@ -206,11 +206,11 @@ export function create(blockName, options) {
     options.push(mergeCustomizer);
     options = spreadMergeWith(options);
 
-    for (let key in BLOCK_COMMON) {
-        if (BLOCK_COMMON.hasOwnProperty(key)) {
-            options[ key ] = assign(options[ key ], BLOCK_COMMON[ key ]);
-        }
-    }
+    forEach(options.accessors, accessorsIterator);
+
+    forEach(BLOCK_COMMON, function (value, key) {
+        options[ key ] = assign(options[ key ], value);
+    });
 
     return xtag.register(blockName, options);
 }
@@ -307,13 +307,12 @@ function eventsCustomizer(objValue, srcValue) {
  * Inheritance events "set" property changes.
  * @param {Object} [objValue] the current value
  * @param {Object} [srcValue] the new value
- * @param {string} name the name of the property
  * @returns {Object}
  * @private
  */
-function accessorsCustomizer(objValue, srcValue, name) {
+function accessorsCustomizer(objValue, srcValue) {
+    const objSetter = get(objValue, 'set');
     const srcSetter = get(srcValue, 'set');
-    const objSetter = isUndefined(objValue) ? wrap(name, wrapperAccessorsSetInit) : get(objValue, 'set');
 
     return merge({}, objValue, srcValue, {
         set: wrap(objSetter, wrap(srcSetter, wrapperAccessorsSet))
@@ -322,22 +321,55 @@ function accessorsCustomizer(objValue, srcValue, name) {
 
 /**
  * Implementation of inherited event.
- * @param {function} [func1]
- * @param {function} [func2]
+ * @param {function} [srcFunc]
+ * @param {function} [objFunc]
  * @param {...*} args
  * @private
  */
-function wrapperEvents(func1, func2, ...args) {
+function wrapperEvents(srcFunc, objFunc, ...args) {
     const event = (args[ 0 ] instanceof Event) && args[ 0 ];
     const isStopped = event ? () => event.immediatePropagationStopped : stubFalse;
 
-    if (!isStopped() && isFunction(func1)) {
-        func1.apply(this, args);
+    if (!isStopped() && isFunction(objFunc)) {
+        objFunc.apply(this, args);
     }
 
-    if (!isStopped() && isFunction(func2)) {
-        func2.apply(this, args);
+    if (!isStopped() && isFunction(srcFunc)) {
+        srcFunc.apply(this, args);
     }
+}
+
+/**
+ * Implementation of inherited event.
+ * @param {function} [srcFunc]
+ * @param {function} [objFunc]
+ * @param {...*} args
+ * @private
+ */
+function wrapperAccessorsSet(srcFunc, objFunc, ...args) {
+    if (isFunction(objFunc)) {
+        objFunc.apply(this, args);
+    }
+
+    if (isFunction(srcFunc)) {
+        srcFunc.apply(this, args);
+    }
+}
+
+/**
+ * The assignment of parameters accessors.
+ * @param {Object} options
+ * @param {string} name
+ * @param {Object} accessors
+ * @private
+ */
+function accessorsIterator(options, name, accessors) {
+    const optionsSetter = get(options, 'set');
+    const updateSetter = wrap(name, wrapperAccessorsSetUpdate);
+
+    accessors[ name ] = merge({}, options, {
+        set: wrap(optionsSetter, wrap(updateSetter, wrapperAccessorsSet))
+    });
 }
 
 /**
@@ -347,25 +379,8 @@ function wrapperEvents(func1, func2, ...args) {
  * @param {*} prevValue
  * @private
  */
-function wrapperAccessorsSetInit(accessorName, nextValue, prevValue) {
+function wrapperAccessorsSetUpdate(accessorName, nextValue, prevValue) {
     if (nextValue !== prevValue && this.xprops.hasOwnProperty(accessorName) && this.mounted) {
         this.xblock.update();
-    }
-}
-
-/**
- * Implementation of inherited event.
- * @param {function} [func1]
- * @param {function} [func2]
- * @param {...*} args
- * @private
- */
-function wrapperAccessorsSet(func1, func2, ...args) {
-    if (isFunction(func1)) {
-        func1.apply(this, args);
-    }
-
-    if (isFunction(func2)) {
-        func2.apply(this, args);
     }
 }
