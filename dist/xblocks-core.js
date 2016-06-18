@@ -330,6 +330,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Initialization of the element.
+	 * @example
+	 * blockInit(node);
 	 * @param {HTMLElement} node
 	 * @returns {boolean}
 	 * @private
@@ -348,6 +350,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Creating an item.
+	 * @example
+	 * blockCreate(node);
 	 * @param {HTMLElement} node
 	 * @private
 	 */
@@ -361,6 +365,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Pending the creation of the item.
+	 * @example
+	 * blockCreateLazy([ node1, node2, ... ]);
 	 * @param {HTMLElement[]} nodes
 	 * @private
 	 */
@@ -370,6 +376,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * The selection of templates.
+	 * @example
+	 * // append template to node.xtmpl
+	 * tmplCompileIterator.call(node, tmplNode);
 	 * @param {HTMLElement} node
 	 * @this HTMLElement
 	 * @private
@@ -381,6 +390,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * Special handler of merge.
 	 * Arrays are merged by the concatenation.
+	 * @example
+	 * _.mergeWith(obj, src, mergeCustomizer);
 	 * @param {*} objValue
 	 * @param {*} srcValue
 	 * @param {string} key
@@ -407,6 +418,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Inheritance lifecycle handler.
+	 * @example
+	 * _.mergeWith(objValue, srcValue, lifecycleCustomizer);
 	 * @param {function} [objValue] the current handler
 	 * @param {function} [srcValue] the new handler
 	 * @returns {function}
@@ -418,6 +431,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Inheritance event handler.
+	 * @example
+	 * _.mergeWith(objValue, srcValue, eventsCustomizer);
 	 * @param {function} [objValue] the current handler
 	 * @param {function} [srcValue] the new handler
 	 * @returns {function}
@@ -429,6 +444,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Inheritance events "set" property changes.
+	 * @example
+	 * _.mergeWith(objValue, srcValue, accessorsCustomizer);
 	 * @param {Object} [objValue] the current value
 	 * @param {Object} [srcValue] the new value
 	 * @returns {Object}
@@ -445,6 +462,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Implementation of inherited event.
+	 * // call objFunc, srcFunc
+	 * _.wrap(objFunc, _.wrap(srcFunc, wrapperEvents));
 	 * @param {function} [srcFunc]
 	 * @param {function} [objFunc]
 	 * @param {...*} args
@@ -471,6 +490,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Implementation of inherited function.
+	 * @example
+	 * // call objFunc, srcFunc
+	 * _.wrap(objFunc, _.wrap(srcFunc, wrapperFunction));
 	 * @param {function} [srcFunc]
 	 * @param {function} [objFunc]
 	 * @param {...*} args
@@ -492,6 +514,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * The assignment of parameters accessors.
+	 * @example
+	 * _.forEach({}, accessorsIterator);
 	 * @param {Object} options
 	 * @param {string} name
 	 * @param {Object} accessors
@@ -508,6 +532,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Update element when a property is changed.
+	 * @example
+	 * // call node.xblock.update();
+	 * _.wrap("accessor-name", wrapperAccessorsSetUpdate).call(node, 'newValue', 'oldValue');
 	 * @param {string} accessorName the name of the property
 	 * @param {*} nextValue
 	 * @param {*} prevValue
@@ -8112,6 +8139,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Update react view.
+	 * @example
+	 * var element = document.createElement('xb-test');
+	 * element.xblock.update();
 	 * @param {Object} [props] added attributes
 	 * @param {array} [removeProps] remote attributes
 	 * @param {function} [callback] the callback function
@@ -8253,8 +8283,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	/**
+	 * Verification of the attribute that was removed.
+	 * @example
+	 * // false
+	 * filterAttributesRemove({ type: 'attributes', attributeName: 'test' })
 	 * @param {MutationRecord} record
 	 * @returns {boolean}
+	 * @this XBElement
 	 * @private
 	 */
 	function filterAttributesRemove(record) {
@@ -8262,6 +8297,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
+	 * The allocation of attribute names
+	 * @example
+	 * // "test"
+	 * mapAttributesName({ attributeName: 'test' });
 	 * @param {MutationRecord} record
 	 * @returns {string}
 	 * @private
@@ -8271,6 +8310,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
+	 * Call global events "xb-created"
+	 * @example
+	 * globalInitEvent([]);
 	 * @param {array} records
 	 * @private
 	 */
@@ -8279,6 +8321,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
+	 * Call global events "xb-update"
+	 * @example
+	 * globalUpdateEvent([]);
 	 * @param {array} records
 	 * @private
 	 */

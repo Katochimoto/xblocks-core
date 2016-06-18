@@ -59,6 +59,8 @@ if (!attrModifiedWorks) {
 
     /**
      * Remote attribute.
+     * @example
+     * node.removeAttribute('attr');
      * @param {string} attrName
      */
     proto.removeAttribute = function (attrName) {

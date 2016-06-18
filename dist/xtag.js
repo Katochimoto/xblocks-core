@@ -383,6 +383,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Remote attribute.
+	     * @example
+	     * node.removeAttribute('attr');
 	     * @param {string} attrName
 	     */
 	    proto.removeAttribute = function (attrName) {

@@ -83,6 +83,9 @@ XBElement.prototype.destroy = function () {
 
 /**
  * Update react view.
+ * @example
+ * var element = document.createElement('xb-test');
+ * element.xblock.update();
  * @param {Object} [props] added attributes
  * @param {array} [removeProps] remote attributes
  * @param {function} [callback] the callback function
@@ -226,8 +229,13 @@ XBElement.prototype._callbackMutation = function (records) {
 };
 
 /**
+ * Verification of the attribute that was removed.
+ * @example
+ * // false
+ * filterAttributesRemove({ type: 'attributes', attributeName: 'test' })
  * @param {MutationRecord} record
  * @returns {boolean}
+ * @this XBElement
  * @private
  */
 function filterAttributesRemove(record) {
@@ -235,6 +243,10 @@ function filterAttributesRemove(record) {
 }
 
 /**
+ * The allocation of attribute names
+ * @example
+ * // "test"
+ * mapAttributesName({ attributeName: 'test' });
  * @param {MutationRecord} record
  * @returns {string}
  * @private
@@ -244,6 +256,9 @@ function mapAttributesName(record) {
 }
 
 /**
+ * Call global events "xb-created"
+ * @example
+ * globalInitEvent([]);
  * @param {array} records
  * @private
  */
@@ -252,6 +267,9 @@ function globalInitEvent(records) {
 }
 
 /**
+ * Call global events "xb-update"
+ * @example
+ * globalUpdateEvent([]);
  * @param {array} records
  * @private
  */

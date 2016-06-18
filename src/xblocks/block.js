@@ -171,6 +171,8 @@ export function create(blockName, options) {
 
 /**
  * Initialization of the element.
+ * @example
+ * blockInit(node);
  * @param {HTMLElement} node
  * @returns {boolean}
  * @private
@@ -189,6 +191,8 @@ function blockInit(node) {
 
 /**
  * Creating an item.
+ * @example
+ * blockCreate(node);
  * @param {HTMLElement} node
  * @private
  */
@@ -206,6 +210,8 @@ function blockCreate(node) {
 
 /**
  * Pending the creation of the item.
+ * @example
+ * blockCreateLazy([ node1, node2, ... ]);
  * @param {HTMLElement[]} nodes
  * @private
  */
@@ -215,6 +221,9 @@ function blockCreateLazy(nodes) {
 
 /**
  * The selection of templates.
+ * @example
+ * // append template to node.xtmpl
+ * tmplCompileIterator.call(node, tmplNode);
  * @param {HTMLElement} node
  * @this HTMLElement
  * @private
@@ -226,6 +235,8 @@ function tmplCompileIterator(node) {
 /**
  * Special handler of merge.
  * Arrays are merged by the concatenation.
+ * @example
+ * _.mergeWith(obj, src, mergeCustomizer);
  * @param {*} objValue
  * @param {*} srcValue
  * @param {string} key
@@ -252,6 +263,8 @@ function mergeCustomizer(objValue, srcValue, key) {
 
 /**
  * Inheritance lifecycle handler.
+ * @example
+ * _.mergeWith(objValue, srcValue, lifecycleCustomizer);
  * @param {function} [objValue] the current handler
  * @param {function} [srcValue] the new handler
  * @returns {function}
@@ -263,6 +276,8 @@ function lifecycleCustomizer(objValue, srcValue) {
 
 /**
  * Inheritance event handler.
+ * @example
+ * _.mergeWith(objValue, srcValue, eventsCustomizer);
  * @param {function} [objValue] the current handler
  * @param {function} [srcValue] the new handler
  * @returns {function}
@@ -274,6 +289,8 @@ function eventsCustomizer(objValue, srcValue) {
 
 /**
  * Inheritance events "set" property changes.
+ * @example
+ * _.mergeWith(objValue, srcValue, accessorsCustomizer);
  * @param {Object} [objValue] the current value
  * @param {Object} [srcValue] the new value
  * @returns {Object}
@@ -290,6 +307,8 @@ function accessorsCustomizer(objValue, srcValue) {
 
 /**
  * Implementation of inherited event.
+ * // call objFunc, srcFunc
+ * _.wrap(objFunc, _.wrap(srcFunc, wrapperEvents));
  * @param {function} [srcFunc]
  * @param {function} [objFunc]
  * @param {...*} args
@@ -310,6 +329,9 @@ function wrapperEvents(srcFunc, objFunc, ...args) {
 
 /**
  * Implementation of inherited function.
+ * @example
+ * // call objFunc, srcFunc
+ * _.wrap(objFunc, _.wrap(srcFunc, wrapperFunction));
  * @param {function} [srcFunc]
  * @param {function} [objFunc]
  * @param {...*} args
@@ -327,6 +349,8 @@ function wrapperFunction(srcFunc, objFunc, ...args) {
 
 /**
  * The assignment of parameters accessors.
+ * @example
+ * _.forEach({}, accessorsIterator);
  * @param {Object} options
  * @param {string} name
  * @param {Object} accessors
@@ -343,6 +367,9 @@ function accessorsIterator(options, name, accessors) {
 
 /**
  * Update element when a property is changed.
+ * @example
+ * // call node.xblock.update();
+ * _.wrap("accessor-name", wrapperAccessorsSetUpdate).call(node, 'newValue', 'oldValue');
  * @param {string} accessorName the name of the property
  * @param {*} nextValue
  * @param {*} prevValue
