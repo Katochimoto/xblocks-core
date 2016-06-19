@@ -235,7 +235,7 @@ describe('xblocks', function () {
         });
 
         it('свойство xtagName', function () {
-            expect(this.xElement.xtagName).to.equal('x-element-create');
+            expect(this.xElement[ Constants.TAGNAME ]).to.equal('x-element-create');
         });
 
         it('свойство xtmpl', function () {
@@ -243,8 +243,8 @@ describe('xblocks', function () {
         });
 
         it('свойство xuid', function () {
-            expect(this.xElement.xuid).to.be.a('string');
-            expect(this.xElement.xuid).to.be.above(0);
+            expect(this.xElement[ Constants.UID ]).to.be.a('string');
+            expect(this.xElement[ Constants.UID ]).to.be.above(0);
         });
 
         it('свойство xprops', function () {

@@ -107,7 +107,7 @@ XBElement.prototype.update = function (props, removeProps, callback) {
 
     typeConversion(nextProps, this._node.xprops);
 
-    const proxyConstructor = getFactory(this._node.xtagName)(nextProps);
+    const proxyConstructor = getFactory(this._node[ Constants.TAGNAME ])(nextProps);
     const that = this;
     const renderCallback = function () {
         that._component = this;
@@ -171,13 +171,13 @@ XBElement.prototype.getMountedProps = function () {
 XBElement.prototype._init = function () {
     const node = this._node;
     const props = merge({}, node.props, {
-        _uid: node.xuid,
+        _uid: node[ Constants.UID ],
         _container: node
     });
 
     typeConversion(props, node.xprops);
 
-    const proxyConstructor = getFactory(node.xtagName)(props, node.content);
+    const proxyConstructor = getFactory(node[ Constants.TAGNAME ])(props, node.content);
     const that = this;
     const renderCallback = function () {
         that._component = this;

@@ -1,3 +1,5 @@
+import Constants from './../constants';
+
 /**
  * Obtaining the nodes with content defined by the user.
  *
@@ -23,10 +25,11 @@
  * @returns {HTMLElement}
  */
 export default function (node) {
+    const uid = node[ Constants.UID ];
     let element;
 
-    if (node.xuid && node.nodeType === 1 && node.hasChildNodes()) {
-        element = node.querySelector(`[data-xb-content="${node.xuid}"]`);
+    if (uid && node.nodeType === 1 && node.hasChildNodes()) {
+        element = node.querySelector(`[data-xb-content="${uid}"]`);
 
         if (!element) {
             element = node.querySelector('script[type="text/x-template"]:not([ref]),template:not([ref])');

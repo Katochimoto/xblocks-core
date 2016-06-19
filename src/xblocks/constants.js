@@ -1,7 +1,9 @@
 import Symbol from 'es6-symbol';
 
 export default {
-    TMPL: Symbol('xblocks-xtmpl'),
-    INSERTED: Symbol('xblocks-xinserted'),
-    BLOCK: Symbol('xblocks-xblock')
+    BLOCK: Symbol('xblocks-block'),
+    INSERTED: Symbol('xblocks-inserted'),
+    TAGNAME: 'xtagName',
+    TMPL: Symbol('xblocks-tmpl'),
+    UID: 'xuid'
 };

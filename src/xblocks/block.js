@@ -83,7 +83,7 @@ const BLOCK_COMMON_ACCESSORS = {
         get: function () {
             const props = dom.attrs.toObject(this);
             const xprops = this.xprops;
-            const eprops = get(xtag, [ 'tags', this.xtagName, 'accessors' ], {});
+            const eprops = get(xtag, [ 'tags', this[ Constants.TAGNAME ], 'accessors' ], {});
 
             for (let prop in eprops) {
                 if (xprops.hasOwnProperty(prop) &&
@@ -106,7 +106,7 @@ const BLOCK_COMMON_ACCESSORS = {
          * @readonly
          */
         get: function () {
-            return propTypes(this.xtagName);
+            return propTypes(this[ Constants.TAGNAME ]);
         }
     },
 
@@ -188,11 +188,11 @@ export function create(blockName, options) {
  * @private
  */
 function blockInit(node) {
-    if (!node.xtagName) {
-        node.xtagName = node.tagName.toLowerCase();
-        node.xuid = uniqueId();
-        node[ Constants.TMPL ] = {};
+    if (!node[ Constants.TAGNAME ]) {
         node[ Constants.INSERTED ] = false;
+        node[ Constants.TAGNAME ] = node.tagName.toLowerCase();
+        node[ Constants.TMPL ] = {};
+        node[ Constants.UID ] = uniqueId();
 
         return true;
     }
