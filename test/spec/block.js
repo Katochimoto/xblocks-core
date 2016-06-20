@@ -41,6 +41,24 @@ describe('xblocks', function () {
             expect(node).to.have.property('test2');
         });
 
+        it('Переопределение методов должно вызвать исключение', function () {
+            expect(function () {
+                create('xb-methods-override', [
+                    {
+                        methods: {
+                            test: function () {}
+                        }
+                    },
+                    {
+                        methods: {
+                            test: function () {}
+                        }
+                    }
+                ]);
+
+            }).to.throw(Error);
+        });
+
         describe('Наследование событий жизненного цикла', function () {
             it('События жизненного цикла (lifecycle) можно наследовать', function () {
                 var spy1 = this.sinon.spy();
