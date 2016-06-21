@@ -44,6 +44,9 @@ export let Custom = (function () {
  * @param {HTMLElement} element node events
  * @param {string} name event name
  * @param {Object} params the event parameters
+ * @param {boolean} [params.bubbles=false]
+ * @param {boolean} [params.cancelable=false]
+ * @param {*} [params.detail]
  */
 export function dispatch(element, name, params) {
     element.dispatchEvent(new Custom(name, params || {}));

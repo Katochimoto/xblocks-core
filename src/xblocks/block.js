@@ -18,6 +18,7 @@ import wrap from 'lodash/wrap';
 import invoke from 'lodash/invoke';
 import intersection from 'lodash/intersection';
 import keys from 'lodash/keys';
+import trim from 'lodash/trim';
 import * as dom from './dom';
 import { XBElement } from './element';
 import { lazy, propTypes } from './utils';
@@ -43,11 +44,11 @@ const BLOCK_COMMON_ACCESSORS = {
          * @returns {?string}
          */
         get: function () {
-            if (this.mounted) {
-                return invoke(this, [ Constants.BLOCK, 'getMountedContent' ]);
-            }
+            const content = this.mounted ?
+                invoke(this, [ Constants.BLOCK, 'getMountedContent' ]) :
+                dom.contentNode(this).innerHTML;
 
-            return dom.contentNode(this).innerHTML;
+            return trim(content);
         },
 
         /**
@@ -55,6 +56,8 @@ const BLOCK_COMMON_ACCESSORS = {
          * @param {string} content
          */
         set: function (content) {
+            content = trim(content);
+
             if (this.mounted) {
                 invoke(this, [ Constants.BLOCK, 'setMountedContent' ], content);
 

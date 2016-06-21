@@ -79,7 +79,7 @@ XBElement.prototype.destroy = function () {
     node.content = content;
     node[ Constants.BLOCK ] = undefined;
 
-    dispatch(node, 'xb-destroy', { bubbles: false, cancelable: false });
+    dispatch(node, 'xb-destroy');
 };
 
 /**
@@ -92,7 +92,8 @@ XBElement.prototype.destroy = function () {
  * @param {function} [callback] the callback function
  */
 XBElement.prototype.update = function (props, removeProps, callback) {
-    const nextProps = merge({}, this.getMountedProps(), this._node.props, props);
+    const node = this._node;
+    const nextProps = merge({}, this.getMountedProps(), node.props, props);
 
     // merge of new and current properties
     // and the exclusion of remote properties
@@ -105,9 +106,9 @@ XBElement.prototype.update = function (props, removeProps, callback) {
         }
     }
 
-    typeConversion(nextProps, this._node.xprops);
+    typeConversion(nextProps, node.xprops);
 
-    const proxyConstructor = getFactory(this._node[ Constants.TAGNAME ])(nextProps);
+    const proxyConstructor = getFactory(node[ Constants.TAGNAME ])(nextProps);
     const that = this;
     const renderCallback = function () {
         that._component = this;
@@ -115,7 +116,7 @@ XBElement.prototype.update = function (props, removeProps, callback) {
     };
 
     this._observer.disconnect();
-    this._component = ReactDOM.render(proxyConstructor, this._node, renderCallback);
+    this._component = ReactDOM.render(proxyConstructor, node, renderCallback);
 };
 
 /**
@@ -192,12 +193,13 @@ XBElement.prototype._init = function () {
  * @fires module:xblocks-core/element~XBElement~event:xb-created
  */
 XBElement.prototype._callbackInit = function () {
-    this._node.upgrade();
+    const node = this._node;
+    node.upgrade();
     this._observer = new context.MutationObserver(this._callbackMutation.bind(this));
-    this._observer.observe(this._node, this._observerOptions);
+    this._observer.observe(node, this._observerOptions);
 
-    dispatch(this._node, 'xb-created');
-    lazy(globalInitEvent, this._node);
+    dispatch(node, 'xb-created');
+    lazy(globalInitEvent, node);
 };
 
 /**
@@ -206,11 +208,12 @@ XBElement.prototype._callbackInit = function () {
  * @fires module:xblocks-core/element~XBElement~event:xb-update
  */
 XBElement.prototype._callbackUpdate = function (callback) {
-    this._node.upgrade();
-    this._observer.observe(this._node, this._observerOptions);
+    const node = this._node;
+    node.upgrade();
+    this._observer.observe(node, this._observerOptions);
 
-    dispatch(this._node, 'xb-update');
-    lazy(globalUpdateEvent, this._node);
+    dispatch(node, 'xb-update');
+    lazy(globalUpdateEvent, node);
 
     if (callback) {
         callback.call(this);
