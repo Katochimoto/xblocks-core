@@ -51,3 +51,34 @@ export let Custom = (function () {
 export function dispatch(element, name, params) {
     element.dispatchEvent(new Custom(name, params || {}));
 }
+
+/**
+ * Forwarding events
+ *
+ * @example
+ * import { forwardingEvents } from 'xblocks-core/event';
+ * forwardingEvents('custom-event', fromNode, toNode, false);
+ *
+ * @param {string} name event name
+ * @param {HTMLElement} fromElement
+ * @param {HTMLElement} toElement
+ * @param {boolean} [capture=false]
+ * @returns {function} callback
+ */
+export function forwardingEvents(name, fromElement, toElement, capture = false) {
+    const callback = function (event) {
+        dispatch(toElement, name, {
+            bubbles: event.bubbles,
+            cancelable: event.cancelable,
+            detail: event.detail
+        });
+    };
+
+    callback.cancel = function () {
+        fromElement.removeEventListener(name, callback, capture);
+    };
+
+    fromElement.addEventListener(name, callback, capture);
+
+    return callback;
+}

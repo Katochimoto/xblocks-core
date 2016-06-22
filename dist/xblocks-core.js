@@ -9645,10 +9645,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	exports.Custom = undefined;
 	exports.dispatch = dispatch;
+	exports.forwardingEvents = forwardingEvents;
 
 	var _isNative = __webpack_require__(243);
 
@@ -9680,11 +9681,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @constructor
 	 */
 	var Custom = exports.Custom = function () {
-	  if ((0, _isNative2.default)('CustomEvent')) {
-	    return _context2.default.CustomEvent;
-	  }
+	    if ((0, _isNative2.default)('CustomEvent')) {
+	        return _context2.default.CustomEvent;
+	    }
 
-	  return _CustomEventCommon2.default;
+	    return _CustomEventCommon2.default;
 	}();
 
 	/**
@@ -9711,7 +9712,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 	function dispatch(element, name, params) {
-	  element.dispatchEvent(new Custom(name, params || {}));
+	    element.dispatchEvent(new Custom(name, params || {}));
+	}
+
+	/**
+	 * Forwarding events
+	 *
+	 * @example
+	 * import { forwardingEvents } from 'xblocks-core/event';
+	 * forwardingEvents('custom-event', fromNode, toNode, false);
+	 *
+	 * @param {string} name event name
+	 * @param {HTMLElement} fromElement
+	 * @param {HTMLElement} toElement
+	 * @param {boolean} [capture=false]
+	 * @returns {function} callback
+	 */
+	function forwardingEvents(name, fromElement, toElement) {
+	    var capture = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
+	    var callback = function callback(event) {
+	        dispatch(toElement, name, {
+	            bubbles: event.bubbles,
+	            cancelable: event.cancelable,
+	            detail: event.detail
+	        });
+	    };
+
+	    callback.cancel = function () {
+	        fromElement.removeEventListener(name, callback, capture);
+	    };
+
+	    fromElement.addEventListener(name, callback, capture);
+
+	    return callback;
 	}
 
 /***/ },
