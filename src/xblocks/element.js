@@ -5,13 +5,17 @@
 import ReactDOM from 'react-dom';
 import merge from 'lodash/merge';
 import keys from 'lodash/keys';
-import isArray from 'lodash/isArray';
+import forEach from 'lodash/forEach';
+import omit from 'lodash/omit';
 import context from '../context';
 import { typeConversion } from './dom/attrs';
 import { getFactory } from './view';
 import { dispatch } from './event';
 import lazy from './utils/lazy';
+import importStyle from './utils/importStyle';
+import createShadowRoot from './utils/createShadowRoot';
 import Constants from './constants';
+import { contentNode } from './dom';
 
 /**
  * Xblock element constructor.
@@ -22,6 +26,16 @@ import Constants from './constants';
 export function XBElement(node) {
     node[ Constants.BLOCK ] = this;
 
+    this._isShadow = false;
+    this._node = node;
+    this._mountPoint = node;
+
+    const root = createShadowRoot(node);
+    if (root) {
+        this._mountPoint = root.querySelector('div') || root.appendChild(node.ownerDocument.createElement('div'));
+        this._isShadow = true;
+    }
+
     this._observerOptions = {
         attributeFilter: keys(node.xprops),
         attributeOldValue: false,
@@ -29,12 +43,18 @@ export function XBElement(node) {
         characterData: true,
         characterDataOldValue: false,
         childList: true,
-        subtree: false
+        subtree: this._isShadow
     };
 
-    this._node = node;
     this._init();
 }
+
+/**
+ * The node of a react component.
+ * @type {HTMLElement}
+ * @protected
+ */
+XBElement.prototype._mountPoint = null;
 
 /**
  * The node of a custom element.
@@ -63,14 +83,16 @@ XBElement.prototype._observer = null;
  */
 XBElement.prototype.destroy = function () {
     const node = this._node;
+    const mountPoint = this._mountPoint;
     const content = node.content;
 
     this._observer.disconnect();
     this._observer = null;
     this._component = null;
     this._node = null;
+    this._mountPoint = null;
 
-    ReactDOM.unmountComponentAtNode(node);
+    ReactDOM.unmountComponentAtNode(mountPoint);
 
     // replace initial content after destroy react component
     // fix:
@@ -92,19 +114,12 @@ XBElement.prototype.destroy = function () {
  * @param {function} [callback] the callback function
  */
 XBElement.prototype.update = function (props, removeProps, callback) {
-    const node = this._node;
-    const nextProps = merge({}, this.getMountedProps(), node.props, props);
+    this._observer.disconnect();
 
+    const node = this._node;
     // merge of new and current properties
     // and the exclusion of remote properties
-    if (isArray(removeProps) && removeProps.length) {
-        let l = removeProps.length;
-        while (l--) {
-            if (nextProps.hasOwnProperty(removeProps[ l ])) {
-                delete nextProps[ removeProps[ l ] ];
-            }
-        }
-    }
+    const nextProps = omit(merge({}, this.getMountedProps(), node.props, props), removeProps);
 
     typeConversion(nextProps, node.xprops);
 
@@ -115,8 +130,8 @@ XBElement.prototype.update = function (props, removeProps, callback) {
         that._callbackUpdate(callback);
     };
 
-    this._observer.disconnect();
-    this._component = ReactDOM.render(proxyConstructor, node, renderCallback);
+    importStyle(node, node.style);
+    this._component = ReactDOM.render(proxyConstructor, this._mountPoint, renderCallback);
 };
 
 /**
@@ -185,7 +200,8 @@ XBElement.prototype._init = function () {
         that._callbackInit();
     };
 
-    this._component = ReactDOM.render(proxyConstructor, node, renderCallback);
+    importStyle(node, node.style);
+    this._component = ReactDOM.render(proxyConstructor, this._mountPoint, renderCallback);
 };
 
 /**
@@ -195,7 +211,7 @@ XBElement.prototype._init = function () {
 XBElement.prototype._callbackInit = function () {
     const node = this._node;
     node.upgrade();
-    this._observer = new context.MutationObserver(this._callbackMutation.bind(this));
+    this._observer = new context.MutationObserver(::this._callbackMutation);
     this._observer.observe(node, this._observerOptions);
 
     dispatch(node, 'xb-created');
@@ -229,7 +245,30 @@ XBElement.prototype._callbackMutation = function (records) {
         .filter(filterAttributesRemove, this)
         .map(mapAttributesName);
 
-    this.update(null, removeAttrs);
+    const isChildListMutation = records.some(childListMutationIterate);
+    const props = {};
+
+    if (isChildListMutation) {
+        props.children = contentNode(this._node).innerHTML;
+
+        if (!this._isShadow) {
+            const doc = this._node.ownerDocument;
+            const mutationContent = doc.createElement('div');
+            const targetContent = mutationContent.appendChild(doc.createElement('div'));
+
+            records
+                .filter(childListMutationIterate)
+                .reduce(reduceChildListMutation, mutationContent);
+
+            if (targetContent.parentNode) {
+                targetContent.outerHTML = props.children;
+            }
+
+            props.children = mutationContent.innerHTML;
+        }
+    }
+
+    this.update(props, removeAttrs);
 };
 
 /**
@@ -257,6 +296,55 @@ function filterAttributesRemove(record) {
  */
 function mapAttributesName(record) {
     return record.attributeName;
+}
+
+/**
+ * [childListMutationIterate description]
+ * @param {MutationRecord} record
+ * @returns {boolean}
+ * @private
+ */
+function childListMutationIterate(record) {
+    return (record.type === 'childList' || record.type === 'characterData');
+}
+
+/**
+ * [reduceChildListMutation description]
+ * @param {HTMLElement} mutationContent
+ * @param {MutationRecord} record
+ * @returns {HTMLElement}
+ * @private
+ */
+function reduceChildListMutation(mutationContent, record) {
+    const isAdded = Boolean(record.addedNodes.length);
+    const isNext = Boolean(record.nextSibling);
+    const isPrev = Boolean(record.previousSibling);
+    const isRemoved = Boolean(record.removedNodes.length);
+
+    // innerHTML or replace
+    if (isAdded && (isRemoved || (!isRemoved && !isNext && !isPrev))) {
+        while (mutationContent.firstChild) {
+            mutationContent.removeChild(mutationContent.firstChild);
+        }
+
+        forEach(record.addedNodes, function (node) {
+            mutationContent.appendChild(node);
+        });
+
+    // appendChild
+    } else if (isAdded && !isRemoved && !isNext && isPrev) {
+        forEach(record.addedNodes, function (node) {
+            mutationContent.appendChild(node);
+        });
+
+    // insertBefore
+    } else if (isAdded && !isRemoved && isNext && !isPrev) {
+        forEach(record.addedNodes, function (node) {
+            mutationContent.insertBefore(node, mutationContent.firstChild);
+        });
+    }
+
+    return mutationContent;
 }
 
 /**
