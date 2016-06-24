@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _decorator = __webpack_require__(273);
+	var _decorator = __webpack_require__(274);
 
 	Object.defineProperty(exports, 'element', {
 	  enumerable: true,
@@ -83,11 +83,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _dom = _interopRequireWildcard(_dom2);
 
-	var _event2 = __webpack_require__(249);
+	var _event2 = __webpack_require__(250);
 
 	var _event = _interopRequireWildcard(_event2);
 
-	var _utils2 = __webpack_require__(270);
+	var _utils2 = __webpack_require__(271);
 
 	var _utils = _interopRequireWildcard(_utils2);
 
@@ -187,19 +187,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _element = __webpack_require__(239);
 
-	var _utils = __webpack_require__(270);
+	var _utils = __webpack_require__(271);
 
 	var _constants = __webpack_require__(217);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
+	var _wrapperFunction = __webpack_require__(249);
+
+	var _wrapperFunction2 = _interopRequireDefault(_wrapperFunction);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	var spreadMergeWith = (0, _spread2.default)(_mergeWith2.default); /**
-	                                                                   * @module xblocks-core/block
-	                                                                   */
+	/**
+	 * @module xblocks-core/block
+	 */
+
+	var spreadMergeWith = (0, _spread2.default)(_mergeWith2.default);
 
 	var BLOCK_COMMON_ACCESSORS = {
 	    mounted: {
@@ -349,7 +355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    options.methods = (0, _assign2.default)(options.methods, BLOCK_COMMON_METHODS);
 
 	    // "removed" should be called after user handler
-	    options.lifecycle.removed = (0, _wrap2.default)(options.lifecycle.removed, (0, _wrap2.default)(lifecycleRemoved, wrapperFunction));
+	    options.lifecycle.removed = (0, _wrap2.default)(options.lifecycle.removed, (0, _wrap2.default)(lifecycleRemoved, _wrapperFunction2.default));
 
 	    return xtag.register(blockName, options);
 	}
@@ -462,7 +468,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @private
 	 */
 	function lifecycleCustomizer(objValue, srcValue) {
-	    return (0, _wrap2.default)(objValue, (0, _wrap2.default)(srcValue, wrapperFunction));
+	    return (0, _wrap2.default)(objValue, (0, _wrap2.default)(srcValue, _wrapperFunction2.default));
 	}
 
 	/**
@@ -492,7 +498,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var srcSetter = (0, _get3.default)(srcValue, 'set');
 
 	    return (0, _merge2.default)({}, objValue, srcValue, {
-	        set: (0, _wrap2.default)(objSetter, (0, _wrap2.default)(srcSetter, wrapperFunction))
+	        set: (0, _wrap2.default)(objSetter, (0, _wrap2.default)(srcSetter, _wrapperFunction2.default))
 	    });
 	}
 
@@ -526,30 +532,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
-	 * Implementation of inherited function.
-	 * @example
-	 * // call objFunc, srcFunc
-	 * _.wrap(objFunc, _.wrap(srcFunc, wrapperFunction));
-	 * @param {function} [srcFunc]
-	 * @param {function} [objFunc]
-	 * @param {...*} args
-	 * @private
-	 */
-	function wrapperFunction(srcFunc, objFunc) {
-	    for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-	        args[_key2 - 2] = arguments[_key2];
-	    }
-
-	    if ((0, _isFunction2.default)(objFunc)) {
-	        objFunc.apply(this, args);
-	    }
-
-	    if ((0, _isFunction2.default)(srcFunc)) {
-	        srcFunc.apply(this, args);
-	    }
-	}
-
-	/**
 	 * The assignment of parameters accessors.
 	 * @example
 	 * _.forEach({}, accessorsIterator);
@@ -563,7 +545,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var updateSetter = (0, _wrap2.default)(name, wrapperAccessorsSetUpdate);
 
 	    accessors[name] = (0, _merge2.default)({}, options, {
-	        set: (0, _wrap2.default)(optionsSetter, (0, _wrap2.default)(updateSetter, wrapperFunction))
+	        set: (0, _wrap2.default)(optionsSetter, (0, _wrap2.default)(updateSetter, _wrapperFunction2.default))
 	    });
 	}
 
@@ -9142,17 +9124,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _view = __webpack_require__(248);
 
-	var _event = __webpack_require__(249);
+	var _event = __webpack_require__(250);
 
-	var _lazy = __webpack_require__(253);
+	var _lazy = __webpack_require__(254);
 
 	var _lazy2 = _interopRequireDefault(_lazy);
 
-	var _importStyle = __webpack_require__(264);
+	var _importStyle = __webpack_require__(265);
 
 	var _importStyle2 = _interopRequireDefault(_importStyle);
 
-	var _createShadowRoot = __webpack_require__(269);
+	var _createShadowRoot = __webpack_require__(270);
 
 	var _createShadowRoot2 = _interopRequireDefault(_createShadowRoot);
 
@@ -9878,6 +9860,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _constants2 = _interopRequireDefault(_constants);
 
+	var _wrapperFunction = __webpack_require__(249);
+
+	var _wrapperFunction2 = _interopRequireDefault(_wrapperFunction);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var spreadMergeWith = (0, _spread2.default)(_mergeWith2.default);
@@ -10053,7 +10039,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (METHODS_INHERITANCE.indexOf(key) !== -1) {
-	        return (0, _wrap2.default)(objValue, (0, _wrap2.default)(srcValue, wrapperFunction));
+	        return (0, _wrap2.default)(objValue, (0, _wrap2.default)(srcValue, _wrapperFunction2.default));
 	    }
 
 	    if (METHODS_MERGE_RESULT.indexOf(key) !== -1) {
@@ -10086,30 +10072,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
-	 * Implementation of inherited function.
-	 * @example
-	 * // call objFunc, srcFunc
-	 * _.wrap(objFunc, _.wrap(srcFunc, wrapperFunction));
-	 * @param {function} [srcFunc]
-	 * @param {function} [objFunc]
-	 * @param {...*} args
-	 * @private
-	 */
-	function wrapperFunction(srcFunc, objFunc) {
-	    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-	        args[_key - 2] = arguments[_key];
-	    }
-
-	    if ((0, _isFunction2.default)(objFunc)) {
-	        objFunc.apply(this, args);
-	    }
-
-	    if ((0, _isFunction2.default)(srcFunc)) {
-	        srcFunc.apply(this, args);
-	    }
-	}
-
-	/**
 	 * The implementation of the merger result.
 	 * @example
 	 * // call objFunc, srcFunc
@@ -10124,8 +10086,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var resultObjFunction = {};
 	    var resultSrcFunction = {};
 
-	    for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-	        args[_key2 - 2] = arguments[_key2];
+	    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+	        args[_key - 2] = arguments[_key];
 	    }
 
 	    if ((0, _isFunction2.default)(objFunc)) {
@@ -10154,8 +10116,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var resultObjFunction = false;
 	    var resultSrcFunction = false;
 
-	    for (var _len3 = arguments.length, args = Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
-	        args[_key3 - 2] = arguments[_key3];
+	    for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+	        args[_key2 - 2] = arguments[_key2];
 	    }
 
 	    if ((0, _isFunction2.default)(objFunc)) {
@@ -10178,11 +10140,41 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+
+	exports.default = function (srcFunc, objFunc) {
+	    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+	        args[_key - 2] = arguments[_key];
+	    }
+
+	    if ((0, _isFunction2.default)(objFunc)) {
+	        objFunc.apply(this, args);
+	    }
+
+	    if ((0, _isFunction2.default)(srcFunc)) {
+	        srcFunc.apply(this, args);
+	    }
+	};
+
+	var _isFunction = __webpack_require__(20);
+
+	var _isFunction2 = _interopRequireDefault(_isFunction);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 250 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 	exports.Custom = undefined;
 	exports.dispatch = dispatch;
 	exports.forwardingEvents = forwardingEvents;
 
-	var _isNative = __webpack_require__(250);
+	var _isNative = __webpack_require__(251);
 
 	var _isNative2 = _interopRequireDefault(_isNative);
 
@@ -10190,7 +10182,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _context2 = _interopRequireDefault(_context);
 
-	var _CustomEventCommon = __webpack_require__(252);
+	var _CustomEventCommon = __webpack_require__(253);
 
 	var _CustomEventCommon2 = _interopRequireDefault(_CustomEventCommon);
 
@@ -10280,11 +10272,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseIsNative = __webpack_require__(52),
-	    isMaskable = __webpack_require__(251);
+	    isMaskable = __webpack_require__(252);
 
 	/**
 	 * Checks if `value` is a pristine native function.
@@ -10323,7 +10315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var coreJsData = __webpack_require__(55),
@@ -10343,7 +10335,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10432,7 +10424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = CustomEventCommon;
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10462,28 +10454,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return callback;
 	};
 
-	var _src = __webpack_require__(254);
+	var _src = __webpack_require__(255);
 
 	var _src2 = _interopRequireDefault(_src);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(255);
-	var useNative = __webpack_require__(256);
-	var Timer = __webpack_require__(257);
-	var setTimeoutPolifill = __webpack_require__(258);
+	var context = __webpack_require__(256);
+	var useNative = __webpack_require__(257);
+	var Timer = __webpack_require__(258);
+	var setTimeoutPolifill = __webpack_require__(259);
 	var polifills = [
-	    __webpack_require__(259),
 	    __webpack_require__(260),
 	    __webpack_require__(261),
 	    __webpack_require__(262),
-	    __webpack_require__(263)
+	    __webpack_require__(263),
+	    __webpack_require__(264)
 	];
 	var setImmediate;
 	var clearImmediate;
@@ -10521,7 +10513,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports) {
 
 	/*jshint -W067*/
@@ -10533,10 +10525,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 256 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var context = __webpack_require__(255);
+	var context = __webpack_require__(256);
 
 	// @see http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
 	module.exports = function() {
@@ -10545,12 +10537,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 257 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(255);
+	var context = __webpack_require__(256);
 
 	var nextId = 1;
 	var tasks = {};
@@ -10601,13 +10593,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 258 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(255);
-	var Timer = __webpack_require__(257);
+	var context = __webpack_require__(256);
+	var Timer = __webpack_require__(258);
 
 	exports.init = function() {
 	    var polifill = function() {
@@ -10625,13 +10617,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 259 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(255);
-	var Timer = __webpack_require__(257);
+	var context = __webpack_require__(256);
+	var Timer = __webpack_require__(258);
 
 	exports.init = function() {
 	    var polifill = function() {
@@ -10651,13 +10643,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(255);
-	var Timer = __webpack_require__(257);
+	var context = __webpack_require__(256);
+	var Timer = __webpack_require__(258);
 
 	exports.init = function() {
 	    var messagePrefix = 'setImmediate$' + Math.random() + '$';
@@ -10706,13 +10698,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 261 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(255);
-	var Timer = __webpack_require__(257);
+	var context = __webpack_require__(256);
+	var Timer = __webpack_require__(258);
 
 	exports.init = function() {
 	    var channel = new context.MessageChannel();
@@ -10737,13 +10729,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 262 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(255);
-	var Timer = __webpack_require__(257);
+	var context = __webpack_require__(256);
+	var Timer = __webpack_require__(258);
 
 	exports.init = function() {
 	    var html = context.document.documentElement;
@@ -10773,13 +10765,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 263 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var context = __webpack_require__(255);
-	var Timer = __webpack_require__(257);
+	var context = __webpack_require__(256);
+	var Timer = __webpack_require__(258);
 
 	exports.init = function() {
 	    var polifill = function() {
@@ -10800,7 +10792,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 264 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10838,11 +10830,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	};
 
-	var _has = __webpack_require__(265);
+	var _has = __webpack_require__(266);
 
 	var _has2 = _interopRequireDefault(_has);
 
-	var _set = __webpack_require__(266);
+	var _set = __webpack_require__(267);
 
 	var _set2 = _interopRequireDefault(_set);
 
@@ -10850,7 +10842,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _isEmpty = __webpack_require__(268);
+	var _isEmpty = __webpack_require__(269);
 
 	var _isEmpty2 = _interopRequireDefault(_isEmpty);
 
@@ -10865,7 +10857,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 265 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseHas = __webpack_require__(10),
@@ -10906,10 +10898,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 266 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSet = __webpack_require__(267);
+	var baseSet = __webpack_require__(268);
 
 	/**
 	 * Sets the value at `path` of `object`. If a portion of `path` doesn't exist,
@@ -10947,7 +10939,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 267 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var assignValue = __webpack_require__(116),
@@ -10999,7 +10991,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 268 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getTag = __webpack_require__(84),
@@ -11085,7 +11077,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11121,7 +11113,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11131,15 +11123,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.propTypes = exports.log = exports.lazy = undefined;
 
-	var _lazy2 = __webpack_require__(253);
+	var _lazy2 = __webpack_require__(254);
 
 	var _lazy3 = _interopRequireDefault(_lazy2);
 
-	var _log2 = __webpack_require__(271);
+	var _log2 = __webpack_require__(272);
 
 	var _log = _interopRequireWildcard(_log2);
 
-	var _propTypes2 = __webpack_require__(272);
+	var _propTypes2 = __webpack_require__(273);
 
 	var _propTypes3 = _interopRequireDefault(_propTypes2);
 
@@ -11152,7 +11144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.propTypes = _propTypes3.default;
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11202,7 +11194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11232,7 +11224,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _view = __webpack_require__(248);
 
 /***/ },
-/* 273 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

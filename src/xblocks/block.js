@@ -23,6 +23,7 @@ import * as dom from './dom';
 import { XBElement } from './element';
 import { lazy, propTypes } from './utils';
 import Constants from './constants';
+import wrapperFunction from './utils/wrapperFunction';
 
 const spreadMergeWith = spread(mergeWith);
 
@@ -349,26 +350,6 @@ function wrapperEvents(srcFunc, objFunc, ...args) {
     }
 
     if (!isStopped() && isFunction(srcFunc)) {
-        srcFunc.apply(this, args);
-    }
-}
-
-/**
- * Implementation of inherited function.
- * @example
- * // call objFunc, srcFunc
- * _.wrap(objFunc, _.wrap(srcFunc, wrapperFunction));
- * @param {function} [srcFunc]
- * @param {function} [objFunc]
- * @param {...*} args
- * @private
- */
-function wrapperFunction(srcFunc, objFunc, ...args) {
-    if (isFunction(objFunc)) {
-        objFunc.apply(this, args);
-    }
-
-    if (isFunction(srcFunc)) {
         srcFunc.apply(this, args);
     }
 }
