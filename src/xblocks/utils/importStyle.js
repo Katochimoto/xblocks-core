@@ -5,6 +5,20 @@ import isEmpty from 'lodash/isEmpty';
 import forEach from 'lodash/forEach';
 import Constants from '../constants';
 
+/**
+ * Importing styles into a document or a shadow root.
+ *
+ * @example
+ * import importStyle from 'xblocks-core/utils/importStyle';
+ *
+ * importStyle(node, {
+ *     'tag-name': '.test { color: #000; }'
+ * })
+ *
+ * @module xblocks-core/utils/importStyle
+ * @param {HTMLElement} node
+ * @param {Object} inline
+ */
 export default function (node, inline) {
     if (!isPlainObject(inline) || isEmpty(inline)) {
         return;
