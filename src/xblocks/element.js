@@ -301,7 +301,10 @@ function mapAttributesName(record) {
 }
 
 /**
- * [childListMutationIterate description]
+ * Verification of the mutation sub-elements.
+ * @example
+ * // true
+ * childListMutationIterate({ type: 'childList', attributeName: 'test' })
  * @param {MutationRecord} record
  * @returns {boolean}
  * @private
@@ -311,7 +314,7 @@ function childListMutationIterate(record) {
 }
 
 /**
- * [reduceChildListMutation description]
+ * The allocation of the changed nodes.
  * @param {HTMLElement} mutationContent
  * @param {MutationRecord} record
  * @returns {HTMLElement}
