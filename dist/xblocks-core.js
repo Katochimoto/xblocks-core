@@ -9834,6 +9834,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _merge2 = _interopRequireDefault(_merge);
 
+	var _mergeWith = __webpack_require__(157);
+
+	var _mergeWith2 = _interopRequireDefault(_mergeWith);
+
+	var _spread = __webpack_require__(159);
+
+	var _spread2 = _interopRequireDefault(_spread);
+
+	var _castArray = __webpack_require__(162);
+
+	var _castArray2 = _interopRequireDefault(_castArray);
+
 	var _isArray = __webpack_require__(24);
 
 	var _isArray2 = _interopRequireDefault(_isArray);
@@ -9846,15 +9858,33 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
+	var _wrap = __webpack_require__(163);
+
+	var _wrap2 = _interopRequireDefault(_wrap);
+
 	var _get = __webpack_require__(94);
 
 	var _get2 = _interopRequireDefault(_get);
+
+	var _intersection = __webpack_require__(197);
+
+	var _intersection2 = _interopRequireDefault(_intersection);
+
+	var _keys = __webpack_require__(9);
+
+	var _keys2 = _interopRequireDefault(_keys);
 
 	var _constants = __webpack_require__(217);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var spreadMergeWith = (0, _spread2.default)(_mergeWith2.default);
+
+	var METHODS_INHERITANCE = ['componentWillMount', 'componentDidMount', 'componentWillReceiveProps', 'componentWillUpdate', 'componentDidUpdate', 'componentWillUnmount'];
+
+	var METHODS_MERGE_RESULT = ['getInitialState', 'getDefaultProps'];
 
 	var VIEW_COMMON = {
 
@@ -9940,11 +9970,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {function}
 	 */
 	function create(component) {
-	    component = (0, _isArray2.default)(component) ? component : [component];
+	    component = (0, _castArray2.default)(component);
 	    component.unshift({}, VIEW_COMMON_USER);
-	    component.push(VIEW_COMMON);
+	    component.push(VIEW_COMMON, mergeCustomizer);
+	    component = spreadMergeWith(component);
 
-	    return _react2.default.createClass(_merge2.default.apply({}, component));
+	    return _react2.default.createClass(component);
 	}
 
 	/**
@@ -9966,11 +9997,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {string} blockName the name of the new node
 	 * @param {Object|array|React.Component} component settings view creation
 	 * @returns {function}
+	 * @throws Specified item "${blockName}" is already defined
 	 */
 	function register(blockName, component) {
 	    if (_react2.default.DOM.hasOwnProperty(blockName)) {
-	        /* eslint no-throw-literal:0 */
-	        throw 'Specified item "' + blockName + '" is already defined';
+	        throw new Error('Specified item "' + blockName + '" is already defined');
 	    }
 
 	    var componentClass = (0, _isFunction2.default)(component) ? component : create(component);
@@ -10000,6 +10031,142 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	function getClass(blockName) {
 	    return VIEW_COMPONENTS_CLASS[blockName];
+	}
+
+	/**
+	 * Special handler of merge.
+	 * Arrays are merged by the concatenation.
+	 * @example
+	 * _.mergeWith(obj, src, mergeCustomizer);
+	 * @param {*} objValue
+	 * @param {*} srcValue
+	 * @param {string} key
+	 * @returns {Object|array|undefined}
+	 * @throws The following methods are overridden
+	 * @throws The "render" method you can override
+	 * @throws The "displayName" property can not be redefined
+	 * @private
+	 */
+	function mergeCustomizer(objValue, srcValue, key) {
+	    if ((0, _isArray2.default)(objValue)) {
+	        return objValue.concat(srcValue);
+	    }
+
+	    if (METHODS_INHERITANCE.indexOf(key) !== -1) {
+	        return (0, _wrap2.default)(objValue, (0, _wrap2.default)(srcValue, wrapperFunction));
+	    }
+
+	    if (METHODS_MERGE_RESULT.indexOf(key) !== -1) {
+	        return (0, _wrap2.default)(objValue, (0, _wrap2.default)(srcValue, wrapperMergeResult));
+	    }
+
+	    if (key === 'shouldComponentUpdate') {
+	        return (0, _wrap2.default)(objValue, (0, _wrap2.default)(srcValue, wrapperOrResult));
+	    }
+
+	    if (key === 'statics') {
+	        var overriddenMethods = (0, _intersection2.default)((0, _keys2.default)(objValue), (0, _keys2.default)(srcValue));
+
+	        if (overriddenMethods.length) {
+	            throw new Error('The following methods are overridden: "' + overriddenMethods.join('", "') + '"');
+	        }
+	    }
+
+	    if (key === 'render' && objValue && srcValue) {
+	        throw new Error('The "render" method you can override');
+	    }
+
+	    if (key === 'displayName' && objValue && srcValue) {
+	        throw new Error('The "displayName" property can not be redefined');
+	    }
+
+	    if ((0, _isFunction2.default)(objValue) && (0, _isFunction2.default)(srcValue)) {
+	        throw new Error('The following methods are overridden: "' + key + '"');
+	    }
+	}
+
+	/**
+	 * Implementation of inherited function.
+	 * @example
+	 * // call objFunc, srcFunc
+	 * _.wrap(objFunc, _.wrap(srcFunc, wrapperFunction));
+	 * @param {function} [srcFunc]
+	 * @param {function} [objFunc]
+	 * @param {...*} args
+	 * @private
+	 */
+	function wrapperFunction(srcFunc, objFunc) {
+	    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+	        args[_key - 2] = arguments[_key];
+	    }
+
+	    if ((0, _isFunction2.default)(objFunc)) {
+	        objFunc.apply(this, args);
+	    }
+
+	    if ((0, _isFunction2.default)(srcFunc)) {
+	        srcFunc.apply(this, args);
+	    }
+	}
+
+	/**
+	 * The implementation of the merger result.
+	 * @example
+	 * // call objFunc, srcFunc
+	 * _.wrap(objFunc, _.wrap(srcFunc, wrapperMergeResult));
+	 * @param {function} [srcFunc]
+	 * @param {function} [objFunc]
+	 * @param {...*} args
+	 * @returns {Object}
+	 * @private
+	 */
+	function wrapperMergeResult(srcFunc, objFunc) {
+	    var resultObjFunction = {};
+	    var resultSrcFunction = {};
+
+	    for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+	        args[_key2 - 2] = arguments[_key2];
+	    }
+
+	    if ((0, _isFunction2.default)(objFunc)) {
+	        resultObjFunction = objFunc.apply(this, args);
+	    }
+
+	    if ((0, _isFunction2.default)(srcFunc)) {
+	        resultSrcFunction = srcFunc.apply(this, args);
+	    }
+
+	    return (0, _merge2.default)({}, resultObjFunction, resultSrcFunction);
+	}
+
+	/**
+	 * Merging the result of the logical "or".
+	 * @example
+	 * // call objFunc, srcFunc
+	 * _.wrap(objFunc, _.wrap(srcFunc, wrapperOrResult));
+	 * @param {function} [srcFunc]
+	 * @param {function} [objFunc]
+	 * @param {...*} args
+	 * @returns {boolean}
+	 * @private
+	 */
+	function wrapperOrResult(srcFunc, objFunc) {
+	    var resultObjFunction = false;
+	    var resultSrcFunction = false;
+
+	    for (var _len3 = arguments.length, args = Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+	        args[_key3 - 2] = arguments[_key3];
+	    }
+
+	    if ((0, _isFunction2.default)(objFunc)) {
+	        resultObjFunction = objFunc.apply(this, args);
+	    }
+
+	    if ((0, _isFunction2.default)(srcFunc)) {
+	        resultSrcFunction = srcFunc.apply(this, args);
+	    }
+
+	    return resultObjFunction || resultSrcFunction;
 	}
 
 /***/ },

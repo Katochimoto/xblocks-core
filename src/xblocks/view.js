@@ -4,11 +4,33 @@
 
 import React, { PropTypes } from 'react';
 import merge from 'lodash/merge';
+import mergeWith from 'lodash/mergeWith';
+import spread from 'lodash/spread';
+import castArray from 'lodash/castArray';
 import isArray from 'lodash/isArray';
 import isFunction from 'lodash/isFunction';
 import isPlainObject from 'lodash/isPlainObject';
+import wrap from 'lodash/wrap';
 import get from 'lodash/get';
+import intersection from 'lodash/intersection';
+import keys from 'lodash/keys';
 import Constants from './constants';
+
+const spreadMergeWith = spread(mergeWith);
+
+const METHODS_INHERITANCE = [
+    'componentWillMount',
+    'componentDidMount',
+    'componentWillReceiveProps',
+    'componentWillUpdate',
+    'componentDidUpdate',
+    'componentWillUnmount'
+];
+
+const METHODS_MERGE_RESULT = [
+    'getInitialState',
+    'getDefaultProps'
+];
 
 const VIEW_COMMON = {
 
@@ -96,11 +118,12 @@ const VIEW_COMPONENTS_CLASS = {};
  * @returns {function}
  */
 export function create(component) {
-    component = isArray(component) ? component : [ component ];
+    component = castArray(component);
     component.unshift({}, VIEW_COMMON_USER);
-    component.push(VIEW_COMMON);
+    component.push(VIEW_COMMON, mergeCustomizer);
+    component = spreadMergeWith(component);
 
-    return React.createClass(merge.apply({}, component));
+    return React.createClass(component);
 }
 
 /**
@@ -122,11 +145,11 @@ export function create(component) {
  * @param {string} blockName the name of the new node
  * @param {Object|array|React.Component} component settings view creation
  * @returns {function}
+ * @throws Specified item "${blockName}" is already defined
  */
 export function register(blockName, component) {
     if (React.DOM.hasOwnProperty(blockName)) {
-        /* eslint no-throw-literal:0 */
-        throw 'Specified item "' + blockName + '" is already defined';
+        throw new Error(`Specified item "${blockName}" is already defined`);
     }
 
     const componentClass = isFunction(component) ?
@@ -158,4 +181,128 @@ export function getFactory(blockName) {
  */
 export function getClass(blockName) {
     return VIEW_COMPONENTS_CLASS[ blockName ];
+}
+
+/**
+ * Special handler of merge.
+ * Arrays are merged by the concatenation.
+ * @example
+ * _.mergeWith(obj, src, mergeCustomizer);
+ * @param {*} objValue
+ * @param {*} srcValue
+ * @param {string} key
+ * @returns {Object|array|undefined}
+ * @throws The following methods are overridden
+ * @throws The "render" method you can override
+ * @throws The "displayName" property can not be redefined
+ * @private
+ */
+function mergeCustomizer(objValue, srcValue, key) {
+    if (isArray(objValue)) {
+        return objValue.concat(srcValue);
+    }
+
+    if (METHODS_INHERITANCE.indexOf(key) !== -1) {
+        return wrap(objValue, wrap(srcValue, wrapperFunction));
+    }
+
+    if (METHODS_MERGE_RESULT.indexOf(key) !== -1) {
+        return wrap(objValue, wrap(srcValue, wrapperMergeResult));
+    }
+
+    if (key === 'shouldComponentUpdate') {
+        return wrap(objValue, wrap(srcValue, wrapperOrResult));
+    }
+
+    if (key === 'statics') {
+        const overriddenMethods = intersection(keys(objValue), keys(srcValue));
+
+        if (overriddenMethods.length) {
+            throw new Error(`The following methods are overridden: "${overriddenMethods.join('", "')}"`);
+        }
+    }
+
+    if (key === 'render' && objValue && srcValue) {
+        throw new Error('The "render" method you can override');
+    }
+
+    if (key === 'displayName' && objValue && srcValue) {
+        throw new Error('The "displayName" property can not be redefined');
+    }
+
+    if (isFunction(objValue) && isFunction(srcValue)) {
+        throw new Error(`The following methods are overridden: "${key}"`);
+    }
+}
+
+/**
+ * Implementation of inherited function.
+ * @example
+ * // call objFunc, srcFunc
+ * _.wrap(objFunc, _.wrap(srcFunc, wrapperFunction));
+ * @param {function} [srcFunc]
+ * @param {function} [objFunc]
+ * @param {...*} args
+ * @private
+ */
+function wrapperFunction(srcFunc, objFunc, ...args) {
+    if (isFunction(objFunc)) {
+        objFunc.apply(this, args);
+    }
+
+    if (isFunction(srcFunc)) {
+        srcFunc.apply(this, args);
+    }
+}
+
+/**
+ * The implementation of the merger result.
+ * @example
+ * // call objFunc, srcFunc
+ * _.wrap(objFunc, _.wrap(srcFunc, wrapperMergeResult));
+ * @param {function} [srcFunc]
+ * @param {function} [objFunc]
+ * @param {...*} args
+ * @returns {Object}
+ * @private
+ */
+function wrapperMergeResult(srcFunc, objFunc, ...args) {
+    let resultObjFunction = {};
+    let resultSrcFunction = {};
+
+    if (isFunction(objFunc)) {
+        resultObjFunction = objFunc.apply(this, args);
+    }
+
+    if (isFunction(srcFunc)) {
+        resultSrcFunction = srcFunc.apply(this, args);
+    }
+
+    return merge({}, resultObjFunction, resultSrcFunction);
+}
+
+/**
+ * Merging the result of the logical "or".
+ * @example
+ * // call objFunc, srcFunc
+ * _.wrap(objFunc, _.wrap(srcFunc, wrapperOrResult));
+ * @param {function} [srcFunc]
+ * @param {function} [objFunc]
+ * @param {...*} args
+ * @returns {boolean}
+ * @private
+ */
+function wrapperOrResult(srcFunc, objFunc, ...args) {
+    let resultObjFunction = false;
+    let resultSrcFunction = false;
+
+    if (isFunction(objFunc)) {
+        resultObjFunction = objFunc.apply(this, args);
+    }
+
+    if (isFunction(srcFunc)) {
+        resultSrcFunction = srcFunc.apply(this, args);
+    }
+
+    return resultObjFunction || resultSrcFunction;
 }
