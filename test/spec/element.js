@@ -147,4 +147,65 @@ describe('xblocks', function () {
             });
         });
     });
+
+    describe('Изменение вложенных узлов', function () {
+        beforeEach(function () {
+            this._spyInit = this.sinon.spy(XBElement.prototype, '_init');
+
+            this.node = document.createElement('x-element1');
+            this.node.innerHTML = 'test';
+
+            var that = this;
+            return new vow.Promise(function (resolve) {
+                that.node.addEventListener('xb-created', function _onXbCreated() {
+                    this.removeEventListener('xb-created', _onXbCreated);
+                    resolve();
+                });
+
+                document.body.appendChild(that.node);
+            });
+        });
+
+        afterEach(function () {
+            if (this.node.parentNode) {
+                this.node.parentNode.removeChild(this.node);
+            }
+        });
+
+        it('innerHTML должен вызвать перерисовку элемента с изменением children элементов', function () {
+            return new vow.Promise((resolve) => {
+                this.node.addEventListener('xb-update', function _onXbUpdate() {
+                    this.removeEventListener('xb-update', _onXbUpdate);
+                    expect(this.content).to.be.equal('test innerHTML');
+                    resolve();
+                });
+
+                this.node.innerHTML = 'test innerHTML';
+            });
+        });
+
+        it('appendChild добавляет сожержимое в конец children', function () {
+            return new vow.Promise((resolve) => {
+                this.node.addEventListener('xb-update', function _onXbUpdate() {
+                    this.removeEventListener('xb-update', _onXbUpdate);
+                    expect(this.content).to.be.equal('test appendChild');
+                    resolve();
+                });
+
+                this.node.appendChild(document.createTextNode(' appendChild'));
+            });
+        });
+
+        it('insertBefore добавляет сожержимое в начало children', function () {
+            return new vow.Promise((resolve) => {
+                this.node.addEventListener('xb-update', function _onXbUpdate() {
+                    this.removeEventListener('xb-update', _onXbUpdate);
+                    expect(this.content).to.be.equal('insertBefore test');
+                    resolve();
+                });
+
+                this.node.insertBefore(document.createTextNode('insertBefore '), this.node.firstChild);
+            });
+        });
+    });
 });
