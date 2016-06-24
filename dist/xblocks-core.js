@@ -9181,10 +9181,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._node = node;
 	    this._mountPoint = node;
 
-	    var root = (0, _createShadowRoot2.default)(node);
-	    if (root) {
-	        this._mountPoint = root.querySelector('div') || root.appendChild(node.ownerDocument.createElement('div'));
-	        this._isShadow = true;
+	    if (node.isShadowSupported) {
+	        var root = (0, _createShadowRoot2.default)(node);
+	        if (root) {
+	            this._mountPoint = root.querySelector('div') || root.appendChild(node.ownerDocument.createElement('div'));
+	            this._isShadow = true;
+	        }
 	    }
 
 	    this._observerOptions = {
@@ -10646,21 +10648,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var root = node.shadowRoot || doc.head || doc.getElementsByTagName('head')[0];
 
 	    (0, _forEach2.default)(inline, function (css, uid) {
-	        if (!(0, _has2.default)(root, [_constants2.default.STYLE, uid])) {
-	            (0, _set2.default)(root, [_constants2.default.STYLE, uid], true);
-
-	            var style = doc.createElement('style');
-	            style.type = 'text/css';
-	            style.id = uid;
-
-	            if (style.styleSheet) {
-	                style.styleSheet.cssText = css;
-	            } else {
-	                style.appendChild(doc.createTextNode(css));
-	            }
-
-	            root.appendChild(style);
+	        if ((0, _has2.default)(root, [_constants2.default.STYLE, uid])) {
+	            return;
 	        }
+
+	        (0, _set2.default)(root, [_constants2.default.STYLE, uid], true);
+
+	        var style = doc.createElement('style');
+	        style.type = 'text/css';
+	        style.id = uid;
+
+	        if (style.styleSheet) {
+	            style.styleSheet.cssText = css;
+	        } else {
+	            style.appendChild(doc.createTextNode(css));
+	        }
+
+	        root.appendChild(style);
 	    });
 	};
 

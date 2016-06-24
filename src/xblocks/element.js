@@ -30,10 +30,12 @@ export function XBElement(node) {
     this._node = node;
     this._mountPoint = node;
 
-    const root = createShadowRoot(node);
-    if (root) {
-        this._mountPoint = root.querySelector('div') || root.appendChild(node.ownerDocument.createElement('div'));
-        this._isShadow = true;
+    if (node.isShadowSupported) {
+        const root = createShadowRoot(node);
+        if (root) {
+            this._mountPoint = root.querySelector('div') || root.appendChild(node.ownerDocument.createElement('div'));
+            this._isShadow = true;
+        }
     }
 
     this._observerOptions = {
