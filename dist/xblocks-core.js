@@ -9448,7 +9448,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
-	 * [childListMutationIterate description]
+	 * Verification of the mutation sub-elements.
+	 * @example
+	 * // true
+	 * childListMutationIterate({ type: 'childList', attributeName: 'test' })
 	 * @param {MutationRecord} record
 	 * @returns {boolean}
 	 * @private
@@ -9458,7 +9461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
-	 * [reduceChildListMutation description]
+	 * The allocation of the changed nodes.
 	 * @param {HTMLElement} mutationContent
 	 * @param {MutationRecord} record
 	 * @returns {HTMLElement}
@@ -10936,6 +10939,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var proto = _context2.default.Element.prototype;
 	var createShadowRoot = proto.createShadowRoot || proto.webkitCreateShadowRoot || proto.mozCreateShadowRoot || proto.msCreateShadowRoot || proto.oCreateShadowRoot || function () {};
+
+	/**
+	 * Creating a shadow root.
+	 * Does not create the existing shadow root.
+	 *
+	 * @example
+	 * import createShadowRoot from 'xblocks-core/utils/createShadowRoot';
+	 * var root = createShadowRoot(node);
+	 *
+	 * @module xblocks-core/utils/createShadowRoot
+	 * @param {HTMLElement} node
+	 * @returns {ShadowRoot}
+	 */
 
 /***/ },
 /* 270 */
