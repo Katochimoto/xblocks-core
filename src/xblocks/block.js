@@ -16,14 +16,13 @@ import isArray from 'lodash/isArray';
 import get from 'lodash/get';
 import wrap from 'lodash/wrap';
 import invoke from 'lodash/invoke';
-import intersection from 'lodash/intersection';
-import keys from 'lodash/keys';
 import trim from 'lodash/trim';
 import * as dom from './dom';
 import { XBElement } from './element';
 import { lazy, propTypes } from './utils';
 import Constants from './constants';
 import wrapperFunction from './utils/wrapperFunction';
+import checkOverriddenMethods from './utils/checkOverriddenMethods';
 
 const spreadMergeWith = spread(mergeWith);
 
@@ -279,11 +278,7 @@ function mergeCustomizer(objValue, srcValue, key) {
     }
 
     if (key === 'methods') {
-        const overriddenMethods = intersection(keys(objValue), keys(srcValue));
-
-        if (overriddenMethods.length) {
-            throw new Error(`The following methods are overridden: "${overriddenMethods.join('", "')}"`);
-        }
+        checkOverriddenMethods(objValue, srcValue);
     }
 }
 

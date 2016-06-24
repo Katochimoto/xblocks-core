@@ -12,10 +12,9 @@ import isFunction from 'lodash/isFunction';
 import isPlainObject from 'lodash/isPlainObject';
 import wrap from 'lodash/wrap';
 import get from 'lodash/get';
-import intersection from 'lodash/intersection';
-import keys from 'lodash/keys';
 import Constants from './constants';
 import wrapperFunction from './utils/wrapperFunction';
+import checkOverriddenMethods from './utils/checkOverriddenMethods';
 
 const spreadMergeWith = spread(mergeWith);
 
@@ -216,11 +215,7 @@ function mergeCustomizer(objValue, srcValue, key) {
     }
 
     if (key === 'statics') {
-        const overriddenMethods = intersection(keys(objValue), keys(srcValue));
-
-        if (overriddenMethods.length) {
-            throw new Error(`The following methods are overridden: "${overriddenMethods.join('", "')}"`);
-        }
+        checkOverriddenMethods(objValue, srcValue);
     }
 
     if (key === 'render' && objValue && srcValue) {
