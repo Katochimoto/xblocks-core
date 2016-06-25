@@ -15,7 +15,9 @@ import { register } from './view';
  * class XElement extends React.Component {
  *     render() {
  *         return (
- *             <div data-xb-content={this.props._uid} title={this.props.test1}>{this.props.children}</div>
+ *             <div title={this.props.test1}>
+ *                 {this.context.content()}
+ *             </div>
  *         );
  *     }
  * }

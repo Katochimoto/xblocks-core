@@ -5,71 +5,69 @@ var vow = require('vow');
 var ReactDOM = require('react-dom');
 import Constants from 'constants';
 
-describe('xblocks', function () {
+describe('xblocks.element', function () {
 
-    describe('element', function () {
-        describe('#create', function () {
-            beforeEach(function () {
-                this._spyInit = this.sinon.spy(XBElement.prototype, '_init');
+    describe('#create', function () {
+        beforeEach(function () {
+            this._spyInit = this.sinon.spy(XBElement.prototype, '_init');
 
-                this.node = document.createElement('x-element1');
+            this.node = document.createElement('x-element1');
 
-                var that = this;
-                return new vow.Promise(function (resolve) {
-                    that.node.addEventListener('xb-created', function _onXbCreated() {
-                        this.removeEventListener('xb-created', _onXbCreated);
-                        resolve();
-                    });
-
-                    document.body.appendChild(that.node);
+            var that = this;
+            return new vow.Promise(function (resolve) {
+                that.node.addEventListener('xb-created', function _onXbCreated() {
+                    this.removeEventListener('xb-created', _onXbCreated);
+                    resolve();
                 });
-            });
 
-            afterEach(function () {
-                if (this.node.parentNode) {
-                    this.node.parentNode.removeChild(this.node);
-                }
-            });
-
-            it('узел сожержит свойство xblock с созданным объектом', function () {
-                expect(this.node[ Constants.BLOCK ]).to.be.an.instanceof(XBElement);
-            });
-
-            it('объект содержит свойство _node с узлом', function () {
-                expect(this.node[ Constants.BLOCK ]._node).to.equal(this.node);
-            });
-
-            it('выполняется вызов метода инициализации', function () {
-                expect(this._spyInit.calledOnce).to.be.ok;
+                document.body.appendChild(that.node);
             });
         });
 
-        describe('#destroy', function () {
-            beforeEach(function () {
-                this._spyReactUmount = this.sinon.spy(ReactDOM, 'unmountComponentAtNode');
-                this.node = document.createElement('x-element1');
+        afterEach(function () {
+            if (this.node.parentNode) {
+                this.node.parentNode.removeChild(this.node);
+            }
+        });
 
-                var that = this;
-                return new vow.Promise(function (resolve) {
-                    that.node.addEventListener('xb-created', function _onXbCreated() {
-                        this.removeEventListener('xb-created', _onXbCreated);
-                        resolve();
-                    });
+        it('узел сожержит свойство xblock с созданным объектом', function () {
+            expect(this.node[ Constants.BLOCK ]).to.be.an.instanceof(XBElement);
+        });
 
-                    document.body.appendChild(that.node);
+        it('объект содержит свойство _node с узлом', function () {
+            expect(this.node[ Constants.BLOCK ]._node).to.equal(this.node);
+        });
+
+        it('выполняется вызов метода инициализации', function () {
+            expect(this._spyInit.calledOnce).to.be.ok;
+        });
+    });
+
+    describe('#destroy', function () {
+        beforeEach(function () {
+            this._spyReactUmount = this.sinon.spy(ReactDOM, 'unmountComponentAtNode');
+            this.node = document.createElement('x-element1');
+
+            var that = this;
+            return new vow.Promise(function (resolve) {
+                that.node.addEventListener('xb-created', function _onXbCreated() {
+                    this.removeEventListener('xb-created', _onXbCreated);
+                    resolve();
                 });
-            });
 
-            afterEach(function () {
-                if (this.node.parentNode) {
-                    this.node.parentNode.removeChild(this.node);
-                }
+                document.body.appendChild(that.node);
             });
+        });
 
-            it('должен быть вызван метод ReactDOM.unmountComponentAtNode', function () {
-                this.node[ Constants.BLOCK ].destroy();
-                expect(this._spyReactUmount).calledWith(this.node);
-            });
+        afterEach(function () {
+            if (this.node.parentNode) {
+                this.node.parentNode.removeChild(this.node);
+            }
+        });
+
+        it('должен быть вызван метод ReactDOM.unmountComponentAtNode', function () {
+            this.node[ Constants.BLOCK ].destroy();
+            expect(this._spyReactUmount).calledWith(this.node);
         });
     });
 

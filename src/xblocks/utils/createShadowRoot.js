@@ -21,5 +21,5 @@ const createShadowRoot = proto.createShadowRoot ||
  * @returns {ShadowRoot}
  */
 export default function (node) {
-    return node.shadowRoot || createShadowRoot.call(node);
+    return node.shadowRoot || ((context.HTMLSlotElement || context.HTMLContentElement) && createShadowRoot.call(node));
 }

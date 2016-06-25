@@ -4,16 +4,17 @@
 
 import ReactDOM from 'react-dom';
 import merge from 'lodash/merge';
+import clone from 'lodash/clone';
 import keys from 'lodash/keys';
 import forEach from 'lodash/forEach';
 import omit from 'lodash/omit';
 import context from '../context';
 import { typeConversion } from './dom/attrs';
-import { getFactory } from './view';
 import { dispatch } from './event';
 import lazy from './utils/lazy';
 import importStyle from './utils/importStyle';
 import createShadowRoot from './utils/createShadowRoot';
+import blockComponent from './utils/Component';
 import Constants from './constants';
 import { contentNode } from './dom';
 
@@ -26,15 +27,16 @@ import { contentNode } from './dom';
 export function XBElement(node) {
     node[ Constants.BLOCK ] = this;
 
-    this._isShadow = false;
+    this.isShadow = false;
     this._node = node;
     this._mountPoint = node;
 
     if (node.isShadowSupported) {
-        const root = createShadowRoot(node);
-        if (root) {
-            this._mountPoint = root.querySelector('div') || root.appendChild(node.ownerDocument.createElement('div'));
-            this._isShadow = true;
+        const mountPoint = createShadowMountPoint(node);
+
+        if (mountPoint) {
+            this._mountPoint = mountPoint;
+            this.isShadow = true;
         }
     }
 
@@ -42,14 +44,20 @@ export function XBElement(node) {
         attributeFilter: keys(node.xprops),
         attributeOldValue: false,
         attributes: true,
-        characterData: true,
+        characterData: !this.isShadow,
         characterDataOldValue: false,
-        childList: true,
-        subtree: this._isShadow
+        childList: !this.isShadow,
+        subtree: !this.isShadow
     };
 
     this._init();
 }
+
+/**
+ * The component is mounted in the shadow root.
+ * @type {boolean}
+ */
+XBElement.prototype.isShadow = false;
 
 /**
  * The node of a react component.
@@ -119,13 +127,11 @@ XBElement.prototype.update = function (props, removeProps, callback) {
     this._observer.disconnect();
 
     const node = this._node;
-    // merge of new and current properties
-    // and the exclusion of remote properties
+    // merge of new and current properties and the exclusion of remote properties
     const nextProps = omit(merge({}, this.getMountedProps(), node.props, props), removeProps);
 
     typeConversion(nextProps, node.xprops);
 
-    const proxyConstructor = getFactory(node[ Constants.TAGNAME ])(nextProps);
     const that = this;
     const renderCallback = function () {
         that._component = this;
@@ -133,7 +139,7 @@ XBElement.prototype.update = function (props, removeProps, callback) {
     };
 
     importStyle(node, node.style);
-    this._component = ReactDOM.render(proxyConstructor, this._mountPoint, renderCallback);
+    this._component = ReactDOM.render(blockComponent(nextProps), this._mountPoint, renderCallback);
 };
 
 /**
@@ -151,7 +157,12 @@ XBElement.prototype.isMounted = function () {
  */
 XBElement.prototype.setMountedContent = function (content) {
     if (this.isMounted()) {
-        this.update({ children: content });
+        if (this.isShadow) {
+            this._node.innerHTML = content;
+
+        } else {
+            this.update({ children: content });
+        }
     }
 };
 
@@ -161,7 +172,12 @@ XBElement.prototype.setMountedContent = function (content) {
  */
 XBElement.prototype.getMountedContent = function () {
     if (this.isMounted()) {
-        return this._component.props.children;
+        if (this.isShadow) {
+            return this._node.innerHTML;
+
+        } else {
+            return this._component.props.children;
+        }
     }
 };
 
@@ -188,14 +204,13 @@ XBElement.prototype.getMountedProps = function () {
  */
 XBElement.prototype._init = function () {
     const node = this._node;
-    const props = merge({}, node.props, {
-        _uid: node[ Constants.UID ],
-        _container: node
-    });
+    const props = clone(node.props);
 
     typeConversion(props, node.xprops);
 
-    const proxyConstructor = getFactory(node[ Constants.TAGNAME ])(props, node.content);
+    props._container = node;
+    props.children = node.content;
+
     const that = this;
     const renderCallback = function () {
         that._component = this;
@@ -203,7 +218,7 @@ XBElement.prototype._init = function () {
     };
 
     importStyle(node, node.style);
-    this._component = ReactDOM.render(proxyConstructor, this._mountPoint, renderCallback);
+    this._component = ReactDOM.render(blockComponent(props), this._mountPoint, renderCallback);
 };
 
 /**
@@ -251,23 +266,20 @@ XBElement.prototype._callbackMutation = function (records) {
     const props = {};
 
     if (isChildListMutation) {
-        props.children = contentNode(this._node).innerHTML;
+        const node = this._node;
+        const doc = node.ownerDocument;
+        const mutationContent = doc.createElement('div');
+        const targetContent = mutationContent.appendChild(doc.createElement('div'));
 
-        if (!this._isShadow) {
-            const doc = this._node.ownerDocument;
-            const mutationContent = doc.createElement('div');
-            const targetContent = mutationContent.appendChild(doc.createElement('div'));
+        records
+            .filter(childListMutationIterate)
+            .reduce(reduceChildListMutation, mutationContent);
 
-            records
-                .filter(childListMutationIterate)
-                .reduce(reduceChildListMutation, mutationContent);
-
-            if (targetContent.parentNode) {
-                targetContent.outerHTML = props.children;
-            }
-
-            props.children = mutationContent.innerHTML;
+        if (targetContent.parentNode) {
+            targetContent.outerHTML = contentNode(node).innerHTML;
         }
+
+        props.children = mutationContent.innerHTML;
     }
 
     this.update(props, removeAttrs);
@@ -372,6 +384,30 @@ function globalInitEvent(records) {
  */
 function globalUpdateEvent(records) {
     dispatch(context, 'xb-update', { detail: { records } });
+}
+
+/**
+ * Creates a mount point in the shadow root.
+ * @param {HTMLElement} node
+ * @returns {HTMLElement}
+ * @private
+ */
+function createShadowMountPoint(node) {
+    const root = createShadowRoot(node);
+
+    if (!root) {
+        return;
+    }
+
+    let point = root.getElementById('xblocks-mount-point');
+
+    if (!point) {
+        point = node.ownerDocument.createElement('div');
+        point.id = 'xblocks-mount-point';
+        root.appendChild(point);
+    }
+
+    return point;
 }
 
 /**

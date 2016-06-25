@@ -19,30 +19,30 @@ import checkOverriddenMethods from './utils/checkOverriddenMethods';
 const spreadMergeWith = spread(mergeWith);
 
 const METHODS_INHERITANCE = [
-    'componentWillMount',
     'componentDidMount',
-    'componentWillReceiveProps',
-    'componentWillUpdate',
     'componentDidUpdate',
-    'componentWillUnmount'
+    'componentWillMount',
+    'componentWillReceiveProps',
+    'componentWillUnmount',
+    'componentWillUpdate'
 ];
 
 const METHODS_MERGE_RESULT = [
-    'getInitialState',
-    'getDefaultProps'
+    'getChildContext',
+    'getDefaultProps',
+    'getInitialState'
 ];
 
 const VIEW_COMMON = {
-
     /**
-     * Required attributes.
      * @memberOf ReactElement.prototype
-     * @type {Object}
+     * @property {Object} contextTypes context types
+     * @property {HTMLElement} contextTypes.container the node associated with the view
+     * @property {function} contextTypes.content
      */
-    propTypes: {
-        _uid: PropTypes.node,
-        _container: PropTypes.any,  // Bad way ;(
-        children: PropTypes.node
+    contextTypes: {
+        container: PropTypes.any,
+        content: PropTypes.func
     },
 
     /**
@@ -53,23 +53,15 @@ const VIEW_COMMON = {
      * @returns {?ReactElement}
      */
     template: function (ref, props) {
-        const templates = get(this, [ 'props', '_container', Constants.TMPL ]);
+        const templates = get(this, [ 'context', 'container', Constants.TMPL ]);
 
         if (isPlainObject(templates) && templates.hasOwnProperty(ref)) {
             return (
-                <div {...props} dangerouslySetInnerHTML={{ '__html': this.templatePrepare(templates[ ref ]) }} />
+                <div {...props} dangerouslySetInnerHTML={{ __html: this.templatePrepare(templates[ ref ]) }} />
             );
         }
 
         return null;
-    },
-
-    /**
-     * Get the node associated with the view.
-     * @returns {HTMLElement}
-     */
-    container: function () {
-        return this.props._container;
     }
 };
 

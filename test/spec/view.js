@@ -261,5 +261,35 @@ describe('xblocks.view', function () {
                 });
             });
         });
+
+        it('В метод this.context.content можно передать элемент, который будет содержать вложенные узлы', function () {
+            register('xb-view-context-content', [
+                {
+                    render: function () {
+                        return (
+                            <div>
+                                {this.context.content(<div className="test" />)}
+                            </div>
+                        );
+                    }
+                }
+            ]);
+
+            createBlock('xb-view-context-content');
+
+            var node = document.createElement('xb-view-context-content');
+            return new vow.Promise(function (resolve) {
+                node.addEventListener('xb-created', function _onXbCreated() {
+                    this.removeEventListener('xb-created', _onXbCreated);
+                    this.parentNode.removeChild(this);
+
+                    expect(this.querySelector('[data-xb-content]').className).to.be.equal('test');
+                    expect(this.querySelector('[data-xb-content]').nodeName).to.be.equal('DIV');
+                    resolve();
+                });
+
+                document.body.appendChild(node);
+            });
+        });
     });
 });

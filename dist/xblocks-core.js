@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _decorator = __webpack_require__(275);
+	var _decorator = __webpack_require__(277);
 
 	Object.defineProperty(exports, 'element', {
 	  enumerable: true,
@@ -83,15 +83,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _dom = _interopRequireWildcard(_dom2);
 
-	var _event2 = __webpack_require__(251);
+	var _event2 = __webpack_require__(246);
 
 	var _event = _interopRequireWildcard(_event2);
 
-	var _utils2 = __webpack_require__(272);
+	var _utils2 = __webpack_require__(274);
 
 	var _utils = _interopRequireWildcard(_utils2);
 
-	var _view2 = __webpack_require__(245);
+	var _view2 = __webpack_require__(268);
 
 	var _view = _interopRequireWildcard(_view2);
 
@@ -179,17 +179,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _element = __webpack_require__(231);
 
-	var _utils = __webpack_require__(272);
+	var _utils = __webpack_require__(274);
 
 	var _constants = __webpack_require__(209);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
-	var _wrapperFunction = __webpack_require__(246);
+	var _wrapperFunction = __webpack_require__(269);
 
 	var _wrapperFunction2 = _interopRequireDefault(_wrapperFunction);
 
-	var _checkOverriddenMethods = __webpack_require__(247);
+	var _checkOverriddenMethods = __webpack_require__(270);
 
 	var _checkOverriddenMethods2 = _interopRequireDefault(_checkOverriddenMethods);
 
@@ -8841,6 +8841,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _merge2 = _interopRequireDefault(_merge);
 
+	var _clone = __webpack_require__(233);
+
+	var _clone2 = _interopRequireDefault(_clone);
+
 	var _keys = __webpack_require__(9);
 
 	var _keys2 = _interopRequireDefault(_keys);
@@ -8849,7 +8853,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _forEach2 = _interopRequireDefault(_forEach);
 
-	var _omit = __webpack_require__(233);
+	var _omit = __webpack_require__(234);
 
 	var _omit2 = _interopRequireDefault(_omit);
 
@@ -8859,21 +8863,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _attrs = __webpack_require__(204);
 
-	var _view = __webpack_require__(245);
+	var _event = __webpack_require__(246);
 
-	var _event = __webpack_require__(251);
-
-	var _lazy = __webpack_require__(255);
+	var _lazy = __webpack_require__(250);
 
 	var _lazy2 = _interopRequireDefault(_lazy);
 
-	var _importStyle = __webpack_require__(266);
+	var _importStyle = __webpack_require__(261);
 
 	var _importStyle2 = _interopRequireDefault(_importStyle);
 
-	var _createShadowRoot = __webpack_require__(271);
+	var _createShadowRoot = __webpack_require__(266);
 
 	var _createShadowRoot2 = _interopRequireDefault(_createShadowRoot);
+
+	var _Component = __webpack_require__(267);
+
+	var _Component2 = _interopRequireDefault(_Component);
 
 	var _constants = __webpack_require__(209);
 
@@ -8889,22 +8895,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {HTMLElement} node the node of a custom element
 	 * @constructor
 	 */
-	/**
-	 * @module xblocks-core/element
-	 */
-
 	function XBElement(node) {
 	    node[_constants2.default.BLOCK] = this;
 
-	    this._isShadow = false;
+	    this.isShadow = false;
 	    this._node = node;
 	    this._mountPoint = node;
 
 	    if (node.isShadowSupported) {
-	        var root = (0, _createShadowRoot2.default)(node);
-	        if (root) {
-	            this._mountPoint = root.querySelector('div') || root.appendChild(node.ownerDocument.createElement('div'));
-	            this._isShadow = true;
+	        var mountPoint = createShadowMountPoint(node);
+
+	        if (mountPoint) {
+	            this._mountPoint = mountPoint;
+	            this.isShadow = true;
 	        }
 	    }
 
@@ -8912,14 +8915,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	        attributeFilter: (0, _keys2.default)(node.xprops),
 	        attributeOldValue: false,
 	        attributes: true,
-	        characterData: true,
+	        characterData: !this.isShadow,
 	        characterDataOldValue: false,
-	        childList: true,
-	        subtree: this._isShadow
+	        childList: !this.isShadow,
+	        subtree: !this.isShadow
 	    };
 
 	    this._init();
 	}
+
+	/**
+	 * The component is mounted in the shadow root.
+	 * @type {boolean}
+	 */
+	/**
+	 * @module xblocks-core/element
+	 */
+
+	XBElement.prototype.isShadow = false;
 
 	/**
 	 * The node of a react component.
@@ -8989,13 +9002,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._observer.disconnect();
 
 	    var node = this._node;
-	    // merge of new and current properties
-	    // and the exclusion of remote properties
+	    // merge of new and current properties and the exclusion of remote properties
 	    var nextProps = (0, _omit2.default)((0, _merge2.default)({}, this.getMountedProps(), node.props, props), removeProps);
 
 	    (0, _attrs.typeConversion)(nextProps, node.xprops);
 
-	    var proxyConstructor = (0, _view.getFactory)(node[_constants2.default.TAGNAME])(nextProps);
 	    var that = this;
 	    var renderCallback = function renderCallback() {
 	        that._component = this;
@@ -9003,7 +9014,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    (0, _importStyle2.default)(node, node.style);
-	    this._component = _reactDom2.default.render(proxyConstructor, this._mountPoint, renderCallback);
+	    this._component = _reactDom2.default.render((0, _Component2.default)(nextProps), this._mountPoint, renderCallback);
 	};
 
 	/**
@@ -9021,7 +9032,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	XBElement.prototype.setMountedContent = function (content) {
 	    if (this.isMounted()) {
-	        this.update({ children: content });
+	        if (this.isShadow) {
+	            this._node.innerHTML = content;
+	        } else {
+	            this.update({ children: content });
+	        }
 	    }
 	};
 
@@ -9031,7 +9046,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	XBElement.prototype.getMountedContent = function () {
 	    if (this.isMounted()) {
-	        return this._component.props.children;
+	        if (this.isShadow) {
+	            return this._node.innerHTML;
+	        } else {
+	            return this._component.props.children;
+	        }
 	    }
 	};
 
@@ -9058,14 +9077,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	XBElement.prototype._init = function () {
 	    var node = this._node;
-	    var props = (0, _merge2.default)({}, node.props, {
-	        _uid: node[_constants2.default.UID],
-	        _container: node
-	    });
+	    var props = (0, _clone2.default)(node.props);
 
 	    (0, _attrs.typeConversion)(props, node.xprops);
 
-	    var proxyConstructor = (0, _view.getFactory)(node[_constants2.default.TAGNAME])(props, node.content);
+	    props._container = node;
+	    props.children = node.content;
+
 	    var that = this;
 	    var renderCallback = function renderCallback() {
 	        that._component = this;
@@ -9073,7 +9091,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    (0, _importStyle2.default)(node, node.style);
-	    this._component = _reactDom2.default.render(proxyConstructor, this._mountPoint, renderCallback);
+	    this._component = _reactDom2.default.render((0, _Component2.default)(props), this._mountPoint, renderCallback);
 	};
 
 	/**
@@ -9119,21 +9137,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var props = {};
 
 	    if (isChildListMutation) {
-	        props.children = (0, _dom.contentNode)(this._node).innerHTML;
+	        var node = this._node;
+	        var doc = node.ownerDocument;
+	        var mutationContent = doc.createElement('div');
+	        var targetContent = mutationContent.appendChild(doc.createElement('div'));
 
-	        if (!this._isShadow) {
-	            var doc = this._node.ownerDocument;
-	            var mutationContent = doc.createElement('div');
-	            var targetContent = mutationContent.appendChild(doc.createElement('div'));
+	        records.filter(childListMutationIterate).reduce(reduceChildListMutation, mutationContent);
 
-	            records.filter(childListMutationIterate).reduce(reduceChildListMutation, mutationContent);
-
-	            if (targetContent.parentNode) {
-	                targetContent.outerHTML = props.children;
-	            }
-
-	            props.children = mutationContent.innerHTML;
+	        if (targetContent.parentNode) {
+	            targetContent.outerHTML = (0, _dom.contentNode)(node).innerHTML;
 	        }
+
+	        props.children = mutationContent.innerHTML;
 	    }
 
 	    this.update(props, removeAttrs);
@@ -9241,6 +9256,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	/**
+	 * Creates a mount point in the shadow root.
+	 * @param {HTMLElement} node
+	 * @returns {HTMLElement}
+	 * @private
+	 */
+	function createShadowMountPoint(node) {
+	    var root = (0, _createShadowRoot2.default)(node);
+
+	    if (!root) {
+	        return;
+	    }
+
+	    var point = root.getElementById('xblocks-mount-point');
+
+	    if (!point) {
+	        point = node.ownerDocument.createElement('div');
+	        point.id = 'xblocks-mount-point';
+	        root.appendChild(point);
+	    }
+
+	    return point;
+	}
+
+	/**
 	 * Created event
 	 * @event module:xblocks-core/element~XBElement~event:xb-created
 	 * @type {CustomEvent}
@@ -9268,11 +9307,50 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayMap = __webpack_require__(234),
-	    baseDifference = __webpack_require__(235),
-	    baseFlatten = __webpack_require__(240),
-	    basePick = __webpack_require__(242),
-	    getAllKeysIn = __webpack_require__(243),
+	var baseClone = __webpack_require__(115);
+
+	/**
+	 * Creates a shallow clone of `value`.
+	 *
+	 * **Note:** This method is loosely based on the
+	 * [structured clone algorithm](https://mdn.io/Structured_clone_algorithm)
+	 * and supports cloning arrays, array buffers, booleans, date objects, maps,
+	 * numbers, `Object` objects, regexes, sets, strings, symbols, and typed
+	 * arrays. The own enumerable properties of `arguments` objects are cloned
+	 * as plain objects. An empty object is returned for uncloneable values such
+	 * as error objects, functions, DOM nodes, and WeakMaps.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to clone.
+	 * @returns {*} Returns the cloned value.
+	 * @see _.cloneDeep
+	 * @example
+	 *
+	 * var objects = [{ 'a': 1 }, { 'b': 2 }];
+	 *
+	 * var shallow = _.clone(objects);
+	 * console.log(shallow[0] === objects[0]);
+	 * // => true
+	 */
+	function clone(value) {
+	  return baseClone(value, false, true);
+	}
+
+	module.exports = clone;
+
+
+/***/ },
+/* 234 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var arrayMap = __webpack_require__(235),
+	    baseDifference = __webpack_require__(236),
+	    baseFlatten = __webpack_require__(241),
+	    basePick = __webpack_require__(243),
+	    getAllKeysIn = __webpack_require__(244),
 	    rest = __webpack_require__(151),
 	    toKey = __webpack_require__(103);
 
@@ -9307,7 +9385,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 234 */
+/* 235 */
 /***/ function(module, exports) {
 
 	/**
@@ -9334,15 +9412,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 235 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var SetCache = __webpack_require__(74),
-	    arrayIncludes = __webpack_require__(236),
-	    arrayIncludesWith = __webpack_require__(237),
-	    arrayMap = __webpack_require__(234),
-	    baseUnary = __webpack_require__(238),
-	    cacheHas = __webpack_require__(239);
+	    arrayIncludes = __webpack_require__(237),
+	    arrayIncludesWith = __webpack_require__(238),
+	    arrayMap = __webpack_require__(235),
+	    baseUnary = __webpack_require__(239),
+	    cacheHas = __webpack_require__(240);
 
 	/** Used as the size to enable large array optimizations. */
 	var LARGE_ARRAY_SIZE = 200;
@@ -9407,7 +9485,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseIndexOf = __webpack_require__(199);
@@ -9430,7 +9508,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports) {
 
 	/**
@@ -9458,7 +9536,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 238 */
+/* 239 */
 /***/ function(module, exports) {
 
 	/**
@@ -9478,7 +9556,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports) {
 
 	/**
@@ -9497,11 +9575,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 240 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayPush = __webpack_require__(126),
-	    isFlattenable = __webpack_require__(241);
+	    isFlattenable = __webpack_require__(242);
 
 	/**
 	 * The base implementation of `_.flatten` with support for restricting flattening.
@@ -9541,7 +9619,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 241 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArguments = __webpack_require__(15),
@@ -9562,7 +9640,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 242 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayReduce = __webpack_require__(133);
@@ -9590,11 +9668,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 243 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetAllKeys = __webpack_require__(125),
-	    getSymbolsIn = __webpack_require__(244),
+	    getSymbolsIn = __webpack_require__(245),
 	    keysIn = __webpack_require__(145);
 
 	/**
@@ -9613,7 +9691,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 244 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayPush = __webpack_require__(126),
@@ -9644,7 +9722,1050 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 245 */
+/* 246 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.Custom = undefined;
+	exports.dispatch = dispatch;
+	exports.forwardingEvents = forwardingEvents;
+
+	var _isNative = __webpack_require__(247);
+
+	var _isNative2 = _interopRequireDefault(_isNative);
+
+	var _context = __webpack_require__(207);
+
+	var _context2 = _interopRequireDefault(_context);
+
+	var _CustomEventCommon = __webpack_require__(249);
+
+	var _CustomEventCommon2 = _interopRequireDefault(_CustomEventCommon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/**
+	 * Designer events.
+	 *
+	 * @example
+	 * import { Custom } from 'xblocks-core/event';
+	 *
+	 * new Custom('custom-event', {
+	 *     bubbles: true,
+	 *     cancelable: true,
+	 *     detail: { data: '123' }
+	 * })
+	 *
+	 * @alias module:xblocks-core/event~Custom
+	 * @constructor
+	 */
+	var Custom = exports.Custom = function () {
+	    if ((0, _isNative2.default)('CustomEvent')) {
+	        return _context2.default.CustomEvent;
+	    }
+
+	    return _CustomEventCommon2.default;
+	}();
+
+	/**
+	 * Dispatch event.
+	 *
+	 * @example
+	 * import { dispatch } from 'xblocks-core/event';
+	 * dispatch(node, 'custom-event', {
+	 *     bubbles: true,
+	 *     cancelable: true,
+	 *     detail: { data: '123' }
+	 * })
+	 *
+	 * @alias module:xblocks-core/event.dispatch
+	 * @param {HTMLElement} element node events
+	 * @param {string} name event name
+	 * @param {Object} params the event parameters
+	 * @param {boolean} [params.bubbles=false]
+	 * @param {boolean} [params.cancelable=false]
+	 * @param {*} [params.detail]
+	 */
+	/**
+	 * @module xblocks-core/event
+	 */
+
+	function dispatch(element, name, params) {
+	    element.dispatchEvent(new Custom(name, params || {}));
+	}
+
+	/**
+	 * Forwarding events
+	 *
+	 * @example
+	 * import { forwardingEvents } from 'xblocks-core/event';
+	 * forwardingEvents('custom-event', fromNode, toNode, false);
+	 *
+	 * @param {string} name event name
+	 * @param {HTMLElement} fromElement
+	 * @param {HTMLElement} toElement
+	 * @param {boolean} [capture=false]
+	 * @returns {function} callback
+	 */
+	function forwardingEvents(name, fromElement, toElement) {
+	    var capture = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
+	    var callback = function callback(event) {
+	        dispatch(toElement, name, {
+	            bubbles: event.bubbles,
+	            cancelable: event.cancelable,
+	            detail: event.detail
+	        });
+	    };
+
+	    callback.cancel = function () {
+	        fromElement.removeEventListener(name, callback, capture);
+	    };
+
+	    fromElement.addEventListener(name, callback, capture);
+
+	    return callback;
+	}
+
+/***/ },
+/* 247 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseIsNative = __webpack_require__(52),
+	    isMaskable = __webpack_require__(248);
+
+	/**
+	 * Checks if `value` is a pristine native function.
+	 *
+	 * **Note:** This method can't reliably detect native functions in the
+	 * presence of the `core-js` package because `core-js` circumvents this kind
+	 * of detection. Despite multiple requests, the `core-js` maintainer has made
+	 * it clear: any attempt to fix the detection will be obstructed. As a result,
+	 * we're left with little choice but to throw an error. Unfortunately, this
+	 * also affects packages, like [babel-polyfill](https://www.npmjs.com/package/babel-polyfill),
+	 * which rely on `core-js`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.0.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is a native function,
+	 *  else `false`.
+	 * @example
+	 *
+	 * _.isNative(Array.prototype.push);
+	 * // => true
+	 *
+	 * _.isNative(_);
+	 * // => false
+	 */
+	function isNative(value) {
+	  if (isMaskable(value)) {
+	    throw new Error('This method is not supported with `core-js`. Try https://github.com/es-shims.');
+	  }
+	  return baseIsNative(value);
+	}
+
+	module.exports = isNative;
+
+
+/***/ },
+/* 248 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var coreJsData = __webpack_require__(55),
+	    isFunction = __webpack_require__(20),
+	    stubFalse = __webpack_require__(110);
+
+	/**
+	 * Checks if `func` is capable of being masked.
+	 *
+	 * @private
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `func` is maskable, else `false`.
+	 */
+	var isMaskable = coreJsData ? isFunction : stubFalse;
+
+	module.exports = isMaskable;
+
+
+/***/ },
+/* 249 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _context = __webpack_require__(207);
+
+	var _context2 = _interopRequireDefault(_context);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/**
+	 * @constant {Document}
+	 * @private
+	 */
+	var doc = _context2.default.document;
+
+	/**
+	 * @constant {Object}
+	 * @private
+	 */
+	var protoEvent = _context2.default.Event.prototype;
+
+	var issetCustomEvent = false;
+
+	try {
+	    issetCustomEvent = Boolean(doc.createEvent('CustomEvent'));
+	} catch (e) {}
+	// do nothing
+
+
+	/**
+	 * The original function "stopImmediatePropagation"
+	 * @constant {function}
+	 * @private
+	 */
+	var stopImmediatePropagation = protoEvent.stopImmediatePropagation;
+
+	/**
+	 * Override function to set properties "immediatePropagationStopped"
+	 */
+	protoEvent.stopImmediatePropagation = function () {
+	    this.immediatePropagationStopped = true;
+
+	    if (stopImmediatePropagation) {
+	        stopImmediatePropagation.call(this);
+	    } else {
+	        this.stopPropagation();
+	    }
+	};
+
+	var CustomEventCommon = function () {
+	    if (issetCustomEvent) {
+	        return function (eventName, params) {
+	            params = params || {};
+
+	            var bubbles = Boolean(params.bubbles);
+	            var cancelable = Boolean(params.cancelable);
+	            var evt = doc.createEvent('CustomEvent');
+
+	            evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
+
+	            return evt;
+	        };
+	    }
+
+	    return function (eventName, params) {
+	        params = params || {};
+
+	        var bubbles = Boolean(params.bubbles);
+	        var cancelable = Boolean(params.cancelable);
+	        var evt = doc.createEvent('Event');
+
+	        evt.initEvent(eventName, bubbles, cancelable);
+	        evt.detail = params.detail;
+
+	        return evt;
+	    };
+	}();
+
+	CustomEventCommon.prototype = protoEvent;
+
+	exports.default = CustomEventCommon;
+
+/***/ },
+/* 250 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	exports.default = function (callback, args) {
+	    if (!callback._args) {
+	        callback._args = [];
+	    }
+
+	    callback._args.push(args);
+
+	    if (!callback._timer) {
+	        callback._timer = _src2.default.setImmediate(function () {
+	            callback._timer = 0;
+
+	            var saveArgs = callback._args;
+	            callback._args = [];
+
+	            callback(saveArgs);
+	        });
+	    }
+
+	    return callback;
+	};
+
+	var _src = __webpack_require__(251);
+
+	var _src2 = _interopRequireDefault(_src);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 251 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(252);
+	var useNative = __webpack_require__(253);
+	var Timer = __webpack_require__(254);
+	var setTimeoutPolifill = __webpack_require__(255);
+	var polifills = [
+	    __webpack_require__(256),
+	    __webpack_require__(257),
+	    __webpack_require__(258),
+	    __webpack_require__(259),
+	    __webpack_require__(260)
+	];
+	var setImmediate;
+	var clearImmediate;
+
+	if (useNative()) {
+	    setImmediate = context.setImmediate ||
+	        context.msSetImmediate ||
+	        usePolifill(polifills, setTimeoutPolifill);
+
+	    clearImmediate = context.clearImmediate ||
+	        context.msClearImmediate ||
+	        Timer.clear;
+
+	} else {
+	    setImmediate = setTimeoutPolifill.init();
+	    clearImmediate = Timer.clear;
+	}
+
+	exports.setImmediate = setImmediate;
+	exports.clearImmediate = clearImmediate;
+
+	exports.msSetImmediate = setImmediate;
+	exports.msClearImmediate = clearImmediate;
+
+	function usePolifill(polifills, def) {
+	    for (var i = 0; i < polifills.length; i++) {
+	        var polifill = polifills[ i ];
+	        if (polifill.canUse()) {
+	            return polifill.init();
+	        }
+	    }
+
+	    return def.init();
+	}
+
+
+/***/ },
+/* 252 */
+/***/ function(module, exports) {
+
+	/*jshint -W067*/
+	'use strict';
+
+	module.exports = (function() {
+	    return this || (1, eval)('this');
+	})();
+
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var context = __webpack_require__(252);
+
+	// @see http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
+	module.exports = function() {
+	    return !(context.navigator && /Trident|Edge/.test(context.navigator.userAgent));
+	};
+
+
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(252);
+
+	var nextId = 1;
+	var tasks = {};
+	var lock = false;
+
+	function wrap(handler) {
+	    var args = Array.prototype.slice.call(arguments, 1);
+
+	    return function() {
+	        handler.apply(undefined, args);
+	    };
+	}
+
+	function create(args) {
+	    tasks[ nextId ] = wrap.apply(undefined, args);
+	    return nextId++;
+	}
+
+	function clear(handleId) {
+	    delete tasks[ handleId ];
+	}
+
+	function run(handleId) {
+	    if (lock) {
+	        context.setTimeout( wrap( run, handleId ), 0 );
+
+	    } else {
+	        var task = tasks[ handleId ];
+
+	        if (task) {
+	            lock = true;
+
+	            try {
+	                task();
+
+	            } finally {
+	                clear( handleId );
+	                lock = false;
+	            }
+	        }
+	    }
+	}
+
+	exports.run = run;
+	exports.wrap = wrap;
+	exports.create = create;
+	exports.clear = clear;
+
+
+/***/ },
+/* 255 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(252);
+	var Timer = __webpack_require__(254);
+
+	exports.init = function() {
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        context.setTimeout( Timer.wrap( Timer.run, handleId ), 0 );
+	        return handleId;
+	    };
+	    polifill.usePolifill = 'setTimeout';
+	    return polifill;
+	};
+
+	exports.canUse = function() {
+	    return true;
+	};
+
+
+/***/ },
+/* 256 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(252);
+	var Timer = __webpack_require__(254);
+
+	exports.init = function() {
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        context.process.nextTick( Timer.wrap( Timer.run, handleId ) );
+	        return handleId;
+	    };
+	    polifill.usePolifill = 'nextTick';
+	    return polifill;
+	};
+
+	// Don't get fooled by e.g. browserify environments.
+	// For Node.js before 0.9
+	exports.canUse = function() {
+	    return (Object.prototype.toString.call(context.process) === '[object process]');
+	};
+
+
+/***/ },
+/* 257 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(252);
+	var Timer = __webpack_require__(254);
+
+	exports.init = function() {
+	    var messagePrefix = 'setImmediate$' + Math.random() + '$';
+
+	    var onGlobalMessage = function(event) {
+	        if (event.source === context &&
+	            typeof(event.data) === 'string' &&
+	            event.data.indexOf(messagePrefix) === 0) {
+
+	            Timer.run(Number(event.data.slice(messagePrefix.length)));
+	        }
+	    };
+
+	    if (context.addEventListener) {
+	        context.addEventListener('message', onGlobalMessage, false);
+
+	    } else {
+	        context.attachEvent('onmessage', onGlobalMessage);
+	    }
+
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        context.postMessage(messagePrefix + handleId, '*');
+	        return handleId;
+	    };
+	    polifill.usePolifill = 'postMessage';
+	    return polifill;
+	};
+
+	// For non-IE10 modern browsers
+	exports.canUse = function() {
+	    if (context.importScripts || !context.postMessage) {
+	        return false;
+	    }
+
+	    var asynch = true;
+	    var oldOnMessage = context.onmessage;
+	    context.onmessage = function() {
+	        asynch = false;
+	    };
+
+	    context.postMessage('', '*');
+	    context.onmessage = oldOnMessage;
+	    return asynch;
+	};
+
+
+/***/ },
+/* 258 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(252);
+	var Timer = __webpack_require__(254);
+
+	exports.init = function() {
+	    var channel = new context.MessageChannel();
+
+	    channel.port1.onmessage = function(event) {
+	        Timer.run(Number(event.data));
+	    };
+
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        channel.port2.postMessage(handleId);
+	        return handleId;
+	    };
+	    polifill.usePolifill = 'messageChannel';
+	    return polifill;
+	};
+
+	// For web workers, where supported
+	exports.canUse = function() {
+	    return Boolean(context.MessageChannel);
+	};
+
+
+/***/ },
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(252);
+	var Timer = __webpack_require__(254);
+
+	exports.init = function() {
+	    var html = context.document.documentElement;
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        var script = context.document.createElement('script');
+
+	        script.onreadystatechange = function() {
+	            Timer.run(handleId);
+	            script.onreadystatechange = null;
+	            html.removeChild(script);
+	            script = null;
+	        };
+
+	        html.appendChild(script);
+	        return handleId;
+	    };
+
+	    polifill.usePolifill = 'readyStateChange';
+	    return polifill;
+	};
+
+	// For IE 6–8
+	exports.canUse = function() {
+	    return (context.document && ('onreadystatechange' in context.document.createElement('script')));
+	};
+
+
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var context = __webpack_require__(252);
+	var Timer = __webpack_require__(254);
+
+	exports.init = function() {
+	    var polifill = function() {
+	        var handleId = Timer.create(arguments);
+	        var img = new context.Image();
+	        img.onload = img.onerror = Timer.wrap( Timer.run, handleId );
+	        img.src = '';
+
+	        return handleId;
+	    };
+	    polifill.usePolifill = 'image';
+	    return polifill;
+	};
+
+	exports.canUse = function() {
+	    return Boolean(context.window && context.Image);
+	};
+
+
+/***/ },
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	exports.default = function (node, inline) {
+	    if (!(0, _isPlainObject2.default)(inline) || (0, _isEmpty2.default)(inline)) {
+	        return;
+	    }
+
+	    var doc = node.ownerDocument;
+	    var root = node.shadowRoot || doc.head || doc.getElementsByTagName('head')[0];
+
+	    (0, _forEach2.default)(inline, function (css, uid) {
+	        if ((0, _has2.default)(root, [_constants2.default.STYLE, uid])) {
+	            return;
+	        }
+
+	        (0, _set2.default)(root, [_constants2.default.STYLE, uid], true);
+
+	        var style = doc.createElement('style');
+	        style.type = 'text/css';
+	        style.id = uid;
+
+	        if (style.styleSheet) {
+	            style.styleSheet.cssText = css;
+	        } else {
+	            style.appendChild(doc.createTextNode(css));
+	        }
+
+	        root.appendChild(style);
+	    });
+	};
+
+	var _has = __webpack_require__(262);
+
+	var _has2 = _interopRequireDefault(_has);
+
+	var _set = __webpack_require__(263);
+
+	var _set2 = _interopRequireDefault(_set);
+
+	var _isPlainObject = __webpack_require__(143);
+
+	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
+
+	var _isEmpty = __webpack_require__(265);
+
+	var _isEmpty2 = _interopRequireDefault(_isEmpty);
+
+	var _forEach = __webpack_require__(3);
+
+	var _forEach2 = _interopRequireDefault(_forEach);
+
+	var _constants = __webpack_require__(209);
+
+	var _constants2 = _interopRequireDefault(_constants);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseHas = __webpack_require__(10),
+	    hasPath = __webpack_require__(106);
+
+	/**
+	 * Checks if `path` is a direct property of `object`.
+	 *
+	 * @static
+	 * @since 0.1.0
+	 * @memberOf _
+	 * @category Object
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path to check.
+	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
+	 * @example
+	 *
+	 * var object = { 'a': { 'b': 2 } };
+	 * var other = _.create({ 'a': _.create({ 'b': 2 }) });
+	 *
+	 * _.has(object, 'a');
+	 * // => true
+	 *
+	 * _.has(object, 'a.b');
+	 * // => true
+	 *
+	 * _.has(object, ['a', 'b']);
+	 * // => true
+	 *
+	 * _.has(other, 'a');
+	 * // => false
+	 */
+	function has(object, path) {
+	  return object != null && hasPath(object, path, baseHas);
+	}
+
+	module.exports = has;
+
+
+/***/ },
+/* 263 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseSet = __webpack_require__(264);
+
+	/**
+	 * Sets the value at `path` of `object`. If a portion of `path` doesn't exist,
+	 * it's created. Arrays are created for missing index properties while objects
+	 * are created for all other missing properties. Use `_.setWith` to customize
+	 * `path` creation.
+	 *
+	 * **Note:** This method mutates `object`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 3.7.0
+	 * @category Object
+	 * @param {Object} object The object to modify.
+	 * @param {Array|string} path The path of the property to set.
+	 * @param {*} value The value to set.
+	 * @returns {Object} Returns `object`.
+	 * @example
+	 *
+	 * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+	 *
+	 * _.set(object, 'a[0].b.c', 4);
+	 * console.log(object.a[0].b.c);
+	 * // => 4
+	 *
+	 * _.set(object, ['x', '0', 'y', 'z'], 5);
+	 * console.log(object.x[0].y.z);
+	 * // => 5
+	 */
+	function set(object, path, value) {
+	  return object == null ? object : baseSet(object, path, value);
+	}
+
+	module.exports = set;
+
+
+/***/ },
+/* 264 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var assignValue = __webpack_require__(116),
+	    castPath = __webpack_require__(96),
+	    isIndex = __webpack_require__(26),
+	    isKey = __webpack_require__(102),
+	    isObject = __webpack_require__(21),
+	    toKey = __webpack_require__(103);
+
+	/**
+	 * The base implementation of `_.set`.
+	 *
+	 * @private
+	 * @param {Object} object The object to query.
+	 * @param {Array|string} path The path of the property to set.
+	 * @param {*} value The value to set.
+	 * @param {Function} [customizer] The function to customize path creation.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseSet(object, path, value, customizer) {
+	  path = isKey(path, object) ? [path] : castPath(path);
+
+	  var index = -1,
+	      length = path.length,
+	      lastIndex = length - 1,
+	      nested = object;
+
+	  while (nested != null && ++index < length) {
+	    var key = toKey(path[index]);
+	    if (isObject(nested)) {
+	      var newValue = value;
+	      if (index != lastIndex) {
+	        var objValue = nested[key];
+	        newValue = customizer ? customizer(objValue, key, nested) : undefined;
+	        if (newValue === undefined) {
+	          newValue = objValue == null
+	            ? (isIndex(path[index + 1]) ? [] : {})
+	            : objValue;
+	        }
+	      }
+	      assignValue(nested, key, newValue);
+	    }
+	    nested = nested[key];
+	  }
+	  return object;
+	}
+
+	module.exports = baseSet;
+
+
+/***/ },
+/* 265 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var getTag = __webpack_require__(84),
+	    isArguments = __webpack_require__(15),
+	    isArray = __webpack_require__(24),
+	    isArrayLike = __webpack_require__(17),
+	    isBuffer = __webpack_require__(141),
+	    isFunction = __webpack_require__(20),
+	    isObjectLike = __webpack_require__(23),
+	    isString = __webpack_require__(25),
+	    keys = __webpack_require__(9);
+
+	/** `Object#toString` result references. */
+	var mapTag = '[object Map]',
+	    setTag = '[object Set]';
+
+	/** Used for built-in method references. */
+	var objectProto = Object.prototype;
+
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+
+	/** Built-in value references. */
+	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+	/** Detect if properties shadowing those on `Object.prototype` are non-enumerable. */
+	var nonEnumShadows = !propertyIsEnumerable.call({ 'valueOf': 1 }, 'valueOf');
+
+	/**
+	 * Checks if `value` is an empty object, collection, map, or set.
+	 *
+	 * Objects are considered empty if they have no own enumerable string keyed
+	 * properties.
+	 *
+	 * Array-like values such as `arguments` objects, arrays, buffers, strings, or
+	 * jQuery-like collections are considered empty if they have a `length` of `0`.
+	 * Similarly, maps and sets are considered empty if they have a `size` of `0`.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Lang
+	 * @param {*} value The value to check.
+	 * @returns {boolean} Returns `true` if `value` is empty, else `false`.
+	 * @example
+	 *
+	 * _.isEmpty(null);
+	 * // => true
+	 *
+	 * _.isEmpty(true);
+	 * // => true
+	 *
+	 * _.isEmpty(1);
+	 * // => true
+	 *
+	 * _.isEmpty([1, 2, 3]);
+	 * // => false
+	 *
+	 * _.isEmpty({ 'a': 1 });
+	 * // => false
+	 */
+	function isEmpty(value) {
+	  if (isArrayLike(value) &&
+	      (isArray(value) || isString(value) || isFunction(value.splice) ||
+	        isArguments(value) || isBuffer(value))) {
+	    return !value.length;
+	  }
+	  if (isObjectLike(value)) {
+	    var tag = getTag(value);
+	    if (tag == mapTag || tag == setTag) {
+	      return !value.size;
+	    }
+	  }
+	  for (var key in value) {
+	    if (hasOwnProperty.call(value, key)) {
+	      return false;
+	    }
+	  }
+	  return !(nonEnumShadows && keys(value).length);
+	}
+
+	module.exports = isEmpty;
+
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	exports.default = function (node) {
+	    return node.shadowRoot || (_context2.default.HTMLSlotElement || _context2.default.HTMLContentElement) && createShadowRoot.call(node);
+	};
+
+	var _context = __webpack_require__(207);
+
+	var _context2 = _interopRequireDefault(_context);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var proto = _context2.default.Element.prototype;
+	var createShadowRoot = proto.createShadowRoot || proto.webkitCreateShadowRoot || proto.mozCreateShadowRoot || proto.msCreateShadowRoot || proto.oCreateShadowRoot || function () {};
+
+	/**
+	 * Creating a shadow root.
+	 * Does not create the existing shadow root.
+	 *
+	 * @example
+	 * import createShadowRoot from 'xblocks-core/utils/createShadowRoot';
+	 * var root = createShadowRoot(node);
+	 *
+	 * @module xblocks-core/utils/createShadowRoot
+	 * @param {HTMLElement} node
+	 * @returns {ShadowRoot}
+	 */
+
+/***/ },
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _react = __webpack_require__(205);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _clone = __webpack_require__(233);
+
+	var _clone2 = _interopRequireDefault(_clone);
+
+	var _get = __webpack_require__(94);
+
+	var _get2 = _interopRequireDefault(_get);
+
+	var _context = __webpack_require__(207);
+
+	var _context2 = _interopRequireDefault(_context);
+
+	var _view = __webpack_require__(268);
+
+	var _constants = __webpack_require__(209);
+
+	var _constants2 = _interopRequireDefault(_constants);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _react2.default.createFactory(_react2.default.createClass({
+	    childContextTypes: {
+	        container: _react.PropTypes.any,
+	        content: _react.PropTypes.func
+	    },
+
+	    getChildContext: function getChildContext() {
+	        var _this = this;
+
+	        return {
+	            container: this.props._container,
+	            content: function content(element) {
+	                return _react2.default.createElement(
+	                    ComponentContent,
+	                    { element: element },
+	                    _this.props.children
+	                );
+	            }
+	        };
+	    },
+	    render: function render() {
+	        var tagName = this.props._container[_constants2.default.TAGNAME];
+	        var props = (0, _clone2.default)(this.props);
+
+	        delete props._container;
+
+	        return (0, _view.getFactory)(tagName)(props);
+	    }
+	}));
+
+
+	var ComponentContent = function ComponentContent(props, context) {
+	    var isShadow = (0, _get2.default)(context.container, [_constants2.default.BLOCK, 'isShadow'], false);
+
+	    if (isShadow) {
+	        if (_context2.default.HTMLSlotElement) {
+	            return _react2.default.createElement('slot', null);
+	        } else {
+	            return _react2.default.createElement('content', null);
+	        }
+	    }
+
+	    var elementProps = {
+	        'data-xb-content': context.container[_constants2.default.UID],
+	        'dangerouslySetInnerHTML': { __html: props.children }
+	    };
+
+	    if (props.element) {
+	        return _react2.default.cloneElement(props.element, elementProps);
+	    } else {
+	        return _react2.default.createElement('span', elementProps);
+	    }
+	};
+
+	ComponentContent.contextTypes = {
+	    container: _react.PropTypes.any
+	};
+
+/***/ },
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -9706,11 +10827,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _constants2 = _interopRequireDefault(_constants);
 
-	var _wrapperFunction = __webpack_require__(246);
+	var _wrapperFunction = __webpack_require__(269);
 
 	var _wrapperFunction2 = _interopRequireDefault(_wrapperFunction);
 
-	var _checkOverriddenMethods = __webpack_require__(247);
+	var _checkOverriddenMethods = __webpack_require__(270);
 
 	var _checkOverriddenMethods2 = _interopRequireDefault(_checkOverriddenMethods);
 
@@ -9718,21 +10839,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var spreadMergeWith = (0, _spread2.default)(_mergeWith2.default);
 
-	var METHODS_INHERITANCE = ['componentWillMount', 'componentDidMount', 'componentWillReceiveProps', 'componentWillUpdate', 'componentDidUpdate', 'componentWillUnmount'];
+	var METHODS_INHERITANCE = ['componentDidMount', 'componentDidUpdate', 'componentWillMount', 'componentWillReceiveProps', 'componentWillUnmount', 'componentWillUpdate'];
 
-	var METHODS_MERGE_RESULT = ['getInitialState', 'getDefaultProps'];
+	var METHODS_MERGE_RESULT = ['getChildContext', 'getDefaultProps', 'getInitialState'];
 
 	var VIEW_COMMON = {
-
 	    /**
-	     * Required attributes.
 	     * @memberOf ReactElement.prototype
-	     * @type {Object}
+	     * @property {Object} contextTypes context types
+	     * @property {HTMLElement} contextTypes.container the node associated with the view
+	     * @property {function} contextTypes.content
 	     */
-	    propTypes: {
-	        _uid: _react.PropTypes.node,
-	        _container: _react.PropTypes.any, // Bad way ;(
-	        children: _react.PropTypes.node
+	    contextTypes: {
+	        container: _react.PropTypes.any,
+	        content: _react.PropTypes.func
 	    },
 
 	    /**
@@ -9743,21 +10863,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @returns {?ReactElement}
 	     */
 	    template: function template(ref, props) {
-	        var templates = (0, _get2.default)(this, ['props', '_container', _constants2.default.TMPL]);
+	        var templates = (0, _get2.default)(this, ['context', 'container', _constants2.default.TMPL]);
 
 	        if ((0, _isPlainObject2.default)(templates) && templates.hasOwnProperty(ref)) {
-	            return _react2.default.createElement('div', _extends({}, props, { dangerouslySetInnerHTML: { '__html': this.templatePrepare(templates[ref]) } }));
+	            return _react2.default.createElement('div', _extends({}, props, { dangerouslySetInnerHTML: { __html: this.templatePrepare(templates[ref]) } }));
 	        }
 
 	        return null;
-	    },
-
-	    /**
-	     * Get the node associated with the view.
-	     * @returns {HTMLElement}
-	     */
-	    container: function container() {
-	        return this.props._container;
 	    }
 	};
 
@@ -9978,7 +11090,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 246 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10008,7 +11120,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 247 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10025,7 +11137,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
-	var _intersection = __webpack_require__(248);
+	var _intersection = __webpack_require__(271);
 
 	var _intersection2 = _interopRequireDefault(_intersection);
 
@@ -10036,12 +11148,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 248 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayMap = __webpack_require__(234),
-	    baseIntersection = __webpack_require__(249),
-	    castArrayLikeObject = __webpack_require__(250),
+	var arrayMap = __webpack_require__(235),
+	    baseIntersection = __webpack_require__(272),
+	    castArrayLikeObject = __webpack_require__(273),
 	    rest = __webpack_require__(151);
 
 	/**
@@ -10072,15 +11184,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 249 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var SetCache = __webpack_require__(74),
-	    arrayIncludes = __webpack_require__(236),
-	    arrayIncludesWith = __webpack_require__(237),
-	    arrayMap = __webpack_require__(234),
-	    baseUnary = __webpack_require__(238),
-	    cacheHas = __webpack_require__(239);
+	    arrayIncludes = __webpack_require__(237),
+	    arrayIncludesWith = __webpack_require__(238),
+	    arrayMap = __webpack_require__(235),
+	    baseUnary = __webpack_require__(239),
+	    cacheHas = __webpack_require__(240);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMin = Math.min;
@@ -10152,7 +11264,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 250 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArrayLikeObject = __webpack_require__(16);
@@ -10172,958 +11284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 251 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.Custom = undefined;
-	exports.dispatch = dispatch;
-	exports.forwardingEvents = forwardingEvents;
-
-	var _isNative = __webpack_require__(252);
-
-	var _isNative2 = _interopRequireDefault(_isNative);
-
-	var _context = __webpack_require__(207);
-
-	var _context2 = _interopRequireDefault(_context);
-
-	var _CustomEventCommon = __webpack_require__(254);
-
-	var _CustomEventCommon2 = _interopRequireDefault(_CustomEventCommon);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	/**
-	 * Designer events.
-	 *
-	 * @example
-	 * import { Custom } from 'xblocks-core/event';
-	 *
-	 * new Custom('custom-event', {
-	 *     bubbles: true,
-	 *     cancelable: true,
-	 *     detail: { data: '123' }
-	 * })
-	 *
-	 * @alias module:xblocks-core/event~Custom
-	 * @constructor
-	 */
-	var Custom = exports.Custom = function () {
-	    if ((0, _isNative2.default)('CustomEvent')) {
-	        return _context2.default.CustomEvent;
-	    }
-
-	    return _CustomEventCommon2.default;
-	}();
-
-	/**
-	 * Dispatch event.
-	 *
-	 * @example
-	 * import { dispatch } from 'xblocks-core/event';
-	 * dispatch(node, 'custom-event', {
-	 *     bubbles: true,
-	 *     cancelable: true,
-	 *     detail: { data: '123' }
-	 * })
-	 *
-	 * @alias module:xblocks-core/event.dispatch
-	 * @param {HTMLElement} element node events
-	 * @param {string} name event name
-	 * @param {Object} params the event parameters
-	 * @param {boolean} [params.bubbles=false]
-	 * @param {boolean} [params.cancelable=false]
-	 * @param {*} [params.detail]
-	 */
-	/**
-	 * @module xblocks-core/event
-	 */
-
-	function dispatch(element, name, params) {
-	    element.dispatchEvent(new Custom(name, params || {}));
-	}
-
-	/**
-	 * Forwarding events
-	 *
-	 * @example
-	 * import { forwardingEvents } from 'xblocks-core/event';
-	 * forwardingEvents('custom-event', fromNode, toNode, false);
-	 *
-	 * @param {string} name event name
-	 * @param {HTMLElement} fromElement
-	 * @param {HTMLElement} toElement
-	 * @param {boolean} [capture=false]
-	 * @returns {function} callback
-	 */
-	function forwardingEvents(name, fromElement, toElement) {
-	    var capture = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
-
-	    var callback = function callback(event) {
-	        dispatch(toElement, name, {
-	            bubbles: event.bubbles,
-	            cancelable: event.cancelable,
-	            detail: event.detail
-	        });
-	    };
-
-	    callback.cancel = function () {
-	        fromElement.removeEventListener(name, callback, capture);
-	    };
-
-	    fromElement.addEventListener(name, callback, capture);
-
-	    return callback;
-	}
-
-/***/ },
-/* 252 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseIsNative = __webpack_require__(52),
-	    isMaskable = __webpack_require__(253);
-
-	/**
-	 * Checks if `value` is a pristine native function.
-	 *
-	 * **Note:** This method can't reliably detect native functions in the
-	 * presence of the `core-js` package because `core-js` circumvents this kind
-	 * of detection. Despite multiple requests, the `core-js` maintainer has made
-	 * it clear: any attempt to fix the detection will be obstructed. As a result,
-	 * we're left with little choice but to throw an error. Unfortunately, this
-	 * also affects packages, like [babel-polyfill](https://www.npmjs.com/package/babel-polyfill),
-	 * which rely on `core-js`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 3.0.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a native function,
-	 *  else `false`.
-	 * @example
-	 *
-	 * _.isNative(Array.prototype.push);
-	 * // => true
-	 *
-	 * _.isNative(_);
-	 * // => false
-	 */
-	function isNative(value) {
-	  if (isMaskable(value)) {
-	    throw new Error('This method is not supported with `core-js`. Try https://github.com/es-shims.');
-	  }
-	  return baseIsNative(value);
-	}
-
-	module.exports = isNative;
-
-
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var coreJsData = __webpack_require__(55),
-	    isFunction = __webpack_require__(20),
-	    stubFalse = __webpack_require__(110);
-
-	/**
-	 * Checks if `func` is capable of being masked.
-	 *
-	 * @private
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `func` is maskable, else `false`.
-	 */
-	var isMaskable = coreJsData ? isFunction : stubFalse;
-
-	module.exports = isMaskable;
-
-
-/***/ },
-/* 254 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _context = __webpack_require__(207);
-
-	var _context2 = _interopRequireDefault(_context);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	/**
-	 * @constant {Document}
-	 * @private
-	 */
-	var doc = _context2.default.document;
-
-	/**
-	 * @constant {Object}
-	 * @private
-	 */
-	var protoEvent = _context2.default.Event.prototype;
-
-	var issetCustomEvent = false;
-
-	try {
-	    issetCustomEvent = Boolean(doc.createEvent('CustomEvent'));
-	} catch (e) {}
-	// do nothing
-
-
-	/**
-	 * The original function "stopImmediatePropagation"
-	 * @constant {function}
-	 * @private
-	 */
-	var stopImmediatePropagation = protoEvent.stopImmediatePropagation;
-
-	/**
-	 * Override function to set properties "immediatePropagationStopped"
-	 */
-	protoEvent.stopImmediatePropagation = function () {
-	    this.immediatePropagationStopped = true;
-
-	    if (stopImmediatePropagation) {
-	        stopImmediatePropagation.call(this);
-	    } else {
-	        this.stopPropagation();
-	    }
-	};
-
-	var CustomEventCommon = function () {
-	    if (issetCustomEvent) {
-	        return function (eventName, params) {
-	            params = params || {};
-
-	            var bubbles = Boolean(params.bubbles);
-	            var cancelable = Boolean(params.cancelable);
-	            var evt = doc.createEvent('CustomEvent');
-
-	            evt.initCustomEvent(eventName, bubbles, cancelable, params.detail);
-
-	            return evt;
-	        };
-	    }
-
-	    return function (eventName, params) {
-	        params = params || {};
-
-	        var bubbles = Boolean(params.bubbles);
-	        var cancelable = Boolean(params.cancelable);
-	        var evt = doc.createEvent('Event');
-
-	        evt.initEvent(eventName, bubbles, cancelable);
-	        evt.detail = params.detail;
-
-	        return evt;
-	    };
-	}();
-
-	CustomEventCommon.prototype = protoEvent;
-
-	exports.default = CustomEventCommon;
-
-/***/ },
-/* 255 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	exports.default = function (callback, args) {
-	    if (!callback._args) {
-	        callback._args = [];
-	    }
-
-	    callback._args.push(args);
-
-	    if (!callback._timer) {
-	        callback._timer = _src2.default.setImmediate(function () {
-	            callback._timer = 0;
-
-	            var saveArgs = callback._args;
-	            callback._args = [];
-
-	            callback(saveArgs);
-	        });
-	    }
-
-	    return callback;
-	};
-
-	var _src = __webpack_require__(256);
-
-	var _src2 = _interopRequireDefault(_src);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ },
-/* 256 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var context = __webpack_require__(257);
-	var useNative = __webpack_require__(258);
-	var Timer = __webpack_require__(259);
-	var setTimeoutPolifill = __webpack_require__(260);
-	var polifills = [
-	    __webpack_require__(261),
-	    __webpack_require__(262),
-	    __webpack_require__(263),
-	    __webpack_require__(264),
-	    __webpack_require__(265)
-	];
-	var setImmediate;
-	var clearImmediate;
-
-	if (useNative()) {
-	    setImmediate = context.setImmediate ||
-	        context.msSetImmediate ||
-	        usePolifill(polifills, setTimeoutPolifill);
-
-	    clearImmediate = context.clearImmediate ||
-	        context.msClearImmediate ||
-	        Timer.clear;
-
-	} else {
-	    setImmediate = setTimeoutPolifill.init();
-	    clearImmediate = Timer.clear;
-	}
-
-	exports.setImmediate = setImmediate;
-	exports.clearImmediate = clearImmediate;
-
-	exports.msSetImmediate = setImmediate;
-	exports.msClearImmediate = clearImmediate;
-
-	function usePolifill(polifills, def) {
-	    for (var i = 0; i < polifills.length; i++) {
-	        var polifill = polifills[ i ];
-	        if (polifill.canUse()) {
-	            return polifill.init();
-	        }
-	    }
-
-	    return def.init();
-	}
-
-
-/***/ },
-/* 257 */
-/***/ function(module, exports) {
-
-	/*jshint -W067*/
-	'use strict';
-
-	module.exports = (function() {
-	    return this || (1, eval)('this');
-	})();
-
-
-/***/ },
-/* 258 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var context = __webpack_require__(257);
-
-	// @see http://codeforhire.com/2013/09/21/setimmediate-and-messagechannel-broken-on-internet-explorer-10/
-	module.exports = function() {
-	    return !(context.navigator && /Trident|Edge/.test(context.navigator.userAgent));
-	};
-
-
-/***/ },
-/* 259 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var context = __webpack_require__(257);
-
-	var nextId = 1;
-	var tasks = {};
-	var lock = false;
-
-	function wrap(handler) {
-	    var args = Array.prototype.slice.call(arguments, 1);
-
-	    return function() {
-	        handler.apply(undefined, args);
-	    };
-	}
-
-	function create(args) {
-	    tasks[ nextId ] = wrap.apply(undefined, args);
-	    return nextId++;
-	}
-
-	function clear(handleId) {
-	    delete tasks[ handleId ];
-	}
-
-	function run(handleId) {
-	    if (lock) {
-	        context.setTimeout( wrap( run, handleId ), 0 );
-
-	    } else {
-	        var task = tasks[ handleId ];
-
-	        if (task) {
-	            lock = true;
-
-	            try {
-	                task();
-
-	            } finally {
-	                clear( handleId );
-	                lock = false;
-	            }
-	        }
-	    }
-	}
-
-	exports.run = run;
-	exports.wrap = wrap;
-	exports.create = create;
-	exports.clear = clear;
-
-
-/***/ },
-/* 260 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var context = __webpack_require__(257);
-	var Timer = __webpack_require__(259);
-
-	exports.init = function() {
-	    var polifill = function() {
-	        var handleId = Timer.create(arguments);
-	        context.setTimeout( Timer.wrap( Timer.run, handleId ), 0 );
-	        return handleId;
-	    };
-	    polifill.usePolifill = 'setTimeout';
-	    return polifill;
-	};
-
-	exports.canUse = function() {
-	    return true;
-	};
-
-
-/***/ },
-/* 261 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var context = __webpack_require__(257);
-	var Timer = __webpack_require__(259);
-
-	exports.init = function() {
-	    var polifill = function() {
-	        var handleId = Timer.create(arguments);
-	        context.process.nextTick( Timer.wrap( Timer.run, handleId ) );
-	        return handleId;
-	    };
-	    polifill.usePolifill = 'nextTick';
-	    return polifill;
-	};
-
-	// Don't get fooled by e.g. browserify environments.
-	// For Node.js before 0.9
-	exports.canUse = function() {
-	    return (Object.prototype.toString.call(context.process) === '[object process]');
-	};
-
-
-/***/ },
-/* 262 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var context = __webpack_require__(257);
-	var Timer = __webpack_require__(259);
-
-	exports.init = function() {
-	    var messagePrefix = 'setImmediate$' + Math.random() + '$';
-
-	    var onGlobalMessage = function(event) {
-	        if (event.source === context &&
-	            typeof(event.data) === 'string' &&
-	            event.data.indexOf(messagePrefix) === 0) {
-
-	            Timer.run(Number(event.data.slice(messagePrefix.length)));
-	        }
-	    };
-
-	    if (context.addEventListener) {
-	        context.addEventListener('message', onGlobalMessage, false);
-
-	    } else {
-	        context.attachEvent('onmessage', onGlobalMessage);
-	    }
-
-	    var polifill = function() {
-	        var handleId = Timer.create(arguments);
-	        context.postMessage(messagePrefix + handleId, '*');
-	        return handleId;
-	    };
-	    polifill.usePolifill = 'postMessage';
-	    return polifill;
-	};
-
-	// For non-IE10 modern browsers
-	exports.canUse = function() {
-	    if (context.importScripts || !context.postMessage) {
-	        return false;
-	    }
-
-	    var asynch = true;
-	    var oldOnMessage = context.onmessage;
-	    context.onmessage = function() {
-	        asynch = false;
-	    };
-
-	    context.postMessage('', '*');
-	    context.onmessage = oldOnMessage;
-	    return asynch;
-	};
-
-
-/***/ },
-/* 263 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var context = __webpack_require__(257);
-	var Timer = __webpack_require__(259);
-
-	exports.init = function() {
-	    var channel = new context.MessageChannel();
-
-	    channel.port1.onmessage = function(event) {
-	        Timer.run(Number(event.data));
-	    };
-
-	    var polifill = function() {
-	        var handleId = Timer.create(arguments);
-	        channel.port2.postMessage(handleId);
-	        return handleId;
-	    };
-	    polifill.usePolifill = 'messageChannel';
-	    return polifill;
-	};
-
-	// For web workers, where supported
-	exports.canUse = function() {
-	    return Boolean(context.MessageChannel);
-	};
-
-
-/***/ },
-/* 264 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var context = __webpack_require__(257);
-	var Timer = __webpack_require__(259);
-
-	exports.init = function() {
-	    var html = context.document.documentElement;
-	    var polifill = function() {
-	        var handleId = Timer.create(arguments);
-	        var script = context.document.createElement('script');
-
-	        script.onreadystatechange = function() {
-	            Timer.run(handleId);
-	            script.onreadystatechange = null;
-	            html.removeChild(script);
-	            script = null;
-	        };
-
-	        html.appendChild(script);
-	        return handleId;
-	    };
-
-	    polifill.usePolifill = 'readyStateChange';
-	    return polifill;
-	};
-
-	// For IE 6–8
-	exports.canUse = function() {
-	    return (context.document && ('onreadystatechange' in context.document.createElement('script')));
-	};
-
-
-/***/ },
-/* 265 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var context = __webpack_require__(257);
-	var Timer = __webpack_require__(259);
-
-	exports.init = function() {
-	    var polifill = function() {
-	        var handleId = Timer.create(arguments);
-	        var img = new context.Image();
-	        img.onload = img.onerror = Timer.wrap( Timer.run, handleId );
-	        img.src = '';
-
-	        return handleId;
-	    };
-	    polifill.usePolifill = 'image';
-	    return polifill;
-	};
-
-	exports.canUse = function() {
-	    return Boolean(context.window && context.Image);
-	};
-
-
-/***/ },
-/* 266 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	exports.default = function (node, inline) {
-	    if (!(0, _isPlainObject2.default)(inline) || (0, _isEmpty2.default)(inline)) {
-	        return;
-	    }
-
-	    var doc = node.ownerDocument;
-	    var root = node.shadowRoot || doc.head || doc.getElementsByTagName('head')[0];
-
-	    (0, _forEach2.default)(inline, function (css, uid) {
-	        if ((0, _has2.default)(root, [_constants2.default.STYLE, uid])) {
-	            return;
-	        }
-
-	        (0, _set2.default)(root, [_constants2.default.STYLE, uid], true);
-
-	        var style = doc.createElement('style');
-	        style.type = 'text/css';
-	        style.id = uid;
-
-	        if (style.styleSheet) {
-	            style.styleSheet.cssText = css;
-	        } else {
-	            style.appendChild(doc.createTextNode(css));
-	        }
-
-	        root.appendChild(style);
-	    });
-	};
-
-	var _has = __webpack_require__(267);
-
-	var _has2 = _interopRequireDefault(_has);
-
-	var _set = __webpack_require__(268);
-
-	var _set2 = _interopRequireDefault(_set);
-
-	var _isPlainObject = __webpack_require__(143);
-
-	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
-
-	var _isEmpty = __webpack_require__(270);
-
-	var _isEmpty2 = _interopRequireDefault(_isEmpty);
-
-	var _forEach = __webpack_require__(3);
-
-	var _forEach2 = _interopRequireDefault(_forEach);
-
-	var _constants = __webpack_require__(209);
-
-	var _constants2 = _interopRequireDefault(_constants);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ },
-/* 267 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseHas = __webpack_require__(10),
-	    hasPath = __webpack_require__(106);
-
-	/**
-	 * Checks if `path` is a direct property of `object`.
-	 *
-	 * @static
-	 * @since 0.1.0
-	 * @memberOf _
-	 * @category Object
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} path The path to check.
-	 * @returns {boolean} Returns `true` if `path` exists, else `false`.
-	 * @example
-	 *
-	 * var object = { 'a': { 'b': 2 } };
-	 * var other = _.create({ 'a': _.create({ 'b': 2 }) });
-	 *
-	 * _.has(object, 'a');
-	 * // => true
-	 *
-	 * _.has(object, 'a.b');
-	 * // => true
-	 *
-	 * _.has(object, ['a', 'b']);
-	 * // => true
-	 *
-	 * _.has(other, 'a');
-	 * // => false
-	 */
-	function has(object, path) {
-	  return object != null && hasPath(object, path, baseHas);
-	}
-
-	module.exports = has;
-
-
-/***/ },
-/* 268 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var baseSet = __webpack_require__(269);
-
-	/**
-	 * Sets the value at `path` of `object`. If a portion of `path` doesn't exist,
-	 * it's created. Arrays are created for missing index properties while objects
-	 * are created for all other missing properties. Use `_.setWith` to customize
-	 * `path` creation.
-	 *
-	 * **Note:** This method mutates `object`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 3.7.0
-	 * @category Object
-	 * @param {Object} object The object to modify.
-	 * @param {Array|string} path The path of the property to set.
-	 * @param {*} value The value to set.
-	 * @returns {Object} Returns `object`.
-	 * @example
-	 *
-	 * var object = { 'a': [{ 'b': { 'c': 3 } }] };
-	 *
-	 * _.set(object, 'a[0].b.c', 4);
-	 * console.log(object.a[0].b.c);
-	 * // => 4
-	 *
-	 * _.set(object, ['x', '0', 'y', 'z'], 5);
-	 * console.log(object.x[0].y.z);
-	 * // => 5
-	 */
-	function set(object, path, value) {
-	  return object == null ? object : baseSet(object, path, value);
-	}
-
-	module.exports = set;
-
-
-/***/ },
-/* 269 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var assignValue = __webpack_require__(116),
-	    castPath = __webpack_require__(96),
-	    isIndex = __webpack_require__(26),
-	    isKey = __webpack_require__(102),
-	    isObject = __webpack_require__(21),
-	    toKey = __webpack_require__(103);
-
-	/**
-	 * The base implementation of `_.set`.
-	 *
-	 * @private
-	 * @param {Object} object The object to query.
-	 * @param {Array|string} path The path of the property to set.
-	 * @param {*} value The value to set.
-	 * @param {Function} [customizer] The function to customize path creation.
-	 * @returns {Object} Returns `object`.
-	 */
-	function baseSet(object, path, value, customizer) {
-	  path = isKey(path, object) ? [path] : castPath(path);
-
-	  var index = -1,
-	      length = path.length,
-	      lastIndex = length - 1,
-	      nested = object;
-
-	  while (nested != null && ++index < length) {
-	    var key = toKey(path[index]);
-	    if (isObject(nested)) {
-	      var newValue = value;
-	      if (index != lastIndex) {
-	        var objValue = nested[key];
-	        newValue = customizer ? customizer(objValue, key, nested) : undefined;
-	        if (newValue === undefined) {
-	          newValue = objValue == null
-	            ? (isIndex(path[index + 1]) ? [] : {})
-	            : objValue;
-	        }
-	      }
-	      assignValue(nested, key, newValue);
-	    }
-	    nested = nested[key];
-	  }
-	  return object;
-	}
-
-	module.exports = baseSet;
-
-
-/***/ },
-/* 270 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var getTag = __webpack_require__(84),
-	    isArguments = __webpack_require__(15),
-	    isArray = __webpack_require__(24),
-	    isArrayLike = __webpack_require__(17),
-	    isBuffer = __webpack_require__(141),
-	    isFunction = __webpack_require__(20),
-	    isObjectLike = __webpack_require__(23),
-	    isString = __webpack_require__(25),
-	    keys = __webpack_require__(9);
-
-	/** `Object#toString` result references. */
-	var mapTag = '[object Map]',
-	    setTag = '[object Set]';
-
-	/** Used for built-in method references. */
-	var objectProto = Object.prototype;
-
-	/** Used to check objects for own properties. */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-
-	/** Built-in value references. */
-	var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-	/** Detect if properties shadowing those on `Object.prototype` are non-enumerable. */
-	var nonEnumShadows = !propertyIsEnumerable.call({ 'valueOf': 1 }, 'valueOf');
-
-	/**
-	 * Checks if `value` is an empty object, collection, map, or set.
-	 *
-	 * Objects are considered empty if they have no own enumerable string keyed
-	 * properties.
-	 *
-	 * Array-like values such as `arguments` objects, arrays, buffers, strings, or
-	 * jQuery-like collections are considered empty if they have a `length` of `0`.
-	 * Similarly, maps and sets are considered empty if they have a `size` of `0`.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @since 0.1.0
-	 * @category Lang
-	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is empty, else `false`.
-	 * @example
-	 *
-	 * _.isEmpty(null);
-	 * // => true
-	 *
-	 * _.isEmpty(true);
-	 * // => true
-	 *
-	 * _.isEmpty(1);
-	 * // => true
-	 *
-	 * _.isEmpty([1, 2, 3]);
-	 * // => false
-	 *
-	 * _.isEmpty({ 'a': 1 });
-	 * // => false
-	 */
-	function isEmpty(value) {
-	  if (isArrayLike(value) &&
-	      (isArray(value) || isString(value) || isFunction(value.splice) ||
-	        isArguments(value) || isBuffer(value))) {
-	    return !value.length;
-	  }
-	  if (isObjectLike(value)) {
-	    var tag = getTag(value);
-	    if (tag == mapTag || tag == setTag) {
-	      return !value.size;
-	    }
-	  }
-	  for (var key in value) {
-	    if (hasOwnProperty.call(value, key)) {
-	      return false;
-	    }
-	  }
-	  return !(nonEnumShadows && keys(value).length);
-	}
-
-	module.exports = isEmpty;
-
-
-/***/ },
-/* 271 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	exports.default = function (node) {
-	    return node.shadowRoot || createShadowRoot.call(node);
-	};
-
-	var _context = __webpack_require__(207);
-
-	var _context2 = _interopRequireDefault(_context);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var proto = _context2.default.Element.prototype;
-	var createShadowRoot = proto.createShadowRoot || proto.webkitCreateShadowRoot || proto.mozCreateShadowRoot || proto.msCreateShadowRoot || proto.oCreateShadowRoot || function () {};
-
-	/**
-	 * Creating a shadow root.
-	 * Does not create the existing shadow root.
-	 *
-	 * @example
-	 * import createShadowRoot from 'xblocks-core/utils/createShadowRoot';
-	 * var root = createShadowRoot(node);
-	 *
-	 * @module xblocks-core/utils/createShadowRoot
-	 * @param {HTMLElement} node
-	 * @returns {ShadowRoot}
-	 */
-
-/***/ },
-/* 272 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11133,15 +11294,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.propTypes = exports.log = exports.lazy = undefined;
 
-	var _lazy2 = __webpack_require__(255);
+	var _lazy2 = __webpack_require__(250);
 
 	var _lazy3 = _interopRequireDefault(_lazy2);
 
-	var _log2 = __webpack_require__(273);
+	var _log2 = __webpack_require__(275);
 
 	var _log = _interopRequireWildcard(_log2);
 
-	var _propTypes2 = __webpack_require__(274);
+	var _propTypes2 = __webpack_require__(276);
 
 	var _propTypes3 = _interopRequireDefault(_propTypes2);
 
@@ -11154,7 +11315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.propTypes = _propTypes3.default;
 
 /***/ },
-/* 273 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11204,7 +11365,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 274 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11231,10 +11392,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return {};
 	};
 
-	var _view = __webpack_require__(245);
+	var _view = __webpack_require__(268);
 
 /***/ },
-/* 275 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11246,7 +11407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _block = __webpack_require__(1);
 
-	var _view = __webpack_require__(245);
+	var _view = __webpack_require__(268);
 
 	/**
 	 * Decorating React.Component
@@ -11258,7 +11419,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * class XElement extends React.Component {
 	 *     render() {
 	 *         return (
-	 *             <div data-xb-content={this.props._uid} title={this.props.test1}>{this.props.children}</div>
+	 *             <div title={this.props.test1}>
+	 *                 {this.context.content()}
+	 *             </div>
 	 *         );
 	 *     }
 	 * }

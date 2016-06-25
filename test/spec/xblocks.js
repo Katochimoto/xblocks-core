@@ -249,7 +249,6 @@ describe('xblocks', function () {
 
         it('свойство xprops', function () {
             expect(this.xElement.xprops).to.be.an('object');
-            expect(this.xElement.xprops).to.contain.all.keys([ '_uid', 'children' ]);
         });
 
         it('свойство mounted', function () {
