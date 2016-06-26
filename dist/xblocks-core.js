@@ -10694,13 +10694,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _react = __webpack_require__(205);
 
 	var _react2 = _interopRequireDefault(_react);
-
-	var _clone = __webpack_require__(233);
-
-	var _clone2 = _interopRequireDefault(_clone);
 
 	var _get = __webpack_require__(94);
 
@@ -10792,7 +10790,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    render: function render() {
 	        var tagName = this.props._container[_constants2.default.TAGNAME];
-	        var props = (0, _clone2.default)(this.props);
+	        var props = _extends({}, this.props, this.state);
 
 	        delete props._container;
 

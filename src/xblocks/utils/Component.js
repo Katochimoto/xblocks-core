@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import clone from 'lodash/clone';
 import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
 import identity from 'lodash/identity';
@@ -68,7 +67,7 @@ export default React.createFactory(React.createClass({
      */
     render() {
         const tagName = this.props._container[ Constants.TAGNAME ];
-        const props = clone(this.props);
+        const props = { ...this.props, ...this.state };
 
         delete props._container;
 
