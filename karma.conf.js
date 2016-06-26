@@ -58,6 +58,7 @@ module.exports = function(config) {
                     'block': path.join(srcLib, 'block'),
                     'constants': path.join(srcLib, 'constants'),
                     'context': path.join(src, 'context'),
+                    'decorator': path.join(srcLib, 'decorator'),
                     'dom': path.join(srcLib, 'dom'),
                     'element': path.join(srcLib, 'element'),
                     'event': path.join(srcLib, 'event'),

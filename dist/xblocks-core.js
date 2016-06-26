@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _decorator = __webpack_require__(277);
+	var _decorator = __webpack_require__(278);
 
 	Object.defineProperty(exports, 'element', {
 	  enumerable: true,
@@ -87,11 +87,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _event = _interopRequireWildcard(_event2);
 
-	var _utils2 = __webpack_require__(274);
+	var _utils2 = __webpack_require__(275);
 
 	var _utils = _interopRequireWildcard(_utils2);
 
-	var _view2 = __webpack_require__(268);
+	var _view2 = __webpack_require__(269);
 
 	var _view = _interopRequireWildcard(_view2);
 
@@ -179,17 +179,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _element = __webpack_require__(231);
 
-	var _utils = __webpack_require__(274);
+	var _utils = __webpack_require__(275);
 
 	var _constants = __webpack_require__(209);
 
 	var _constants2 = _interopRequireDefault(_constants);
 
-	var _wrapperFunction = __webpack_require__(269);
+	var _wrapperFunction = __webpack_require__(270);
 
 	var _wrapperFunction2 = _interopRequireDefault(_wrapperFunction);
 
-	var _checkOverriddenMethods = __webpack_require__(270);
+	var _checkOverriddenMethods = __webpack_require__(271);
 
 	var _checkOverriddenMethods2 = _interopRequireDefault(_checkOverriddenMethods);
 
@@ -8873,11 +8873,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _importStyle2 = _interopRequireDefault(_importStyle);
 
-	var _createShadowRoot = __webpack_require__(266);
+	var _createShadowMountPoint = __webpack_require__(266);
 
-	var _createShadowRoot2 = _interopRequireDefault(_createShadowRoot);
+	var _createShadowMountPoint2 = _interopRequireDefault(_createShadowMountPoint);
 
-	var _Component = __webpack_require__(267);
+	var _Component = __webpack_require__(268);
 
 	var _Component2 = _interopRequireDefault(_Component);
 
@@ -8903,7 +8903,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._mountPoint = node;
 
 	    if (node.isShadowSupported) {
-	        var mountPoint = createShadowMountPoint(node);
+	        var mountPoint = (0, _createShadowMountPoint2.default)(node);
 
 	        if (mountPoint) {
 	            this._mountPoint = mountPoint;
@@ -9066,7 +9066,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Gets the attributes of the components.
-	 * @returns {?object}
+	 * @returns {?Object}
 	 */
 	XBElement.prototype.getMountedProps = function () {
 	    return this.isMounted() ? this._component.props : null;
@@ -9246,37 +9246,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Call global events "xb-update"
+	 *
 	 * @example
 	 * globalUpdateEvent([]);
+	 *
 	 * @param {array} records
 	 * @private
 	 */
 	function globalUpdateEvent(records) {
 	    (0, _event.dispatch)(_context2.default, 'xb-update', { detail: { records: records } });
-	}
-
-	/**
-	 * Creates a mount point in the shadow root.
-	 * @param {HTMLElement} node
-	 * @returns {HTMLElement}
-	 * @private
-	 */
-	function createShadowMountPoint(node) {
-	    var root = (0, _createShadowRoot2.default)(node);
-
-	    if (!root) {
-	        return;
-	    }
-
-	    var point = root.getElementById('xblocks-mount-point');
-
-	    if (!point) {
-	        point = node.ownerDocument.createElement('div');
-	        point.id = 'xblocks-mount-point';
-	        root.appendChild(point);
-	    }
-
-	    return point;
 	}
 
 	/**
@@ -10647,6 +10625,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 	exports.default = function (node) {
+	    var root = (0, _createShadowRoot2.default)(node);
+
+	    if (!root) {
+	        return null;
+	    }
+
+	    var point = root.getElementById('xblocks-mount-point');
+
+	    if (!point) {
+	        point = node.ownerDocument.createElement('div');
+	        point.id = 'xblocks-mount-point';
+	        root.appendChild(point);
+	    }
+
+	    return point;
+	};
+
+	var _createShadowRoot = __webpack_require__(267);
+
+	var _createShadowRoot2 = _interopRequireDefault(_createShadowRoot);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	exports.default = function (node) {
 	    return node.shadowRoot || (_context2.default.HTMLSlotElement || _context2.default.HTMLContentElement) && createShadowRoot.call(node);
 	};
 
@@ -10673,7 +10685,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 
 /***/ },
-/* 267 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10698,7 +10710,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _context2 = _interopRequireDefault(_context);
 
-	var _view = __webpack_require__(268);
+	var _view = __webpack_require__(269);
 
 	var _constants = __webpack_require__(209);
 
@@ -10706,17 +10718,43 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	/**
+	 * The basic component. Required for the formation of context.
+	 *
+	 * @example
+	 * import Component from 'xblocks-core/utils/Component';
+	 * React.render(Component({ property: 'test' }), node);
+	 *
+	 * @module xblocks-core/utils/Component
+	 * @returns {function}
+	 */
 	exports.default = _react2.default.createFactory(_react2.default.createClass({
+	    /**
+	     * Types of context
+	     * @property {Object} childContextTypes
+	     * @property {HTMLElement} childContextTypes.container the node associated with the view
+	     * @property {function} childContextTypes.content
+	     */
 	    childContextTypes: {
 	        container: _react.PropTypes.any,
 	        content: _react.PropTypes.func
 	    },
 
+	    /**
+	     * The context value
+	     * @returns {{ container: HTMLElement, content: function }}}
+	     */
 	    getChildContext: function getChildContext() {
 	        var _this = this;
 
 	        return {
 	            container: this.props._container,
+
+	            /**
+	             * Output function user content
+	             * @param {ReactElement} element
+	             * @returns {ReactElement}
+	             */
 	            content: function content(element) {
 	                return _react2.default.createElement(
 	                    ComponentContent,
@@ -10726,6 +10764,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        };
 	    },
+
+
+	    /**
+	     * @returns {ReactElement}
+	     */
 	    render: function render() {
 	        var tagName = this.props._container[_constants2.default.TAGNAME];
 	        var props = (0, _clone2.default)(this.props);
@@ -10736,6 +10779,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	}));
 
+	/**
+	 * Item output custom content
+	 * @param {Object} props
+	 * @param {ReactElement} props.element
+	 * @param {string} props.children
+	 * @param {Object} context
+	 * @param {HTMLElement} context.container the node associated with the view
+	 * @returns {ReactElement}
+	 * @private
+	 */
 
 	var ComponentContent = function ComponentContent(props, context) {
 	    var isShadow = (0, _get2.default)(context.container, [_constants2.default.BLOCK, 'isShadow'], false);
@@ -10760,12 +10813,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
+	/**
+	 * Types of context
+	 * @property {Object} contextTypes
+	 * @property {HTMLElement} contextTypes.container the node associated with the view
+	 */
 	ComponentContent.contextTypes = {
 	    container: _react.PropTypes.any
 	};
 
 /***/ },
-/* 268 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10827,11 +10885,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _constants2 = _interopRequireDefault(_constants);
 
-	var _wrapperFunction = __webpack_require__(269);
+	var _wrapperFunction = __webpack_require__(270);
 
 	var _wrapperFunction2 = _interopRequireDefault(_wrapperFunction);
 
-	var _checkOverriddenMethods = __webpack_require__(270);
+	var _checkOverriddenMethods = __webpack_require__(271);
 
 	var _checkOverriddenMethods2 = _interopRequireDefault(_checkOverriddenMethods);
 
@@ -11090,7 +11148,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11120,7 +11178,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11137,7 +11195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
-	var _intersection = __webpack_require__(271);
+	var _intersection = __webpack_require__(272);
 
 	var _intersection2 = _interopRequireDefault(_intersection);
 
@@ -11148,12 +11206,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayMap = __webpack_require__(235),
-	    baseIntersection = __webpack_require__(272),
-	    castArrayLikeObject = __webpack_require__(273),
+	    baseIntersection = __webpack_require__(273),
+	    castArrayLikeObject = __webpack_require__(274),
 	    rest = __webpack_require__(151);
 
 	/**
@@ -11184,7 +11242,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var SetCache = __webpack_require__(74),
@@ -11264,7 +11322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 273 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArrayLikeObject = __webpack_require__(16);
@@ -11284,7 +11342,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 274 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11298,11 +11356,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _lazy3 = _interopRequireDefault(_lazy2);
 
-	var _log2 = __webpack_require__(275);
+	var _log2 = __webpack_require__(276);
 
 	var _log = _interopRequireWildcard(_log2);
 
-	var _propTypes2 = __webpack_require__(276);
+	var _propTypes2 = __webpack_require__(277);
 
 	var _propTypes3 = _interopRequireDefault(_propTypes2);
 
@@ -11315,7 +11373,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.propTypes = _propTypes3.default;
 
 /***/ },
-/* 275 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11365,7 +11423,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 276 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11392,10 +11450,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return {};
 	};
 
-	var _view = __webpack_require__(268);
+	var _view = __webpack_require__(269);
 
 /***/ },
-/* 277 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11407,7 +11465,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _block = __webpack_require__(1);
 
-	var _view = __webpack_require__(268);
+	var _view = __webpack_require__(269);
 
 	/**
 	 * Decorating React.Component

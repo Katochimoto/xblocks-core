@@ -222,4 +222,46 @@ describe('xblocks', function () {
             });
         });
     });
+
+    describe('ShadowDOM', function () {
+        it('Если блок поддерживает shadow (isShadowSupported = true) и браузер поддерживает ShadowDOM, то компонент должен монтироваться в ShadowRoot', function () {
+            var origHTMLContentElement = window.HTMLContentElement;
+            var origHTMLSlotElement = window.HTMLSlotElement;
+
+            window.HTMLContentElement = undefined;
+            window.HTMLSlotElement = undefined;
+
+            register('xb-shadow-test1', {
+                render: function () {
+                    return (
+                        <div/>
+                    );
+                }
+            });
+
+            create('xb-shadow-test1', {
+                accessors: {
+                    isShadowSupported: {
+                        get: function () {
+                            return true;
+                        }
+                    }
+                }
+            });
+
+            var node = document.createElement('xb-shadow-test1');
+            return new vow.Promise(function (resolve) {
+                node.addEventListener('xb-created', function _onXbCreated() {
+                    this.removeEventListener('xb-created', _onXbCreated);
+                    expect(this.shadowRoot).to.be.undefined;
+                    this.parentNode.removeChild(this);
+                    window.HTMLContentElement = origHTMLContentElement;
+                    window.HTMLSlotElement = origHTMLSlotElement;
+                    resolve();
+                });
+
+                document.body.appendChild(node);
+            });
+        });
+    });
 });

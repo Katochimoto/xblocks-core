@@ -13,8 +13,8 @@ import { typeConversion } from './dom/attrs';
 import { dispatch } from './event';
 import lazy from './utils/lazy';
 import importStyle from './utils/importStyle';
-import createShadowRoot from './utils/createShadowRoot';
-import blockComponent from './utils/Component';
+import createShadowMountPoint from './utils/createShadowMountPoint';
+import appComponent from './utils/Component';
 import Constants from './constants';
 import { contentNode } from './dom';
 
@@ -139,7 +139,7 @@ XBElement.prototype.update = function (props, removeProps, callback) {
     };
 
     importStyle(node, node.style);
-    this._component = ReactDOM.render(blockComponent(nextProps), this._mountPoint, renderCallback);
+    this._component = ReactDOM.render(appComponent(nextProps), this._mountPoint, renderCallback);
 };
 
 /**
@@ -193,7 +193,7 @@ XBElement.prototype.getMountedComponent = function () {
 
 /**
  * Gets the attributes of the components.
- * @returns {?object}
+ * @returns {?Object}
  */
 XBElement.prototype.getMountedProps = function () {
     return this.isMounted() ? this._component.props : null;
@@ -218,7 +218,7 @@ XBElement.prototype._init = function () {
     };
 
     importStyle(node, node.style);
-    this._component = ReactDOM.render(blockComponent(props), this._mountPoint, renderCallback);
+    this._component = ReactDOM.render(appComponent(props), this._mountPoint, renderCallback);
 };
 
 /**
@@ -377,37 +377,15 @@ function globalInitEvent(records) {
 
 /**
  * Call global events "xb-update"
+ *
  * @example
  * globalUpdateEvent([]);
+ *
  * @param {array} records
  * @private
  */
 function globalUpdateEvent(records) {
     dispatch(context, 'xb-update', { detail: { records } });
-}
-
-/**
- * Creates a mount point in the shadow root.
- * @param {HTMLElement} node
- * @returns {HTMLElement}
- * @private
- */
-function createShadowMountPoint(node) {
-    const root = createShadowRoot(node);
-
-    if (!root) {
-        return;
-    }
-
-    let point = root.getElementById('xblocks-mount-point');
-
-    if (!point) {
-        point = node.ownerDocument.createElement('div');
-        point.id = 'xblocks-mount-point';
-        root.appendChild(point);
-    }
-
-    return point;
 }
 
 /**

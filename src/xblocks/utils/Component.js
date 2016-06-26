@@ -5,15 +5,41 @@ import global from '../../context';
 import { getFactory } from '../view';
 import Constants from '../constants';
 
+/**
+ * The basic component. Required for the formation of context.
+ *
+ * @example
+ * import Component from 'xblocks-core/utils/Component';
+ * React.render(Component({ property: 'test' }), node);
+ *
+ * @module xblocks-core/utils/Component
+ * @returns {function}
+ */
 export default React.createFactory(React.createClass({
+    /**
+     * Types of context
+     * @property {Object} childContextTypes
+     * @property {HTMLElement} childContextTypes.container the node associated with the view
+     * @property {function} childContextTypes.content
+     */
     childContextTypes: {
         container: PropTypes.any,
         content: PropTypes.func
     },
 
+    /**
+     * The context value
+     * @returns {{ container: HTMLElement, content: function }}}
+     */
     getChildContext() {
         return {
             container: this.props._container,
+
+            /**
+             * Output function user content
+             * @param {ReactElement} element
+             * @returns {ReactElement}
+             */
             content: (element) => (
                 <ComponentContent {...{ element }}>
                     {this.props.children}
@@ -22,6 +48,9 @@ export default React.createFactory(React.createClass({
         };
     },
 
+    /**
+     * @returns {ReactElement}
+     */
     render() {
         const tagName = this.props._container[ Constants.TAGNAME ];
         const props = clone(this.props);
@@ -32,6 +61,16 @@ export default React.createFactory(React.createClass({
     }
 }));
 
+/**
+ * Item output custom content
+ * @param {Object} props
+ * @param {ReactElement} props.element
+ * @param {string} props.children
+ * @param {Object} context
+ * @param {HTMLElement} context.container the node associated with the view
+ * @returns {ReactElement}
+ * @private
+ */
 const ComponentContent = function (props, context) {
     const isShadow = get(context.container, [ Constants.BLOCK, 'isShadow' ], false);
 
@@ -57,6 +96,11 @@ const ComponentContent = function (props, context) {
     }
 };
 
+/**
+ * Types of context
+ * @property {Object} contextTypes
+ * @property {HTMLElement} contextTypes.container the node associated with the view
+ */
 ComponentContent.contextTypes = {
     container: PropTypes.any
 };
