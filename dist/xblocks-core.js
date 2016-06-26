@@ -9017,7 +9017,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        that._callbackUpdate(callback);
 	    };
 
-	    (0, _importStyle2.default)(node, node.style);
+	    (0, _importStyle2.default)(node, node.componentStyle);
 	    this._component = _reactDom2.default.render((0, _Component2.default)(nextProps), this._mountPoint, renderCallback);
 	};
 
@@ -9092,7 +9092,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        that._callbackInit();
 	    };
 
-	    (0, _importStyle2.default)(node, node.style);
+	    (0, _importStyle2.default)(node, node.componentStyle);
 	    this._component = _reactDom2.default.render((0, _Component2.default)(props), this._mountPoint, renderCallback);
 	};
 

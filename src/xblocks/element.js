@@ -139,7 +139,7 @@ XBElement.prototype.update = function (props, removeProps, callback) {
         that._callbackUpdate(callback);
     };
 
-    importStyle(node, node.style);
+    importStyle(node, node.componentStyle);
     this._component = ReactDOM.render(appComponent(nextProps), this._mountPoint, renderCallback);
 };
 
@@ -216,7 +216,7 @@ XBElement.prototype._init = function () {
         that._callbackInit();
     };
 
-    importStyle(node, node.style);
+    importStyle(node, node.componentStyle);
     this._component = ReactDOM.render(appComponent(props), this._mountPoint, renderCallback);
 };
 
