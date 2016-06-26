@@ -294,7 +294,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @returns {?Constructor}
 	     */
 	    getComponent: function getComponent() {
-	        return (0, _invoke2.default)(this, [_constants2.default.BLOCK, 'getMountedComponent']);
+	        return (0, _invoke2.default)(this, [_constants2.default.BLOCK, 'getUserComponent']);
 	    },
 
 	    /**
@@ -8857,6 +8857,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _omit2 = _interopRequireDefault(_omit);
 
+	var _get = __webpack_require__(94);
+
+	var _get2 = _interopRequireDefault(_get);
+
 	var _context = __webpack_require__(207);
 
 	var _context2 = _interopRequireDefault(_context);
@@ -8895,6 +8899,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @param {HTMLElement} node the node of a custom element
 	 * @constructor
 	 */
+	/**
+	 * @module xblocks-core/element
+	 */
+
 	function XBElement(node) {
 	    node[_constants2.default.BLOCK] = this;
 
@@ -8917,8 +8925,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        attributes: true,
 	        characterData: !this.isShadow,
 	        characterDataOldValue: false,
-	        childList: !this.isShadow,
-	        subtree: !this.isShadow
+	        childList: !this.isShadow
+	        // subtree: !this.isShadow
 	    };
 
 	    this._init();
@@ -8928,10 +8936,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * The component is mounted in the shadow root.
 	 * @type {boolean}
 	 */
-	/**
-	 * @module xblocks-core/element
-	 */
-
 	XBElement.prototype.isShadow = false;
 
 	/**
@@ -9058,10 +9062,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Get components react.
 	 * @returns {?ReactCompositeComponent.createClass.Constructor}
 	 */
-	XBElement.prototype.getMountedComponent = function () {
-	    if (this.isMounted()) {
-	        return this._component;
-	    }
+	XBElement.prototype.getUserComponent = function () {
+	    return (0, _get2.default)(this, '_component.userComponent', null);
 	};
 
 	/**
@@ -10694,8 +10696,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 	var _react = __webpack_require__(205);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -10711,6 +10711,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _identity = __webpack_require__(107);
 
 	var _identity2 = _interopRequireDefault(_identity);
+
+	var _clone = __webpack_require__(233);
+
+	var _clone2 = _interopRequireDefault(_clone);
 
 	var _context = __webpack_require__(207);
 
@@ -10789,10 +10793,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @returns {ReactElement}
 	     */
 	    render: function render() {
+	        var _this2 = this;
+
 	        var tagName = this.props._container[_constants2.default.TAGNAME];
-	        var props = _extends({}, this.props, this.state);
+	        var props = (0, _clone2.default)(this.props);
 
 	        delete props._container;
+	        props.ref = function (ref) {
+	            return _this2.userComponent = ref;
+	        };
 
 	        return (0, _view.getFactory)(tagName)(props);
 	    }

@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import get from 'lodash/get';
 import isPlainObject from 'lodash/isPlainObject';
 import identity from 'lodash/identity';
+import clone from 'lodash/clone';
 import global from '../../context';
 import { getFactory } from '../view';
 import Constants from '../constants';
@@ -67,9 +68,10 @@ export default React.createFactory(React.createClass({
      */
     render() {
         const tagName = this.props._container[ Constants.TAGNAME ];
-        const props = { ...this.props, ...this.state };
+        const props = clone(this.props);
 
         delete props._container;
+        props.ref = (ref) => this.userComponent = ref;
 
         return getFactory(tagName)(props);
     }

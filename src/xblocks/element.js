@@ -8,6 +8,7 @@ import clone from 'lodash/clone';
 import keys from 'lodash/keys';
 import forEach from 'lodash/forEach';
 import omit from 'lodash/omit';
+import get from 'lodash/get';
 import context from '../context';
 import { typeConversion } from './dom/attrs';
 import { dispatch } from './event';
@@ -46,8 +47,8 @@ export function XBElement(node) {
         attributes: true,
         characterData: !this.isShadow,
         characterDataOldValue: false,
-        childList: !this.isShadow,
-        subtree: !this.isShadow
+        childList: !this.isShadow
+        // subtree: !this.isShadow
     };
 
     this._init();
@@ -185,10 +186,8 @@ XBElement.prototype.getMountedContent = function () {
  * Get components react.
  * @returns {?ReactCompositeComponent.createClass.Constructor}
  */
-XBElement.prototype.getMountedComponent = function () {
-    if (this.isMounted()) {
-        return this._component;
-    }
+XBElement.prototype.getUserComponent = function () {
+    return get(this, '_component.userComponent', null);
 };
 
 /**

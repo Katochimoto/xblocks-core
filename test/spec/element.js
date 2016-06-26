@@ -71,7 +71,7 @@ describe('xblocks.element', function () {
         });
     });
 
-    describe('#getMountedComponent', function () {
+    describe('#getUserComponent', function () {
         beforeEach(function () {
             this.node = document.createElement('x-element1');
 
@@ -87,7 +87,7 @@ describe('xblocks.element', function () {
         });
 
         it('должен вернуть компонент React', function () {
-            var proto = Object.getPrototypeOf(this.node[ Constants.BLOCK ].getMountedComponent());
+            var proto = Object.getPrototypeOf(this.node[ Constants.BLOCK ].getUserComponent());
             expect(proto).to.include.keys([ 'render' ]);
         });
     });

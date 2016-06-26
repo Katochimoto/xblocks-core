@@ -124,7 +124,7 @@ const BLOCK_COMMON_METHODS = {
      * @returns {?Constructor}
      */
     getComponent: function () {
-        return invoke(this, [ Constants.BLOCK, 'getMountedComponent' ]);
+        return invoke(this, [ Constants.BLOCK, 'getUserComponent' ]);
     },
 
     /**
