@@ -9,10 +9,7 @@ import spread from 'lodash/spread';
 import castArray from 'lodash/castArray';
 import isArray from 'lodash/isArray';
 import isFunction from 'lodash/isFunction';
-import isPlainObject from 'lodash/isPlainObject';
 import wrap from 'lodash/wrap';
-import get from 'lodash/get';
-import Constants from './constants';
 import wrapperFunction from './utils/wrapperFunction';
 import checkOverriddenMethods from './utils/checkOverriddenMethods';
 
@@ -38,41 +35,13 @@ const VIEW_COMMON = {
      * @memberOf ReactElement.prototype
      * @property {Object} contextTypes context types
      * @property {HTMLElement} contextTypes.container the node associated with the view
-     * @property {function} contextTypes.content
+     * @property {function} contextTypes.content output function user content
+     * @property {function} contextTypes.template create node by template
      */
     contextTypes: {
         container: PropTypes.any,
-        content: PropTypes.func
-    },
-
-    /**
-     * Create node by template.
-     * @memberOf ReactElement.prototype
-     * @param {string} ref template name
-     * @param {Object} [props] the attributes of a node
-     * @returns {?ReactElement}
-     */
-    template: function (ref, props) {
-        const templates = get(this, [ 'context', 'container', Constants.TMPL ]);
-
-        if (isPlainObject(templates) && templates.hasOwnProperty(ref)) {
-            return (
-                <div {...props} dangerouslySetInnerHTML={{ __html: this.templatePrepare(templates[ ref ]) }} />
-            );
-        }
-
-        return null;
-    }
-};
-
-const VIEW_COMMON_USER = {
-    /**
-     * Custom conversion template.
-     * @param {string} tmplString
-     * @returns {string}
-     */
-    templatePrepare: function (tmplString) {
-        return tmplString;
+        content: PropTypes.func,
+        template: PropTypes.func
     }
 };
 
@@ -111,7 +80,7 @@ const VIEW_COMPONENTS_CLASS = {};
  */
 export function create(component) {
     component = castArray(component);
-    component.unshift({}, VIEW_COMMON_USER);
+    component.unshift({});
     component.push(VIEW_COMMON, mergeCustomizer);
     component = spreadMergeWith(component);
 

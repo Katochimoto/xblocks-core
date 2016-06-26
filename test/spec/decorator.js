@@ -1,5 +1,6 @@
 import { element } from 'decorator';
 import React from 'react';
+var vow = require('vow');
 
 describe('xblocks.decorator', function () {
     it('Должен создать вид и элемент', function () {

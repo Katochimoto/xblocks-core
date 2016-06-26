@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import clone from 'lodash/clone';
 import get from 'lodash/get';
+import isPlainObject from 'lodash/isPlainObject';
+import identity from 'lodash/identity';
 import global from '../../context';
 import { getFactory } from '../view';
 import Constants from '../constants';
@@ -21,10 +23,12 @@ export default React.createFactory(React.createClass({
      * @property {Object} childContextTypes
      * @property {HTMLElement} childContextTypes.container the node associated with the view
      * @property {function} childContextTypes.content
+     * @property {function} childContextTypes.template
      */
     childContextTypes: {
         container: PropTypes.any,
-        content: PropTypes.func
+        content: PropTypes.func,
+        template: PropTypes.func
     },
 
     /**
@@ -44,6 +48,17 @@ export default React.createFactory(React.createClass({
                 <ComponentContent {...{ element }}>
                     {this.props.children}
                 </ComponentContent>
+            ),
+
+            /**
+             * Create node by template.
+             * @param {string} tmplName template name
+             * @param {ReactElement} element
+             * @param {function} [interceptor] custom conversion template
+             * @returns {?ReactElement}
+             */
+            template: (tmplName, element, interceptor) => (
+                <ComponentTemplate {...{ tmplName, element, interceptor }} />
             )
         };
     },
@@ -62,9 +77,9 @@ export default React.createFactory(React.createClass({
 }));
 
 /**
- * Item output custom content
+ * Item output custom content.
  * @param {Object} props
- * @param {ReactElement} props.element
+ * @param {ReactElement} [props.element]
  * @param {string} props.children
  * @param {Object} context
  * @param {HTMLElement} context.container the node associated with the view
@@ -102,5 +117,56 @@ const ComponentContent = function (props, context) {
  * @property {HTMLElement} contextTypes.container the node associated with the view
  */
 ComponentContent.contextTypes = {
+    container: PropTypes.any
+};
+
+/**
+ * Item output custom template content.
+ * @param {Object} props
+ * @param {string} props.tmplName
+ * @param {ReactElement} [props.element]
+ * @param {function} [props.interceptor]
+ * @param {Object} context
+ * @param {HTMLElement} context.container the node associated with the view
+ * @returns {ReactElement}
+ * @private
+ */
+const ComponentTemplate = function (props, context) {
+    const isShadow = get(context.container, [ Constants.BLOCK, 'isShadow' ], false);
+
+    if (isShadow) {
+        if (global.HTMLSlotElement) {
+            return <slot name={props.tmplName} />;
+
+        } else {
+            return <content select={props.tmplName} />;
+        }
+    }
+
+    const templates = context.container[ Constants.TMPL ];
+
+    if (isPlainObject(templates) && templates.hasOwnProperty(props.tmplName)) {
+        const interceptor = props.interceptor || identity;
+        const elementProps = {
+            'dangerouslySetInnerHTML': { __html: interceptor(templates[ props.tmplName ]) }
+        };
+
+        if (props.element) {
+            return React.cloneElement(props.element, elementProps);
+
+        } else {
+            return <div {...elementProps} />;
+        }
+    }
+
+    return null;
+};
+
+/**
+ * Types of context
+ * @property {Object} contextTypes
+ * @property {HTMLElement} contextTypes.container the node associated with the view
+ */
+ComponentTemplate.contextTypes = {
     container: PropTypes.any
 };

@@ -10706,6 +10706,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _get2 = _interopRequireDefault(_get);
 
+	var _isPlainObject = __webpack_require__(143);
+
+	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
+
+	var _identity = __webpack_require__(107);
+
+	var _identity2 = _interopRequireDefault(_identity);
+
 	var _context = __webpack_require__(207);
 
 	var _context2 = _interopRequireDefault(_context);
@@ -10734,10 +10742,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @property {Object} childContextTypes
 	     * @property {HTMLElement} childContextTypes.container the node associated with the view
 	     * @property {function} childContextTypes.content
+	     * @property {function} childContextTypes.template
 	     */
 	    childContextTypes: {
 	        container: _react.PropTypes.any,
-	        content: _react.PropTypes.func
+	        content: _react.PropTypes.func,
+	        template: _react.PropTypes.func
 	    },
 
 	    /**
@@ -10761,6 +10771,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    { element: element },
 	                    _this.props.children
 	                );
+	            },
+
+	            /**
+	             * Create node by template.
+	             * @param {string} tmplName template name
+	             * @param {ReactElement} element
+	             * @param {function} [interceptor] custom conversion template
+	             * @returns {?ReactElement}
+	             */
+	            template: function template(tmplName, element, interceptor) {
+	                return _react2.default.createElement(ComponentTemplate, { tmplName: tmplName, element: element, interceptor: interceptor });
 	            }
 	        };
 	    },
@@ -10780,9 +10801,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 	/**
-	 * Item output custom content
+	 * Item output custom content.
 	 * @param {Object} props
-	 * @param {ReactElement} props.element
+	 * @param {ReactElement} [props.element]
 	 * @param {string} props.children
 	 * @param {Object} context
 	 * @param {HTMLElement} context.container the node associated with the view
@@ -10822,6 +10843,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	    container: _react.PropTypes.any
 	};
 
+	/**
+	 * Item output custom template content.
+	 * @param {Object} props
+	 * @param {string} props.tmplName
+	 * @param {ReactElement} [props.element]
+	 * @param {function} [props.interceptor]
+	 * @param {Object} context
+	 * @param {HTMLElement} context.container the node associated with the view
+	 * @returns {ReactElement}
+	 * @private
+	 */
+	var ComponentTemplate = function ComponentTemplate(props, context) {
+	    var isShadow = (0, _get2.default)(context.container, [_constants2.default.BLOCK, 'isShadow'], false);
+
+	    if (isShadow) {
+	        if (_context2.default.HTMLSlotElement) {
+	            return _react2.default.createElement('slot', { name: props.tmplName });
+	        } else {
+	            return _react2.default.createElement('content', { select: props.tmplName });
+	        }
+	    }
+
+	    var templates = context.container[_constants2.default.TMPL];
+
+	    if ((0, _isPlainObject2.default)(templates) && templates.hasOwnProperty(props.tmplName)) {
+	        var interceptor = props.interceptor || _identity2.default;
+	        var elementProps = {
+	            'dangerouslySetInnerHTML': { __html: interceptor(templates[props.tmplName]) }
+	        };
+
+	        if (props.element) {
+	            return _react2.default.cloneElement(props.element, elementProps);
+	        } else {
+	            return _react2.default.createElement('div', elementProps);
+	        }
+	    }
+
+	    return null;
+	};
+
+	/**
+	 * Types of context
+	 * @property {Object} contextTypes
+	 * @property {HTMLElement} contextTypes.container the node associated with the view
+	 */
+	ComponentTemplate.contextTypes = {
+	    container: _react.PropTypes.any
+	};
+
 /***/ },
 /* 269 */
 /***/ function(module, exports, __webpack_require__) {
@@ -10831,11 +10901,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
-	                                                                                                                                                                                                                                                                   * @module xblocks-core/view
-	                                                                                                                                                                                                                                                                   */
-
 	exports.create = create;
 	exports.register = register;
 	exports.getFactory = getFactory;
@@ -10869,21 +10934,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _isFunction2 = _interopRequireDefault(_isFunction);
 
-	var _isPlainObject = __webpack_require__(143);
-
-	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
-
 	var _wrap = __webpack_require__(163);
 
 	var _wrap2 = _interopRequireDefault(_wrap);
-
-	var _get = __webpack_require__(94);
-
-	var _get2 = _interopRequireDefault(_get);
-
-	var _constants = __webpack_require__(209);
-
-	var _constants2 = _interopRequireDefault(_constants);
 
 	var _wrapperFunction = __webpack_require__(270);
 
@@ -10894,6 +10947,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _checkOverriddenMethods2 = _interopRequireDefault(_checkOverriddenMethods);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	/**
+	 * @module xblocks-core/view
+	 */
 
 	var spreadMergeWith = (0, _spread2.default)(_mergeWith2.default);
 
@@ -10906,39 +10963,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @memberOf ReactElement.prototype
 	     * @property {Object} contextTypes context types
 	     * @property {HTMLElement} contextTypes.container the node associated with the view
-	     * @property {function} contextTypes.content
+	     * @property {function} contextTypes.content output function user content
+	     * @property {function} contextTypes.template create node by template
 	     */
 	    contextTypes: {
 	        container: _react.PropTypes.any,
-	        content: _react.PropTypes.func
-	    },
-
-	    /**
-	     * Create node by template.
-	     * @memberOf ReactElement.prototype
-	     * @param {string} ref template name
-	     * @param {Object} [props] the attributes of a node
-	     * @returns {?ReactElement}
-	     */
-	    template: function template(ref, props) {
-	        var templates = (0, _get2.default)(this, ['context', 'container', _constants2.default.TMPL]);
-
-	        if ((0, _isPlainObject2.default)(templates) && templates.hasOwnProperty(ref)) {
-	            return _react2.default.createElement('div', _extends({}, props, { dangerouslySetInnerHTML: { __html: this.templatePrepare(templates[ref]) } }));
-	        }
-
-	        return null;
-	    }
-	};
-
-	var VIEW_COMMON_USER = {
-	    /**
-	     * Custom conversion template.
-	     * @param {string} tmplString
-	     * @returns {string}
-	     */
-	    templatePrepare: function templatePrepare(tmplString) {
-	        return tmplString;
+	        content: _react.PropTypes.func,
+	        template: _react.PropTypes.func
 	    }
 	};
 
@@ -10977,7 +11008,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	function create(component) {
 	    component = (0, _castArray2.default)(component);
-	    component.unshift({}, VIEW_COMMON_USER);
+	    component.unshift({});
 	    component.push(VIEW_COMMON, mergeCustomizer);
 	    component = spreadMergeWith(component);
 
