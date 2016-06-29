@@ -18,6 +18,8 @@ import Constants from '../constants';
  * @returns {function}
  */
 export default React.createFactory(React.createClass({
+    displayName: 'xb-component',
+
     /**
      * Types of context
      * @property {Object} childContextTypes

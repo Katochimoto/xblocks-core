@@ -10739,6 +10739,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @returns {function}
 	 */
 	exports.default = _react2.default.createFactory(_react2.default.createClass({
+	    displayName: 'xb-component',
+
 	    /**
 	     * Types of context
 	     * @property {Object} childContextTypes
