@@ -37,11 +37,13 @@ const VIEW_COMMON = {
      * @property {HTMLElement} contextTypes.container the node associated with the view
      * @property {function} contextTypes.content output function user content
      * @property {function} contextTypes.template create node by template
+     * @property {function} contextTypes.isEmptyContent check empty content
      */
     contextTypes: {
         container: PropTypes.any,
         content: PropTypes.func,
-        template: PropTypes.func
+        template: PropTypes.func,
+        isEmptyContent: PropTypes.func
     }
 };
 

@@ -10747,11 +10747,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @property {HTMLElement} childContextTypes.container the node associated with the view
 	     * @property {function} childContextTypes.content
 	     * @property {function} childContextTypes.template
+	     * @property {function} childContextTypes.isEmptyContent check empty content
 	     */
 	    childContextTypes: {
 	        container: _react.PropTypes.any,
 	        content: _react.PropTypes.func,
-	        template: _react.PropTypes.func
+	        template: _react.PropTypes.func,
+	        isEmptyContent: _react.PropTypes.func
 	    },
 
 	    /**
@@ -10786,6 +10788,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	             */
 	            template: function template(tmplName, element, interceptor) {
 	                return _react2.default.createElement(ComponentTemplate, { tmplName: tmplName, element: element, interceptor: interceptor });
+	            },
+
+	            /**
+	             * Check empty content.
+	             * @returns {boolean}
+	             */
+	            isEmptyContent: function isEmptyContent() {
+	                return !_this.props.children;
 	            }
 	        };
 	    },
@@ -10974,11 +10984,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @property {HTMLElement} contextTypes.container the node associated with the view
 	     * @property {function} contextTypes.content output function user content
 	     * @property {function} contextTypes.template create node by template
+	     * @property {function} contextTypes.isEmptyContent check empty content
 	     */
 	    contextTypes: {
 	        container: _react.PropTypes.any,
 	        content: _react.PropTypes.func,
-	        template: _react.PropTypes.func
+	        template: _react.PropTypes.func,
+	        isEmptyContent: _react.PropTypes.func
 	    }
 	};
 

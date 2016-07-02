@@ -26,11 +26,13 @@ export default React.createFactory(React.createClass({
      * @property {HTMLElement} childContextTypes.container the node associated with the view
      * @property {function} childContextTypes.content
      * @property {function} childContextTypes.template
+     * @property {function} childContextTypes.isEmptyContent check empty content
      */
     childContextTypes: {
         container: PropTypes.any,
         content: PropTypes.func,
-        template: PropTypes.func
+        template: PropTypes.func,
+        isEmptyContent: PropTypes.func
     },
 
     /**
@@ -61,7 +63,13 @@ export default React.createFactory(React.createClass({
              */
             template: (tmplName, element, interceptor) => (
                 <ComponentTemplate {...{ tmplName, element, interceptor }} />
-            )
+            ),
+
+            /**
+             * Check empty content.
+             * @returns {boolean}
+             */
+            isEmptyContent: () => !this.props.children
         };
     },
 
