@@ -10795,7 +10795,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	             * @returns {boolean}
 	             */
 	            isEmptyContent: function isEmptyContent() {
-	                return !_this.props.children;
+	                var isShadow = (0, _get2.default)(_this.props._container, [_constants2.default.BLOCK, 'isShadow'], false);
+
+	                if (isShadow) {
+	                    return !_this.props._container.hasChildNodes();
+	                } else {
+	                    return !_this.props.children;
+	                }
 	            }
 	        };
 	    },

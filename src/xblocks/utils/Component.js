@@ -69,7 +69,16 @@ export default React.createFactory(React.createClass({
              * Check empty content.
              * @returns {boolean}
              */
-            isEmptyContent: () => !this.props.children
+            isEmptyContent: () => {
+                const isShadow = get(this.props._container, [ Constants.BLOCK, 'isShadow' ], false);
+
+                if (isShadow) {
+                    return !this.props._container.hasChildNodes();
+
+                } else {
+                    return !this.props.children;
+                }
+            }
         };
     },
 
