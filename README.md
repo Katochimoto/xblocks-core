@@ -29,7 +29,7 @@ import { element } from 'xblocks-core';
 class XBElement extends React.Component {
     render() {
         return (
-            <div title={this.props.title}>{this.props.children}</div>
+            <div title={this.props.title}>{this.context.content()}</div>
         );
     }
 }
@@ -85,7 +85,7 @@ view.register('xb-ico', {
         });
 
         return (
-            <span className={classes}>{this.props.children}</span>
+            <span className={classes}>{this.context.content()}</span>
         );
     }
 });
